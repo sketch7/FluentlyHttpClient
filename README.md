@@ -1,5 +1,5 @@
 # Fluently Http Client
-Fluent Http Client with a fluent APIs which are intuitive and easy to use. It's also highly extensible.
+Fluent Http Client with a fluent APIs which are intuitive, easy to use and also highly extensible.
 
 ## Features
  - Fluent APIs
