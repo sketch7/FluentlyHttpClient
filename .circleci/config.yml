@@ -1,0 +1,48 @@
+version: 2
+jobs:
+  build:
+    working_directory: /app
+    docker:
+      - image: microsoft/aspnetcore-build:1.0-1.1
+    environment:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    steps:
+      - run:
+          name: Print environment versions
+          command: |
+            NPM_V=$(npm -v)
+            echo npm version':' $NPM_V
+            DOTNET_CLI_V=$(dotnet --version)
+            echo dotnet cli version':' $DOTNET_CLI_V
+      - checkout
+      - run:
+          name: dotnet restore
+          command: dotnet restore
+      - run:
+          name: dotnet build
+          command: dotnet build
+      - run:
+          name: test
+          command: npm test
+      - deploy:
+          name: Publish NuGet
+          command: |
+            if [ "$CIRCLE_BRANCH" != "master" ]; then
+              echo -e "\e[33m Branch does not publish -- exit!"
+              exit
+            fi
+            . ./.circleci/utils.sh
+
+            if [ "$API_KEY" == "" ]; then
+              echo API_KEY environment variable not defined.
+              exit 1
+            fi
+
+            PACKAGE_VERSION=$(node -p "require('./package.json').version")
+            dotnet pack /p:PackageVersion=$PACKAGE_VERSION -o ../../ -c release --include-symbols
+            dotnet nuget push *.nupkg -k $API_KEY -s https://www.nuget.org/api/v2/package
+
+            print_title "git tag"
+            git tag $PACKAGE_VERSION
+            git push --tags
