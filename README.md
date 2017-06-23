@@ -1,5 +1,18 @@
+[projectUri]: https://github.com/sketch7/FluentlyHttpClient
+[projectGit]: https://github.com/sketch7/FluentlyHttpClient.git
+[changeLog]: ./CHANGELOG.md
+
 # Fluently Http Client
+[![CircleCI](https://circleci.com/gh/sketch7/FluentlyHttpClient.svg?style=shield)](https://circleci.com/gh/sketch7/FluentlyHttpClient)
+[![NuGet version](https://badge.fury.io/nu/fluentlyhttpclient.svg)](https://badge.fury.io/nu/fluentlyhttpclient)
+
 Fluent Http Client with a fluent APIs which are intuitive, easy to use and also highly extensible.
+
+*NOTE: This project is under development and is not intended for general production use yet.*
+
+**Quick links**
+
+[Change logs][changeLog] | [Project Repository][projectUri]
 
 ## Features
  - Fluent APIs
@@ -13,7 +26,15 @@ Fluent Http Client with a fluent APIs which are intuitive, easy to use and also 
  - Highly extensible
 
 
-## Getting Started
+
+## Contributing
+
+### Setup Machine for Development
+Install/setup the following:
+
+- NodeJS v8+
+- Visual Studio Code or similar code editor
+- Git + SourceTree, SmartGit or similar (optional)
 
  ### Commands
 
