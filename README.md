@@ -12,6 +12,7 @@ Fluent Http Client with a fluent APIs which are intuitive and easy to use. It's 
  - Url interpolation e.g. person/{id}
  - Highly extensible
 
+
 ## Getting Started
 
  ### Commands
