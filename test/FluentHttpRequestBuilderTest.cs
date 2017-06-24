@@ -25,11 +25,26 @@ namespace FluentlyHttpClient.Test
 				.AsGet()
 				.WithQueryParams(new
 				{
-					page = 1,
-					filter = "all"
+					Page = 1,
+					Filter = "all"
 				}).Build();
 
 			Assert.Equal("/org/sketch7?page=1&filter=all", request.Url.ToString());
+		}
+
+		[Fact]
+		public void WithQueryParams_WithoutLowerKeys()
+		{
+			var builder = new FluentHttpRequestBuilder(null);
+			var request = builder.WithUri("/org/sketch7")
+				.AsGet()
+				.WithQueryParams(new
+				{
+					Page = 1,
+					Filter = "all"
+				}, lowerCaseQueryKeys: false).Build();
+
+			Assert.Equal("/org/sketch7?Page=1&Filter=all", request.Url.ToString());
 		}
 
 		[Fact]
@@ -40,8 +55,8 @@ namespace FluentlyHttpClient.Test
 				.AsGet()
 				.WithQueryParams(new
 				{
-					page = 1,
-					filter = "all"
+					Page = 1,
+					Filter = "all"
 				}).Build();
 
 			Assert.Equal("/org/sketch7?hero=rex&page=1&filter=all", request.Url.ToString());

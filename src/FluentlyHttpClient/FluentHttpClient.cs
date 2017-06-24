@@ -159,6 +159,7 @@ namespace FluentlyHttpClient
 		private static readonly HttpMethod HttpMethodPatch = new HttpMethod("Patch");
 		private static readonly Regex InterpolationRegex = new Regex(@"\{(\w+)\}", RegexOptions.Compiled);
 		private object _queryParams;
+		private bool _lowerCaseQueryKeys;
 
 		public FluentHttpRequestBuilder(FluentHttpClient fluentHttpClient)
 		{
@@ -277,9 +278,11 @@ namespace FluentlyHttpClient
 		/// Set query string params to the Uri. e.g. .?page=1&filter=all'.
 		/// </summary>
 		/// <param name="queryParams">Query data to add/append. Can be either dictionary or object.</param>
+		/// <param name="lowerCaseQueryKeys">Determine whether to lowercase query string keys.</param>
 		/// <returns></returns>
-		public FluentHttpRequestBuilder WithQueryParams(object queryParams)
+		public FluentHttpRequestBuilder WithQueryParams(object queryParams, bool lowerCaseQueryKeys = true)
 		{
+			_lowerCaseQueryKeys = lowerCaseQueryKeys;
 			_queryParams = queryParams;
 			return this;
 		}
@@ -354,7 +357,7 @@ namespace FluentlyHttpClient
 		{
 			ValidateRequest();
 
-			var uri = BuildUri(Uri, _queryParams);
+			var uri = BuildUri(Uri, _queryParams, _lowerCaseQueryKeys);
 			var httpRequest = new HttpRequestMessage(HttpMethod, uri);
 			if (_httpBody != null)
 				httpRequest.Content = _httpBody;
@@ -372,7 +375,7 @@ namespace FluentlyHttpClient
 				throw RequestValidationException.FieldNotSpecified(nameof(Uri));
 		}
 
-		private static string BuildQueryString(object queryParams)
+		private static string BuildQueryString(object queryParams, bool lowerCaseQueryKeys)
 		{
 			if (queryParams == null)
 				return string.Empty;
@@ -383,13 +386,13 @@ namespace FluentlyHttpClient
 
 			var queryCollection = new HttpValueCollection();
 			foreach (var item in dict)
-				queryCollection[item.Key] = item.Value.ToString();
+				queryCollection[lowerCaseQueryKeys ? item.Key.ToLower() : item.Key] = item.Value.ToString();
 			return queryCollection.ToString();
 		}
 
-		private static string BuildUri(string uri, object queryParams)
+		private static string BuildUri(string uri, object queryParams, bool lowerCaseQueryKeys)
 		{
-			var queryString = BuildQueryString(queryParams);
+			var queryString = BuildQueryString(queryParams, lowerCaseQueryKeys);
 			if (string.IsNullOrEmpty(queryString))
 				return uri;
 
