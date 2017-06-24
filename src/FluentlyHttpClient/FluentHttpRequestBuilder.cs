@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
@@ -24,9 +25,10 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public string UriTemplate { get; private set; }
 
+		public Dictionary<string, string> Headers { get; private set; }
+
 		private readonly FluentHttpClient _fluentHttpClient;
 		private HttpContent _httpBody;
-		private static readonly HttpMethod HttpMethodPatch = new HttpMethod("Patch");
 		private static readonly Regex InterpolationRegex = new Regex(@"\{(\w+)\}", RegexOptions.Compiled);
 		private object _queryParams;
 		private bool _lowerCaseQueryKeys;
@@ -34,87 +36,6 @@ namespace FluentlyHttpClient
 		public FluentHttpRequestBuilder(FluentHttpClient fluentHttpClient)
 		{
 			_fluentHttpClient = fluentHttpClient;
-		}
-
-		#region HttpMethods
-		/// <summary>
-		/// Set request method as <c>Get</c>.
-		/// </summary>
-		/// <returns>Returns request builder for chaining.</returns>
-		public FluentHttpRequestBuilder AsGet()
-		{
-			HttpMethod = HttpMethod.Get;
-			return this;
-		}
-
-		/// <summary>
-		/// Set request method as <c>Post</c>.
-		/// </summary>
-		/// <returns>Returns request builder for chaining.</returns>
-		public FluentHttpRequestBuilder AsPost()
-		{
-			HttpMethod = HttpMethod.Post;
-			return this;
-		}
-
-		/// <summary>
-		/// Set request method as <c>Put</c>.
-		/// </summary>
-		/// <returns>Returns request builder for chaining.</returns>
-		public FluentHttpRequestBuilder AsPut()
-		{
-			HttpMethod = HttpMethod.Put;
-			return this;
-		}
-
-		/// <summary>
-		/// Set request method as <c>Delete</c>.
-		/// </summary>
-		/// <returns>Returns request builder for chaining.</returns>
-		public FluentHttpRequestBuilder AsDelete()
-		{
-			HttpMethod = HttpMethod.Delete;
-			return this;
-		}
-
-		/// <summary>
-		/// Set request method as <c>Options</c>.
-		/// </summary>
-		/// <returns>Returns request builder for chaining.</returns>
-		public FluentHttpRequestBuilder AsOptions()
-		{
-			HttpMethod = HttpMethod.Options;
-			return this;
-		}
-
-		/// <summary>
-		/// Set request method as <c>Head</c>.
-		/// </summary>
-		/// <returns>Returns request builder for chaining.</returns>
-		public FluentHttpRequestBuilder AsHead()
-		{
-			HttpMethod = HttpMethod.Head;
-			return this;
-		}
-
-		/// <summary>
-		/// Set request method as <c>Trace</c>.
-		/// </summary>
-		/// <returns>Returns request builder for chaining.</returns>
-		public FluentHttpRequestBuilder AsTrace()
-		{
-			HttpMethod = HttpMethod.Trace;
-			return this;
-		}
-
-		/// <summary>
-		/// Set request method as <c>Patch</c>.
-		/// </summary>
-		/// <returns>Returns request builder for chaining.</returns>
-		public FluentHttpRequestBuilder AsPatch()
-		{
-			HttpMethod = HttpMethodPatch;
-			return this;
 		}
 
 		/// <summary>
@@ -126,21 +47,48 @@ namespace FluentlyHttpClient
 			HttpMethod = method;
 			return this;
 		}
-		#endregion
+
+		/// <summary>
+		/// Add the specified header and its value for the request.
+		/// </summary>
+		/// <param name="key">Header to add.</param>
+		/// <param name="value">Value for the header.</param>
+		/// <returns>Returns request builder for chaining.</returns>
+		public FluentHttpRequestBuilder WithHeader(string key, string value)
+		{
+			if (Headers == null)
+				Headers = new Dictionary<string, string>();
+			if (Headers.ContainsKey(key))
+				Headers[key] = value;
+			else
+				Headers.Add(key, value);
+			return this;
+		}
+
+		/// <summary>
+		/// Add the specified header and its value for the request.
+		/// </summary>
+		/// <param name="headers">Headers to add.</param>
+		/// <returns>Returns request builder for chaining.</returns>
+		public FluentHttpRequestBuilder WithHeaders(IDictionary<string, string> headers)
+		{
+			foreach (var item in headers)
+				WithHeader(item.Key, item.Value);
+			return this;
+		}
 
 		/// <summary>
 		/// Set the uri of the HTTP request with optional interpolations.
 		/// </summary>
 		/// <param name="uriTemplate">Uri resource template e.g. <c>"/org/{id}"</c></param>
 		/// <param name="interpolationData">Data to interpolate within the Uri template place holders e.g. <c>{id}</c>. Can be either dictionary or object.</param>
-		/// <returns></returns>
+		/// <returns>Returns request builder for chaining.</returns>
 		public FluentHttpRequestBuilder WithUri(string uriTemplate, object interpolationData = null)
 		{
 			UriTemplate = uriTemplate;
 			Uri = interpolationData != null
 				? InterpolationRegex.ReplaceTokens(uriTemplate, interpolationData.ToDictionary())
 				: uriTemplate;
-
 			return this;
 		}
 
@@ -149,7 +97,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="queryParams">Query data to add/append. Can be either dictionary or object.</param>
 		/// <param name="lowerCaseQueryKeys">Determine whether to lowercase query string keys.</param>
-		/// <returns></returns>
+		/// <returns>Returns request builder for chaining.</returns>
 		public FluentHttpRequestBuilder WithQueryParams(object queryParams, bool lowerCaseQueryKeys = true)
 		{
 			_lowerCaseQueryKeys = lowerCaseQueryKeys;
@@ -231,6 +179,10 @@ namespace FluentlyHttpClient
 			var httpRequest = new HttpRequestMessage(HttpMethod, uri);
 			if (_httpBody != null)
 				httpRequest.Content = _httpBody;
+
+			if (Headers != null)
+				foreach (var header in Headers)
+					httpRequest.Headers.Add(header.Key, header.Value);
 
 			var fluentRequest = new FluentHttpRequest(httpRequest);
 			return fluentRequest;

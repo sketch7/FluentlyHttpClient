@@ -1,4 +1,6 @@
 ﻿using FluentlyHttpClient;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 using static Test.RequestBuilderTestUtil;
 
@@ -102,6 +104,63 @@ namespace Test
 		{
 			var builder = NewBuilder();
 			Assert.Throws<RequestValidationException>(() => builder.AsGet().Build());
+		}
+	}
+
+	public class RequestBuilder_WithHeaders
+	{
+		[Fact]
+		public void AddHeader()
+		{
+			var builder = NewBuilder()
+				.AsGet()
+				.WithUri("/org/sketch7")
+				.WithHeader("chiko", "hex")
+				;
+			var request = builder.Build();
+
+			var header = request.Headers.GetValues("chiko").FirstOrDefault();
+			Assert.NotNull(header);
+			Assert.Equal("hex", header);
+		}
+
+		[Fact]
+		public void AddAlreadyExistsHeader_ShouldReplace()
+		{
+			var builder = NewBuilder()
+					.AsGet()
+					.WithUri("/org/sketch7")
+					.WithHeader("chiko", "hex")
+					.WithHeader("chiko", "hexII")
+				;
+			var request = builder.Build();
+
+			var header = request.Headers.GetValues("chiko").FirstOrDefault();
+			Assert.NotNull(header);
+			Assert.Equal("hexII", header);
+		}
+
+		[Fact]
+		public void AddHeaders()
+		{
+			var builder = NewBuilder()
+					.AsGet()
+					.WithUri("/org/sketch7")
+					.WithHeader("chiko", "hex")
+					.WithHeaders(new Dictionary<string, string>
+					{
+						["chiko"] = "hexII",
+						["locale"] = "mt-MT"
+					})
+				;
+			var request = builder.Build();
+
+			var chikoHeader = request.Headers.GetValues("chiko").FirstOrDefault();
+			var localeHeader = request.Headers.GetValues("locale").FirstOrDefault();
+			Assert.NotNull(chikoHeader);
+			Assert.Equal("hexII", chikoHeader);
+			Assert.NotNull(localeHeader);
+			Assert.Equal("mt-MT", localeHeader);
 		}
 	}
 }

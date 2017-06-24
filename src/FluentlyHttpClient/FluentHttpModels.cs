@@ -13,15 +13,20 @@ namespace FluentlyHttpClient
 	{
 		public HttpRequestMessage RawRequest { get; }
 
+		public HttpMethod Method => RawRequest.Method;
+
+		public Uri Url => RawRequest.RequestUri;
+
+		public HttpRequestHeaders Headers => RawRequest.Headers;
+
+		// todo: remove?
+		public object Data { get; set; }
+
 		public FluentHttpRequest(HttpRequestMessage rawRequest)
 		{
 			RawRequest = rawRequest;
 		}
 
-		public HttpMethod Method => RawRequest.Method;
-		public Uri Url => RawRequest.RequestUri;
-		// todo: remove?
-		public object Data { get; set; }
 	}
 
 	public interface IFluentHttpResponse

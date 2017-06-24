@@ -85,7 +85,17 @@ namespace FluentlyHttpClient
 
 		public FluentHttpClientBuilder AddHeader(string key, string value)
 		{
-			_headers.Add(key, value);
+			if (_headers.ContainsKey(key))
+				_headers[key] = value;
+			else
+				_headers.Add(key, value);
+			return this;
+		}
+
+		public FluentHttpClientBuilder AddHeaders(IDictionary<string, string> headers)
+		{
+			foreach (var item in headers)
+				AddHeader(item.Key, item.Value);
 			return this;
 		}
 
