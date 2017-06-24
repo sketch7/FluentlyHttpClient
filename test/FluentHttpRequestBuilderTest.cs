@@ -1,10 +1,10 @@
 ﻿using FluentlyHttpClient;
 using Xunit;
-using static Test.FluentHttpRequestBuilderTestUtil;
+using static Test.RequestBuilderTestUtil;
 
 namespace Test
 {
-	public static class FluentHttpRequestBuilderTestUtil
+	public static class RequestBuilderTestUtil
 	{
 		public static FluentHttpRequestBuilder NewBuilder()
 			=> new FluentHttpRequestBuilder(null);
