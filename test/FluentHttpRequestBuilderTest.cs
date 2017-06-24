@@ -10,9 +10,9 @@ namespace FluentlyHttpClient.Test
 			var request = new FluentHttpRequestBuilder(null)
 				.AsGet()
 				.WithUri("/org/{org}", new
-			{
-				org = "sketch7"
-			}).Build();
+				{
+					org = "sketch7"
+				}).Build();
 
 			Assert.Equal("/org/sketch7", request.Url.ToString());
 		}
@@ -45,6 +45,18 @@ namespace FluentlyHttpClient.Test
 				}).Build();
 
 			Assert.Equal("/org/sketch7?hero=rex&page=1&filter=all", request.Url.ToString());
+		}
+
+		[Fact]
+		public void WithQueryParams_EmptyObject_RemainAsIs()
+		{
+			var builder = new FluentHttpRequestBuilder(null);
+			var request = builder.WithUri("/org/sketch7")
+				.AsGet()
+				.WithQueryParams(new { })
+				.Build();
+
+			Assert.Equal("/org/sketch7", request.Url.ToString());
 		}
 
 		[Fact]

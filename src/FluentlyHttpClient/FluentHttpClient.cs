@@ -378,8 +378,10 @@ namespace FluentlyHttpClient
 				return string.Empty;
 
 			var dict = queryParams.ToDictionary();
-			var queryCollection = new HttpValueCollection();
+			if (dict.Count == 0)
+				return string.Empty;
 
+			var queryCollection = new HttpValueCollection();
 			foreach (var item in dict)
 				queryCollection[item.Key] = item.Value.ToString();
 			return queryCollection.ToString();
