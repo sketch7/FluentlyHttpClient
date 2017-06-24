@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
     <Description>Fluent Http Client with a fluent APIs which are intuitive, easy to use and also highly extensible.</Description>
-    <Product>FluentlyHttp</Product>
+    <Product>FluentlyHttpClient</Product>
     <Company>Sketch7</Company>
     <Authors>Stephen Lautier</Authors>
     <PackageTags>httpclient fluentapi fluenthttp</PackageTags>
