@@ -88,8 +88,8 @@ namespace FluentlyHttpClient
 		public FluentHttpRequestBuilder CreateRequest(string uriTemplate = null, object interpolationData = null)
 		{
 			var builder = ActivatorUtilities.CreateInstance<FluentHttpRequestBuilder>(_serviceProvider, this);
-			return uriTemplate != null 
-				? builder.WithUri(uriTemplate, interpolationData) 
+			return uriTemplate != null
+				? builder.WithUri(uriTemplate, interpolationData)
 				: builder;
 		}
 
@@ -158,6 +158,7 @@ namespace FluentlyHttpClient
 		private HttpContent _httpBody;
 		private static readonly HttpMethod HttpMethodPatch = new HttpMethod("Patch");
 		private static readonly Regex InterpolationRegex = new Regex(@"\{(\w+)\}", RegexOptions.Compiled);
+		private object _queryParams;
 
 		public FluentHttpRequestBuilder(FluentHttpClient fluentHttpClient)
 		{
@@ -272,6 +273,17 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
+		/// <summary>
+		/// Set query string params to the Uri. e.g. .?page=1&filter=all'.
+		/// </summary>
+		/// <param name="queryParams">Query data to add/append. Can be either dictionary or object.</param>
+		/// <returns></returns>
+		public FluentHttpRequestBuilder WithQueryParams(object queryParams)
+		{
+			_queryParams = queryParams;
+			return this;
+		}
+
 		/// <summary>Set the body content of the HTTP request.</summary>
 		/// <param name="body">Value to serialize into the HTTP body content.</param>
 		/// <param name="contentType">Request body format (or <c>null</c> to use the first supported Content-Type in the <see cref="FluentHttpClient.Formatters"/>).</param>
@@ -340,12 +352,47 @@ namespace FluentlyHttpClient
 
 		public FluentHttpRequest Build()
 		{
-			var httpRequest = new HttpRequestMessage(HttpMethod, Uri);
+			ValidateRequest();
+
+			var uri = BuildUri(Uri, _queryParams);
+			var httpRequest = new HttpRequestMessage(HttpMethod, uri);
 			if (_httpBody != null)
 				httpRequest.Content = _httpBody;
 
 			var fluentRequest = new FluentHttpRequest(httpRequest);
 			return fluentRequest;
+		}
+
+		protected void ValidateRequest()
+		{
+			if (HttpMethod == null)
+				throw RequestValidationException.FieldNotSpecified(nameof(HttpMethod));
+
+			if (string.IsNullOrWhiteSpace(Uri))
+				throw RequestValidationException.FieldNotSpecified(nameof(Uri));
+		}
+
+		private static string BuildQueryString(object queryParams)
+		{
+			if (queryParams == null)
+				return string.Empty;
+
+			var dict = queryParams.ToDictionary();
+			var queryCollection = new HttpValueCollection();
+
+			foreach (var item in dict)
+				queryCollection[item.Key] = item.Value.ToString();
+			return queryCollection.ToString();
+		}
+
+		private static string BuildUri(string uri, object queryParams)
+		{
+			var queryString = BuildQueryString(queryParams);
+			if (uri.Contains("?"))
+				uri += $"&{queryString}";
+			else
+				uri += $"?{queryString}";
+			return uri;
 		}
 	}
 
