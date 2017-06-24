@@ -6,7 +6,7 @@
 [![CircleCI](https://circleci.com/gh/sketch7/FluentlyHttpClient.svg?style=shield)](https://circleci.com/gh/sketch7/FluentlyHttpClient)
 [![NuGet version](https://badge.fury.io/nu/fluentlyhttpclient.svg)](https://badge.fury.io/nu/fluentlyhttpclient)
 
-Fluent Http Client with a fluent APIs which are intuitive, easy to use and also highly extensible.
+Http Client for .NET Standard with fluent APIs which are intuitive, easy to use and also highly extensible.
 
 *NOTE: This project is under development and is not intended for general production use yet.*
 
