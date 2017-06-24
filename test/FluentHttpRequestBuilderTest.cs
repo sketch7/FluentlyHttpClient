@@ -15,5 +15,49 @@ namespace FluentlyHttpClient.Test
 
 			Assert.Equal("/org/sketch7", builder.Uri);
 		}
+
+		[Fact]
+		public void WithQueryParams_AddQuery()
+		{
+			var builder = new FluentHttpRequestBuilder(null);
+			var request = builder.WithUri("/org/sketch7")
+				.AsGet()
+				.WithQueryParams(new
+				{
+					page = 1,
+					filter = "all"
+				}).Build();
+
+			Assert.Equal("/org/sketch7?page=1&filter=all", request.Url.ToString());
+		}
+
+		[Fact]
+		public void WithQueryParams_AppendQuery()
+		{
+			var builder = new FluentHttpRequestBuilder(null);
+			var request = builder.WithUri("/org/sketch7?hero=rex")
+				.AsGet()
+				.WithQueryParams(new
+				{
+					page = 1,
+					filter = "all"
+				}).Build();
+
+			Assert.Equal("/org/sketch7?hero=rex&page=1&filter=all", request.Url.ToString());
+		}
+
+		[Fact]
+		public void BuildValidation_ThrowsErrorWhenMethodNotSpecified()
+		{
+			var builder = new FluentHttpRequestBuilder(null);
+			Assert.Throws<RequestValidationException>(() => builder.WithUri("/org").Build());
+		}
+
+		[Fact]
+		public void BuildValidation_ThrowsErrorWhenUriNotSpecified()
+		{
+			var builder = new FluentHttpRequestBuilder(null);
+			Assert.Throws<RequestValidationException>(() => builder.AsGet().Build());
+		}
 	}
 }
