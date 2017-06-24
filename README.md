@@ -26,7 +26,6 @@ Fluent Http Client with a fluent APIs which are intuitive, easy to use and also 
  - Highly extensible
 
 
-
 ## Contributing
 
 ### Setup Machine for Development
