@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace FluentlyHttp.Utils
+namespace FluentlyHttpClient
 {
 	public static class ObjectExtensions
 	{

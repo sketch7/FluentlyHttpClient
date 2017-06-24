@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace FluentlyHttp.Test
+namespace FluentlyHttpClient.Test
 {
 	public class FluentHttpRequestBuilderTest
 	{

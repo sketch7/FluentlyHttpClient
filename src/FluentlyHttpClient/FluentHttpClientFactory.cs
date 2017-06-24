@@ -2,15 +2,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace FluentlyHttp
+namespace FluentlyHttpClient
 {
-	/*
-	 * todo:
-	 *  - FluentHttpClientFactory
-	 *		- Default configs
-	 *		- Default configs configurable
-	 *  - 
-	 */
 
 	public class FluentHttpClientFactory
 	{
@@ -123,7 +116,7 @@ namespace FluentlyHttp
 		}
 
 		/// <summary>
-		/// Register to <see cref="FluentHttpClientFactory"/>, same as <see cref="Add(FluentHttpClientBuilder)"/>
+		/// Register to <see cref="FluentHttpClientFactory"/>, same as <see cref="FluentHttpClientFactory.Add"/>
 		/// </summary>
 		public FluentHttpClientBuilder Register()
 		{

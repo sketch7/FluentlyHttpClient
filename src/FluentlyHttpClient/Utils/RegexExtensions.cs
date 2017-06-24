@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace FluentlyHttp.Utils
+namespace FluentlyHttpClient
 {
 	public static class RegexExtensions
 	{

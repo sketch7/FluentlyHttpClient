@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace FluentlyHttp
+namespace FluentlyHttpClient
 {
 	public interface IFluentHttpMiddlewareRunner
 	{

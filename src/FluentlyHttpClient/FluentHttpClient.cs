@@ -1,5 +1,4 @@
-﻿using FluentlyHttp.Utils;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +9,7 @@ using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace FluentlyHttp
+namespace FluentlyHttpClient
 {
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public class FluentHttpClient

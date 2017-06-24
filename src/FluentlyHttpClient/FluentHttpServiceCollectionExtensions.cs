@@ -1,6 +1,5 @@
-﻿using FluentlyHttp;
+﻿using FluentlyHttpClient;
 using System;
-
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -9,17 +8,17 @@ namespace Microsoft.Extensions.DependencyInjection
 	/// Extension methods for setting up fluent http services in an <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />.
 	/// </summary>
 	public static class FluentHttpServiceCollectionExtensions
+	{
+
+		public static IServiceCollection AddFluentlyHttpClient(this IServiceCollection services)
 		{
+			if (services == null)
+				throw new ArgumentNullException(nameof(services));
 
-			public static IServiceCollection AddFluentlyHttp(this IServiceCollection services)
-			{
-				if (services == null)
-					throw new ArgumentNullException(nameof(services));
+			services.AddSingleton<FluentHttpClientFactory>();
+			services.AddSingleton<IFluentHttpMiddlewareRunner, FluentHttpMiddlewareRunner>();
 
-				services.AddSingleton<FluentHttpClientFactory>();
-				services.AddSingleton<IFluentHttpMiddlewareRunner, FluentHttpMiddlewareRunner>();
-
-				return services;
-			}
+			return services;
 		}
 	}
+}

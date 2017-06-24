@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace FluentlyHttp
+namespace FluentlyHttpClient
 {
 	public class LoggerHttpMiddleware : IFluentHttpMiddleware
 	{
