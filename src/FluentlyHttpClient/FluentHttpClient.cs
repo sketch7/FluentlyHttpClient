@@ -108,10 +108,11 @@ namespace FluentlyHttpClient
 			return httpClient;
 		}
 
-		public async Task<FluentHttpResponse<T>> Send<T>(FluentHttpRequestBuilder builder)
-		{
-			var fluentRequest = builder.Build();
+		public Task<FluentHttpResponse<T>> Send<T>(FluentHttpRequestBuilder builder) => Send<T>(builder.Build());
 
+		public async Task<FluentHttpResponse<T>> Send<T>(FluentHttpRequest fluentRequest)
+		{
+			if(fluentRequest == null) throw new ArgumentNullException("fluentRequest");
 			var response = await _middlewareRunner.Run<T>(_middleware, fluentRequest, async request =>
 			{
 				var result = await RawHttpClient.SendAsync(request.RawRequest);

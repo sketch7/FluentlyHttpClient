@@ -5,3 +5,5 @@
 ### Features
 - **request builder:** implement `WithQueryParams` to add query strings.
 - **request builder:** validating request on `Build`, in order to have better errors.
+
+- **http client:** implement `Send` method with `FluentHttpRequest`.
