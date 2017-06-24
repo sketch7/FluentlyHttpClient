@@ -358,7 +358,7 @@ namespace FluentlyHttpClient
 			var httpRequest = new HttpRequestMessage(HttpMethod, uri);
 			if (_httpBody != null)
 				httpRequest.Content = _httpBody;
-
+			
 			var fluentRequest = new FluentHttpRequest(httpRequest);
 			return fluentRequest;
 		}
@@ -388,6 +388,9 @@ namespace FluentlyHttpClient
 		private static string BuildUri(string uri, object queryParams)
 		{
 			var queryString = BuildQueryString(queryParams);
+			if (string.IsNullOrEmpty(queryString))
+				return uri;
+
 			if (uri.Contains("?"))
 				uri += $"&{queryString}";
 			else

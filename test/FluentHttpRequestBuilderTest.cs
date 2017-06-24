@@ -7,13 +7,14 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void WithUri_ShouldInterpolate()
 		{
-			var builder = new FluentHttpRequestBuilder(null);
-			builder.WithUri("/org/{org}", new
+			var request = new FluentHttpRequestBuilder(null)
+				.AsGet()
+				.WithUri("/org/{org}", new
 			{
 				org = "sketch7"
-			});
+			}).Build();
 
-			Assert.Equal("/org/sketch7", builder.Uri);
+			Assert.Equal("/org/sketch7", request.Url.ToString());
 		}
 
 		[Fact]
