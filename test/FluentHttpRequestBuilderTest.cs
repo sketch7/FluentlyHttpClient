@@ -1,13 +1,21 @@
-﻿using Xunit;
+﻿using FluentlyHttpClient;
+using Xunit;
+using static Test.FluentHttpRequestBuilderTestUtil;
 
-namespace FluentlyHttpClient.Test
+namespace Test
 {
-	public class FluentHttpRequestBuilderTest
+	public static class FluentHttpRequestBuilderTestUtil
+	{
+		public static FluentHttpRequestBuilder NewBuilder()
+			=> new FluentHttpRequestBuilder(null);
+	}
+
+	public class RequestBuilder_WithUri
 	{
 		[Fact]
-		public void WithUri_ShouldInterpolate()
+		public void ShouldInterpolate()
 		{
-			var request = new FluentHttpRequestBuilder(null)
+			var request = NewBuilder()
 				.AsGet()
 				.WithUri("/org/{org}", new
 				{
@@ -16,11 +24,14 @@ namespace FluentlyHttpClient.Test
 
 			Assert.Equal("/org/sketch7", request.Url.ToString());
 		}
+	}
 
+	public class RequestBuilder_WithQueryParams
+	{
 		[Fact]
-		public void WithQueryParams_AddQuery()
+		public void AddQuery()
 		{
-			var builder = new FluentHttpRequestBuilder(null);
+			var builder = NewBuilder();
 			var request = builder.WithUri("/org/sketch7")
 				.AsGet()
 				.WithQueryParams(new
@@ -33,9 +44,9 @@ namespace FluentlyHttpClient.Test
 		}
 
 		[Fact]
-		public void WithQueryParams_WithoutLowerKeys()
+		public void AddWithoutLowerKeys()
 		{
-			var builder = new FluentHttpRequestBuilder(null);
+			var builder = NewBuilder();
 			var request = builder.WithUri("/org/sketch7")
 				.AsGet()
 				.WithQueryParams(new
@@ -48,9 +59,9 @@ namespace FluentlyHttpClient.Test
 		}
 
 		[Fact]
-		public void WithQueryParams_AppendQuery()
+		public void AppendQuery()
 		{
-			var builder = new FluentHttpRequestBuilder(null);
+			var builder = NewBuilder();
 			var request = builder.WithUri("/org/sketch7?hero=rex")
 				.AsGet()
 				.WithQueryParams(new
@@ -63,28 +74,33 @@ namespace FluentlyHttpClient.Test
 		}
 
 		[Fact]
-		public void WithQueryParams_EmptyObject_RemainAsIs()
+		public void EmptyObject_RemainAsIs()
 		{
-			var builder = new FluentHttpRequestBuilder(null);
+			var builder = NewBuilder();
 			var request = builder.WithUri("/org/sketch7")
 				.AsGet()
-				.WithQueryParams(new { })
+				.WithQueryParams(new
+				{
+				})
 				.Build();
 
 			Assert.Equal("/org/sketch7", request.Url.ToString());
 		}
+	}
 
+	public class RequestBuilder_BuildValidation
+	{
 		[Fact]
-		public void BuildValidation_ThrowsErrorWhenMethodNotSpecified()
+		public void ThrowsErrorWhenMethodNotSpecified()
 		{
-			var builder = new FluentHttpRequestBuilder(null);
+			var builder = NewBuilder();
 			Assert.Throws<RequestValidationException>(() => builder.WithUri("/org").Build());
 		}
 
 		[Fact]
-		public void BuildValidation_ThrowsErrorWhenUriNotSpecified()
+		public void ThrowsErrorWhenUriNotSpecified()
 		{
-			var builder = new FluentHttpRequestBuilder(null);
+			var builder = NewBuilder();
 			Assert.Throws<RequestValidationException>(() => builder.AsGet().Build());
 		}
 	}
