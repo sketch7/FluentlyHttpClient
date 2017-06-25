@@ -7,7 +7,7 @@ namespace FluentlyHttpClient
 {
 	public interface IFluentHttpMiddlewareRunner
 	{
-		Task<IFluentHttpResponse> Run<T>(IList<Type> middleware, FluentHttpRequest request, FluentHttpRequestDelegate send);
+		Task<FluentHttpResponse> Run(IList<Type> middleware, FluentHttpRequest request, FluentHttpRequestDelegate send);
 	}
 
 	public class FluentHttpMiddlewareRunner : IFluentHttpMiddlewareRunner
@@ -19,12 +19,12 @@ namespace FluentlyHttpClient
 			_serviceProvider = serviceProvider;
 		}
 
-		public async Task<IFluentHttpResponse> Run<T>(IList<Type> middleware, FluentHttpRequest request, FluentHttpRequestDelegate send)
+		public async Task<FluentHttpResponse> Run(IList<Type> middleware, FluentHttpRequest request, FluentHttpRequestDelegate send)
 		{
 			if (middleware.Count == 0)
 				return await send(request);
 
-			IFluentHttpResponse httpResult = null;
+			FluentHttpResponse httpResult = null;
 			IFluentHttpMiddleware previousMiddleware = null;
 
 			for (int i = middleware.Count; i-- > 0;)

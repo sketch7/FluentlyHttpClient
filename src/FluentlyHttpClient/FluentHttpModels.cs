@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FluentlyHttpClient
 {
-	public delegate Task<IFluentHttpResponse> FluentHttpRequestDelegate(FluentHttpRequest request);
+	public delegate Task<FluentHttpResponse> FluentHttpRequestDelegate(FluentHttpRequest request);
 
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public class FluentHttpRequest
@@ -33,31 +33,26 @@ namespace FluentlyHttpClient
 
 		public override string ToString() => $"{DebuggerDisplay}";
 	}
-
 	
-	public interface IFluentHttpResponse
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
+	public class FluentHttpResponse<T> : FluentHttpResponse
 	{
-		HttpStatusCode StatusCode { get; }
-		bool IsSuccessStatusCode { get; }
-		void EnsureSuccessStatusCode();
-		string ReasonPhrase { get; }
-		HttpResponseHeaders Headers { get; }
-		IDictionary<object, object> Items { get; set; }
+		public T Data { get; set; }
+
+		public FluentHttpResponse(FluentHttpResponse response) : base(response.RawResponse)
+		{
+			Items = response.Items;
+		}
+
+		public override string ToString() => $"{DebuggerDisplay}";
 	}
 
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
-	public class FluentHttpResponse<T> : IFluentHttpResponse
+	public class FluentHttpResponse
 	{
-		private string DebuggerDisplay => $"[{(int)StatusCode}] '{ReasonPhrase}', Request: {{ [{RawResponse.RequestMessage.Method}] '{RawResponse.RequestMessage.RequestUri}' }}";
+		protected string DebuggerDisplay => $"[{(int)StatusCode}] '{ReasonPhrase}', Request: {{ [{RawResponse.RequestMessage.Method}] '{RawResponse.RequestMessage.RequestUri}' }}";
 
 		public HttpResponseMessage RawResponse { get; }
-
-		public FluentHttpResponse(HttpResponseMessage rawResponse)
-		{
-			RawResponse = rawResponse;
-		}
-
-		public T Data { get; set; }
 
 		public HttpStatusCode StatusCode => RawResponse.StatusCode;
 		public bool IsSuccessStatusCode => RawResponse.IsSuccessStatusCode;
@@ -71,6 +66,13 @@ namespace FluentlyHttpClient
 		public IDictionary<object, object> Items { get; set; } = new Dictionary<object, object>();
 
 		public override string ToString() => $"{DebuggerDisplay}";
+
+		public FluentHttpResponse(HttpResponseMessage rawResponse)
+		{
+			RawResponse = rawResponse;
+		}
+
+
 	}
 
 	

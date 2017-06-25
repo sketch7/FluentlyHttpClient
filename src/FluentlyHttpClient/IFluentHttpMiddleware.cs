@@ -4,6 +4,6 @@ namespace FluentlyHttpClient
 {
 	public interface IFluentHttpMiddleware
 	{
-		Task<IFluentHttpResponse> Invoke(FluentHttpRequest request);
+		Task<FluentHttpResponse> Invoke(FluentHttpRequest request);
 	}
 }

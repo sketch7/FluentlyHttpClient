@@ -3,6 +3,12 @@
 ## [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.1...0.3.0) (x)
 
 
+
+### BREAKING CHANGES
+- `IFluentHttpResponse` has been removed and added `FluentHttpResponse` instead. In addition, most of `FluentHttpResponse<T>` method has been changed with `FluentHttpResponse`.
+Most of the changes should only effect the internals, apart from middlewares.
+
+
 ## [0.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.0...0.2.1) (2017-06-25)
 
 ### Features

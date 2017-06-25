@@ -16,7 +16,7 @@ namespace FluentlyHttpClient
 			_logger = logger;
 		}
 
-		public async Task<IFluentHttpResponse> Invoke(FluentHttpRequest request)
+		public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
 		{
 			if (_logger.IsEnabled(LogLevel.Information))
 				_logger.LogInformation("Pre-request... {request}", request);
@@ -39,7 +39,7 @@ namespace FluentlyHttpClient
 			_logger = logger;
 		}
 
-		public async Task<IFluentHttpResponse> Invoke(FluentHttpRequest request)
+		public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
 		{
 			var watch = Stopwatch.StartNew();
 			var response = await _next(request);
@@ -61,12 +61,12 @@ namespace FluentlyHttpClient
 	{
 		private const string TimeTakenKey = "TIME_TAKEN";
 
-		public static void SetTimeTaken(this IFluentHttpResponse response, TimeSpan value)
+		public static void SetTimeTaken(this FluentHttpResponse response, TimeSpan value)
 		{
 			response.Items.Add(TimeTakenKey, value);
 		}
 
-		public static TimeSpan GetTimeTaken(this IFluentHttpResponse response)
+		public static TimeSpan GetTimeTaken(this FluentHttpResponse response)
 		{
 			return (TimeSpan)response.Items[TimeTakenKey];
 		}

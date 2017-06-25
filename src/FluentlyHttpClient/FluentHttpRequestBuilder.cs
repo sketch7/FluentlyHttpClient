@@ -166,10 +166,16 @@ namespace FluentlyHttpClient
 
 		public async Task<FluentHttpResponse<T>> ReturnAsResponse<T>()
 		{
-			var response = await _fluentHttpClient.Send<T>(this);
-			response.Data = await response.RawResponse.Content.ReadAsAsync<T>(_fluentHttpClient.Formatters);
-			return response;
+			var response = await ReturnAsResponse();
+			var genericResponse = new FluentHttpResponse<T>(response);
+
+			if (genericResponse.IsSuccessStatusCode)
+				genericResponse.Data = await genericResponse.RawResponse.Content.ReadAsAsync<T>(_fluentHttpClient.Formatters);
+			
+			return genericResponse;
 		}
+
+		public async Task<FluentHttpResponse> ReturnAsResponse() => await _fluentHttpClient.Send(this);
 
 		public FluentHttpRequest Build()
 		{
