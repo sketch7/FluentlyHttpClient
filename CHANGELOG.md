@@ -3,7 +3,7 @@
 ## [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.1...0.3.0) (x)
 
 ### Features
-- **request builder:** implement `WithSuccessStatus` to specify or not whether to throw or not when request is not successful..
+- **request builder:** implement `WithSuccessStatus` to specify or not whether to throw or not when request is not successful.
 
 
 ### BREAKING CHANGES
