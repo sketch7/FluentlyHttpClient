@@ -11,6 +11,10 @@ namespace Test
 			=> new ServiceCollection()
 			.AddFluentlyHttpClient();
 
+		/// <summary>
+		/// Create a new container and return FluentHttpClientFactory.
+		/// </summary>
+		/// <returns></returns>
 		public static FluentHttpClientFactory GetClientFactory()
 		{
 			var serviceProvider = CreateContainer().BuildServiceProvider();
@@ -57,8 +61,7 @@ namespace Test
 			var fluentHttpClientFactory = GetClientFactory();
 			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
 					.SetBaseUrl("http://abc.com")
-					.Register()
-				;
+					.Register();
 
 			Assert.Throws<ClientBuilderValidationException>(() => clientBuilder.Register());
 		}

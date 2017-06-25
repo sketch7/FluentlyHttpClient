@@ -4,7 +4,9 @@ using System.Collections.Generic;
 
 namespace FluentlyHttpClient
 {
-
+	/// <summary>
+	/// Class which contains registered <see cref="FluentHttpClient"/> and able to to get existing or creating new ones.
+	/// </summary>
 	public class FluentHttpClientFactory
 	{
 		private readonly IServiceProvider _serviceProvider;
@@ -15,17 +17,27 @@ namespace FluentlyHttpClient
 			_serviceProvider = serviceProvider;
 		}
 
+		/// <summary>
+		/// Creates a new <see cref="FluentHttpClientBuilder"/>.
+		/// </summary>
+		/// <param name="identifier"></param>
+		/// <returns></returns>
 		public FluentHttpClientBuilder CreateBuilder(string identifier)
 		{
-			var builder = new FluentHttpClientBuilder(this);
-			builder.SetIdentifier(identifier);
-			return builder;
+			var clientBuilder = ActivatorUtilities.CreateInstance<FluentHttpClientBuilder>(_serviceProvider, this)
+				.SetIdentifier(identifier);
+			return clientBuilder;
 		}
 
-		public FluentHttpClientFactory Add(FluentHttpClientBuilder clientBuilder)
+		/// <summary>
+		/// Add/register Http Client from builder.
+		/// </summary>
+		/// <param name="clientBuilder">Client builder to register.</param>
+		/// <returns>Returns </returns>
+		public FluentHttpClient Add(FluentHttpClientBuilder clientBuilder)
 		{
 			if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
-			
+
 			if (string.IsNullOrEmpty(clientBuilder.Identifier))
 				throw ClientBuilderValidationException.FieldNotSpecified(nameof(clientBuilder.Identifier));
 
@@ -41,7 +53,7 @@ namespace FluentlyHttpClient
 			var client = ActivatorUtilities.CreateInstance<FluentHttpClient>(_serviceProvider, clientOptions);
 
 			_clientsMap.Add(clientBuilder.Identifier, client);
-			return this;
+			return client;
 		}
 
 		public FluentHttpClientFactory Remove(string identity)
@@ -51,6 +63,10 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
+		/// <summary>
+		/// Merge default options with the specified <see cref="options"/>.
+		/// </summary>
+		/// <param name="options">Options to check and merge with.</param>
 		protected void SetDefaultOptions(FluentHttpClientOptions options)
 		{
 			if (options == null) throw new ArgumentNullException(nameof(options));
@@ -58,6 +74,12 @@ namespace FluentlyHttpClient
 				options.Timeout = TimeSpan.FromSeconds(15);
 		}
 
+		/// <summary>
+		/// Get <see cref="FluentHttpClient"/> registered by identifier.
+		/// </summary>
+		/// <param name="identifier">Identifier to get.</param>
+		/// <exception cref="KeyNotFoundException">Throws an exception when key is not found.</exception>
+		/// <returns></returns>
 		public FluentHttpClient Get(string identifier)
 		{
 			if (!_clientsMap.TryGetValue(identifier, out var client))
@@ -65,16 +87,23 @@ namespace FluentlyHttpClient
 			return client;
 		}
 
+		/// <summary>
+		/// Determine whether identifier is already registered.
+		/// </summary>
+		/// <param name="identifier">Identifier to check.</param>
+		/// <returns>Returns true when already exists.</returns>
 		public bool Has(string identifier) => _clientsMap.ContainsKey(identifier);
 	}
 
+	/// <summary>
+	/// Class to configure <see cref="FluentHttpClient"/> with a fluent API.
+	/// </summary>
 	public class FluentHttpClientBuilder
 	{
 		/// <summary>
 		/// Gets the identifier specified.
 		/// </summary>
 		public string Identifier { get; private set; }
-
 
 		private readonly FluentHttpClientFactory _fluentHttpClientFactory;
 		private string _baseUrl;
@@ -123,12 +152,27 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
-		public FluentHttpClientBuilder AddMiddleware<T>()
+		/// <summary>
+		/// Register middleware for the HttpClient, which each request pass-through.
+		/// </summary>
+		/// <typeparam name="T">Middleware type.</typeparam>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder AddMiddleware<T>() => AddMiddleware(typeof(T));
+
+		/// <summary>
+		/// Register middleware for the HttpClient, which each request pass-through.
+		/// </summary>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder AddMiddleware(Type middleware)
 		{
-			_middleware.Add(typeof(T));
+			_middleware.Add(middleware);
 			return this;
 		}
 
+		/// <summary>
+		/// Build up http client options.
+		/// </summary>
+		/// <returns>Returns http client options.</returns>
 		public FluentHttpClientOptions Build()
 		{
 			var options = new FluentHttpClientOptions
@@ -139,12 +183,11 @@ namespace FluentlyHttpClient
 				Headers = _headers,
 				Middleware = _middleware
 			};
-
 			return options;
 		}
 
 		/// <summary>
-		/// Register to <see cref="FluentHttpClientFactory"/>, same as <see cref="FluentHttpClientFactory.Add"/>
+		/// Register to <see cref="FluentHttpClientFactory"/>, same as <see cref="FluentHttpClientFactory.Add"/> for convience.
 		/// </summary>
 		public FluentHttpClientBuilder Register()
 		{
@@ -152,5 +195,4 @@ namespace FluentlyHttpClient
 			return this;
 		}
 	}
-
 }
