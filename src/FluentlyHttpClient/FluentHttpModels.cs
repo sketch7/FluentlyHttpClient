@@ -26,6 +26,11 @@ namespace FluentlyHttpClient
 		// todo: remove?
 		public object Data { get; set; }
 
+		/// <summary>
+		/// Determine whether has success status otherwise it will throw or not.
+		/// </summary>
+		public bool HasSuccessStatusOrThrow { get; set; }
+
 		public FluentHttpRequest(HttpRequestMessage rawRequest)
 		{
 			RawRequest = rawRequest;

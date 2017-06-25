@@ -60,6 +60,7 @@ namespace FluentlyHttpClient
 		{
 			return CreateRequest(url)
 				.AsGet()
+				.WithSuccessStatus()
 				.Return<T>();
 		}
 
@@ -67,6 +68,7 @@ namespace FluentlyHttpClient
 		{
 			return CreateRequest(url)
 				.AsPost()
+				.WithSuccessStatus()
 				.WithBody(data, contentType)
 				.Return<T>();
 		}
@@ -75,6 +77,7 @@ namespace FluentlyHttpClient
 		{
 			return CreateRequest(url)
 				.AsPatch()
+				.WithSuccessStatus()
 				.WithBody(data, contentType)
 				.Return<T>();
 		}
@@ -130,8 +133,8 @@ namespace FluentlyHttpClient
 				return ToFluentResponse(result);
 			});
 
-			// todo: implement this better
-			response.EnsureSuccessStatusCode();
+			if (fluentRequest.HasSuccessStatusOrThrow)
+				response.EnsureSuccessStatusCode();
 
 			return response;
 		}

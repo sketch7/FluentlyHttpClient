@@ -2,12 +2,14 @@
 
 ## [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.1...0.3.0) (x)
 
+### Features
+- **request builder:** implement `WithSuccessStatus` to specify or not whether to throw or not when request is not successful..
 
 
 ### BREAKING CHANGES
 - `IFluentHttpResponse` has been removed and added `FluentHttpResponse` instead. In addition, most of `FluentHttpResponse<T>` method has been changed with `FluentHttpResponse`.
 Most of the changes should only effect the internals, apart from middlewares.
-
+- Now requests created by `FluentHttpRequestBuilder` won't throw unless specified when request is not succeeded.
 
 ## [0.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.0...0.2.1) (2017-06-25)
 

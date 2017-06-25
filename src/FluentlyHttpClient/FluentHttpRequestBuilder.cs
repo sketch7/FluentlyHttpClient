@@ -32,6 +32,7 @@ namespace FluentlyHttpClient
 		private static readonly Regex InterpolationRegex = new Regex(@"\{(\w+)\}", RegexOptions.Compiled);
 		private object _queryParams;
 		private bool _lowerCaseQueryKeys;
+		private bool _hasSuccessStatusOrThrow;
 
 		public FluentHttpRequestBuilder(FluentHttpClient fluentHttpClient)
 		{
@@ -158,6 +159,15 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
+		/// <summary>Determine whether the status code should succeeds or else throw.</summary>
+		/// <param name="hasSuccessStatusOrThrow">When true status should succeed otherwise it will throw.</param>
+		/// <returns>Returns the request builder for chaining.</returns>
+		public FluentHttpRequestBuilder WithSuccessStatus(bool hasSuccessStatusOrThrow = true)
+		{
+			_hasSuccessStatusOrThrow = hasSuccessStatusOrThrow;
+			return this;
+		}
+
 		public async Task<T> Return<T>()
 		{
 			var response = await ReturnAsResponse<T>();
@@ -190,7 +200,10 @@ namespace FluentlyHttpClient
 				foreach (var header in Headers)
 					httpRequest.Headers.Add(header.Key, header.Value);
 
-			var fluentRequest = new FluentHttpRequest(httpRequest);
+			var fluentRequest = new FluentHttpRequest(httpRequest)
+			{
+				HasSuccessStatusOrThrow = _hasSuccessStatusOrThrow
+			};
 			return fluentRequest;
 		}
 
