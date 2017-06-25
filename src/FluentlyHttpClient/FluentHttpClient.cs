@@ -31,7 +31,7 @@ namespace FluentlyHttpClient
 		public string Identifier { get; set; }
 
 		/// <summary>
-		/// Gets or sets the headers with should be sent with each request.
+		/// Gets or sets the headers which should be sent with each request.
 		/// </summary>
 		public Dictionary<string, string> Headers { get; set; }
 
@@ -66,12 +66,12 @@ namespace FluentlyHttpClient
 		public HttpClient RawHttpClient { get; }
 
 		/// <summary>
-		/// Formatters to be used for content negotiation for "Accpet" and also sending formats. e.g. (JSON, XML)
+		/// Formatters to be used for content negotiation for "Accept" and also sending formats. e.g. (JSON, XML)
 		/// </summary>
 		public MediaTypeFormatterCollection Formatters { get; } = new MediaTypeFormatterCollection();
 
 		/// <summary>
-		/// Get the headers with should be sent with each request.
+		/// Gets the headers which should be sent with each request.
 		/// </summary>
 		public HttpRequestHeaders Headers { get; }
 

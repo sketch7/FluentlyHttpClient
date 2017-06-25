@@ -25,6 +25,9 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public string UriTemplate { get; private set; }
 
+		/// <summary>
+		/// Get the headers to be sent with this request.
+		/// </summary>
 		public Dictionary<string, string> Headers { get; private set; }
 
 		private readonly FluentHttpClient _fluentHttpClient;
