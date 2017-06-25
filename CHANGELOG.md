@@ -4,6 +4,9 @@
 
 ### Features
 
+- **http client factory:** validate options on `Add`, in order to have better errors.
+- **http client factory:** add default options to reduce the amount of config required (when not specified).
+
 - **request builder:** implement `WithSuccessStatus` to specify or not whether to throw or not when request is not successful.
 
 - **http client:** implement `Patch` and `Delete` methods.

@@ -25,10 +25,19 @@ namespace FluentlyHttpClient
 		public FluentHttpClientFactory Add(FluentHttpClientBuilder clientBuilder)
 		{
 			if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
+			
+			if (string.IsNullOrEmpty(clientBuilder.Identifier))
+				throw ClientBuilderValidationException.FieldNotSpecified(nameof(clientBuilder.Identifier));
+
 			if (Has(clientBuilder.Identifier))
-				throw new KeyNotFoundException($"FluentHttpClient '{clientBuilder.Identifier}' is already registered.");
+				throw new ClientBuilderValidationException($"FluentHttpClient '{clientBuilder.Identifier}' is already registered.");
 
 			var clientOptions = clientBuilder.Build();
+			SetDefaultOptions(clientOptions);
+
+			if (string.IsNullOrEmpty(clientOptions.BaseUrl))
+				throw ClientBuilderValidationException.FieldNotSpecified(nameof(clientOptions.BaseUrl));
+
 			var client = ActivatorUtilities.CreateInstance<FluentHttpClient>(_serviceProvider, clientOptions);
 
 			_clientsMap.Add(clientBuilder.Identifier, client);
@@ -40,6 +49,13 @@ namespace FluentlyHttpClient
 			_clientsMap.Remove(identity);
 			// todo: dispose?
 			return this;
+		}
+
+		protected void SetDefaultOptions(FluentHttpClientOptions options)
+		{
+			if (options == null) throw new ArgumentNullException(nameof(options));
+			if (options.Timeout == TimeSpan.Zero)
+				options.Timeout = TimeSpan.FromSeconds(15);
 		}
 
 		public FluentHttpClient Get(string identifier)
@@ -54,10 +70,15 @@ namespace FluentlyHttpClient
 
 	public class FluentHttpClientBuilder
 	{
+		/// <summary>
+		/// Gets the identifier specified.
+		/// </summary>
+		public string Identifier { get; private set; }
+
+
 		private readonly FluentHttpClientFactory _fluentHttpClientFactory;
 		private string _baseUrl;
 		private TimeSpan _timeout;
-		public string Identifier { get; private set; }
 		private readonly Dictionary<string, string> _headers = new Dictionary<string, string>();
 		private readonly List<Type> _middleware = new List<Type>();
 
@@ -72,11 +93,8 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
-		public FluentHttpClientBuilder SetTimeout(int timeout)
-		{
-			_timeout = TimeSpan.FromSeconds(timeout);
-			return this;
-		}
+		public FluentHttpClientBuilder SetTimeout(int timeout) => SetTimeout(TimeSpan.FromSeconds(timeout));
+
 		public FluentHttpClientBuilder SetTimeout(TimeSpan timeout)
 		{
 			_timeout = timeout;
