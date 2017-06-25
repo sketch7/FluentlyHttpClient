@@ -18,9 +18,13 @@ namespace FluentlyHttpClient
 
 		public async Task<IFluentHttpResponse> Invoke(FluentHttpRequest request)
 		{
-			_logger.LogInformation("Pre-request... [{method}] {url}", request.Method, request.Url);
+			if (_logger.IsEnabled(LogLevel.Information))
+				_logger.LogInformation("Pre-request... {request}", request);
+
 			var response = await _next(request);
-			_logger.LogInformation("Post-request... {status}", response.StatusCode);
+
+			if (_logger.IsEnabled(LogLevel.Information))
+				_logger.LogInformation("Post-request... {response}", response);
 			return response;
 		}
 	}
@@ -40,7 +44,14 @@ namespace FluentlyHttpClient
 			var watch = Stopwatch.StartNew();
 			var response = await _next(request);
 			var elapsed = watch.Elapsed;
-			_logger.LogInformation("{timeTaken}", elapsed);
+
+			// todo: make configurable
+			const int thresholdMillis = 250;
+			if (_logger.IsEnabled(LogLevel.Warning) && elapsed.TotalMilliseconds >= thresholdMillis)
+				_logger.LogWarning("Executed request {request} in {timeTakenMillis}ms", request, elapsed.TotalMilliseconds);
+			else if (_logger.IsEnabled(LogLevel.Information))
+				_logger.LogInformation("Executed request {request} in {timeTakenMillis}ms", request, elapsed.TotalMilliseconds);
+
 			response.SetTimeTaken(elapsed);
 			return response;
 		}
