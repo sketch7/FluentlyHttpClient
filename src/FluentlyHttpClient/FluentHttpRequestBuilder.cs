@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace FluentlyHttpClient
 {
+	/// <summary>
+	/// Class to build <see cref="FluentHttpRequest"/> with a fluent API.
+	/// </summary>
 	public class FluentHttpRequestBuilder
 	{
 		/// <summary>
@@ -171,12 +174,22 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
+		/// <summary>
+		/// Send request, read content with the type specified (when success) and return data directly.
+		/// </summary>
+		/// <typeparam name="T">Type to return.</typeparam>
+		/// <returns></returns>
 		public async Task<T> Return<T>()
 		{
 			var response = await ReturnAsResponse<T>();
 			return response.Data;
 		}
 
+		/// <summary>
+		/// Send request and returns Http Response and also read content with the type specified (when success).
+		/// </summary>
+		/// <typeparam name="T">Type to return.</typeparam>
+		/// <returns>Return response with data typed.</returns>
 		public async Task<FluentHttpResponse<T>> ReturnAsResponse<T>()
 		{
 			var response = await ReturnAsResponse();
@@ -188,8 +201,16 @@ namespace FluentlyHttpClient
 			return genericResponse;
 		}
 
+		/// <summary>
+		/// Send request and returns Http Response.
+		/// </summary>
+		/// <returns>Returns an http response.</returns>
 		public async Task<FluentHttpResponse> ReturnAsResponse() => await _fluentHttpClient.Send(this);
 
+		/// <summary>
+		/// Build http request.
+		/// </summary>
+		/// <returns>Return http request instance.</returns>
 		public FluentHttpRequest Build()
 		{
 			ValidateRequest();
@@ -210,6 +231,10 @@ namespace FluentlyHttpClient
 			return fluentRequest;
 		}
 
+		/// <summary>
+		/// Ensure validate request or throw.
+		/// </summary>
+		/// <exception cref="RequestValidationException">When request is not valid.</exception>
 		protected void ValidateRequest()
 		{
 			if (HttpMethod == null)
