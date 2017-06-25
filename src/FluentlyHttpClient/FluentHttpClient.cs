@@ -44,8 +44,7 @@ namespace FluentlyHttpClient
 		private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
 		private readonly IList<Type> _middleware;
 
-		public FluentHttpClient(FluentHttpClientOptions options, IServiceProvider serviceProvider,
-			IFluentHttpMiddlewareRunner middlewareRunner)
+		public FluentHttpClient(FluentHttpClientOptions options, IServiceProvider serviceProvider, IFluentHttpMiddlewareRunner middlewareRunner)
 		{
 			_serviceProvider = serviceProvider;
 			_middlewareRunner = middlewareRunner;
@@ -56,31 +55,72 @@ namespace FluentlyHttpClient
 			BaseUrl = options.BaseUrl;
 		}
 
-		public Task<T> Get<T>(string url)
-		{
-			return CreateRequest(url)
-				.AsGet()
-				.WithSuccessStatus()
-				.Return<T>();
-		}
+		/// <summary>
+		/// Create and send a HTTP GET request and return specified <see cref="T"/> as result.
+		/// </summary>
+		/// <typeparam name="T">Type to deserialize content to.</typeparam>
+		/// <param name="uri">Request resource uri to send.</param>
+		/// <returns>Returns task with the result data.</returns>
+		public Task<T> Get<T>(string uri) => CreateRequest(uri)
+			.AsGet()
+			.WithSuccessStatus()
+			.Return<T>();
 
-		public Task<T> Post<T>(string url, object data, MediaTypeHeaderValue contentType = null)
-		{
-			return CreateRequest(url)
-				.AsPost()
-				.WithSuccessStatus()
-				.WithBody(data, contentType)
-				.Return<T>();
-		}
+		/// <summary>
+		/// Create and send a HTTP POST request and return specified <see cref="T"/> as result.
+		/// </summary>
+		/// <typeparam name="T">Type to deserialize content to.</typeparam>
+		/// <param name="uri">Request resource uri to send.</param>
+		/// <param name="data">Payload data content to send.</param>
+		/// <param name="contentType">(Optional) content type to use when sending data.</param>
+		/// <returns>Returns task with the result data.</returns>
+		public Task<T> Post<T>(string uri, object data, MediaTypeHeaderValue contentType = null) => CreateRequest(uri)
+			.AsPost()
+			.WithSuccessStatus()
+			.WithBody(data, contentType)
+			.Return<T>();
 
-		public Task<T> Patch<T>(string url, object data, MediaTypeHeaderValue contentType = null)
-		{
-			return CreateRequest(url)
-				.AsPatch()
-				.WithSuccessStatus()
-				.WithBody(data, contentType)
-				.Return<T>();
-		}
+		/// <summary>
+		/// Create and send a HTTP PUT request and return specified <see cref="T"/> as result.
+		/// </summary>
+		/// <typeparam name="T">Type to deserialize content to.</typeparam>
+		/// <param name="uri">Request resource uri to send.</param>
+		/// <param name="data">Payload data content to send.</param>
+		/// <param name="contentType">(Optional) content type to use when sending data.</param>
+		/// <returns>Returns task with the result data.</returns>
+		public Task<T> Put<T>(string uri, object data, MediaTypeHeaderValue contentType = null) => CreateRequest(uri)
+			.AsPut()
+			.WithSuccessStatus()
+			.WithBody(data, contentType)
+			.Return<T>();
+
+		/// <summary>
+		/// Create and send a HTTP PATCH request and return specified <see cref="T"/> as result.
+		/// </summary>
+		/// <typeparam name="T">Type to deserialize content to.</typeparam>
+		/// <param name="uri">Request resource uri to send.</param>
+		/// <param name="data">Payload data content to send.</param>
+		/// <param name="contentType">(Optional) content type to use when sending data.</param>
+		/// <returns>Returns task with the result data.</returns>
+		public Task<T> Patch<T>(string uri, object data, MediaTypeHeaderValue contentType = null) => CreateRequest(uri)
+			.AsPatch()
+			.WithSuccessStatus()
+			.WithBody(data, contentType)
+			.Return<T>();
+
+		/// <summary>
+		/// Create and send a HTTP DELETE request and return specified <see cref="T"/> as result.
+		/// </summary>
+		/// <typeparam name="T">Type to deserialize content to.</typeparam>
+		/// <param name="uri">Request resource uri to send.</param>
+		/// <param name="data">Payload data content to send.</param>
+		/// <param name="contentType">(Optional) content type to use when sending data.</param>
+		/// <returns>Returns task with the result data.</returns>
+		public Task<T> Delete<T>(string uri, object data, MediaTypeHeaderValue contentType = null) => CreateRequest(uri)
+			.AsDelete()
+			.WithSuccessStatus()
+			.WithBody(data, contentType)
+			.Return<T>();
 
 		/// <summary>Get the formatter for an HTTP content type.</summary>
 		/// <param name="contentType">The HTTP content type (or <c>null</c> to automatically select one).</param>
