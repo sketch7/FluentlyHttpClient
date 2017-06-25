@@ -34,10 +34,6 @@ namespace Test
 			Assert.Equal("abc", httpClient.Identifier);
 		}
 
-	}
-
-	public class ClientBuilder_BuildValidation
-	{
 		[Fact]
 		public void ThrowsErrorWhenIdentifierNotSpecified()
 		{
@@ -67,6 +63,5 @@ namespace Test
 			Assert.Throws<ClientBuilderValidationException>(() => clientBuilder.Register());
 		}
 	}
-
 
 }
