@@ -110,8 +110,7 @@ namespace FluentlyHttpClient
 			{
 				BaseAddress = new Uri(options.BaseUrl)
 			};
-			httpClient.DefaultRequestHeaders.Add("Accept",
-				Formatters.SelectMany(x => x.SupportedMediaTypes).Select(x => x.MediaType));
+			httpClient.DefaultRequestHeaders.Add("Accept", Formatters.SelectMany(x => x.SupportedMediaTypes).Select(x => x.MediaType));
 			httpClient.Timeout = options.Timeout;
 
 			foreach (var headerEntry in options.Headers)
