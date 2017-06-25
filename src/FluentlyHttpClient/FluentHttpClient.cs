@@ -10,15 +10,40 @@ using System.Threading.Tasks;
 
 namespace FluentlyHttpClient
 {
+	/// <summary>
+	/// Options for <see cref="FluentHttpClient"/>.
+	/// </summary>
 	public class FluentHttpClientOptions
 	{
+		/// <summary>
+		/// Gets or sets the base uri address for each request.
+		/// </summary>
 		public string BaseUrl { get; set; }
+
+		/// <summary>
+		/// Gets or sets the timespan to wait before the request times out.
+		/// </summary>
 		public TimeSpan Timeout { get; set; }
+
+		/// <summary>
+		/// Gets or sets the identifier (key) for the http client.
+		/// </summary>
 		public string Identifier { get; set; }
+
+		/// <summary>
+		/// Gets or sets the headers with should be sent with each request.
+		/// </summary>
 		public Dictionary<string, string> Headers { get; set; }
+
+		/// <summary>
+		/// Gets or sets the middleware to be used for each request.
+		/// </summary>
 		public List<Type> Middleware { get; set; }
 	}
 
+	/// <summary>
+	/// Provides a class for sending HTTP requests with a high level fluent API.
+	/// </summary>
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public class FluentHttpClient
 	{
@@ -29,6 +54,9 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public string Identifier { get; }
 
+		/// <summary>
+		/// Gets the base uri address for each request.
+		/// </summary>
 		public string BaseUrl { get; }
 
 		/// <summary>
@@ -37,7 +65,14 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public HttpClient RawHttpClient { get; }
 
+		/// <summary>
+		/// Formatters to be used for content negotiation for "Accpet" and also sending formats. e.g. (JSON, XML)
+		/// </summary>
 		public MediaTypeFormatterCollection Formatters { get; } = new MediaTypeFormatterCollection();
+
+		/// <summary>
+		/// Get the headers with should be sent with each request.
+		/// </summary>
 		public HttpRequestHeaders Headers { get; }
 
 		private readonly IServiceProvider _serviceProvider;
@@ -139,12 +174,45 @@ namespace FluentlyHttpClient
 			return formatter;
 		}
 
+		/// <summary>
+		/// Create a new request builder which can be configured fluently.
+		/// </summary>
+		/// <param name="uriTemplate">Uri resource template e.g. <c>"/org/{id}"</c></param>
+		/// <param name="interpolationData">Data to interpolate within the Uri template place holders e.g. <c>{id}</c>. Can be either dictionary or object.</param>
+		/// <returns>Returns a new request builder.</returns>
 		public FluentHttpRequestBuilder CreateRequest(string uriTemplate = null, object interpolationData = null)
 		{
 			var builder = ActivatorUtilities.CreateInstance<FluentHttpRequestBuilder>(_serviceProvider, this);
 			return uriTemplate != null
 				? builder.WithUri(uriTemplate, interpolationData)
 				: builder;
+		}
+
+		/// <summary>
+		/// Build and send HTTP request.
+		/// </summary>
+		/// <param name="builder">Request builder to build request from.</param>
+		/// <returns>Returns http response.</returns>
+		public Task<FluentHttpResponse> Send(FluentHttpRequestBuilder builder) => Send(builder.Build());
+
+		/// <summary>
+		/// Send HTTP request.
+		/// </summary>
+		/// <param name="fluentRequest">HTTP fluent request to send.</param>
+		/// <returns>Returns http response.</returns>
+		public async Task<FluentHttpResponse> Send(FluentHttpRequest fluentRequest)
+		{
+			if (fluentRequest == null) throw new ArgumentNullException(nameof(fluentRequest));
+			var response = await _middlewareRunner.Run(_middleware, fluentRequest, async request =>
+			{
+				var result = await RawHttpClient.SendAsync(request.RawRequest);
+				return ToFluentResponse(result);
+			});
+
+			if (fluentRequest.HasSuccessStatusOrThrow)
+				response.EnsureSuccessStatusCode();
+
+			return response;
 		}
 
 		private HttpClient Configure(FluentHttpClientOptions options)
@@ -160,23 +228,6 @@ namespace FluentlyHttpClient
 				httpClient.DefaultRequestHeaders.Add(headerEntry.Key, headerEntry.Value);
 
 			return httpClient;
-		}
-
-		public Task<FluentHttpResponse> Send(FluentHttpRequestBuilder builder) => Send(builder.Build());
-
-		public async Task<FluentHttpResponse> Send(FluentHttpRequest fluentRequest)
-		{
-			if (fluentRequest == null) throw new ArgumentNullException(nameof(fluentRequest));
-			var response = await _middlewareRunner.Run(_middleware, fluentRequest, async request =>
-			{
-				var result = await RawHttpClient.SendAsync(request.RawRequest);
-				return ToFluentResponse(result);
-			});
-
-			if (fluentRequest.HasSuccessStatusOrThrow)
-				response.EnsureSuccessStatusCode();
-
-			return response;
 		}
 
 		private static FluentHttpResponse ToFluentResponse(HttpResponseMessage response) =>
