@@ -123,7 +123,7 @@ namespace FluentlyHttpClient
 
 		public async Task<FluentHttpResponse<T>> Send<T>(FluentHttpRequest fluentRequest)
 		{
-			if (fluentRequest == null) throw new ArgumentNullException("fluentRequest");
+			if (fluentRequest == null) throw new ArgumentNullException(nameof(fluentRequest));
 			var response = await _middlewareRunner.Run<T>(_middleware, fluentRequest, async request =>
 			{
 				var result = await RawHttpClient.SendAsync(request.RawRequest);
