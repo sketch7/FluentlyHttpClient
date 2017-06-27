@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FluentlyHttpClient
@@ -39,6 +40,7 @@ namespace FluentlyHttpClient
 		private object _queryParams;
 		private bool _lowerCaseQueryKeys;
 		private bool _hasSuccessStatusOrThrow;
+		private CancellationToken _cancellationToken;
 
 		public FluentHttpRequestBuilder(FluentHttpClient fluentHttpClient)
 		{
@@ -174,6 +176,14 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
+		/// <summary>.</summary>
+		/// <returns>Returns the request builder for chaining.</returns>
+		public FluentHttpRequestBuilder WithCancellationToken(CancellationToken cancellationToken)
+		{
+			_cancellationToken = cancellationToken;
+			return this;
+		}
+		
 		/// <summary>
 		/// Send request, read content with the type specified (when success) and return data directly.
 		/// </summary>
@@ -196,7 +206,7 @@ namespace FluentlyHttpClient
 			var genericResponse = new FluentHttpResponse<T>(response);
 
 			if (genericResponse.IsSuccessStatusCode)
-				genericResponse.Data = await genericResponse.RawResponse.Content.ReadAsAsync<T>(_fluentHttpClient.Formatters);
+				genericResponse.Data = await genericResponse.RawResponse.Content.ReadAsAsync<T>(_fluentHttpClient.Formatters, _cancellationToken);
 			
 			return genericResponse;
 		}
@@ -226,7 +236,8 @@ namespace FluentlyHttpClient
 
 			var fluentRequest = new FluentHttpRequest(httpRequest)
 			{
-				HasSuccessStatusOrThrow = _hasSuccessStatusOrThrow
+				HasSuccessStatusOrThrow = _hasSuccessStatusOrThrow,
+				CancellationToken = _cancellationToken
 			};
 			return fluentRequest;
 		}

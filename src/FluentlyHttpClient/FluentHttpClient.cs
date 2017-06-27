@@ -61,7 +61,7 @@ namespace FluentlyHttpClient
 			BaseUrl = options.BaseUrl;
 			_requestBuilderDefaults = options.RequestBuilderDefaults;
 		}
-		
+
 		/// <summary>Get the formatter for an HTTP content type.</summary>
 		/// <param name="contentType">The HTTP content type (or <c>null</c> to automatically select one).</param>
 		/// <exception cref="System.InvalidOperationException">No MediaTypeFormatters are available on the API client for this content type.</exception>
@@ -111,7 +111,8 @@ namespace FluentlyHttpClient
 			if (fluentRequest == null) throw new ArgumentNullException(nameof(fluentRequest));
 			var response = await _middlewareRunner.Run(_middleware, fluentRequest, async request =>
 			{
-				var result = await RawHttpClient.SendAsync(request.RawRequest);
+				//request.CancellationToken.
+				var result = await RawHttpClient.SendAsync(request.RawRequest, request.CancellationToken);
 				return ToFluentResponse(result);
 			});
 
@@ -123,8 +124,8 @@ namespace FluentlyHttpClient
 
 		private HttpClient Configure(FluentHttpClientOptions options)
 		{
-			var httpClient = options.HttpMessageHandler == null 
-				? new HttpClient() 
+			var httpClient = options.HttpMessageHandler == null
+				? new HttpClient()
 				: new HttpClient(options.HttpMessageHandler);
 			httpClient.BaseAddress = new Uri(options.BaseUrl);
 			httpClient.DefaultRequestHeaders.Add("Accept", Formatters.SelectMany(x => x.SupportedMediaTypes).Select(x => x.MediaType));

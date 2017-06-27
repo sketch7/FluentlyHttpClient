@@ -42,6 +42,7 @@ namespace FluentlyHttpClient.Middleware
 
 			for (int i = middleware.Count; i-- > 0;)
 			{
+				request.CancellationToken.ThrowIfCancellationRequested();
 				var type = middleware[i];
 
 				var isLast = middleware.Count - 1 == i;
