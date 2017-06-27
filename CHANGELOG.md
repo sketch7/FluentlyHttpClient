@@ -7,6 +7,7 @@
 - **http client factory:** validate options on `Add`, in order to have better errors.
 - **http client factory:** add default options to reduce the amount of config required (when not specified).
 - **http client factory:** `Add` now returns newly created `FluentHttpClient`.
+- **http client factory:** implement `WithRequestBuilderDefaults` additional hook in order customize `FluentHttpRequestBuilder` on creation.
 
 - **http client builder:** add new method `AddMiddleware(Type)`.
 - **http client builder:** align naming with request builder.

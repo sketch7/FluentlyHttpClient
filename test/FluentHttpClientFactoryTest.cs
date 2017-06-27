@@ -1,4 +1,5 @@
-﻿using FluentlyHttpClient;
+﻿using System.Net.Http;
+using FluentlyHttpClient;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using static Test.ClientFactoryTestUtil;
@@ -20,6 +21,26 @@ namespace Test
 			var serviceProvider = CreateContainer().BuildServiceProvider();
 			var fluentHttpClientFactory = serviceProvider.GetService<FluentHttpClientFactory>();
 			return fluentHttpClientFactory;
+		}
+	}
+
+	public class ClientFactory_WithRequestBuilderDefaults
+	{
+		[Fact]
+		public void WithCustomRequestDefaults()
+		{
+			var fluentHttpClientFactory = GetClientFactory();
+			fluentHttpClientFactory.CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.WithRequestBuilderDefaults(builder => builder.AsPut())
+				.Register();
+
+			var httpClient = fluentHttpClientFactory.Get("abc");
+			var request = httpClient.CreateRequest("/api")
+				.Build();
+
+			Assert.NotNull(request);
+			Assert.Equal(HttpMethod.Put, request.Method);
 		}
 	}
 

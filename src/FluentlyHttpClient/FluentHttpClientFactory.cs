@@ -115,6 +115,7 @@ namespace FluentlyHttpClient
 		private TimeSpan _timeout;
 		private readonly Dictionary<string, string> _headers = new Dictionary<string, string>();
 		private readonly List<Type> _middleware = new List<Type>();
+		private Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 
 		public FluentHttpClientBuilder(FluentHttpClientFactory fluentHttpClientFactory)
 		{
@@ -204,6 +205,18 @@ namespace FluentlyHttpClient
 			_middleware.Add(middleware);
 			return this;
 		}
+		
+		/// <summary>
+		/// Add a handler which allows to customize the <see cref="FluentHttpRequestBuilder"/> on <see cref="FluentHttpClient.CreateRequest"/>.
+		/// In order to specify defaults as desired, or so.
+		/// </summary>
+		/// <param name="requestBuilderDefaults">Action which pass <see cref="FluentHttpRequestBuilder"/> for customization.</param>
+		/// <returns></returns>
+		public FluentHttpClientBuilder WithRequestBuilderDefaults(Action<FluentHttpRequestBuilder> requestBuilderDefaults)
+		{
+			_requestBuilderDefaults = requestBuilderDefaults;
+			return this;
+		}
 
 		/// <summary>
 		/// Build up http client options.
@@ -217,7 +230,8 @@ namespace FluentlyHttpClient
 				BaseUrl = _baseUrl,
 				Identifier = Identifier,
 				Headers = _headers,
-				Middleware = _middleware
+				Middleware = _middleware,
+				RequestBuilderDefaults = _requestBuilderDefaults
 			};
 			return options;
 		}
@@ -230,5 +244,6 @@ namespace FluentlyHttpClient
 			_fluentHttpClientFactory.Add(this);
 			return this;
 		}
+
 	}
 }

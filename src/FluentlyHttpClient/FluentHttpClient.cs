@@ -39,6 +39,11 @@ namespace FluentlyHttpClient
 		/// Gets or sets the middleware to be used for each request.
 		/// </summary>
 		public List<Type> Middleware { get; set; }
+
+		/// <summary>
+		/// Handler to customize request on creation. In order to specify defaults as desired, or so.
+		/// </summary>
+		public Action<FluentHttpRequestBuilder> RequestBuilderDefaults { get; set; }
 	}
 
 	/// <summary>
@@ -75,6 +80,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public HttpRequestHeaders Headers { get; }
 
+		private readonly Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 		private readonly IServiceProvider _serviceProvider;
 		private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
 		private readonly IList<Type> _middleware;
@@ -88,7 +94,10 @@ namespace FluentlyHttpClient
 			_middleware = options.Middleware;
 			Identifier = options.Identifier;
 			BaseUrl = options.BaseUrl;
+			_requestBuilderDefaults = options.RequestBuilderDefaults;
 		}
+
+		
 
 		/// <summary>
 		/// Create and send a HTTP GET request and return specified <see cref="T"/> as result.
@@ -183,6 +192,7 @@ namespace FluentlyHttpClient
 		public FluentHttpRequestBuilder CreateRequest(string uriTemplate = null, object interpolationData = null)
 		{
 			var builder = ActivatorUtilities.CreateInstance<FluentHttpRequestBuilder>(_serviceProvider, this);
+			_requestBuilderDefaults?.Invoke(builder);
 			return uriTemplate != null
 				? builder.WithUri(uriTemplate, interpolationData)
 				: builder;
