@@ -7,7 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection
 	/// <summary>
 	/// Extension methods for setting up fluent http services in an <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />.
 	/// </summary>
-	public static class FluentHttpServiceCollectionExtensions
+	public static class FluentlyHttpClientServiceCollectionExtensions
 	{
 		/// <summary>
 		/// Adds fluently http client services to the specified <see cref="IServiceCollection"/>.
