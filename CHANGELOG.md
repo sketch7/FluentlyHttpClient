@@ -9,6 +9,7 @@
 - **http client factory:** `Add` now returns newly created `FluentHttpClient`.
 
 - **http client builder:** add new method `AddMiddleware(Type)`.
+- **http client builder:** align naming with request builder.
 
 - **request builder:** implement `WithSuccessStatus` to specify or not whether to throw or not when request is not successful.
 
@@ -20,6 +21,12 @@
 Most of the changes should only effect the internals, apart from middlewares.
 - Now requests created by `FluentHttpRequestBuilder` won't throw unless specified when request is not succeeded.
 - `FluentHttpClientFactory.Add` now returns the new `FluentHttpClient` instance instead of `FluentHttpClientFactory`.
+- FluentHttpClientBuilder naming alignment
+  - `SetBaseUrl` => `WithBaseUrl`
+  - `SetTimeout` => `WithTimeout`
+  - `AddHeader` => `WithHeader`
+  - `AddHeaders` => `WithHeaders`
+  - `AddHeaders` => `WithHeaders`
 
 ## [0.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.0...0.2.1) (2017-06-25)
 

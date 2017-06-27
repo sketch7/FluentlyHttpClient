@@ -25,7 +25,7 @@ namespace FluentlyHttpClient
 		public FluentHttpClientBuilder CreateBuilder(string identifier)
 		{
 			var clientBuilder = ActivatorUtilities.CreateInstance<FluentHttpClientBuilder>(_serviceProvider, this)
-				.SetIdentifier(identifier);
+				.Withdentifier(identifier);
 			return clientBuilder;
 		}
 
@@ -56,6 +56,11 @@ namespace FluentlyHttpClient
 			return client;
 		}
 
+		/// <summary>
+		/// Remove/unregister Http Client.
+		/// </summary>
+		/// <param name="identity">Identity to remove.</param>
+		/// <returns></returns>
 		public FluentHttpClientFactory Remove(string identity)
 		{
 			_clientsMap.Remove(identity);
@@ -116,21 +121,42 @@ namespace FluentlyHttpClient
 			_fluentHttpClientFactory = fluentHttpClientFactory;
 		}
 
-		public FluentHttpClientBuilder SetBaseUrl(string url)
+		/// <summary>
+		/// Set base url for each request.
+		/// </summary>
+		/// <param name="url">Base url address to set. e.g. "https://api.sketch7.com"</param>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder WithBaseUrl(string url)
 		{
 			_baseUrl = url;
 			return this;
 		}
 
-		public FluentHttpClientBuilder SetTimeout(int timeout) => SetTimeout(TimeSpan.FromSeconds(timeout));
+		/// <summary>
+		/// Sets the timespan to wait before the request times out (in seconds).
+		/// </summary>
+		/// <param name="timeout">Timeout to set (in seconds).</param>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder WithTimeout(int timeout) => WithTimeout(TimeSpan.FromSeconds(timeout));
 
-		public FluentHttpClientBuilder SetTimeout(TimeSpan timeout)
+		/// <summary>
+		/// Sets the timespan to wait before the request times out (in seconds).
+		/// </summary>
+		/// <param name="timeout">Timeout to set.</param>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder WithTimeout(TimeSpan timeout)
 		{
 			_timeout = timeout;
 			return this;
 		}
 
-		public FluentHttpClientBuilder AddHeader(string key, string value)
+		/// <summary>
+		/// Add the specified header and its value for each request.
+		/// </summary>
+		/// <param name="key">Header to add.</param>
+		/// <param name="value">Value for the header.</param>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder WithHeader(string key, string value)
 		{
 			if (_headers.ContainsKey(key))
 				_headers[key] = value;
@@ -139,28 +165,38 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
-		public FluentHttpClientBuilder AddHeaders(IDictionary<string, string> headers)
+		/// <summary>
+		/// Add the specified headers and their value for each request.
+		/// </summary>
+		/// <param name="headers">Headers to add.</param>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder WithHeaders(IDictionary<string, string> headers)
 		{
 			foreach (var item in headers)
-				AddHeader(item.Key, item.Value);
+				WithHeader(item.Key, item.Value);
 			return this;
 		}
 
-		public FluentHttpClientBuilder SetIdentifier(string identifier)
+		/// <summary>
+		/// Set the identifier (unique key) for the Http Client.
+		/// </summary>
+		/// <param name="identifier">Identifier to set.</param>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder Withdentifier(string identifier)
 		{
 			Identifier = identifier;
 			return this;
 		}
 
 		/// <summary>
-		/// Register middleware for the HttpClient, which each request pass-through.
+		/// Register middleware for the HttpClient, which each request pass-through. <c>NOTE order matters</c>.
 		/// </summary>
 		/// <typeparam name="T">Middleware type.</typeparam>
 		/// <returns>Returns client builder for chaining.</returns>
 		public FluentHttpClientBuilder AddMiddleware<T>() => AddMiddleware(typeof(T));
 
 		/// <summary>
-		/// Register middleware for the HttpClient, which each request pass-through.
+		/// Register middleware for the HttpClient, which each request pass-through. <c>NOTE order matters</c>.
 		/// </summary>
 		/// <returns>Returns client builder for chaining.</returns>
 		public FluentHttpClientBuilder AddMiddleware(Type middleware)

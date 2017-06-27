@@ -73,7 +73,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Add the specified header and its value for the request.
+		/// Add the specified headers and their value for the request.
 		/// </summary>
 		/// <param name="headers">Headers to add.</param>
 		/// <returns>Returns request builder for chaining.</returns>
