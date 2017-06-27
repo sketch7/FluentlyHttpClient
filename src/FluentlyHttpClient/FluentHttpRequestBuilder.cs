@@ -16,7 +16,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets the Http Method for the Http Request.
 		/// </summary>
-		public HttpMethod HttpMethod { get; private set; }
+		public HttpMethod HttpMethod { get; private set; } = HttpMethod.Get;
 
 		/// <summary>
 		/// Gets the Uri used for the HTTP request.

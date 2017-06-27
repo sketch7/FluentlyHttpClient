@@ -25,7 +25,6 @@ namespace Test
 
 			var httpClient = fluentHttpClientFactory.Get("sketch7");
 			var response = await httpClient.CreateRequest("/api/org/sketch7")
-				.AsGet()
 				.ReturnAsResponse<OrganizationModel>();
 
 			Assert.NotNull(response.Data);

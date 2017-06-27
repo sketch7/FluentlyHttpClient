@@ -14,6 +14,7 @@
 - **http client builder:** align naming with request builder.
 
 - **request builder:** implement `WithSuccessStatus` to specify or not whether to throw or not when request is not successful.
+- **request builder:** Http method now defaults as `Get`.
 
 - **http client:** implement `Patch` and `Delete` methods.
 
