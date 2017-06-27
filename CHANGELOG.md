@@ -9,6 +9,7 @@
 - **http client factory:** `Add` now returns newly created `FluentHttpClient`.
 - **http client factory:** implement `WithRequestBuilderDefaults` additional hook in order customize `FluentHttpRequestBuilder` on creation.
 - **http client factory:** implement `WithMessageHandler` in order to replace the HTTP stack for the HTTP client.
+- **http client factory:** implement `Add` with `FluentHttpClientOptions`.
 
 - **http client builder:** add new method `AddMiddleware(Type)`.
 - **http client builder:** align naming with request builder.

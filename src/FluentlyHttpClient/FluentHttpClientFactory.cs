@@ -20,7 +20,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Creates a new <see cref="FluentHttpClientBuilder"/>.
 		/// </summary>
-		/// <param name="identifier"></param>
+		/// <param name="identifier">identifier to set.</param>
 		/// <returns></returns>
 		public FluentHttpClientBuilder CreateBuilder(string identifier)
 		{
@@ -30,30 +30,40 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
+		/// Add/register Http Client from options.
+		/// </summary>
+		/// <param name="options">options to register.</param>
+		/// <returns>Returns http client created.</returns>
+		public FluentHttpClient Add(FluentHttpClientOptions options)
+		{
+			if (options == null) throw new ArgumentNullException(nameof(options));
+
+			if (string.IsNullOrEmpty(options.Identifier))
+				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.Identifier));
+
+			if (Has(options.Identifier))
+				throw new ClientBuilderValidationException($"FluentHttpClient '{options.Identifier}' is already registered.");
+
+			SetDefaultOptions(options);
+
+			if (string.IsNullOrEmpty(options.BaseUrl))
+				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.BaseUrl));
+
+			var client = ActivatorUtilities.CreateInstance<FluentHttpClient>(_serviceProvider, options);
+			_clientsMap.Add(options.Identifier, client);
+			return client;
+		}
+
+		/// <summary>
 		/// Add/register Http Client from builder.
 		/// </summary>
 		/// <param name="clientBuilder">Client builder to register.</param>
-		/// <returns>Returns </returns>
+		/// <returns>Returns http client created.</returns>
 		public FluentHttpClient Add(FluentHttpClientBuilder clientBuilder)
 		{
 			if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
-
-			if (string.IsNullOrEmpty(clientBuilder.Identifier))
-				throw ClientBuilderValidationException.FieldNotSpecified(nameof(clientBuilder.Identifier));
-
-			if (Has(clientBuilder.Identifier))
-				throw new ClientBuilderValidationException($"FluentHttpClient '{clientBuilder.Identifier}' is already registered.");
-
-			var clientOptions = clientBuilder.Build();
-			SetDefaultOptions(clientOptions);
-
-			if (string.IsNullOrEmpty(clientOptions.BaseUrl))
-				throw ClientBuilderValidationException.FieldNotSpecified(nameof(clientOptions.BaseUrl));
-
-			var client = ActivatorUtilities.CreateInstance<FluentHttpClient>(_serviceProvider, clientOptions);
-
-			_clientsMap.Add(clientBuilder.Identifier, client);
-			return client;
+			var options = clientBuilder.Build();
+			return Add(options);
 		}
 
 		/// <summary>
@@ -84,7 +94,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="identifier">Identifier to get.</param>
 		/// <exception cref="KeyNotFoundException">Throws an exception when key is not found.</exception>
-		/// <returns></returns>
+		/// <returns>Returns http client.</returns>
 		public FluentHttpClient Get(string identifier)
 		{
 			if (!_clientsMap.TryGetValue(identifier, out var client))
