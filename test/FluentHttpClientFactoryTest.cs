@@ -30,7 +30,7 @@ namespace Test
 		{
 			var fluentHttpClientFactory = GetClientFactory();
 			fluentHttpClientFactory.CreateBuilder("abc")
-				.SetBaseUrl("http://abc.com")
+				.WithBaseUrl("http://abc.com")
 				.Register();
 
 			var httpClient = fluentHttpClientFactory.Get("abc");
@@ -60,7 +60,7 @@ namespace Test
 		{
 			var fluentHttpClientFactory = GetClientFactory();
 			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
-					.SetBaseUrl("http://abc.com")
+					.WithBaseUrl("http://abc.com")
 					.Register();
 
 			Assert.Throws<ClientBuilderValidationException>(() => clientBuilder.Register());
