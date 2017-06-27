@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 
-namespace FluentlyHttpClient
+namespace FluentlyHttpClient.Middleware
 {
 	/// <summary>
 	/// Logging middleware for Http client.
@@ -28,21 +27,6 @@ namespace FluentlyHttpClient
 			if (_logger.IsEnabled(LogLevel.Information))
 				_logger.LogInformation("Post-request... {response}", response);
 			return response;
-		}
-	}
-
-	public static class FluentResponseExtensions
-	{
-		private const string TimeTakenKey = "TIME_TAKEN";
-
-		public static void SetTimeTaken(this FluentHttpResponse response, TimeSpan value)
-		{
-			response.Items.Add(TimeTakenKey, value);
-		}
-
-		public static TimeSpan GetTimeTaken(this FluentHttpResponse response)
-		{
-			return (TimeSpan)response.Items[TimeTakenKey];
 		}
 	}
 }

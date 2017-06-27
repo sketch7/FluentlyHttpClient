@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentlyHttpClient;
+using FluentlyHttpClient.Middleware;
 using FluentlyHttpClient.Test;
 using RichardSzalay.MockHttp;
 using Xunit;

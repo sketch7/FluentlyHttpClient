@@ -24,12 +24,17 @@
 Most of the changes should only effect the internals, apart from middlewares.
 - Now requests created by `FluentHttpRequestBuilder` won't throw unless specified when request is not succeeded.
 - `FluentHttpClientFactory.Add` now returns the new `FluentHttpClient` instance instead of `FluentHttpClientFactory`.
-- FluentHttpClientBuilder naming alignment
+- `FluentHttpClientBuilder` methods naming alignment
   - `SetBaseUrl` => `WithBaseUrl`
   - `SetTimeout` => `WithTimeout`
   - `AddHeader` => `WithHeader`
   - `AddHeaders` => `WithHeaders`
   - `AddHeaders` => `WithHeaders`
+- Middleware related has been moved to `FluentlyHttpClient.Middleware` namespace, this effects:
+  - `LoggerHttpMiddleware`
+  - `TimerHttpMiddleware`
+  - `IFluentHttpMiddleware`
+  - `IFluentHttpMiddlewareRunner`
 
 ## [0.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.0...0.2.1) (2017-06-25)
 

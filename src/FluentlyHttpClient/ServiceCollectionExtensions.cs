@@ -1,5 +1,6 @@
 ﻿using FluentlyHttpClient;
 using System;
+using FluentlyHttpClient.Middleware;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace FluentlyHttpClient
+namespace FluentlyHttpClient.Middleware
 {
 	public interface IFluentHttpMiddleware
 	{
