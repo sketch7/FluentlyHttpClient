@@ -1,11 +1,13 @@
-﻿using FluentlyHttpClient.Test;
+﻿using System;
+using FluentlyHttpClient;
+using FluentlyHttpClient.Test;
 using RichardSzalay.MockHttp;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
 namespace Test
 {
-	public class HttpClient_Get
+	public class TimerHttpMiddlewareTest
 	{
 		[Fact]
 		public async void ShouldReturnContent()
@@ -17,14 +19,18 @@ namespace Test
 			var fluentHttpClientFactory = GetNewClientFactory();
 			fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("http://sketch7.com")
+				.AddMiddleware<TimerHttpMiddleware>()
 				.WithMessageHandler(mockHttp)
 				.Register();
 
 			var httpClient = fluentHttpClientFactory.Get("sketch7");
-			var organization = await httpClient.Get<OrganizationModel>("/api/org/sketch7");
+			var response = await httpClient.CreateRequest("/api/org/sketch7")
+				.AsGet()
+				.ReturnAsResponse<OrganizationModel>();
 
-			Assert.NotNull(organization);
-			Assert.Equal("sketch7", organization.Name);
+			Assert.NotNull(response.Data);
+			Assert.Equal("sketch7", response.Data.Name);
+			Assert.NotEqual(TimeSpan.Zero, response.GetTimeTaken());
 		}
 	}
 }

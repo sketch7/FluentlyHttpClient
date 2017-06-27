@@ -6,7 +6,8 @@ namespace FluentlyHttpClient.Test
 	{
 		public static IServiceCollection CreateContainer()
 			=> new ServiceCollection()
-				.AddFluentlyHttpClient();
+				.AddFluentlyHttpClient()
+				.AddLogging();
 
 		/// <summary>
 		/// Create a new container and return FluentHttpClientFactory.
