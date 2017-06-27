@@ -9,11 +9,14 @@ namespace Microsoft.Extensions.DependencyInjection
 	/// </summary>
 	public static class FluentHttpServiceCollectionExtensions
 	{
-
+		/// <summary>
+		/// Adds fluently http client services to the specified <see cref="IServiceCollection"/>.
+		/// </summary>
+		/// <param name="services"></param>
+		/// <returns>Returns service collection for chaining.</returns>
 		public static IServiceCollection AddFluentlyHttpClient(this IServiceCollection services)
 		{
-			if (services == null)
-				throw new ArgumentNullException(nameof(services));
+			if (services == null) throw new ArgumentNullException(nameof(services));
 
 			services.AddSingleton<FluentHttpClientFactory>();
 			services.AddSingleton<IFluentHttpMiddlewareRunner, FluentHttpMiddlewareRunner>();

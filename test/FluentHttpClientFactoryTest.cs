@@ -1,35 +1,16 @@
-﻿using System.Net.Http;
-using FluentlyHttpClient;
-using Microsoft.Extensions.DependencyInjection;
+﻿using FluentlyHttpClient;
+using System.Net.Http;
 using Xunit;
-using static Test.ClientFactoryTestUtil;
+using static FluentlyHttpClient.Test.ServiceTestUtil;
 
 namespace Test
 {
-	public static class ClientFactoryTestUtil
-	{
-		public static IServiceCollection CreateContainer()
-			=> new ServiceCollection()
-			.AddFluentlyHttpClient();
-
-		/// <summary>
-		/// Create a new container and return FluentHttpClientFactory.
-		/// </summary>
-		/// <returns></returns>
-		public static FluentHttpClientFactory GetClientFactory()
-		{
-			var serviceProvider = CreateContainer().BuildServiceProvider();
-			var fluentHttpClientFactory = serviceProvider.GetService<FluentHttpClientFactory>();
-			return fluentHttpClientFactory;
-		}
-	}
-
 	public class ClientFactory_WithRequestBuilderDefaults
 	{
 		[Fact]
 		public void WithCustomRequestDefaults()
 		{
-			var fluentHttpClientFactory = GetClientFactory();
+			var fluentHttpClientFactory = GetNewClientFactory();
 			fluentHttpClientFactory.CreateBuilder("abc")
 				.WithBaseUrl("http://abc.com")
 				.WithRequestBuilderDefaults(builder => builder.AsPut())
@@ -49,7 +30,7 @@ namespace Test
 		[Fact]
 		public void ShouldRegisterSuccessfully()
 		{
-			var fluentHttpClientFactory = GetClientFactory();
+			var fluentHttpClientFactory = GetNewClientFactory();
 			fluentHttpClientFactory.CreateBuilder("abc")
 				.WithBaseUrl("http://abc.com")
 				.Register();
@@ -62,7 +43,7 @@ namespace Test
 		[Fact]
 		public void ThrowsErrorWhenIdentifierNotSpecified()
 		{
-			var fluentHttpClientFactory = GetClientFactory();
+			var fluentHttpClientFactory = GetNewClientFactory();
 			var clientBuilder = fluentHttpClientFactory.CreateBuilder(null);
 			Assert.Throws<ClientBuilderValidationException>(() => clientBuilder.Register());
 		}
@@ -70,7 +51,7 @@ namespace Test
 		[Fact]
 		public void ThrowsErrorWhenUriNotSpecified()
 		{
-			var fluentHttpClientFactory = GetClientFactory();
+			var fluentHttpClientFactory = GetNewClientFactory();
 			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc");
 
 			Assert.Throws<ClientBuilderValidationException>(() => clientBuilder.Register());
@@ -79,7 +60,7 @@ namespace Test
 		[Fact]
 		public void ThrowsErrorWhenAlreadyRegistered()
 		{
-			var fluentHttpClientFactory = GetClientFactory();
+			var fluentHttpClientFactory = GetNewClientFactory();
 			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
 					.WithBaseUrl("http://abc.com")
 					.Register();

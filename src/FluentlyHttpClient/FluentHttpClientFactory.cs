@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace FluentlyHttpClient
 {
@@ -116,6 +117,7 @@ namespace FluentlyHttpClient
 		private readonly Dictionary<string, string> _headers = new Dictionary<string, string>();
 		private readonly List<Type> _middleware = new List<Type>();
 		private Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
+		private HttpMessageHandler _httpMessageHandler;
 
 		public FluentHttpClientBuilder(FluentHttpClientFactory fluentHttpClientFactory)
 		{
@@ -190,6 +192,29 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
+		/// Add a handler which allows to customize the <see cref="FluentHttpRequestBuilder"/> on <see cref="FluentHttpClient.CreateRequest"/>.
+		/// In order to specify defaults as desired, or so.
+		/// </summary>
+		/// <param name="requestBuilderDefaults">Action which pass <see cref="FluentHttpRequestBuilder"/> for customization.</param>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder WithRequestBuilderDefaults(Action<FluentHttpRequestBuilder> requestBuilderDefaults)
+		{
+			_requestBuilderDefaults = requestBuilderDefaults;
+			return this;
+		}
+
+		/// <summary>
+		/// Set HTTP handler stack to use for sending requests.
+		/// </summary>
+		/// <param name="handler">HTTP handler to use.</param>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder WithMessageHandler(HttpMessageHandler handler)
+		{
+			_httpMessageHandler = handler;
+			return this;
+		}
+
+		/// <summary>
 		/// Register middleware for the HttpClient, which each request pass-through. <c>NOTE order matters</c>.
 		/// </summary>
 		/// <typeparam name="T">Middleware type.</typeparam>
@@ -203,18 +228,6 @@ namespace FluentlyHttpClient
 		public FluentHttpClientBuilder AddMiddleware(Type middleware)
 		{
 			_middleware.Add(middleware);
-			return this;
-		}
-		
-		/// <summary>
-		/// Add a handler which allows to customize the <see cref="FluentHttpRequestBuilder"/> on <see cref="FluentHttpClient.CreateRequest"/>.
-		/// In order to specify defaults as desired, or so.
-		/// </summary>
-		/// <param name="requestBuilderDefaults">Action which pass <see cref="FluentHttpRequestBuilder"/> for customization.</param>
-		/// <returns></returns>
-		public FluentHttpClientBuilder WithRequestBuilderDefaults(Action<FluentHttpRequestBuilder> requestBuilderDefaults)
-		{
-			_requestBuilderDefaults = requestBuilderDefaults;
 			return this;
 		}
 
@@ -231,7 +244,8 @@ namespace FluentlyHttpClient
 				Identifier = Identifier,
 				Headers = _headers,
 				Middleware = _middleware,
-				RequestBuilderDefaults = _requestBuilderDefaults
+				RequestBuilderDefaults = _requestBuilderDefaults,
+				HttpMessageHandler = _httpMessageHandler
 			};
 			return options;
 		}
@@ -244,6 +258,5 @@ namespace FluentlyHttpClient
 			_fluentHttpClientFactory.Add(this);
 			return this;
 		}
-
 	}
 }

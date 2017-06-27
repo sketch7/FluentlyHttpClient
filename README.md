@@ -45,6 +45,9 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
 ### Implementing a middleware
 *todo*
 
+### Test/Mocking
+*todo*
+
 
 ## Contributing
 

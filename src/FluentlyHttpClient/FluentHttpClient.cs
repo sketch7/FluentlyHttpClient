@@ -44,6 +44,11 @@ namespace FluentlyHttpClient
 		/// Handler to customize request on creation. In order to specify defaults as desired, or so.
 		/// </summary>
 		public Action<FluentHttpRequestBuilder> RequestBuilderDefaults { get; set; }
+
+		/// <summary>
+		/// HTTP handler stack to use for sending requests.
+		/// </summary>
+		public HttpMessageHandler HttpMessageHandler { get; set; }
 	}
 
 	/// <summary>
@@ -96,8 +101,6 @@ namespace FluentlyHttpClient
 			BaseUrl = options.BaseUrl;
 			_requestBuilderDefaults = options.RequestBuilderDefaults;
 		}
-
-		
 
 		/// <summary>
 		/// Create and send a HTTP GET request and return specified <see cref="T"/> as result.
@@ -227,10 +230,10 @@ namespace FluentlyHttpClient
 
 		private HttpClient Configure(FluentHttpClientOptions options)
 		{
-			var httpClient = new HttpClient
-			{
-				BaseAddress = new Uri(options.BaseUrl)
-			};
+			var httpClient = options.HttpMessageHandler == null 
+				? new HttpClient() 
+				: new HttpClient(options.HttpMessageHandler);
+			httpClient.BaseAddress = new Uri(options.BaseUrl);
 			httpClient.DefaultRequestHeaders.Add("Accept", Formatters.SelectMany(x => x.SupportedMediaTypes).Select(x => x.MediaType));
 			httpClient.Timeout = options.Timeout;
 
