@@ -5,9 +5,58 @@ using System.Collections.Generic;
 namespace FluentlyHttpClient
 {
 	/// <summary>
-	/// Class which contains registered <see cref="FluentHttpClient"/> and able to to get existing or creating new ones.
+	/// Http Client factory which contains registered HTTP clients and able to get existing or creating new ones.
 	/// </summary>
-	public class FluentHttpClientFactory
+	public interface IFluentHttpClientFactory
+	{
+		/// <summary>
+		/// Creates a new <see cref="FluentHttpClientBuilder"/>.
+		/// </summary>
+		/// <param name="identifier">identifier to set.</param>
+		/// <returns></returns>
+		FluentHttpClientBuilder CreateBuilder(string identifier);
+
+		/// <summary>
+		/// Get <see cref="FluentHttpClient"/> registered by identifier.
+		/// </summary>
+		/// <param name="identifier">Identifier to get.</param>
+		/// <exception cref="KeyNotFoundException">Throws an exception when key is not found.</exception>
+		/// <returns>Returns http client.</returns>
+		FluentHttpClient Get(string identifier);
+
+		/// <summary>
+		/// Add/register Http Client from options.
+		/// </summary>
+		/// <param name="options">options to register.</param>
+		/// <returns>Returns http client created.</returns>
+		FluentHttpClient Add(FluentHttpClientOptions options);
+
+		/// <summary>
+		/// Add/register Http Client from builder.
+		/// </summary>
+		/// <param name="clientBuilder">Client builder to register.</param>
+		/// <returns>Returns http client created.</returns>
+		FluentHttpClient Add(FluentHttpClientBuilder clientBuilder);
+
+		/// <summary>
+		/// Remove/unregister Http Client.
+		/// </summary>
+		/// <param name="identity">Identity to remove.</param>
+		/// <returns></returns>
+		IFluentHttpClientFactory Remove(string identity);
+
+		/// <summary>
+		/// Determine whether identifier is already registered.
+		/// </summary>
+		/// <param name="identifier">Identifier to check.</param>
+		/// <returns>Returns true when already exists.</returns>
+		bool Has(string identifier);
+	}
+
+	/// <summary>
+	/// Class which contains registered <see cref="FluentHttpClient"/> and able to get existing or creating new ones.
+	/// </summary>
+	public class FluentHttpClientFactory : IFluentHttpClientFactory
 	{
 		private readonly IServiceProvider _serviceProvider;
 		private readonly Dictionary<string, FluentHttpClient> _clientsMap = new Dictionary<string, FluentHttpClient>();
@@ -27,6 +76,19 @@ namespace FluentlyHttpClient
 			var clientBuilder = ActivatorUtilities.CreateInstance<FluentHttpClientBuilder>(_serviceProvider, this)
 				.Withdentifier(identifier);
 			return clientBuilder;
+		}
+
+		/// <summary>
+		/// Get <see cref="FluentHttpClient"/> registered by identifier.
+		/// </summary>
+		/// <param name="identifier">Identifier to get.</param>
+		/// <exception cref="KeyNotFoundException">Throws an exception when key is not found.</exception>
+		/// <returns>Returns http client.</returns>
+		public FluentHttpClient Get(string identifier)
+		{
+			if (!_clientsMap.TryGetValue(identifier, out var client))
+				throw new KeyNotFoundException($"FluentHttpClient '{identifier}' not registered.");
+			return client;
 		}
 
 		/// <summary>
@@ -71,12 +133,19 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="identity">Identity to remove.</param>
 		/// <returns></returns>
-		public FluentHttpClientFactory Remove(string identity)
+		public IFluentHttpClientFactory Remove(string identity)
 		{
 			_clientsMap.Remove(identity);
 			// todo: dispose?
 			return this;
 		}
+
+		/// <summary>
+		/// Determine whether identifier is already registered.
+		/// </summary>
+		/// <param name="identifier">Identifier to check.</param>
+		/// <returns>Returns true when already exists.</returns>
+		public bool Has(string identifier) => _clientsMap.ContainsKey(identifier);
 
 		/// <summary>
 		/// Merge default options with the specified <see cref="options"/>.
@@ -88,25 +157,5 @@ namespace FluentlyHttpClient
 			if (options.Timeout == TimeSpan.Zero)
 				options.Timeout = TimeSpan.FromSeconds(15);
 		}
-
-		/// <summary>
-		/// Get <see cref="FluentHttpClient"/> registered by identifier.
-		/// </summary>
-		/// <param name="identifier">Identifier to get.</param>
-		/// <exception cref="KeyNotFoundException">Throws an exception when key is not found.</exception>
-		/// <returns>Returns http client.</returns>
-		public FluentHttpClient Get(string identifier)
-		{
-			if (!_clientsMap.TryGetValue(identifier, out var client))
-				throw new KeyNotFoundException($"FluentHttpClient '{identifier}' not registered.");
-			return client;
-		}
-
-		/// <summary>
-		/// Determine whether identifier is already registered.
-		/// </summary>
-		/// <param name="identifier">Identifier to check.</param>
-		/// <returns>Returns true when already exists.</returns>
-		public bool Has(string identifier) => _clientsMap.ContainsKey(identifier);
 	}
 }

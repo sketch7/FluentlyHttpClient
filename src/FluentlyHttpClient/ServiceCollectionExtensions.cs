@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		{
 			if (services == null) throw new ArgumentNullException(nameof(services));
 
-			services.AddSingleton<FluentHttpClientFactory>();
+			services.AddSingleton<IFluentHttpClientFactory, FluentHttpClientFactory>();
 			services.AddSingleton<IFluentHttpMiddlewareRunner, FluentHttpMiddlewareRunner>();
 
 			return services;

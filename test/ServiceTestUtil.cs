@@ -10,13 +10,13 @@ namespace FluentlyHttpClient.Test
 				.AddLogging();
 
 		/// <summary>
-		/// Create a new container and return FluentHttpClientFactory.
+		/// Create a new container and return IFluentHttpClientFactory.
 		/// </summary>
 		/// <returns></returns>
-		public static FluentHttpClientFactory GetNewClientFactory()
+		public static IFluentHttpClientFactory GetNewClientFactory()
 		{
 			var serviceProvider = CreateContainer().BuildServiceProvider();
-			var fluentHttpClientFactory = serviceProvider.GetService<FluentHttpClientFactory>();
+			var fluentHttpClientFactory = serviceProvider.GetService<IFluentHttpClientFactory>();
 			return fluentHttpClientFactory;
 		}
 	}

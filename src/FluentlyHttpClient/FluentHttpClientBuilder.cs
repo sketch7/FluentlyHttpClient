@@ -14,7 +14,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public string Identifier { get; private set; }
 
-		private readonly FluentHttpClientFactory _fluentHttpClientFactory;
+		private readonly IFluentHttpClientFactory _fluentHttpClientFactory;
 		private string _baseUrl;
 		private TimeSpan _timeout;
 		private readonly Dictionary<string, string> _headers = new Dictionary<string, string>();
@@ -22,7 +22,7 @@ namespace FluentlyHttpClient
 		private Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 		private HttpMessageHandler _httpMessageHandler;
 
-		public FluentHttpClientBuilder(FluentHttpClientFactory fluentHttpClientFactory)
+		public FluentHttpClientBuilder(IFluentHttpClientFactory fluentHttpClientFactory)
 		{
 			_fluentHttpClientFactory = fluentHttpClientFactory;
 		}
@@ -154,7 +154,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Register to <see cref="FluentHttpClientFactory"/>, same as <see cref="FluentHttpClientFactory.Add"/> for convience.
+		/// Register to <see cref="IFluentHttpClientFactory"/>, same as <see cref="IFluentHttpClientFactory.Add(FluentHttpClientBuilder)"/> for convience.
 		/// </summary>
 		public FluentHttpClientBuilder Register()
 		{
