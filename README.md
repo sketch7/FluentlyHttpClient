@@ -26,7 +26,17 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
  - Highly extensible
 
 ## Installation
-*todo*
+
+### nuget
+```
+PM> Install-Package FluentlyHttpClient
+```
+
+### csproj
+
+```xml
+<PackageReference Include="FluentlyHttpClient" Version="*" />
+```
 
 ## Usage
 
