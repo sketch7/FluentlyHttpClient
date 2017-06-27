@@ -18,7 +18,6 @@ namespace Test
 		public void ShouldInterpolate()
 		{
 			var request = NewBuilder()
-				.AsGet()
 				.WithUri("/org/{org}", new
 				{
 					org = "sketch7"
@@ -35,7 +34,6 @@ namespace Test
 		{
 			var builder = NewBuilder();
 			var request = builder.WithUri("/org/sketch7")
-				.AsGet()
 				.WithQueryParams(new
 				{
 					Page = 1,
@@ -50,7 +48,6 @@ namespace Test
 		{
 			var builder = NewBuilder();
 			var request = builder.WithUri("/org/sketch7")
-				.AsGet()
 				.WithQueryParams(new
 				{
 					Page = 1,
@@ -65,7 +62,6 @@ namespace Test
 		{
 			var builder = NewBuilder();
 			var request = builder.WithUri("/org/sketch7?hero=rex")
-				.AsGet()
 				.WithQueryParams(new
 				{
 					Page = 1,
@@ -80,10 +76,7 @@ namespace Test
 		{
 			var builder = NewBuilder();
 			var request = builder.WithUri("/org/sketch7")
-				.AsGet()
-				.WithQueryParams(new
-				{
-				})
+				.WithQueryParams(new { })
 				.Build();
 
 			Assert.Equal("/org/sketch7", request.Url.ToString());
@@ -96,14 +89,14 @@ namespace Test
 		public void ThrowsErrorWhenMethodNotSpecified()
 		{
 			var builder = NewBuilder();
-			Assert.Throws<RequestValidationException>(() => builder.WithUri("/org").Build());
+			Assert.Throws<RequestValidationException>(() => builder.WithMethod(null).WithUri("/org").Build());
 		}
 
 		[Fact]
 		public void ThrowsErrorWhenUriNotSpecified()
 		{
 			var builder = NewBuilder();
-			Assert.Throws<RequestValidationException>(() => builder.AsGet().Build());
+			Assert.Throws<RequestValidationException>(() => builder.Build());
 		}
 	}
 
@@ -113,7 +106,6 @@ namespace Test
 		public void AddHeader()
 		{
 			var builder = NewBuilder()
-				.AsGet()
 				.WithUri("/org/sketch7")
 				.WithHeader("chiko", "hex")
 				;
@@ -128,7 +120,6 @@ namespace Test
 		public void AddAlreadyExistsHeader_ShouldReplace()
 		{
 			var builder = NewBuilder()
-					.AsGet()
 					.WithUri("/org/sketch7")
 					.WithHeader("chiko", "hex")
 					.WithHeader("chiko", "hexII")
@@ -144,7 +135,6 @@ namespace Test
 		public void AddHeaders()
 		{
 			var builder = NewBuilder()
-					.AsGet()
 					.WithUri("/org/sketch7")
 					.WithHeader("chiko", "hex")
 					.WithHeaders(new Dictionary<string, string>

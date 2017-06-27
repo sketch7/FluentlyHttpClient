@@ -4,135 +4,159 @@ using System.Collections.Generic;
 
 namespace FluentlyHttpClient
 {
+	/// <summary>
+	/// Http Client factory which contains registered HTTP clients and able to get existing or creating new ones.
+	/// </summary>
+	public interface IFluentHttpClientFactory
+	{
+		/// <summary>
+		/// Creates a new <see cref="FluentHttpClientBuilder"/>.
+		/// </summary>
+		/// <param name="identifier">identifier to set.</param>
+		/// <returns></returns>
+		FluentHttpClientBuilder CreateBuilder(string identifier);
 
-	public class FluentHttpClientFactory
+		/// <summary>
+		/// Get <see cref="IFluentHttpClient"/> registered by identifier.
+		/// </summary>
+		/// <param name="identifier">Identifier to get.</param>
+		/// <exception cref="KeyNotFoundException">Throws an exception when key is not found.</exception>
+		/// <returns>Returns http client.</returns>
+		IFluentHttpClient Get(string identifier);
+
+		/// <summary>
+		/// Add/register Http Client from options.
+		/// </summary>
+		/// <param name="options">options to register.</param>
+		/// <returns>Returns http client created.</returns>
+		IFluentHttpClient Add(FluentHttpClientOptions options);
+
+		/// <summary>
+		/// Add/register Http Client from builder.
+		/// </summary>
+		/// <param name="clientBuilder">Client builder to register.</param>
+		/// <returns>Returns http client created.</returns>
+		IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder);
+
+		/// <summary>
+		/// Remove/unregister Http Client.
+		/// </summary>
+		/// <param name="identity">Identity to remove.</param>
+		/// <returns></returns>
+		IFluentHttpClientFactory Remove(string identity);
+
+		/// <summary>
+		/// Determine whether identifier is already registered.
+		/// </summary>
+		/// <param name="identifier">Identifier to check.</param>
+		/// <returns>Returns true when already exists.</returns>
+		bool Has(string identifier);
+	}
+
+	/// <summary>
+	/// Class which contains registered <see cref="IFluentHttpClient"/> and able to get existing or creating new ones.
+	/// </summary>
+	public class FluentHttpClientFactory : IFluentHttpClientFactory
 	{
 		private readonly IServiceProvider _serviceProvider;
-		private readonly Dictionary<string, FluentHttpClient> _clientsMap = new Dictionary<string, FluentHttpClient>();
+		private readonly Dictionary<string, IFluentHttpClient> _clientsMap = new Dictionary<string, IFluentHttpClient>();
 
 		public FluentHttpClientFactory(IServiceProvider serviceProvider)
 		{
 			_serviceProvider = serviceProvider;
 		}
 
+		/// <summary>
+		/// Creates a new <see cref="FluentHttpClientBuilder"/>.
+		/// </summary>
+		/// <param name="identifier">identifier to set.</param>
+		/// <returns></returns>
 		public FluentHttpClientBuilder CreateBuilder(string identifier)
 		{
-			var builder = new FluentHttpClientBuilder(this);
-			builder.SetIdentifier(identifier);
-			return builder;
+			var clientBuilder = ActivatorUtilities.CreateInstance<FluentHttpClientBuilder>(_serviceProvider, this)
+				.Withdentifier(identifier);
+			return clientBuilder;
 		}
 
-		public FluentHttpClientFactory Add(FluentHttpClientBuilder clientBuilder)
-		{
-			if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
-			if (Has(clientBuilder.Identifier))
-				throw new KeyNotFoundException($"FluentHttpClient '{clientBuilder.Identifier}' is already registered.");
-
-			var clientOptions = clientBuilder.Build();
-			var client = ActivatorUtilities.CreateInstance<FluentHttpClient>(_serviceProvider, clientOptions);
-
-			_clientsMap.Add(clientBuilder.Identifier, client);
-			return this;
-		}
-
-		public FluentHttpClientFactory Remove(string identity)
-		{
-			_clientsMap.Remove(identity);
-			// todo: dispose?
-			return this;
-		}
-
-		public FluentHttpClient Get(string identifier)
+		/// <summary>
+		/// Get <see cref="IFluentHttpClient"/> registered by identifier.
+		/// </summary>
+		/// <param name="identifier">Identifier to get.</param>
+		/// <exception cref="KeyNotFoundException">Throws an exception when key is not found.</exception>
+		/// <returns>Returns http client.</returns>
+		public IFluentHttpClient Get(string identifier)
 		{
 			if (!_clientsMap.TryGetValue(identifier, out var client))
 				throw new KeyNotFoundException($"FluentHttpClient '{identifier}' not registered.");
 			return client;
 		}
 
-		public bool Has(string identifier) => _clientsMap.ContainsKey(identifier);
-	}
-
-	public class FluentHttpClientBuilder
-	{
-		private readonly FluentHttpClientFactory _fluentHttpClientFactory;
-		private string _baseUrl;
-		private TimeSpan _timeout;
-		public string Identifier { get; private set; }
-		private readonly Dictionary<string, string> _headers = new Dictionary<string, string>();
-		private readonly List<Type> _middleware = new List<Type>();
-
-		public FluentHttpClientBuilder(FluentHttpClientFactory fluentHttpClientFactory)
+		/// <summary>
+		/// Add/register Http Client from options.
+		/// </summary>
+		/// <param name="options">options to register.</param>
+		/// <returns>Returns http client created.</returns>
+		public IFluentHttpClient Add(FluentHttpClientOptions options)
 		{
-			_fluentHttpClientFactory = fluentHttpClientFactory;
-		}
+			if (options == null) throw new ArgumentNullException(nameof(options));
 
-		public FluentHttpClientBuilder SetBaseUrl(string url)
-		{
-			_baseUrl = url;
-			return this;
-		}
+			if (string.IsNullOrEmpty(options.Identifier))
+				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.Identifier));
 
-		public FluentHttpClientBuilder SetTimeout(int timeout)
-		{
-			_timeout = TimeSpan.FromSeconds(timeout);
-			return this;
-		}
-		public FluentHttpClientBuilder SetTimeout(TimeSpan timeout)
-		{
-			_timeout = timeout;
-			return this;
-		}
+			if (Has(options.Identifier))
+				throw new ClientBuilderValidationException($"FluentHttpClient '{options.Identifier}' is already registered.");
 
-		public FluentHttpClientBuilder AddHeader(string key, string value)
-		{
-			if (_headers.ContainsKey(key))
-				_headers[key] = value;
-			else
-				_headers.Add(key, value);
-			return this;
-		}
+			SetDefaultOptions(options);
 
-		public FluentHttpClientBuilder AddHeaders(IDictionary<string, string> headers)
-		{
-			foreach (var item in headers)
-				AddHeader(item.Key, item.Value);
-			return this;
-		}
+			if (string.IsNullOrEmpty(options.BaseUrl))
+				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.BaseUrl));
 
-		public FluentHttpClientBuilder SetIdentifier(string identifier)
-		{
-			Identifier = identifier;
-			return this;
-		}
-
-		public FluentHttpClientBuilder AddMiddleware<T>()
-		{
-			_middleware.Add(typeof(T));
-			return this;
-		}
-
-		public FluentHttpClientOptions Build()
-		{
-			var options = new FluentHttpClientOptions
-			{
-				Timeout = _timeout,
-				BaseUrl = _baseUrl,
-				Identifier = Identifier,
-				Headers = _headers,
-				Middleware = _middleware
-			};
-
-			return options;
+			// todo: find a way how to use DI with additional param (or so) to factory for abstraction.
+			var client = (IFluentHttpClient)ActivatorUtilities.CreateInstance<FluentHttpClient>(_serviceProvider, options);
+			_clientsMap.Add(options.Identifier, client);
+			return client;
 		}
 
 		/// <summary>
-		/// Register to <see cref="FluentHttpClientFactory"/>, same as <see cref="FluentHttpClientFactory.Add"/>
+		/// Add/register Http Client from builder.
 		/// </summary>
-		public FluentHttpClientBuilder Register()
+		/// <param name="clientBuilder">Client builder to register.</param>
+		/// <returns>Returns http client created.</returns>
+		public IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder)
 		{
-			_fluentHttpClientFactory.Add(this);
+			if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
+			var options = clientBuilder.Build();
+			return Add(options);
+		}
+
+		/// <summary>
+		/// Remove/unregister Http Client.
+		/// </summary>
+		/// <param name="identity">Identity to remove.</param>
+		/// <returns></returns>
+		public IFluentHttpClientFactory Remove(string identity)
+		{
+			_clientsMap.Remove(identity);
+			// todo: dispose?
 			return this;
 		}
-	}
 
+		/// <summary>
+		/// Determine whether identifier is already registered.
+		/// </summary>
+		/// <param name="identifier">Identifier to check.</param>
+		/// <returns>Returns true when already exists.</returns>
+		public bool Has(string identifier) => _clientsMap.ContainsKey(identifier);
+
+		/// <summary>
+		/// Merge default options with the specified <see cref="options"/>.
+		/// </summary>
+		/// <param name="options">Options to check and merge with.</param>
+		protected void SetDefaultOptions(FluentHttpClientOptions options)
+		{
+			if (options == null) throw new ArgumentNullException(nameof(options));
+			if (options.Timeout == TimeSpan.Zero)
+				options.Timeout = TimeSpan.FromSeconds(15);
+		}
+	}
 }

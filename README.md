@@ -25,6 +25,29 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
  - Url interpolation e.g. person/{id}
  - Highly extensible
 
+## Installation
+*todo*
+
+## Usage
+
+### Basic usage
+*todo*
+
+### Using http client builder
+*todo*
+
+### Using request builder
+*todo*
+
+### Re-using http client
+*todo*
+
+### Implementing a middleware
+*todo*
+
+### Test/Mocking
+*todo*
+
 
 ## Contributing
 
