@@ -34,7 +34,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public Dictionary<string, string> Headers { get; private set; }
 
-		private readonly FluentHttpClient _fluentHttpClient;
+		private readonly IFluentHttpClient _fluentHttpClient;
 		private HttpContent _httpBody;
 		private static readonly Regex InterpolationRegex = new Regex(@"\{(\w+)\}", RegexOptions.Compiled);
 		private object _queryParams;
@@ -42,7 +42,7 @@ namespace FluentlyHttpClient
 		private bool _hasSuccessStatusOrThrow;
 		private CancellationToken _cancellationToken;
 
-		public FluentHttpRequestBuilder(FluentHttpClient fluentHttpClient)
+		public FluentHttpRequestBuilder(IFluentHttpClient fluentHttpClient)
 		{
 			_fluentHttpClient = fluentHttpClient;
 		}
@@ -116,7 +116,7 @@ namespace FluentlyHttpClient
 
 		/// <summary>Set the body content of the HTTP request.</summary>
 		/// <param name="body">Value to serialize into the HTTP body content.</param>
-		/// <param name="contentType">Request body format (or <c>null</c> to use the first supported Content-Type in the <see cref="FluentHttpClient.Formatters"/>).</param>
+		/// <param name="contentType">Request body format (or <c>null</c> to use the first supported Content-Type in the <see cref="IFluentHttpClient.Formatters"/>).</param>
 		/// <returns>Returns the request builder for chaining.</returns>
 		/// <exception cref="InvalidOperationException">No MediaTypeFormatters are available on the API client for this content type.</exception>
 		public FluentHttpRequestBuilder WithBody<T>(T body, MediaTypeHeaderValue contentType = null)
@@ -128,7 +128,7 @@ namespace FluentlyHttpClient
 
 		/// <summary>Set the body content of the HTTP request.</summary>
 		/// <param name="body">Value to serialize into the HTTP body content.</param>
-		/// <param name="contentType">Request body format (or <c>null</c> to use the first supported Content-Type in the <see cref="FluentHttpClient.Formatters"/>).</param>
+		/// <param name="contentType">Request body format (or <c>null</c> to use the first supported Content-Type in the <see cref="IFluentHttpClient.Formatters"/>).</param>
 		/// <exception cref="InvalidOperationException">No MediaTypeFormatters are available on the API client for this content type.</exception>
 		/// <returns>Returns the request builder for chaining.</returns>
 		public FluentHttpRequestBuilder WithBody(object body, MediaTypeHeaderValue contentType = null)

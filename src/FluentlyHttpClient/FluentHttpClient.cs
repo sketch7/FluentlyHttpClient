@@ -11,11 +11,67 @@ using FluentlyHttpClient.Middleware;
 
 namespace FluentlyHttpClient
 {
+	public interface IFluentHttpClient
+	{
+		/// <summary>
+		/// Get the identifier (key) for this instance, which is registered with, within the factory.
+		/// </summary>
+		string Identifier { get; }
+
+		/// <summary>
+		/// Gets the base uri address for each request.
+		/// </summary>
+		string BaseUrl { get; }
+
+		/// <summary>
+		/// Raw http client. This should be avoided from being used.
+		/// However if something is not exposed and its really needed, it can be used from here.
+		/// </summary>
+		HttpClient RawHttpClient { get; }
+
+		/// <summary>
+		/// Formatters to be used for content negotiation for "Accept" and also sending formats. e.g. (JSON, XML)
+		/// </summary>
+		MediaTypeFormatterCollection Formatters { get; }
+
+		/// <summary>
+		/// Gets the headers which should be sent with each request.
+		/// </summary>
+		HttpRequestHeaders Headers { get; }
+
+		/// <summary>Get the formatter for an HTTP content type.</summary>
+		/// <param name="contentType">The HTTP content type (or <c>null</c> to automatically select one).</param>
+		/// <exception cref="System.InvalidOperationException">No MediaTypeFormatters are available on the API client for this content type.</exception>
+		MediaTypeFormatter GetFormatter(MediaTypeHeaderValue contentType = null);
+
+		/// <summary>
+		/// Create a new request builder which can be configured fluently.
+		/// </summary>
+		/// <param name="uriTemplate">Uri resource template e.g. <c>"/org/{id}"</c></param>
+		/// <param name="interpolationData">Data to interpolate within the Uri template place holders e.g. <c>{id}</c>. Can be either dictionary or object.</param>
+		/// <returns>Returns a new request builder.</returns>
+		FluentHttpRequestBuilder CreateRequest(string uriTemplate = null, object interpolationData = null);
+
+		/// <summary>
+		/// Build and send HTTP request.
+		/// </summary>
+		/// <param name="builder">Request builder to build request from.</param>
+		/// <returns>Returns http response.</returns>
+		Task<FluentHttpResponse> Send(FluentHttpRequestBuilder builder);
+
+		/// <summary>
+		/// Send HTTP request.
+		/// </summary>
+		/// <param name="fluentRequest">HTTP fluent request to send.</param>
+		/// <returns>Returns http response.</returns>
+		Task<FluentHttpResponse> Send(FluentHttpRequest fluentRequest);
+	}
+
 	/// <summary>
 	/// Provides a class for sending HTTP requests with a high level fluent API.
 	/// </summary>
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
-	public class FluentHttpClient
+	public class FluentHttpClient : IFluentHttpClient
 	{
 		private string DebuggerDisplay => $"[{Identifier}] BaseUrl: '{BaseUrl}', MiddlewareCount: {_middleware.Count}";
 

@@ -17,26 +17,26 @@ namespace FluentlyHttpClient
 		FluentHttpClientBuilder CreateBuilder(string identifier);
 
 		/// <summary>
-		/// Get <see cref="FluentHttpClient"/> registered by identifier.
+		/// Get <see cref="IFluentHttpClient"/> registered by identifier.
 		/// </summary>
 		/// <param name="identifier">Identifier to get.</param>
 		/// <exception cref="KeyNotFoundException">Throws an exception when key is not found.</exception>
 		/// <returns>Returns http client.</returns>
-		FluentHttpClient Get(string identifier);
+		IFluentHttpClient Get(string identifier);
 
 		/// <summary>
 		/// Add/register Http Client from options.
 		/// </summary>
 		/// <param name="options">options to register.</param>
 		/// <returns>Returns http client created.</returns>
-		FluentHttpClient Add(FluentHttpClientOptions options);
+		IFluentHttpClient Add(FluentHttpClientOptions options);
 
 		/// <summary>
 		/// Add/register Http Client from builder.
 		/// </summary>
 		/// <param name="clientBuilder">Client builder to register.</param>
 		/// <returns>Returns http client created.</returns>
-		FluentHttpClient Add(FluentHttpClientBuilder clientBuilder);
+		IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder);
 
 		/// <summary>
 		/// Remove/unregister Http Client.
@@ -54,12 +54,12 @@ namespace FluentlyHttpClient
 	}
 
 	/// <summary>
-	/// Class which contains registered <see cref="FluentHttpClient"/> and able to get existing or creating new ones.
+	/// Class which contains registered <see cref="IFluentHttpClient"/> and able to get existing or creating new ones.
 	/// </summary>
 	public class FluentHttpClientFactory : IFluentHttpClientFactory
 	{
 		private readonly IServiceProvider _serviceProvider;
-		private readonly Dictionary<string, FluentHttpClient> _clientsMap = new Dictionary<string, FluentHttpClient>();
+		private readonly Dictionary<string, IFluentHttpClient> _clientsMap = new Dictionary<string, IFluentHttpClient>();
 
 		public FluentHttpClientFactory(IServiceProvider serviceProvider)
 		{
@@ -79,12 +79,12 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Get <see cref="FluentHttpClient"/> registered by identifier.
+		/// Get <see cref="IFluentHttpClient"/> registered by identifier.
 		/// </summary>
 		/// <param name="identifier">Identifier to get.</param>
 		/// <exception cref="KeyNotFoundException">Throws an exception when key is not found.</exception>
 		/// <returns>Returns http client.</returns>
-		public FluentHttpClient Get(string identifier)
+		public IFluentHttpClient Get(string identifier)
 		{
 			if (!_clientsMap.TryGetValue(identifier, out var client))
 				throw new KeyNotFoundException($"FluentHttpClient '{identifier}' not registered.");
@@ -96,7 +96,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="options">options to register.</param>
 		/// <returns>Returns http client created.</returns>
-		public FluentHttpClient Add(FluentHttpClientOptions options)
+		public IFluentHttpClient Add(FluentHttpClientOptions options)
 		{
 			if (options == null) throw new ArgumentNullException(nameof(options));
 
@@ -111,7 +111,8 @@ namespace FluentlyHttpClient
 			if (string.IsNullOrEmpty(options.BaseUrl))
 				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.BaseUrl));
 
-			var client = ActivatorUtilities.CreateInstance<FluentHttpClient>(_serviceProvider, options);
+			// todo: find a way how to use DI with additional param (or so) to factory for abstraction.
+			var client = (IFluentHttpClient)ActivatorUtilities.CreateInstance<FluentHttpClient>(_serviceProvider, options);
 			_clientsMap.Add(options.Identifier, client);
 			return client;
 		}
@@ -121,7 +122,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="clientBuilder">Client builder to register.</param>
 		/// <returns>Returns http client created.</returns>
-		public FluentHttpClient Add(FluentHttpClientBuilder clientBuilder)
+		public IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder)
 		{
 			if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
 			var options = clientBuilder.Build();

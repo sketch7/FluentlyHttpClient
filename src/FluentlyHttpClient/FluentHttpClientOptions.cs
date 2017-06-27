@@ -5,7 +5,7 @@ using System.Net.Http;
 namespace FluentlyHttpClient
 {
 	/// <summary>
-	/// Options for <see cref="FluentHttpClient"/>.
+	/// Options for <see cref="IFluentHttpClient"/>.
 	/// </summary>
 	public class FluentHttpClientOptions
 	{

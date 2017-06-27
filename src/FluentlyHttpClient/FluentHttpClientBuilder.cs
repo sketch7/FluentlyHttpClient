@@ -5,7 +5,7 @@ using System.Net.Http;
 namespace FluentlyHttpClient
 {
 	/// <summary>
-	/// Class to configure <see cref="FluentHttpClient"/> with a fluent API.
+	/// Class to configure <see cref="IFluentHttpClient"/> with a fluent API.
 	/// </summary>
 	public class FluentHttpClientBuilder
 	{
@@ -95,7 +95,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Add a handler which allows to customize the <see cref="FluentHttpRequestBuilder"/> on <see cref="FluentHttpClient.CreateRequest"/>.
+		/// Add a handler which allows to customize the <see cref="FluentHttpRequestBuilder"/> on <see cref="IFluentHttpClient.CreateRequest"/>.
 		/// In order to specify defaults as desired, or so.
 		/// </summary>
 		/// <param name="requestBuilderDefaults">Action which pass <see cref="FluentHttpRequestBuilder"/> for customization.</param>

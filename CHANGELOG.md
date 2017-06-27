@@ -10,7 +10,7 @@
 - **http client factory:** implement `WithRequestBuilderDefaults` additional hook in order customize `FluentHttpRequestBuilder` on creation.
 - **http client factory:** implement `WithMessageHandler` in order to replace the HTTP stack for the HTTP client.
 - **http client factory:** implement `Add` with `FluentHttpClientOptions`.
-- **http client factory:** extract `IFluentHttpClientFactory` from `FluentHttpClientFactory`.
+- **http client factory:** extract interface `IFluentHttpClientFactory` from `FluentHttpClientFactory`.
 
 - **http client builder:** add new method `AddMiddleware(Type)`.
 - **http client builder:** align naming with request builder.
@@ -20,6 +20,7 @@
 - **request builder:** Http method now defaults as `Get`.
 
 - **http client:** implement `Patch` and `Delete` methods.
+- **http client:** extract interface `IFluentHttpClient` from `FluentHttpClient`.
 
 
 ### BREAKING CHANGES
@@ -39,6 +40,7 @@ Most of the changes should only effect the internals, apart from middlewares.
   - `IFluentHttpMiddleware`
   - `IFluentHttpMiddlewareRunner`
 - `FluentHttpClientFactory` usages now is changed with `IFluentHttpClientFactory`
+- `FluentHttpClient` usages now is changed with `IFluentHttpClient`
 
 ## [0.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.0...0.2.1) (2017-06-25)
 
