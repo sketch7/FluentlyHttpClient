@@ -40,11 +40,84 @@ PM> Install-Package FluentlyHttpClient
 
 ## Usage
 
+### Configure
+
+Add services via `.AddFluentlyHttpClient()`
+```cs
+// using startup
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddFluentlyHttpClient();
+}
+```
+
+Configure a client using the Http Factory (you need at least one).
+```cs
+// using startup
+public void Configure(IApplicationBuilder app, IFluentHttpClientFactory fluentHttpClientFactory)
+{
+  // keep a note of the identifier, its needed later.
+  fluentHttpClientFactory.CreateBuilder(identifier: "platform")
+    .WithBaseUrl("http://sketch7.com") // required
+    .WithHeader("user-agent", "slabs-testify")
+    .WithTimeout(5)
+    .AddMiddleware<TimerHttpMiddleware>()
+    .AddMiddleware<LoggerHttpMiddleware>()
+    .Register(); // register client builder to factory
+}
+```
+
 ### Basic usage
-*todo*
+
+#### Simple API
+Using the simple API (non fluent) is good for simple calls, as it has compact API.
+
+```cs
+// inject factory and get client
+var httpClient = fluentHttpClientFactory.Get(identifier: "platform");
+
+// HTTP GET + deserialize result (non-fleunt API)
+Hero hero = await httpClient.Get<Hero>("/api/heroes/azmodan");
+
+// HTTP POST + deserialize result (non-fleunt API)
+Hero hero = await httpClient.Post<Hero>("/api/heroes/azmodan", new
+{
+  Title = "Lord of Sin"
+});
+```
+
+#### Fluent Request API
+Fluent request API allows to create more complex request and further control on response.
+
+```cs
+// inject factory and get client
+var httpClient = fluentHttpClientFactory.Get(identifier: "platform");
+
+// HTTP GET + return response and deserialize result (fluent API)
+FluentHttpResponse<Hero> response = 
+  await httpClient.CreateRequest("/api/heroes/azmodan")
+    .ReturnAsResponse<Hero>(); // return with response
+
+// HTTP POST + return response and deserialize result (fluent API)
+Hero hero = await httpClient.CreateRequest("/api/heroes/azmodan")
+    .AsPost()
+    .WithBody(new
+    {
+      Title = "Lord of Sin"
+    })
+    .Return<Hero>(); // return deserialized result directly
+```
 
 ### Using http client builder
 *todo*
+
+- Add multiple
+- Add via `Add`
+
+```cs
+  // or instead of using `.Register()`
+  fluentHttpClientFactory.Add(clientBuilder);
+```
 
 ### Using request builder
 *todo*
@@ -53,6 +126,11 @@ PM> Install-Package FluentlyHttpClient
 *todo*
 
 ### Implementing a middleware
+*todo*
+
+### Extending
+One of the key features is the ability to extend its own APIs easily.
+
 *todo*
 
 ### Test/Mocking
