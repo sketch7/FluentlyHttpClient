@@ -156,6 +156,21 @@ httpClientBuilder.WithRequestBuilderDefaults(builder => builder.AsPut());
 ### Using request builder
 Request builder is used to configure http client in a fluent way.
 
+#### Usage
+
+```cs
+LoginResponse loginResponse =
+  await fluentHttpClient.CreateRequest("/api/auth/login")
+    .AsPost() // set as HTTP Post
+    .WithBody(new
+    {
+      username = "test",
+      password = "test"
+    }) // serialize body content
+    .WithSuccessStatus() // ensure response success status
+    .Return<LoginResponse>(); // send, deserialize result and return result directly.
+```
+
 #### Query params
 ```cs
 requestBuilder.WithQueryParams(new 
