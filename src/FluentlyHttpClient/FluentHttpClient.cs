@@ -169,7 +169,7 @@ namespace FluentlyHttpClient
 			{
 				var result = await RawHttpClient.SendAsync(request.RawRequest, request.CancellationToken)
 					.ConfigureAwait(false);
-				return ToFluentResponse(result);
+				return ToFluentResponse(result, request.Items);
 			}).ConfigureAwait(false);
 
 			if (fluentRequest.HasSuccessStatusOrThrow)
@@ -201,8 +201,8 @@ namespace FluentlyHttpClient
 			RawHttpClient?.Dispose();
 		}
 
-		private static FluentHttpResponse ToFluentResponse(HttpResponseMessage response) =>
-			new FluentHttpResponse(response);
+		private static FluentHttpResponse ToFluentResponse(HttpResponseMessage response, IDictionary<object, object> items) =>
+			new FluentHttpResponse(response, items);
 
 	}
 }

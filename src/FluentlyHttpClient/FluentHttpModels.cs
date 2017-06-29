@@ -62,6 +62,11 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public CancellationToken CancellationToken { get; set; }
 
+		/// <summary>
+		/// Gets or sets a key/value collection that can be used to share data within the scope of request/response.
+		/// </summary>
+		public IDictionary<object, object> Items { get; set; } = new Dictionary<object, object>();
+
 		public FluentHttpRequest(HttpRequestMessage rawRequest)
 		{
 			RawRequest = rawRequest;
@@ -138,17 +143,14 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets or sets a key/value collection that can be used to share data within the scope of request/response.
 		/// </summary>
-		public IDictionary<object, object> Items { get; set; } = new Dictionary<object, object>();
+		public IDictionary<object, object> Items { get; set; }
 
 		public override string ToString() => $"{DebuggerDisplay}";
 
-		public FluentHttpResponse(HttpResponseMessage rawResponse)
+		public FluentHttpResponse(HttpResponseMessage rawResponse, IDictionary<object, object> items = null)
 		{
 			RawResponse = rawResponse;
+			Items = items ?? new Dictionary<object, object>();
 		}
-
-
 	}
-
-	
 }

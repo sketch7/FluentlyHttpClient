@@ -273,7 +273,7 @@ namespace FluentlyHttpClient
           => (TimeSpan)response.Items[TimeTakenKey];
     }
 
-    // FluentHttpClientBuilder extension methods - add 
+    // FluentHttpClientBuilder extension methods - add
     public static class FluentlyHttpMiddlwareExtensions
     {
         public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, TimerHttpMiddlewareOptions options = null)
@@ -301,21 +301,21 @@ Options can be passed when register a middleware.
 fluentHttpClientFactory.CreateBuilder("platform")
     .UseMiddleware<LoggerHttpMiddleware>() // register a middleware (without args)
     .UseMiddleware<TimerHttpMiddlewareOptions>(new TimerHttpMiddlewareOptions
-        {
-            WarnThreshold = TimeSpan.Zero
-        }) // register a middleware with options (args)
+      {
+          WarnThreshold = TimeSpan.Zero
+      }) // register a middleware with options (args)
     .UseTimer(new TimerHttpMiddlewareOptions
-        {
-            WarnThreshold = TimeSpan.Zero
-        }) // register a middleware using extenion method
+      {
+          WarnThreshold = TimeSpan.Zero
+      }) // register a middleware using extension method
 ```
 As a best practice its best to provide an extension method for usage such as `UseTimer`.
 Especially if it has any arguments (options), as it won't be convenient to use.
 
 
-#### Response items
-When using middleware additional data can be added to the response via the `FluentHttpResponse.Items`,
-in order to extend it.
+#### Request/Response items
+When using middleware additional data can be added to the request/response via the `.Items` of request/response,
+in order to share state across middleware or to extend response.
 
 As an example if we look at the timer middleware example its making use of it.
 

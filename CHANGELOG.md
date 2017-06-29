@@ -10,8 +10,10 @@
 
  - **request:** Rename `Url` to `Uri`.
  - **request:** `Method` and `Uri` has now also setters.
+ - **request:** Add `Items` in order to share state across requests/response.
 
  - **response:** `StatusCode` and `ReasonPhrase` has now also setters.
+ - **response:** `Items` now are shared with request.
 
  - **middleware:** Now supports arguments via `UseMiddleware<T>(args)`.
 
