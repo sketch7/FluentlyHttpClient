@@ -204,28 +204,29 @@ Hero hero = requestBuilder.Return<Hero>();
 ```
 
 ### Re-using http client from factory
-As a best practice, rather than using a string each time for the identifier, its better to create
-an extension method for it.
+As a best practice rather than using a string each time for the identifier, it's better
+to create an extension method for it.
 
 ```cs
 public static class FluentHttpClientFactoryExtensions
 {
-  public static IFluentHttpClient GetPlatformClient(this IFluentHttpClientFactory factory) 
+  public static IFluentHttpClient GetPlatformClient(this IFluentHttpClientFactory factory)
     => factory.Get("platform");
 }
 ```
 
 ### Middleware
-Implementing a middleware for the HTTP client is quite straight forward, its very similar to 
+Implementing a middleware for the HTTP client is quite straight forward, and its very similar to
 ASP.NET Core MVC middleware.
 
 These are provided out of the box:
+
 | Middleware | Description                                |
 |------------|--------------------------------------------|
 | Timer      | Determine how long request/response takes. |
 | Logger     | Log request/response.                      |
 
-The following is the timer middleware implementation (a bit simplified).
+The following is the timer middleware implementation *(bit simplified)*.
 
 ```cs
 public class TimerHttpMiddleware : IFluentHttpMiddleware
