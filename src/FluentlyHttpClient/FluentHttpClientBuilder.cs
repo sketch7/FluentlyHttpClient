@@ -123,7 +123,8 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <typeparam name="T">Middleware type.</typeparam>
 		/// <returns>Returns client builder for chaining.</returns>
-		public FluentHttpClientBuilder UseMiddleware<T>(params object[] args) => UseMiddleware(typeof(T), args);
+		public FluentHttpClientBuilder UseMiddleware<T>(params object[] args) where T : IFluentHttpMiddleware
+			=> UseMiddleware(typeof(T), args);
 
 		/// <summary>
 		/// Register middleware for the HTTP client, which each request pass-through. <c>NOTE order matters</c>.
