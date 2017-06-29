@@ -95,9 +95,9 @@ namespace FluentlyHttpClient
 		public HttpClient RawHttpClient { get; }
 
 		/// <summary>
-		/// Formatters to be used for content negotiation for "Accept" and also sending formats. e.g. (JSON, XML)
+		/// Formatters to be used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
 		/// </summary>
-		public MediaTypeFormatterCollection Formatters { get; } = new MediaTypeFormatterCollection();
+		public MediaTypeFormatterCollection Formatters { get; }
 
 		/// <summary>
 		/// Gets the headers which should be sent with each request.
@@ -119,12 +119,15 @@ namespace FluentlyHttpClient
 		{
 			_serviceProvider = serviceProvider;
 			_middlewareRunner = middlewareRunner;
-			RawHttpClient = Configure(options);
-			Headers = RawHttpClient.DefaultRequestHeaders;
-			_middleware = options.Middleware;
+
 			Identifier = options.Identifier;
 			BaseUrl = options.BaseUrl;
+			_middleware = options.Middleware;
+			Formatters = options.Formatters;
 			_requestBuilderDefaults = options.RequestBuilderDefaults;
+
+			RawHttpClient = Configure(options);
+			Headers = RawHttpClient.DefaultRequestHeaders;
 		}
 
 		/// <summary>Get the formatter for an HTTP content type.</summary>

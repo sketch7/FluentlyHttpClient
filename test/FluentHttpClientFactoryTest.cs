@@ -10,7 +10,7 @@ namespace Test
 	public class ClientFactory_WithRequestBuilderDefaults
 	{
 		[Fact]
-		public void WithCustomRequestDefaults()
+		public void ShouldHaveWithCustomDefaultsSet()
 		{
 			var fluentHttpClientFactory = GetNewClientFactory();
 			fluentHttpClientFactory.CreateBuilder("abc")
@@ -24,6 +24,23 @@ namespace Test
 
 			Assert.NotNull(request);
 			Assert.Equal(HttpMethod.Put, request.Method);
+		}
+	}
+
+	public class ClientFactory_WithFormatters
+	{
+		[Fact]
+		public void ShouldSetClientFormatters()
+		{
+			var fluentHttpClientFactory = GetNewClientFactory();
+			fluentHttpClientFactory.CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.WithFormatters(formatter => formatter.Clear())
+				.Register();
+
+			var httpClient = fluentHttpClientFactory.Get("abc");
+
+			Assert.Equal(0, httpClient.Formatters.Count);
 		}
 	}
 

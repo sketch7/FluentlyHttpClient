@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using FluentlyHttpClient.Middleware;
 
 namespace FluentlyHttpClient
@@ -36,13 +37,18 @@ namespace FluentlyHttpClient
 		public List<MiddlewareConfig> Middleware { get; set; }
 
 		/// <summary>
-		/// Handler to customize request on creation. In order to specify defaults as desired, or so.
+		/// Gets or sets handler to customize request on creation. In order to specify defaults as desired, or so.
 		/// </summary>
 		public Action<FluentHttpRequestBuilder> RequestBuilderDefaults { get; set; }
 
 		/// <summary>
-		/// HTTP handler stack to use for sending requests.
+		/// Gets or sets HTTP handler stack to use for sending requests.
 		/// </summary>
 		public HttpMessageHandler HttpMessageHandler { get; set; }
+
+		/// <summary>
+		/// Gets or sets formatters to be used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
+		/// </summary>
+		public MediaTypeFormatterCollection Formatters { get; set; }
 	}
 }

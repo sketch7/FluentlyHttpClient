@@ -149,6 +149,9 @@ httpClientBuilder.WithMessageHandler(mockHttp);
 
 // request builder defaults - handler to customize defaults for request builder
 httpClientBuilder.WithRequestBuilderDefaults(builder => builder.AsPut());
+
+// formatters - used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
+httpClientBuilder.WithFormatters(formatter => formatter.Add(new CustomFormatter()));
 ```
 
 ### Request builder

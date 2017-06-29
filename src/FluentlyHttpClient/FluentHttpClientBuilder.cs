@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 
 namespace FluentlyHttpClient
 {
@@ -22,6 +23,7 @@ namespace FluentlyHttpClient
 		private readonly List<MiddlewareConfig> _middleware = new List<MiddlewareConfig>();
 		private Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 		private HttpMessageHandler _httpMessageHandler;
+		private readonly MediaTypeFormatterCollection _formatters = new MediaTypeFormatterCollection();
 
 		/// <summary>
 		/// Initializes a new instance.
@@ -122,6 +124,17 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
+		/// Configure formatters to be used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
+		/// </summary>
+		/// <param name="configure">Action to configure formatters.</param>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder WithFormatters(Action<MediaTypeFormatterCollection> configure)
+		{
+			configure(_formatters);
+			return this;
+		}
+
+		/// <summary>
 		/// Register middleware for the HTTP client, which each request pass-through. <c>NOTE order matters</c>.
 		/// </summary>
 		/// <typeparam name="T">Middleware type.</typeparam>
@@ -153,7 +166,8 @@ namespace FluentlyHttpClient
 				Headers = _headers,
 				Middleware = _middleware,
 				RequestBuilderDefaults = _requestBuilderDefaults,
-				HttpMessageHandler = _httpMessageHandler
+				HttpMessageHandler = _httpMessageHandler,
+				Formatters = _formatters
 			};
 			return options;
 		}

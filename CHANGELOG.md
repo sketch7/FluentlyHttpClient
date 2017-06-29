@@ -8,6 +8,7 @@
  - **http client factory:** `Remove` now disposes `IFluentHttpClient`.
  - **http client builder:** Rename `AddMiddleware` to `UseMiddleware`.
  - **http client builder:** `UseMiddleware<T>`, <T> is now constrained with `IFluentHttpMiddleware`.
+ - **http client builder:** implement `WithFormatters` to be able to configure formatters.
 
  - **http client:** implement `IDisposable` in order to dispose underlying `HttpClient`.
 
