@@ -43,20 +43,19 @@ PM> Install-Package FluentlyHttpClient
 Add services via `.AddFluentlyHttpClient()`.
 
 ```cs
-// using startup
+// using Startup.cs (can be elsewhere)
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddFluentlyHttpClient();
 }
 ```
 
-Configure a client using the Http Factory (you need at least one).
+Configure an Http client using the Http Factory (you need at least one).
 ```cs
-// using startup
+// using Startup.cs (can be elsewhere)
 public void Configure(IApplicationBuilder app, IFluentHttpClientFactory fluentHttpClientFactory)
 {
-  // keep a note of the identifier, its needed later
-  fluentHttpClientFactory.CreateBuilder(identifier: "platform")
+  fluentHttpClientFactory.CreateBuilder(identifier: "platform") // keep a note of the identifier, its needed later
     .WithBaseUrl("http://sketch7.com") // required
     .WithHeader("user-agent", "slabs-testify")
     .WithTimeout(5)
@@ -68,7 +67,7 @@ public void Configure(IApplicationBuilder app, IFluentHttpClientFactory fluentHt
 ### Basic usage
 
 #### Simple API
-Using the simple API (non fluent), good for simple calls as it has minimal API.
+Simple API (non-fluent) is good for simple requests as it has a clean, minimal API.
 
 ```cs
 // inject factory and get client
@@ -85,7 +84,7 @@ Hero hero = await httpClient.Post<Hero>("/api/heroes/azmodan", new
 ```
 
 #### Fluent Request API
-Fluent request API allows to create more complex request and further control on response.
+Fluent request API (request builder) allows to create more complex requests and provides further control on response.
 
 ```cs
 // inject factory and get client
@@ -106,8 +105,8 @@ Hero hero = await httpClient.CreateRequest("/api/heroes/azmodan")
     .Return<Hero>(); // return deserialized result directly
 ```
 
-### Using fluent http client builder
-Http client builder is used to configure http client in a fluent way.
+### Fluent http client builder
+Http client builder is used to configure http clients in a fluent way.
 
 #### Register to factory
 
@@ -121,7 +120,7 @@ clientBuilder.Register().
 ```
 
 #### Register multiple + share
-There are multiple ways how to register multiple clients. This is a nice way to do it.
+There are multiple ways how to register multiple http clients. The following is a nice way of doing it:
 
 ```cs
 fluentHttpClientFactory.CreateBuilder("platform")
@@ -141,7 +140,7 @@ fluentHttpClientFactory.CreateBuilder("platform")
     .Register();
 ```
 
-#### Http client builder goodies
+#### Http client builder extra goodies
 
 ```cs
 // message handler - set HTTP handler stack to use for sending requests
@@ -152,8 +151,8 @@ httpClientBuilder.WithMessageHandler(mockHttp);
 httpClientBuilder.WithRequestBuilderDefaults(builder => builder.AsPut());
 ```
 
-### Using request builder
-Request builder is used to configure http client in a fluent way.
+### Request builder
+Request builder is used to build http requests in a fluent way.
 
 #### Usage
 
@@ -336,7 +335,7 @@ TimeSpan timeTaken = (TimeSpan)response.Items["TIME_TAKEN"];
 One of the key features is the ability to extend its own APIs easily.
 In fact, several functions of the library itself are extensions, by using extension methods.
 
-#### Extend Request Builder
+#### Extending request builder
 An example of how can the request builder be extended.
 
 ```cs
@@ -361,12 +360,14 @@ However we've been using [RichardSzalay.MockHttp](https://github.com/richardszal
 [Fact]
 public async void ShouldReturnContent()
 {
+    // build services
     var servicesProvider = new ServiceCollection()
       .AddFluentlyHttpClient()
       .AddLogging()
       .BuildServiceProvider();
     var fluentHttpClientFactory = servicesProvider.GetService<IFluentHttpClientFactory>();
 
+    // define mocks
     var mockHttp = new MockHttpMessageHandler();
     mockHttp.When("https://sketch7.com/api/heroes/azmodan")
       .Respond("application/json", "{ 'name': 'Azmodan' }");
@@ -374,7 +375,7 @@ public async void ShouldReturnContent()
     fluentHttpClientFactory.CreateBuilder("platform")
       .WithBaseUrl("https://sketch7.com")
       .AddMiddleware<TimerHttpMiddleware>()
-      .WithMessageHandler(mockHttp)
+      .WithMessageHandler(mockHttp) // set message handler to mock
       .Register();
 
     var httpClient = fluentHttpClientFactory.Get("platform");
