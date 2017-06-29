@@ -14,22 +14,22 @@ namespace Test
 		public async void ShouldReturnContent()
 		{
 			var mockHttp = new MockHttpMessageHandler();
-			mockHttp.When("http://sketch7.com/api/org/sketch7")
-				.Respond("application/json", "{ 'name': 'sketch7' }");
+			mockHttp.When("https://sketch7.com/api/heroes/azmodan")
+				.Respond("application/json", "{ 'name': 'Azmodan' }");
 
 			var fluentHttpClientFactory = GetNewClientFactory();
 			fluentHttpClientFactory.CreateBuilder("sketch7")
-				.WithBaseUrl("http://sketch7.com")
+				.WithBaseUrl("https://sketch7.com")
 				.AddMiddleware<TimerHttpMiddleware>()
 				.WithMessageHandler(mockHttp)
 				.Register();
 
 			var httpClient = fluentHttpClientFactory.Get("sketch7");
-			var response = await httpClient.CreateRequest("/api/org/sketch7")
-				.ReturnAsResponse<OrganizationModel>();
+			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
+				.ReturnAsResponse<Hero>();
 
 			Assert.NotNull(response.Data);
-			Assert.Equal("sketch7", response.Data.Name);
+			Assert.Equal("Azmodan", response.Data.Name);
 			Assert.NotEqual(TimeSpan.Zero, response.GetTimeTaken());
 		}
 	}
