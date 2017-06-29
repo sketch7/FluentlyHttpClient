@@ -1,7 +1,7 @@
-﻿using System;
-using FluentlyHttpClient;
-using System.Net.Http;
+﻿using FluentlyHttpClient;
 using FluentlyHttpClient.Test;
+using System;
+using System.Net.Http;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
