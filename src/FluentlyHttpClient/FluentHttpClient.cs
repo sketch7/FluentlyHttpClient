@@ -11,7 +11,10 @@ using FluentlyHttpClient.Middleware;
 
 namespace FluentlyHttpClient
 {
-	public interface IFluentHttpClient
+	/// <summary>
+	/// Interface for sending HTTP requests with a high level fluent API.
+	/// </summary>
+	public interface IFluentHttpClient : IDisposable
 	{
 		/// <summary>
 		/// Get the identifier (key) for this instance, which is registered with, within the factory.
@@ -24,8 +27,8 @@ namespace FluentlyHttpClient
 		string BaseUrl { get; }
 
 		/// <summary>
-		/// Raw http client. This should be avoided from being used.
-		/// However if something is not exposed and its really needed, it can be used from here.
+		/// Underlying HTTP client. This should be avoided from being used,
+		/// however if something is not exposed and its really needed, it can be used from here.
 		/// </summary>
 		HttpClient RawHttpClient { get; }
 
@@ -56,14 +59,14 @@ namespace FluentlyHttpClient
 		/// Build and send HTTP request.
 		/// </summary>
 		/// <param name="builder">Request builder to build request from.</param>
-		/// <returns>Returns http response.</returns>
+		/// <returns>Returns HTTP response.</returns>
 		Task<FluentHttpResponse> Send(FluentHttpRequestBuilder builder);
 
 		/// <summary>
 		/// Send HTTP request.
 		/// </summary>
 		/// <param name="fluentRequest">HTTP fluent request to send.</param>
-		/// <returns>Returns http response.</returns>
+		/// <returns>Returns HTTP response.</returns>
 		Task<FluentHttpResponse> Send(FluentHttpRequest fluentRequest);
 	}
 
@@ -86,15 +89,15 @@ namespace FluentlyHttpClient
 		public string BaseUrl { get; }
 
 		/// <summary>
-		/// Raw http client. This should be avoided from being used.
-		/// However if something is not exposed and its really needed, it can be used from here.
+		/// Underlying HTTP client. This should be avoided from being used,
+		/// however if something is not exposed and its really needed, it can be used from here.
 		/// </summary>
 		public HttpClient RawHttpClient { get; }
 
 		/// <summary>
-		/// Formatters to be used for content negotiation for "Accept" and also sending formats. e.g. (JSON, XML)
+		/// Formatters to be used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
 		/// </summary>
-		public MediaTypeFormatterCollection Formatters { get; } = new MediaTypeFormatterCollection();
+		public MediaTypeFormatterCollection Formatters { get; }
 
 		/// <summary>
 		/// Gets the headers which should be sent with each request.
@@ -104,18 +107,27 @@ namespace FluentlyHttpClient
 		private readonly Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 		private readonly IServiceProvider _serviceProvider;
 		private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
-		private readonly IList<Type> _middleware;
+		private readonly List<MiddlewareConfig> _middleware;
 
+		/// <summary>
+		/// Initializes an instance of <see cref="FluentHttpClient"/>.
+		/// </summary>
+		/// <param name="options"></param>
+		/// <param name="serviceProvider"></param>
+		/// <param name="middlewareRunner"></param>
 		public FluentHttpClient(FluentHttpClientOptions options, IServiceProvider serviceProvider, IFluentHttpMiddlewareRunner middlewareRunner)
 		{
 			_serviceProvider = serviceProvider;
 			_middlewareRunner = middlewareRunner;
-			RawHttpClient = Configure(options);
-			Headers = RawHttpClient.DefaultRequestHeaders;
-			_middleware = options.Middleware;
+
 			Identifier = options.Identifier;
 			BaseUrl = options.BaseUrl;
+			_middleware = options.Middleware;
+			Formatters = options.Formatters;
 			_requestBuilderDefaults = options.RequestBuilderDefaults;
+
+			RawHttpClient = Configure(options);
+			Headers = RawHttpClient.DefaultRequestHeaders;
 		}
 
 		/// <summary>Get the formatter for an HTTP content type.</summary>
@@ -154,21 +166,22 @@ namespace FluentlyHttpClient
 		/// Build and send HTTP request.
 		/// </summary>
 		/// <param name="builder">Request builder to build request from.</param>
-		/// <returns>Returns http response.</returns>
+		/// <returns>Returns HTTP response.</returns>
 		public Task<FluentHttpResponse> Send(FluentHttpRequestBuilder builder) => Send(builder.Build());
 
 		/// <summary>
 		/// Send HTTP request.
 		/// </summary>
 		/// <param name="fluentRequest">HTTP fluent request to send.</param>
-		/// <returns>Returns http response.</returns>
+		/// <returns>Returns HTTP response.</returns>
 		public async Task<FluentHttpResponse> Send(FluentHttpRequest fluentRequest)
 		{
 			if (fluentRequest == null) throw new ArgumentNullException(nameof(fluentRequest));
 			var response = await _middlewareRunner.Run(_middleware, fluentRequest, async request =>
 			{
-				var result = await RawHttpClient.SendAsync(request.RawRequest, request.CancellationToken).ConfigureAwait(false);
-				return ToFluentResponse(result);
+				var result = await RawHttpClient.SendAsync(request.Message, request.CancellationToken)
+					.ConfigureAwait(false);
+				return ToFluentResponse(result, request.Items);
 			}).ConfigureAwait(false);
 
 			if (fluentRequest.HasSuccessStatusOrThrow)
@@ -192,8 +205,16 @@ namespace FluentlyHttpClient
 			return httpClient;
 		}
 
-		private static FluentHttpResponse ToFluentResponse(HttpResponseMessage response) =>
-			new FluentHttpResponse(response);
+		/// <summary>
+		/// Disposes the underlying <see cref="RawHttpClient"/>.
+		/// </summary>
+		public void Dispose()
+		{
+			RawHttpClient?.Dispose();
+		}
+
+		private static FluentHttpResponse ToFluentResponse(HttpResponseMessage response, IDictionary<object, object> items) =>
+			new FluentHttpResponse(response, items);
 
 	}
 }

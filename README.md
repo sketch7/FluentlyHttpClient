@@ -8,8 +8,6 @@
 
 Http Client for .NET Standard with fluent APIs which are intuitive, easy to use and also highly extensible.
 
-*NOTE: This project is under development and is not intended for general production use yet.*
-
 **Quick links**
 
 [Change logs][changeLog] | [Project Repository][projectUri]
@@ -28,7 +26,7 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
 ## Installation
 Available for [.NET Standard 1.4+](https://docs.microsoft.com/en-gb/dotnet/standard/net-standard)
 
-### nuget
+### NuGet
 ```
 PM> Install-Package FluentlyHttpClient
 ```
@@ -45,24 +43,23 @@ PM> Install-Package FluentlyHttpClient
 Add services via `.AddFluentlyHttpClient()`.
 
 ```cs
-// using startup
+// using Startup.cs (can be elsewhere)
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddFluentlyHttpClient();
 }
 ```
 
-Configure a client using the Http Factory (you need at least one).
+Configure an Http client using the Http Factory (you need at least one).
 ```cs
-// using startup
+// using Startup.cs (can be elsewhere)
 public void Configure(IApplicationBuilder app, IFluentHttpClientFactory fluentHttpClientFactory)
 {
-  // keep a note of the identifier, its needed later
-  fluentHttpClientFactory.CreateBuilder(identifier: "platform")
+  fluentHttpClientFactory.CreateBuilder(identifier: "platform") // keep a note of the identifier, its needed later
     .WithBaseUrl("http://sketch7.com") // required
     .WithHeader("user-agent", "slabs-testify")
     .WithTimeout(5)
-    .AddMiddleware<LoggerHttpMiddleware>()
+    .UseMiddleware<LoggerHttpMiddleware>()
     .Register(); // register client builder to factory
 }
 ```
@@ -70,7 +67,7 @@ public void Configure(IApplicationBuilder app, IFluentHttpClientFactory fluentHt
 ### Basic usage
 
 #### Simple API
-Using the simple API (non fluent), good for simple calls as it has minimal API.
+Simple API (non-fluent) is good for simple requests as it has a clean, minimal API.
 
 ```cs
 // inject factory and get client
@@ -87,7 +84,7 @@ Hero hero = await httpClient.Post<Hero>("/api/heroes/azmodan", new
 ```
 
 #### Fluent Request API
-Fluent request API allows to create more complex request and further control on response.
+Fluent request API (request builder) allows to create more complex requests and provides further control on the response.
 
 ```cs
 // inject factory and get client
@@ -108,10 +105,10 @@ Hero hero = await httpClient.CreateRequest("/api/heroes/azmodan")
     .Return<Hero>(); // return deserialized result directly
 ```
 
-### Using fluent http client builder
-Http client builder is used to configure http client in a fluent way.
+### Fluent Http Client Builder
+Http client builder is used to configure http clients in a fluent way.
 
-#### Register to factory
+#### Register to Factory
 
 ```cs
 var clientBuilder = fluentHttpClientFactory.CreateBuilder(identifier: "platform")
@@ -123,15 +120,15 @@ clientBuilder.Register().
 ```
 
 #### Register multiple + share
-There are multiple ways how to register multiple clients. This is a nice way to do it.
+There are multiple ways how to register multiple http clients. The following is a nice way of doing it:
 
 ```cs
 fluentHttpClientFactory.CreateBuilder("platform")
     // shared
     .WithHeader("user-agent", "slabs-testify")
     .WithTimeout(5)
-    .AddMiddleware<TimerHttpMiddleware>()
-    .AddMiddleware<LoggerHttpMiddleware>()
+    .UseTimer()
+    .UseMiddleware<LoggerHttpMiddleware>()
 
     // platform
     .WithBaseUrl("https://platform.com")
@@ -143,7 +140,7 @@ fluentHttpClientFactory.CreateBuilder("platform")
     .Register();
 ```
 
-#### Http client builder goodies
+#### Http Client Builder extra goodies
 
 ```cs
 // message handler - set HTTP handler stack to use for sending requests
@@ -152,10 +149,13 @@ httpClientBuilder.WithMessageHandler(mockHttp);
 
 // request builder defaults - handler to customize defaults for request builder
 httpClientBuilder.WithRequestBuilderDefaults(builder => builder.AsPut());
+
+// formatters - used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
+httpClientBuilder.WithFormatters(formatter => formatter.Add(new CustomFormatter()));
 ```
 
-### Using request builder
-Request builder is used to configure http client in a fluent way.
+### Request Builder
+Request builder is used to build http requests in a fluent way.
 
 #### Usage
 
@@ -203,7 +203,7 @@ FluentHttpResponse<Hero> response = requestBuilder.ReturnAsResponse<Hero>();
 Hero hero = requestBuilder.Return<Hero>();
 ```
 
-### Re-using http client from factory
+### Re-using Http Client from Factory
 As a best practice rather than using a string each time for the identifier, it's better
 to create an extension method for it.
 
@@ -216,34 +216,42 @@ public static class FluentHttpClientFactoryExtensions
 ```
 
 ### Middleware
-Implementing a middleware for the HTTP client is quite straight forward, and its very similar to
+Middlewares are used to intercept request/response to add additional logic or alter request/response.
+
+Implementing a middleware for the HTTP client is quite straight forward, and it's very similar to
 ASP.NET Core MVC middleware.
 
 These are provided out of the box:
 
-| Middleware | Description                                |
-|------------|--------------------------------------------|
-| Timer      | Determine how long request/response takes. |
-| Logger     | Log request/response.                      |
+| Middleware | Description                                   |
+|------------|-----------------------------------------------|
+| Timer      | Determine how long (timespan) requests takes. |
+| Logger     | Log request/response.                         |
 
-The following is the timer middleware implementation *(bit simplified)*.
+Two important points to keep in mind:
+ - The first argument within constructor has to be `FluentHttpRequestDelegate` which is generally called `next`.
+ - During `Invoke` the `await _next(request);` must be invoked and return the response, in order to continue the flow.
+
+ The following is the timer middleware implementation *(bit simplified)*.
 
 ```cs
 public class TimerHttpMiddleware : IFluentHttpMiddleware
 {
     private readonly FluentHttpRequestDelegate _next;
+    private readonly TimerHttpMiddlewareOptions _options;
     private readonly ILogger _logger;
 
-    public TimerHttpMiddleware(FluentHttpRequestDelegate next, ILogger<TimerHttpMiddleware> logger)
+    public TimerHttpMiddleware(FluentHttpRequestDelegate next, TimerHttpMiddlewareOptions options, ILogger<TimerHttpMiddleware> logger)
     {
         _next = next;
+        _options = options;
         _logger = logger;
     }
 
     public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
     {
         var watch = Stopwatch.StartNew();
-        var response = await _next(request); // continue middleware chain
+        var response = await _next(request); // this needs to be done to continue middleware flow
         var elapsed = watch.Elapsed;
         _logger.LogInformation("Executed request {request} in {timeTakenMillis}ms", request, elapsed.TotalMilliseconds);
         response.SetTimeTaken(elapsed);
@@ -251,9 +259,9 @@ public class TimerHttpMiddleware : IFluentHttpMiddleware
     }
 }
 
-// Response Extension methods - useful to extend FluentHttpResponse
 namespace FluentlyHttpClient
 {
+    // Response extension methods - useful to extend FluentHttpResponse
     public static class TimerFluentResponseExtensions
     {
         private const string TimeTakenKey = "TIME_TAKEN";
@@ -264,14 +272,73 @@ namespace FluentlyHttpClient
         public static TimeSpan GetTimeTaken(this FluentHttpResponse response)
           => (TimeSpan)response.Items[TimeTakenKey];
     }
+
+    // FluentHttpClientBuilder extension methods - add
+    public static class FluentlyHttpMiddlwareExtensions
+    {
+        public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, TimerHttpMiddlewareOptions options = null)
+            => builder.UseMiddleware<TimerHttpMiddleware>(options ?? new TimerHttpMiddlewareOptions());
+    }
 }
+
+// response extension usage
+TimeSpan timeTaken = response.GetTimeTaken();
 ```
+
+#### Middleware options
+Options to middleware can be passed via an argument. Note it has to be the second argument within the constructor.
+
+```cs
+                                                                       V - Options
+public TimerHttpMiddleware(FluentHttpRequestDelegate next, TimerHttpMiddlewareOptions options, ILogger<TimerHttpMiddleware> logger)
+```
+
+Options can be passed when registering a middleware.
+
+#### Use a middleware
+
+```cs
+fluentHttpClientFactory.CreateBuilder("platform")
+    .UseMiddleware<LoggerHttpMiddleware>() // register a middleware (without args)
+    .UseMiddleware<TimerHttpMiddleware>(new TimerHttpMiddlewareOptions
+      {
+          WarnThreshold = TimeSpan.Zero
+      }) // register a middleware with options (args)
+    .UseTimer(new TimerHttpMiddlewareOptions
+      {
+          WarnThreshold = TimeSpan.Zero
+      }) // register a middleware using extension method
+```
+As a best practice, it's best to provide an extension method for usage such as `UseTimer` 
+especially when it has any arguments (options), as it won't be convenient to use.
+
+
+#### Request/Response items
+When using middleware additional data can be added to the request/response via the `.Items` of request/response,
+in order to share state across middleware for the request or to extend response.
+
+The timer middleware example is making use of it.
+
+```cs
+// set item
+response.SetTimeTaken(elapsed);
+
+// or similarly without extension method
+response.Items.Add("TIME_TAKEN", value)
+
+// get item
+TimeSpan timeTaken = response.GetTimeTaken();
+
+// or similarly without extension method
+TimeSpan timeTaken = (TimeSpan)response.Items["TIME_TAKEN"];
+```
+
 
 ### Extending
 One of the key features is the ability to extend its own APIs easily.
 In fact, several functions of the library itself are extensions, by using extension methods.
 
-#### Extend Request Builder
+#### Extending Request Builder
 An example of how can the request builder be extended.
 
 ```cs
@@ -287,8 +354,8 @@ public static class FluentHttpRequestBuilderExtensions
 ```
 
 ### Testing/Mocking
-In order to test HTTP requests the library itself doesn't offer anything out of the box.
-However we've been using [RichardSzalay.MockHttp](https://github.com/richardszalay/mockhttp), which we recommend.
+In order to test HTTP requests, the library itself doesn't offer anything out of the box.
+However, we've been using [RichardSzalay.MockHttp](https://github.com/richardszalay/mockhttp), which we recommend.
 
 #### Test example with RichardSzalay.MockHttp
 
@@ -296,12 +363,14 @@ However we've been using [RichardSzalay.MockHttp](https://github.com/richardszal
 [Fact]
 public async void ShouldReturnContent()
 {
+    // build services
     var servicesProvider = new ServiceCollection()
       .AddFluentlyHttpClient()
       .AddLogging()
       .BuildServiceProvider();
     var fluentHttpClientFactory = servicesProvider.GetService<IFluentHttpClientFactory>();
 
+    // define mocks
     var mockHttp = new MockHttpMessageHandler();
     mockHttp.When("https://sketch7.com/api/heroes/azmodan")
       .Respond("application/json", "{ 'name': 'Azmodan' }");
@@ -309,7 +378,7 @@ public async void ShouldReturnContent()
     fluentHttpClientFactory.CreateBuilder("platform")
       .WithBaseUrl("https://sketch7.com")
       .AddMiddleware<TimerHttpMiddleware>()
-      .WithMessageHandler(mockHttp)
+      .WithMessageHandler(mockHttp) // set message handler to mock
       .Register();
 
     var httpClient = fluentHttpClientFactory.Get("platform");

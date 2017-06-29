@@ -15,7 +15,7 @@ namespace FluentlyHttpClient
 	public class FluentHttpRequestBuilder
 	{
 		/// <summary>
-		/// Gets the Http Method for the Http Request.
+		/// Gets the HTTP Method for the Http Request.
 		/// </summary>
 		public HttpMethod HttpMethod { get; private set; } = HttpMethod.Get;
 
@@ -42,6 +42,9 @@ namespace FluentlyHttpClient
 		private bool _hasSuccessStatusOrThrow;
 		private CancellationToken _cancellationToken;
 
+		/// <summary>
+		/// Initializes a new instance.
+		/// </summary>
 		public FluentHttpRequestBuilder(IFluentHttpClient fluentHttpClient)
 		{
 			_fluentHttpClient = fluentHttpClient;
@@ -102,7 +105,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Set query string params to the Uri. e.g. .?page=1&filter=all'.
+		/// Set query string params to the Uri. e.g. .?page=1&amp;filter=all'.
 		/// </summary>
 		/// <param name="queryParams">Query data to add/append. Can be either dictionary or object.</param>
 		/// <param name="lowerCaseQueryKeys">Determine whether to lowercase query string keys.</param>
@@ -183,7 +186,7 @@ namespace FluentlyHttpClient
 			_cancellationToken = cancellationToken;
 			return this;
 		}
-		
+
 		/// <summary>
 		/// Send request, read content with the type specified (when success) and return data directly.
 		/// </summary>
@@ -191,36 +194,37 @@ namespace FluentlyHttpClient
 		/// <returns></returns>
 		public async Task<T> Return<T>()
 		{
-			var response = await ReturnAsResponse<T>();
+			var response = await ReturnAsResponse<T>().ConfigureAwait(false);
 			return response.Data;
 		}
 
 		/// <summary>
-		/// Send request and returns Http Response and also read content with the type specified (when success).
+		/// Send request and returns HTTP Response and also read content with the type specified (when success).
 		/// </summary>
 		/// <typeparam name="T">Type to return.</typeparam>
 		/// <returns>Return response with data typed.</returns>
 		public async Task<FluentHttpResponse<T>> ReturnAsResponse<T>()
 		{
-			var response = await ReturnAsResponse();
+			var response = await ReturnAsResponse().ConfigureAwait(false);
 			var genericResponse = new FluentHttpResponse<T>(response);
 
 			if (genericResponse.IsSuccessStatusCode)
-				genericResponse.Data = await genericResponse.RawResponse.Content.ReadAsAsync<T>(_fluentHttpClient.Formatters, _cancellationToken);
-			
+				genericResponse.Data = await genericResponse.Content.ReadAsAsync<T>(_fluentHttpClient.Formatters, _cancellationToken)
+											.ConfigureAwait(false);
+
 			return genericResponse;
 		}
 
 		/// <summary>
-		/// Send request and returns Http Response.
+		/// Send request and returns HTTP Response.
 		/// </summary>
-		/// <returns>Returns an http response.</returns>
-		public async Task<FluentHttpResponse> ReturnAsResponse() => await _fluentHttpClient.Send(this);
+		/// <returns>Returns an HTTP response.</returns>
+		public Task<FluentHttpResponse> ReturnAsResponse() => _fluentHttpClient.Send(this);
 
 		/// <summary>
-		/// Build http request.
+		/// Build HTTP request.
 		/// </summary>
-		/// <returns>Return http request instance.</returns>
+		/// <returns>Return HTTP request instance.</returns>
 		public FluentHttpRequest Build()
 		{
 			ValidateRequest();

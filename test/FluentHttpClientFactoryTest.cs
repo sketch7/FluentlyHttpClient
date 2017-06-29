@@ -1,4 +1,6 @@
 ﻿using FluentlyHttpClient;
+using FluentlyHttpClient.Test;
+using System;
 using System.Net.Http;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
@@ -8,7 +10,7 @@ namespace Test
 	public class ClientFactory_WithRequestBuilderDefaults
 	{
 		[Fact]
-		public void WithCustomRequestDefaults()
+		public void ShouldHaveWithCustomDefaultsSet()
 		{
 			var fluentHttpClientFactory = GetNewClientFactory();
 			fluentHttpClientFactory.CreateBuilder("abc")
@@ -22,6 +24,23 @@ namespace Test
 
 			Assert.NotNull(request);
 			Assert.Equal(HttpMethod.Put, request.Method);
+		}
+	}
+
+	public class ClientFactory_WithFormatters
+	{
+		[Fact]
+		public void ShouldSetClientFormatters()
+		{
+			var fluentHttpClientFactory = GetNewClientFactory();
+			fluentHttpClientFactory.CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.WithFormatters(formatter => formatter.Clear())
+				.Register();
+
+			var httpClient = fluentHttpClientFactory.Get("abc");
+
+			Assert.Equal(0, httpClient.Formatters.Count);
 		}
 	}
 
@@ -66,6 +85,25 @@ namespace Test
 					.Register();
 
 			Assert.Throws<ClientBuilderValidationException>(() => clientBuilder.Register());
+		}
+	}
+
+	public class ClientFactory_Remove
+	{
+		[Fact]
+		public async void ShouldDisposeClient()
+		{
+			var fluentHttpClientFactory = GetNewClientFactory();
+			fluentHttpClientFactory.CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.Register();
+
+			var httpClient = fluentHttpClientFactory.Get("abc");
+			var isRegistered = fluentHttpClientFactory.Remove("abc")
+									.Has("abc");
+
+			await Assert.ThrowsAsync<ObjectDisposedException>(() => httpClient.Get<Hero>("/api/heroes/azmodan"));
+			Assert.False(isRegistered);
 		}
 	}
 

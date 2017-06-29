@@ -4,19 +4,25 @@ using System.Threading.Tasks;
 namespace FluentlyHttpClient.Middleware
 {
 	/// <summary>
-	/// Logging middleware for Http client.
+	/// Logging middleware for HTTP client.
 	/// </summary>
 	public class LoggerHttpMiddleware : IFluentHttpMiddleware
 	{
 		private readonly FluentHttpRequestDelegate _next;
 		private readonly ILogger _logger;
 
+		/// <summary>
+		/// Initializes a new instance.
+		/// </summary>
 		public LoggerHttpMiddleware(FluentHttpRequestDelegate next, ILogger<LoggerHttpMiddleware> logger)
 		{
 			_next = next;
 			_logger = logger;
 		}
 
+		/// <summary>
+		/// Function to invoke.
+		/// </summary>
 		public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
 		{
 			if (_logger.IsEnabled(LogLevel.Information))

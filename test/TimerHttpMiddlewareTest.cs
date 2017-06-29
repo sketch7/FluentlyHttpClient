@@ -1,8 +1,8 @@
-﻿using System;
-using FluentlyHttpClient;
+﻿using FluentlyHttpClient;
 using FluentlyHttpClient.Middleware;
 using FluentlyHttpClient.Test;
 using RichardSzalay.MockHttp;
+using System;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -11,7 +11,7 @@ namespace Test
 	public class TimerHttpMiddlewareTest
 	{
 		[Fact]
-		public async void ShouldReturnContent()
+		public async void ShouldHaveTimeTaken()
 		{
 			var mockHttp = new MockHttpMessageHandler();
 			mockHttp.When("https://sketch7.com/api/heroes/azmodan")
@@ -20,8 +20,8 @@ namespace Test
 			var fluentHttpClientFactory = GetNewClientFactory();
 			fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.AddMiddleware<TimerHttpMiddleware>()
 				.WithMessageHandler(mockHttp)
+				.UseTimer()
 				.Register();
 
 			var httpClient = fluentHttpClientFactory.Get("sketch7");
@@ -31,6 +31,22 @@ namespace Test
 			Assert.NotNull(response.Data);
 			Assert.Equal("Azmodan", response.Data.Name);
 			Assert.NotEqual(TimeSpan.Zero, response.GetTimeTaken());
+		}
+
+		[Fact]
+		public async void ThrowsnWhenWarnThresholdIsZero()
+		{
+			var fluentHttpClientFactory = GetNewClientFactory();
+			fluentHttpClientFactory.CreateBuilder("sketch7")
+				.WithBaseUrl("https://sketch7.com")
+				.UseTimer(new TimerHttpMiddlewareOptions
+				{
+					WarnThreshold = TimeSpan.Zero
+				})
+				.Register();
+
+			var httpClient = fluentHttpClientFactory.Get("sketch7");
+			await Assert.ThrowsAsync<ArgumentException>(() => httpClient.Get<Hero>("/api/heroes/azmodan"));
 		}
 	}
 }

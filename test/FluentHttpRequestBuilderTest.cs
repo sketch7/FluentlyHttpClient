@@ -1,7 +1,10 @@
 ﻿using FluentlyHttpClient;
+using FluentlyHttpClient.Test;
+using RichardSzalay.MockHttp;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
+using static FluentlyHttpClient.Test.ServiceTestUtil;
 using static Test.RequestBuilderTestUtil;
 
 namespace Test
@@ -24,7 +27,7 @@ namespace Test
 					Hero = "azmodan"
 				}).Build();
 
-			Assert.Equal("en/heroes/azmodan", request.Url.ToString());
+			Assert.Equal("en/heroes/azmodan", request.Uri.ToString());
 		}
 	}
 
@@ -41,7 +44,7 @@ namespace Test
 					Filter = "all"
 				}).Build();
 
-			Assert.Equal("/org/sketch7?page=1&filter=all", request.Url.ToString());
+			Assert.Equal("/org/sketch7?page=1&filter=all", request.Uri.ToString());
 		}
 
 		[Fact]
@@ -55,7 +58,7 @@ namespace Test
 					Filter = "all"
 				}, lowerCaseQueryKeys: false).Build();
 
-			Assert.Equal("/org/sketch7?Page=1&Filter=all", request.Url.ToString());
+			Assert.Equal("/org/sketch7?Page=1&Filter=all", request.Uri.ToString());
 		}
 
 		[Fact]
@@ -69,7 +72,7 @@ namespace Test
 					Filter = "all"
 				}).Build();
 
-			Assert.Equal("/org/sketch7?hero=rex&page=1&filter=all", request.Url.ToString());
+			Assert.Equal("/org/sketch7?hero=rex&page=1&filter=all", request.Uri.ToString());
 		}
 
 		[Fact]
@@ -80,7 +83,7 @@ namespace Test
 				.WithQueryParams(new { })
 				.Build();
 
-			Assert.Equal("/org/sketch7", request.Url.ToString());
+			Assert.Equal("/org/sketch7", request.Uri.ToString());
 		}
 	}
 
@@ -152,6 +155,33 @@ namespace Test
 			Assert.Equal("hexII", chikoHeader);
 			Assert.NotNull(localeHeader);
 			Assert.Equal("mt-MT", localeHeader);
+		}
+	}
+
+	public class RequestBuilder_Return
+	{
+
+		[Fact]
+		public async void ReturnAsString()
+		{
+			var mockResponse = "{ 'name': 'Azmodan' }";
+			var mockHttp = new MockHttpMessageHandler();
+			mockHttp.When("https://sketch7.com/api/heroes/azmodan")
+				.Respond("application/json", mockResponse);
+
+			var fluentHttpClientFactory = GetNewClientFactory();
+			fluentHttpClientFactory.CreateBuilder("sketch7")
+				.WithBaseUrl("https://sketch7.com")
+				.WithMessageHandler(mockHttp)
+				.UseTimer()
+				.Register();
+
+			var httpClient = fluentHttpClientFactory.Get("sketch7");
+			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
+				.ReturnAsString();
+
+			Assert.NotNull(response);
+			Assert.Equal(mockResponse, response);
 		}
 	}
 }

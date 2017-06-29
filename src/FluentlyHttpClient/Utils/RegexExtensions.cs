@@ -3,6 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace FluentlyHttpClient
 {
+	/// <summary>
+	/// Extension for regex.
+	/// </summary>
 	public static class RegexExtensions
 	{
 		/// <summary>

@@ -1,56 +1,77 @@
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentlyHttpClient.Middleware
 {
 	/// <summary>
-	/// Http middleware runner (executor).
+	/// HTTP middleware runner (executor).
 	/// </summary>
 	public interface IFluentHttpMiddlewareRunner
 	{
 		/// <summary>
-		/// Run specified middlewares, and finally send the given request.
+		/// Run specified middleware, and finally send the given request.
 		/// </summary>
-		/// <param name="middleware">Middleware to pipe.</param>
+		/// <param name="middlewareCollection">Middleware to pipe.</param>
 		/// <param name="request">Request to send.</param>
 		/// <param name="send">Actual send function.</param>
 		/// <returns>Returns response.</returns>
-		Task<FluentHttpResponse> Run(IList<Type> middleware, FluentHttpRequest request, FluentHttpRequestDelegate send);
+		Task<FluentHttpResponse> Run(IList<MiddlewareConfig> middlewareCollection, FluentHttpRequest request, FluentHttpRequestDelegate send);
 	}
 
 	/// <summary>
-	/// Http middleware runner default implementation.
+	/// HTTP middleware runner default implementation.
 	/// </summary>
 	public class FluentHttpMiddlewareRunner : IFluentHttpMiddlewareRunner
 	{
 		private readonly IServiceProvider _serviceProvider;
 
+		/// <summary>
+		/// Initializes a new instance.
+		/// </summary>
 		public FluentHttpMiddlewareRunner(IServiceProvider serviceProvider)
 		{
 			_serviceProvider = serviceProvider;
 		}
 
-		public async Task<FluentHttpResponse> Run(IList<Type> middleware, FluentHttpRequest request, FluentHttpRequestDelegate send)
+		/// <summary>
+		/// Run specified middleware, and finally send the given request.
+		/// </summary>
+		/// <param name="middlewareCollection">Middleware to pipe.</param>
+		/// <param name="request">Request to send.</param>
+		/// <param name="send">Actual send function.</param>
+		/// <returns>Returns response.</returns>
+		public async Task<FluentHttpResponse> Run(IList<MiddlewareConfig> middlewareCollection, FluentHttpRequest request, FluentHttpRequestDelegate send)
 		{
-			if (middleware.Count == 0)
+			if (middlewareCollection.Count == 0)
 				return await send(request);
 
 			FluentHttpResponse httpResult = null;
 			IFluentHttpMiddleware previousMiddleware = null;
 
-			for (int i = middleware.Count; i-- > 0;)
+			for (int i = middlewareCollection.Count; i-- > 0;)
 			{
 				request.CancellationToken.ThrowIfCancellationRequested();
-				var type = middleware[i];
+				var middlewareOptions = middlewareCollection[i];
 
-				var isLast = middleware.Count - 1 == i;
+				var isLast = middlewareCollection.Count - 1 == i;
 				var isFirst = i == 0;
 				var next = isLast
 					? send
 					: previousMiddleware.Invoke;
-				var instance = (IFluentHttpMiddleware)ActivatorUtilities.CreateInstance(_serviceProvider, type, next);
+
+				object[] ctor;
+				if (middlewareOptions.Args == null)
+					ctor = new object[] { next };
+				else
+				{
+					ctor = new object[middlewareOptions.Args.Length + 1];
+					ctor[0] = next;
+					Array.Copy(middlewareOptions.Args, 0, ctor, 1, middlewareOptions.Args.Length);
+				}
+
+				var instance = (IFluentHttpMiddleware)ActivatorUtilities.CreateInstance(_serviceProvider, middlewareOptions.Type, ctor);
 
 				if (isFirst)
 					httpResult = await instance.Invoke(request);

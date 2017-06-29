@@ -1,6 +1,39 @@
 # Fluently Http Changelog
 
- [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...0.4.0) (2017-?-?)
+ [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/0.1.0...1.1.0) (201X-X-X)
+
+
+ ## [1.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...1.0.0) (2017-06-30)
+
+ - **http client factory:** `Remove` now disposes `IFluentHttpClient`.
+ - **http client builder:** Rename `AddMiddleware` to `UseMiddleware`.
+ - **http client builder:** `UseMiddleware<T>`, <T> is now constrained with `IFluentHttpMiddleware`.
+ - **http client builder:** implement `WithFormatters` to be able to configure formatters.
+
+ - **http client:** implement `IDisposable` in order to dispose underlying `HttpClient`.
+
+ - **request builder:** implement `ReturnAsString`, `ReturnAsStream` and `ReturnAsByteArray`.
+
+ - **request:** Rename `Url` to `Uri`.
+ - **request:** `Method` and `Uri` has now also setters.
+ - **request:** Add `Items` in order to share state across requests/response.
+
+ - **response:** `StatusCode` and `ReasonPhrase` has now also setters.
+ - **response:** `Items` now are shared with request.
+ - **response:** Expose `Content` from `Message`.
+
+ - **middleware:** Now supports arguments via `UseMiddleware<T>(args)`.
+
+ - **timer middleware:** Now supports options, for configure `WarnThreshold`.
+ - **timer middleware:** Add extension method `UseTimer` for convience.
+
+### BREAKING CHANGES
+ - `FluentHttpClientBuilder.AddMiddleware` has been renamed to `FluentHttpClientBuilder.UseMiddleware`.
+ - `FluentHttpClientBuilder.UseMiddleware` is now constrained with `IFluentHttpMiddleware`.
+ - `FluentHttpRequest.Url` has been renamed to `FluentHttpRequest.Uri`.
+ - `FluentHttpRequest` rename `RawRequest` to `Message`
+ - `FluentHttpResponse` rename `RawResponse` to `Message`
+
 
 ## [0.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.1...0.3.0) (2017-06-28)
 

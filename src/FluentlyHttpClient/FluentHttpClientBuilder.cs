@@ -1,6 +1,8 @@
-﻿using System;
+﻿using FluentlyHttpClient.Middleware;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 
 namespace FluentlyHttpClient
 {
@@ -18,10 +20,14 @@ namespace FluentlyHttpClient
 		private string _baseUrl;
 		private TimeSpan _timeout;
 		private readonly Dictionary<string, string> _headers = new Dictionary<string, string>();
-		private readonly List<Type> _middleware = new List<Type>();
+		private readonly List<MiddlewareConfig> _middleware = new List<MiddlewareConfig>();
 		private Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 		private HttpMessageHandler _httpMessageHandler;
+		private readonly MediaTypeFormatterCollection _formatters = new MediaTypeFormatterCollection();
 
+		/// <summary>
+		/// Initializes a new instance.
+		/// </summary>
 		public FluentHttpClientBuilder(IFluentHttpClientFactory fluentHttpClientFactory)
 		{
 			_fluentHttpClientFactory = fluentHttpClientFactory;
@@ -84,7 +90,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Set the identifier (unique key) for the Http Client.
+		/// Set the identifier (unique key) for the HTTP Client.
 		/// </summary>
 		/// <param name="identifier">Identifier to set.</param>
 		/// <returns>Returns client builder for chaining.</returns>
@@ -118,26 +124,38 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Register middleware for the HttpClient, which each request pass-through. <c>NOTE order matters</c>.
+		/// Configure formatters to be used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
 		/// </summary>
-		/// <typeparam name="T">Middleware type.</typeparam>
+		/// <param name="configure">Action to configure formatters.</param>
 		/// <returns>Returns client builder for chaining.</returns>
-		public FluentHttpClientBuilder AddMiddleware<T>() => AddMiddleware(typeof(T));
-
-		/// <summary>
-		/// Register middleware for the HttpClient, which each request pass-through. <c>NOTE order matters</c>.
-		/// </summary>
-		/// <returns>Returns client builder for chaining.</returns>
-		public FluentHttpClientBuilder AddMiddleware(Type middleware)
+		public FluentHttpClientBuilder WithFormatters(Action<MediaTypeFormatterCollection> configure)
 		{
-			_middleware.Add(middleware);
+			configure(_formatters);
 			return this;
 		}
 
 		/// <summary>
-		/// Build up http client options.
+		/// Register middleware for the HTTP client, which each request pass-through. <c>NOTE order matters</c>.
 		/// </summary>
-		/// <returns>Returns http client options.</returns>
+		/// <typeparam name="T">Middleware type.</typeparam>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder UseMiddleware<T>(params object[] args) where T : IFluentHttpMiddleware
+			=> UseMiddleware(typeof(T), args);
+
+		/// <summary>
+		/// Register middleware for the HTTP client, which each request pass-through. <c>NOTE order matters</c>.
+		/// </summary>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder UseMiddleware(Type middleware, params object[] args)
+		{
+			_middleware.Add(new MiddlewareConfig(middleware, args));
+			return this;
+		}
+
+		/// <summary>
+		/// Build up HTTP client options.
+		/// </summary>
+		/// <returns>Returns HTTP client options.</returns>
 		public FluentHttpClientOptions Build()
 		{
 			var options = new FluentHttpClientOptions
@@ -148,7 +166,8 @@ namespace FluentlyHttpClient
 				Headers = _headers,
 				Middleware = _middleware,
 				RequestBuilderDefaults = _requestBuilderDefaults,
-				HttpMessageHandler = _httpMessageHandler
+				HttpMessageHandler = _httpMessageHandler,
+				Formatters = _formatters
 			};
 			return options;
 		}
