@@ -1,5 +1,7 @@
-﻿using FluentlyHttpClient;
+﻿using System;
+using FluentlyHttpClient;
 using System.Net.Http;
+using FluentlyHttpClient.Test;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -66,6 +68,25 @@ namespace Test
 					.Register();
 
 			Assert.Throws<ClientBuilderValidationException>(() => clientBuilder.Register());
+		}
+	}
+
+	public class ClientFactory_Remove
+	{
+		[Fact]
+		public async void ShouldDisposeClient()
+		{
+			var fluentHttpClientFactory = GetNewClientFactory();
+			fluentHttpClientFactory.CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.Register();
+
+			var httpClient = fluentHttpClientFactory.Get("abc");
+			var isRegistered = fluentHttpClientFactory.Remove("abc")
+									.Has("abc");
+
+			await Assert.ThrowsAsync<ObjectDisposedException>(() => httpClient.Get<Hero>("/api/heroes/azmodan"));
+			Assert.False(isRegistered);
 		}
 	}
 

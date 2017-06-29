@@ -11,7 +11,7 @@ using FluentlyHttpClient.Middleware;
 
 namespace FluentlyHttpClient
 {
-	public interface IFluentHttpClient
+	public interface IFluentHttpClient : IDisposable
 	{
 		/// <summary>
 		/// Get the identifier (key) for this instance, which is registered with, within the factory.
@@ -167,7 +167,8 @@ namespace FluentlyHttpClient
 			if (fluentRequest == null) throw new ArgumentNullException(nameof(fluentRequest));
 			var response = await _middlewareRunner.Run(_middleware, fluentRequest, async request =>
 			{
-				var result = await RawHttpClient.SendAsync(request.RawRequest, request.CancellationToken).ConfigureAwait(false);
+				var result = await RawHttpClient.SendAsync(request.RawRequest, request.CancellationToken)
+					.ConfigureAwait(false);
 				return ToFluentResponse(result);
 			}).ConfigureAwait(false);
 
@@ -190,6 +191,14 @@ namespace FluentlyHttpClient
 				httpClient.DefaultRequestHeaders.Add(headerEntry.Key, headerEntry.Value);
 
 			return httpClient;
+		}
+
+		/// <summary>
+		/// Disposes the underlying <see cref="RawHttpClient"/>.
+		/// </summary>
+		public void Dispose()
+		{
+			RawHttpClient?.Dispose();
 		}
 
 		private static FluentHttpResponse ToFluentResponse(HttpResponseMessage response) =>

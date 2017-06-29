@@ -2,6 +2,10 @@
 
  [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...0.4.0) (2017-?-?)
 
+ - **http client:** implemented `IDisposable` in order to dispose underlying `HttpClient`.
+
+ - **http client factory:** `Remove` now disposes `IFluentHttpClient`.
+
 ## [0.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.1...0.3.0) (2017-06-28)
 
 ### Features

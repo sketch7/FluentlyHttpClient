@@ -41,9 +41,9 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Remove/unregister Http Client.
 		/// </summary>
-		/// <param name="identity">Identity to remove.</param>
+		/// <param name="identifier">Identity to remove.</param>
 		/// <returns></returns>
-		IFluentHttpClientFactory Remove(string identity);
+		IFluentHttpClientFactory Remove(string identifier);
 
 		/// <summary>
 		/// Determine whether identifier is already registered.
@@ -82,7 +82,7 @@ namespace FluentlyHttpClient
 		/// Get <see cref="IFluentHttpClient"/> registered by identifier.
 		/// </summary>
 		/// <param name="identifier">Identifier to get.</param>
-		/// <exception cref="KeyNotFoundException">Throws an exception when key is not found.</exception>
+		/// <exception cref="KeyNotFoundException">Throws an exception when identifier is not found.</exception>
 		/// <returns>Returns http client.</returns>
 		public IFluentHttpClient Get(string identifier)
 		{
@@ -132,12 +132,15 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Remove/unregister Http Client.
 		/// </summary>
-		/// <param name="identity">Identity to remove.</param>
+		/// <param name="identifier">Identity to remove.</param>
 		/// <returns></returns>
-		public IFluentHttpClientFactory Remove(string identity)
+		public IFluentHttpClientFactory Remove(string identifier)
 		{
-			_clientsMap.Remove(identity);
-			// todo: dispose?
+			if (!_clientsMap.TryGetValue(identifier, out var client))
+				return this;
+
+			_clientsMap.Remove(identifier);
+			client.Dispose();
 			return this;
 		}
 
