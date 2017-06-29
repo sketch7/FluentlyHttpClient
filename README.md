@@ -22,7 +22,7 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
    - Logger and Timer middleware out of the box
  - Multiple HttpClient support with a Fluent API for Client builder
  - Customizable Formatters (JSON, XML out of the box)
- - Url interpolation e.g. person/{id}
+ - Url interpolation and query params e.g. person/{id} / person?id=1
  - Highly extensible
 
 ## Installation
@@ -61,7 +61,6 @@ public void Configure(IApplicationBuilder app, IFluentHttpClientFactory fluentHt
     .WithBaseUrl("http://sketch7.com") // required
     .WithHeader("user-agent", "slabs-testify")
     .WithTimeout(5)
-    .AddMiddleware<TimerHttpMiddleware>()
     .AddMiddleware<LoggerHttpMiddleware>()
     .Register(); // register client builder to factory
 }
@@ -108,19 +107,59 @@ Hero hero = await httpClient.CreateRequest("/api/heroes/azmodan")
     .Return<Hero>(); // return deserialized result directly
 ```
 
-### Using http client builder
-*todo*
+### Using fluent http client builder
+By using the http client builder it enable us to configure and http client in an expressive way.
 
-- Add multiple
-- Add via `Add`
+#### Register to factory
 
 ```cs
-  // or instead of using `.Register()`
-  fluentHttpClientFactory.Add(clientBuilder);
+var clientBuilder = fluentHttpClientFactory.CreateBuilder(identifier: "platform")
+    .WithBaseUrl("http://sketch7.com");
+fluentHttpClientFactory.Add(clientBuilder);
+
+// or similarly via the builder itself.
+clientBuilder.Register().
+```
+
+#### Register multiple + share
+
+There are multiple ways how to register multiple clients, this is a nice way to do it.
+```cs
+fluentHttpClientFactory.CreateBuilder("platform")
+  // shared
+  .WithHeader("user-agent", "slabs-testify")
+  .WithTimeout(5)
+  .AddMiddleware<TimerHttpMiddleware>()
+  .AddMiddleware<LoggerHttpMiddleware>()
+
+  // platform
+  .WithBaseUrl("https://platform.com")
+  .Register()
+
+  // big-data - reuse all above and replace the below
+  .Withdentifier("big-data")
+  .WithBaseUrl("https://api.big-data.com")
+  .Register();
+```
+
+#### http client builder goodies
+
+```cs
+// message handler - set HTTP handler stack to use for sending requests.
+var mockHttp = new MockHttpMessageHandler();
+httpClientBuilder.WithMessageHandler(mockHttp)
+
+// request builder defaults - handler to customize defaults for request builder
+httpClientBuilder.WithRequestBuilderDefaults(builder => builder.AsPut())
 ```
 
 ### Using request builder
 *todo*
+
+- Query params
+- Interpolate
+- Returns: Response/Response<T>/Return
+
 
 ### Re-using http client
 *todo*
