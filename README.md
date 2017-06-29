@@ -214,7 +214,7 @@ public static class FluentHttpClientFactoryExtensions
 }
 ```
 
-### Implementing a middleware
+### Middleware
 Implementing a middleware for the HTTP client is quite straight forward, its very similar to 
 ASP.NET Core MVC middleware.
 
@@ -262,7 +262,6 @@ namespace FluentlyHttpClient
   }
 }
 ```
-*todo*
 
 ### Extending
 One of the key features is the ability to extend its own APIs easily.
