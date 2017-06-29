@@ -209,12 +209,59 @@ an extension method for it.
 ```cs
 public static class FluentHttpClientFactoryExtensions
 {
-  public static IFluentHttpClient GetPlatform(this IFluentHttpClientFactory factory) 
+  public static IFluentHttpClient GetPlatformClient(this IFluentHttpClientFactory factory) 
     => factory.Get("platform");
 }
 ```
 
 ### Implementing a middleware
+Implementing a middleware for the HTTP client is quite straight forward, its very similar to 
+ASP.NET Core MVC middleware.
+
+These are provided out of the box:
+- Timer Middleware - Determine how long request/response takes.
+- Logger Middleware - Log request/response.
+
+The following is the timer middleware implementation (a bit simplified).
+
+```cs
+public class TimerHttpMiddleware : IFluentHttpMiddleware
+{
+  private readonly FluentHttpRequestDelegate _next;
+  private readonly ILogger _logger;
+
+  public TimerHttpMiddleware(FluentHttpRequestDelegate next, ILogger<TimerHttpMiddleware> logger)
+  {
+    _next = next;
+    _logger = logger;
+  }
+
+  public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
+  {
+    var watch = Stopwatch.StartNew();
+    var response = await _next(request); // continue middleware chain
+    var elapsed = watch.Elapsed;
+    _logger.LogInformation("Executed request {request} in {timeTakenMillis}ms", request, elapsed.TotalMilliseconds);
+    response.SetTimeTaken(elapsed);
+    return response;
+  }
+}
+
+// Response Extension methods - useful to extend FluentHttpResponse
+namespace FluentlyHttpClient
+{
+  public static class TimerFluentResponseExtensions
+  {
+    private const string TimeTakenKey = "TIME_TAKEN";
+
+    public static void SetTimeTaken(this FluentHttpResponse response, TimeSpan value)
+      => response.Items.Add(TimeTakenKey, value);
+
+    public static TimeSpan GetTimeTaken(this FluentHttpResponse response)
+      => (TimeSpan)response.Items[TimeTakenKey];
+  }
+}
+```
 *todo*
 
 ### Extending
