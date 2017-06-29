@@ -70,7 +70,7 @@ public void Configure(IApplicationBuilder app, IFluentHttpClientFactory fluentHt
 ### Basic usage
 
 #### Simple API
-Using the simple API (non fluent) is good for simple calls, as it has compact API.
+Using the simple API (non fluent), good for simple calls as it has minimal API.
 
 ```cs
 // inject factory and get client
