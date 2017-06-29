@@ -183,7 +183,7 @@ namespace FluentlyHttpClient
 			_cancellationToken = cancellationToken;
 			return this;
 		}
-		
+
 		/// <summary>
 		/// Send request, read content with the type specified (when success) and return data directly.
 		/// </summary>
@@ -191,7 +191,7 @@ namespace FluentlyHttpClient
 		/// <returns></returns>
 		public async Task<T> Return<T>()
 		{
-			var response = await ReturnAsResponse<T>();
+			var response = await ReturnAsResponse<T>().ConfigureAwait(false);
 			return response.Data;
 		}
 
@@ -202,12 +202,13 @@ namespace FluentlyHttpClient
 		/// <returns>Return response with data typed.</returns>
 		public async Task<FluentHttpResponse<T>> ReturnAsResponse<T>()
 		{
-			var response = await ReturnAsResponse();
+			var response = await ReturnAsResponse().ConfigureAwait(false);
 			var genericResponse = new FluentHttpResponse<T>(response);
 
 			if (genericResponse.IsSuccessStatusCode)
-				genericResponse.Data = await genericResponse.Content.ReadAsAsync<T>(_fluentHttpClient.Formatters, _cancellationToken);
-			
+				genericResponse.Data = await genericResponse.Content.ReadAsAsync<T>(_fluentHttpClient.Formatters, _cancellationToken)
+											.ConfigureAwait(false);
+
 			return genericResponse;
 		}
 
@@ -215,7 +216,7 @@ namespace FluentlyHttpClient
 		/// Send request and returns HTTP Response.
 		/// </summary>
 		/// <returns>Returns an HTTP response.</returns>
-		public async Task<FluentHttpResponse> ReturnAsResponse() => await _fluentHttpClient.Send(this);
+		public Task<FluentHttpResponse> ReturnAsResponse() => _fluentHttpClient.Send(this);
 
 		/// <summary>
 		/// Build HTTP request.

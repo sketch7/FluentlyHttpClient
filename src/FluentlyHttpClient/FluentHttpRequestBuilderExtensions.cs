@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace FluentlyHttpClient
 {
@@ -74,5 +76,34 @@ namespace FluentlyHttpClient
 			return builder;
 		}
 
+		/// <summary>
+		/// Send request and read content as string.
+		/// </summary>
+		/// <returns>Returns content as string.</returns>
+		public static async Task<string> ReturnAsString(this FluentHttpRequestBuilder builder)
+		{
+			var response = await builder.ReturnAsResponse().ConfigureAwait(false);
+			return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+		}
+
+		/// <summary>
+		/// Send request and return as stream.
+		/// </summary>
+		/// <returns>Returns content as stream.</returns>
+		public static async Task<Stream> ReturnAsStream(this FluentHttpRequestBuilder builder)
+		{
+			var response = await builder.ReturnAsResponse().ConfigureAwait(false);
+			return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+		}
+
+		/// <summary>
+		/// Send request and return as byte array.
+		/// </summary>
+		/// <returns>Returns content as byte array.</returns>
+		public static async Task<byte[]> ReturnAsByteArray(this FluentHttpRequestBuilder builder)
+		{
+			var response = await builder.ReturnAsResponse().ConfigureAwait(false);
+			return await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+		}
 	}
 }

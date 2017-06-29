@@ -2,11 +2,13 @@
 
  [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...0.4.0) (2017-?-?)
 
- - **http client:** implemented `IDisposable` in order to dispose underlying `HttpClient`.
-
  - **http client factory:** `Remove` now disposes `IFluentHttpClient`.
  - **http client builder:** Rename `AddMiddleware` to `UseMiddleware`.
  - **http client builder:** `UseMiddleware<T>`, <T> is now constrained with `IFluentHttpMiddleware`.
+
+ - **http client:** implement `IDisposable` in order to dispose underlying `HttpClient`.
+
+ - **request builder:** implement `ReturnAsString`, `ReturnAsStream` and `ReturnAsByteArray`.
 
  - **request:** Rename `Url` to `Uri`.
  - **request:** `Method` and `Uri` has now also setters.
