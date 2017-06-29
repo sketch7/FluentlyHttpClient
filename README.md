@@ -105,10 +105,10 @@ Hero hero = await httpClient.CreateRequest("/api/heroes/azmodan")
     .Return<Hero>(); // return deserialized result directly
 ```
 
-### Fluent http client builder
+### Fluent Http Client Builder
 Http client builder is used to configure http clients in a fluent way.
 
-#### Register to factory
+#### Register to Factory
 
 ```cs
 var clientBuilder = fluentHttpClientFactory.CreateBuilder(identifier: "platform")
@@ -140,7 +140,7 @@ fluentHttpClientFactory.CreateBuilder("platform")
     .Register();
 ```
 
-#### Http client builder extra goodies
+#### Http Client Builder extra goodies
 
 ```cs
 // message handler - set HTTP handler stack to use for sending requests
@@ -203,7 +203,7 @@ FluentHttpResponse<Hero> response = requestBuilder.ReturnAsResponse<Hero>();
 Hero hero = requestBuilder.Return<Hero>();
 ```
 
-### Re-using http client from factory
+### Re-using Http Client from Factory
 As a best practice rather than using a string each time for the identifier, it's better
 to create an extension method for it.
 
@@ -338,7 +338,7 @@ TimeSpan timeTaken = (TimeSpan)response.Items["TIME_TAKEN"];
 One of the key features is the ability to extend its own APIs easily.
 In fact, several functions of the library itself are extensions, by using extension methods.
 
-#### Extending request builder
+#### Extending Request Builder
 An example of how can the request builder be extended.
 
 ```cs
