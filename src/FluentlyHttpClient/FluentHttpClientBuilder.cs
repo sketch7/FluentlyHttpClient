@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentlyHttpClient.Middleware;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 
@@ -18,7 +19,7 @@ namespace FluentlyHttpClient
 		private string _baseUrl;
 		private TimeSpan _timeout;
 		private readonly Dictionary<string, string> _headers = new Dictionary<string, string>();
-		private readonly List<Type> _middleware = new List<Type>();
+		private readonly List<MiddlewareOptions> _middleware = new List<MiddlewareOptions>();
 		private Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 		private HttpMessageHandler _httpMessageHandler;
 
@@ -118,19 +119,19 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Register middleware for the HttpClient, which each request pass-through. <c>NOTE order matters</c>.
+		/// Register middleware for the http client, which each request pass-through. <c>NOTE order matters</c>.
 		/// </summary>
 		/// <typeparam name="T">Middleware type.</typeparam>
 		/// <returns>Returns client builder for chaining.</returns>
-		public FluentHttpClientBuilder AddMiddleware<T>() => AddMiddleware(typeof(T));
+		public FluentHttpClientBuilder UseMiddleware<T>(params object[] args) => UseMiddleware(typeof(T), args);
 
 		/// <summary>
 		/// Register middleware for the HttpClient, which each request pass-through. <c>NOTE order matters</c>.
 		/// </summary>
 		/// <returns>Returns client builder for chaining.</returns>
-		public FluentHttpClientBuilder AddMiddleware(Type middleware)
+		public FluentHttpClientBuilder UseMiddleware(Type middleware, params object[] args)
 		{
-			_middleware.Add(middleware);
+			_middleware.Add(new MiddlewareOptions(middleware, args));
 			return this;
 		}
 

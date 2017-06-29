@@ -62,7 +62,7 @@ public void Configure(IApplicationBuilder app, IFluentHttpClientFactory fluentHt
     .WithBaseUrl("http://sketch7.com") // required
     .WithHeader("user-agent", "slabs-testify")
     .WithTimeout(5)
-    .AddMiddleware<LoggerHttpMiddleware>()
+    .UseMiddleware<LoggerHttpMiddleware>()
     .Register(); // register client builder to factory
 }
 ```
@@ -130,8 +130,8 @@ fluentHttpClientFactory.CreateBuilder("platform")
     // shared
     .WithHeader("user-agent", "slabs-testify")
     .WithTimeout(5)
-    .AddMiddleware<TimerHttpMiddleware>()
-    .AddMiddleware<LoggerHttpMiddleware>()
+    .UseTimer()
+    .UseMiddleware<LoggerHttpMiddleware>()
 
     // platform
     .WithBaseUrl("https://platform.com")
@@ -221,10 +221,10 @@ ASP.NET Core MVC middleware.
 
 These are provided out of the box:
 
-| Middleware | Description                                |
-|------------|--------------------------------------------|
-| Timer      | Determine how long request/response takes. |
-| Logger     | Log request/response.                      |
+| Middleware | Description                                   |
+|------------|-----------------------------------------------|
+| Timer      | Determine how long (timespan) requests takes. |
+| Logger     | Log request/response.                         |
 
 The following is the timer middleware implementation *(bit simplified)*.
 
@@ -232,11 +232,13 @@ The following is the timer middleware implementation *(bit simplified)*.
 public class TimerHttpMiddleware : IFluentHttpMiddleware
 {
     private readonly FluentHttpRequestDelegate _next;
+    private readonly TimerHttpMiddlewareOptions _options;
     private readonly ILogger _logger;
 
-    public TimerHttpMiddleware(FluentHttpRequestDelegate next, ILogger<TimerHttpMiddleware> logger)
+    public TimerHttpMiddleware(FluentHttpRequestDelegate next, TimerHttpMiddlewareOptions options, ILogger<TimerHttpMiddleware> logger)
     {
         _next = next;
+        _options = options;
         _logger = logger;
     }
 
@@ -251,9 +253,9 @@ public class TimerHttpMiddleware : IFluentHttpMiddleware
     }
 }
 
-// Response Extension methods - useful to extend FluentHttpResponse
 namespace FluentlyHttpClient
 {
+    // Response extension methods - useful to extend FluentHttpResponse
     public static class TimerFluentResponseExtensions
     {
         private const string TimeTakenKey = "TIME_TAKEN";
@@ -264,8 +266,29 @@ namespace FluentlyHttpClient
         public static TimeSpan GetTimeTaken(this FluentHttpResponse response)
           => (TimeSpan)response.Items[TimeTakenKey];
     }
+
+    // FluentHttpClientBuilder extension methods - add 
+    public static class FluentlyHttpMiddlwareExtensions
+    {
+        public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, TimerHttpMiddlewareOptions options = null)
+            => builder.UseMiddleware<TimerHttpMiddleware>(options ?? new TimerHttpMiddlewareOptions());
+    }
 }
+
+// response extension usage
+TimeSpan timeTaken = response.GetTimeTaken();
 ```
+
+#### Middleware options
+*todo*
+
+#### Request/Response items
+*todo*
+
+#### Register middleware
+*todo*
+As a best practice its best to provide an extension method for usage such as `UseTimer`.
+
 
 ### Extending
 One of the key features is the ability to extend its own APIs easily.

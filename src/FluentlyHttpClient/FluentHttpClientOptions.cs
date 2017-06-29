@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using FluentlyHttpClient.Middleware;
 
 namespace FluentlyHttpClient
 {
@@ -32,7 +33,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets or sets the middleware to be used for each request.
 		/// </summary>
-		public List<Type> Middleware { get; set; }
+		public List<MiddlewareOptions> Middleware { get; set; }
 
 		/// <summary>
 		/// Handler to customize request on creation. In order to specify defaults as desired, or so.

@@ -5,6 +5,16 @@
  - **http client:** implemented `IDisposable` in order to dispose underlying `HttpClient`.
 
  - **http client factory:** `Remove` now disposes `IFluentHttpClient`.
+ - **http client builder:** Rename `AddMiddleware` to `UseMiddleware`.
+
+ - **middleware:** Now supports arguments via `UseMiddleware<T>(args)`
+
+ - **timer middleware:** Now supports options, for configure `WarnThreshold`.
+ - **timer middleware:** Add extension method `UseTimer` for convience.
+
+### BREAKING CHANGES
+ - `FluentHttpClientBuilder.AddMiddleware` has been renamed to `FluentHttpClientBuilder.UseMiddleware`
+
 
 ## [0.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.1...0.3.0) (2017-06-28)
 

@@ -104,7 +104,7 @@ namespace FluentlyHttpClient
 		private readonly Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 		private readonly IServiceProvider _serviceProvider;
 		private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
-		private readonly IList<Type> _middleware;
+		private readonly List<MiddlewareOptions> _middleware;
 
 		public FluentHttpClient(FluentHttpClientOptions options, IServiceProvider serviceProvider, IFluentHttpMiddlewareRunner middlewareRunner)
 		{
