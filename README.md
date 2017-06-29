@@ -216,6 +216,8 @@ public static class FluentHttpClientFactoryExtensions
 ```
 
 ### Middleware
+Middleware are used to intercept request/response to add additional logic, or alter request/response.
+
 Implementing a middleware for the HTTP client is quite straight forward, and its very similar to
 ASP.NET Core MVC middleware.
 
@@ -226,7 +228,11 @@ These are provided out of the box:
 | Timer      | Determine how long (timespan) requests takes. |
 | Logger     | Log request/response.                         |
 
-The following is the timer middleware implementation *(bit simplified)*.
+Two important points to keep in mind:
+ - First argument within constructor has to be `FluentHttpRequestDelegate` which is generally called `next`.
+ - During `Invoke` the `await _next(request);` must be invoked and return the response, in order to continue the flow.
+
+ The following is the timer middleware implementation *(bit simplified)*.
 
 ```cs
 public class TimerHttpMiddleware : IFluentHttpMiddleware
@@ -245,7 +251,7 @@ public class TimerHttpMiddleware : IFluentHttpMiddleware
     public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
     {
         var watch = Stopwatch.StartNew();
-        var response = await _next(request); // continue middleware chain
+        var response = await _next(request); // this needs to be done to continue middleware flow
         var elapsed = watch.Elapsed;
         _logger.LogInformation("Executed request {request} in {timeTakenMillis}ms", request, elapsed.TotalMilliseconds);
         response.SetTimeTaken(elapsed);
@@ -280,14 +286,52 @@ TimeSpan timeTaken = response.GetTimeTaken();
 ```
 
 #### Middleware options
-*todo*
+Options to middleware can be passed via an argument. Note it has to be the second argument within constructor.
 
-#### Request/Response items
-*todo*
+```cs
+                                                                       V - Options
+public TimerHttpMiddleware(FluentHttpRequestDelegate next, TimerHttpMiddlewareOptions options, ILogger<TimerHttpMiddleware> logger)
+```
 
-#### Register middleware
-*todo*
+Options can be passed when register a middleware.
+
+#### Use a middleware
+
+```cs
+fluentHttpClientFactory.CreateBuilder("platform")
+    .UseMiddleware<LoggerHttpMiddleware>() // register a middleware (without args)
+    .UseMiddleware<TimerHttpMiddlewareOptions>(new TimerHttpMiddlewareOptions
+        {
+            WarnThreshold = TimeSpan.Zero
+        }) // register a middleware with options (args)
+    .UseTimer(new TimerHttpMiddlewareOptions
+        {
+            WarnThreshold = TimeSpan.Zero
+        }) // register a middleware using extenion method
+```
 As a best practice its best to provide an extension method for usage such as `UseTimer`.
+Especially if it has any arguments (options), as it won't be convenient to use.
+
+
+#### Response items
+When using middleware additional data can be added to the response via the `FluentHttpResponse.Items`,
+in order to extend it.
+
+As an example if we look at the timer middleware example its making use of it.
+
+```cs
+// adding item
+response.SetTimeTaken(elapsed);
+
+// or similarly without extension method
+response.Items.Add("TIME_TAKEN", value)
+
+// reading item
+TimeSpan timeTaken = response.GetTimeTaken();
+
+// or similarly without extension method
+TimeSpan timeTaken = (TimeSpan)response.Items["TIME_TAKEN"];
+```
 
 
 ### Extending
