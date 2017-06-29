@@ -24,6 +24,8 @@
  - `FluentHttpClientBuilder.AddMiddleware` has been renamed to `FluentHttpClientBuilder.UseMiddleware`.
  - `FluentHttpClientBuilder.UseMiddleware` is now constrained with `IFluentHttpMiddleware`.
  - `FluentHttpRequest.Url` has been renamed to `FluentHttpRequest.Uri`.
+ - `FluentHttpRequest` rename `RawRequest` to `Message`
+ - `FluentHttpResponse` rename `RawResponse` to `Message`
 
 
 ## [0.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.1...0.3.0) (2017-06-28)

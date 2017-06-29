@@ -206,7 +206,7 @@ namespace FluentlyHttpClient
 			var genericResponse = new FluentHttpResponse<T>(response);
 
 			if (genericResponse.IsSuccessStatusCode)
-				genericResponse.Data = await genericResponse.RawResponse.Content.ReadAsAsync<T>(_fluentHttpClient.Formatters, _cancellationToken);
+				genericResponse.Data = await genericResponse.Message.Content.ReadAsAsync<T>(_fluentHttpClient.Formatters, _cancellationToken);
 			
 			return genericResponse;
 		}

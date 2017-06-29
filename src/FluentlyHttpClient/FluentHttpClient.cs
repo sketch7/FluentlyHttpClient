@@ -167,7 +167,7 @@ namespace FluentlyHttpClient
 			if (fluentRequest == null) throw new ArgumentNullException(nameof(fluentRequest));
 			var response = await _middlewareRunner.Run(_middleware, fluentRequest, async request =>
 			{
-				var result = await RawHttpClient.SendAsync(request.RawRequest, request.CancellationToken)
+				var result = await RawHttpClient.SendAsync(request.Message, request.CancellationToken)
 					.ConfigureAwait(false);
 				return ToFluentResponse(result, request.Items);
 			}).ConfigureAwait(false);

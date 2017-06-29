@@ -27,15 +27,15 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets the underlying HTTP request message.
 		/// </summary>
-		public HttpRequestMessage RawRequest { get; }
+		public HttpRequestMessage Message { get; }
 
 		/// <summary>
 		/// Gets or sets the <see cref="HttpMethod"/> for the HTTP request.
 		/// </summary>
 		public HttpMethod Method
 		{
-			get => RawRequest.Method;
-			set => RawRequest.Method = value;
+			get => Message.Method;
+			set => Message.Method = value;
 		}
 
 	/// <summary>
@@ -43,14 +43,14 @@ namespace FluentlyHttpClient
 	/// </summary>
 	public Uri Uri
 		{
-			get => RawRequest.RequestUri;
-			set => RawRequest.RequestUri = value;
+			get => Message.RequestUri;
+			set => Message.RequestUri = value;
 		}
 
 	/// <summary>
 	/// Gets the collection of HTTP request headers.
 	/// </summary>
-	public HttpRequestHeaders Headers => RawRequest.Headers;
+	public HttpRequestHeaders Headers => Message.Headers;
 		
 		/// <summary>
 		/// Determine whether has success status otherwise it will throw or not.
@@ -67,9 +67,9 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public IDictionary<object, object> Items { get; set; } = new Dictionary<object, object>();
 
-		public FluentHttpRequest(HttpRequestMessage rawRequest)
+		public FluentHttpRequest(HttpRequestMessage message)
 		{
-			RawRequest = rawRequest;
+			Message = message;
 		}
 
 		public override string ToString() => $"{DebuggerDisplay}";
@@ -86,7 +86,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public T Data { get; set; }
 
-		public FluentHttpResponse(FluentHttpResponse response) : base(response.RawResponse)
+		public FluentHttpResponse(FluentHttpResponse response) : base(response.Message)
 		{
 			Items = response.Items;
 		}
@@ -100,45 +100,45 @@ namespace FluentlyHttpClient
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public class FluentHttpResponse
 	{
-		protected string DebuggerDisplay => $"[{(int)StatusCode}] '{ReasonPhrase}', Request: {{ [{RawResponse.RequestMessage.Method}] '{RawResponse.RequestMessage.RequestUri}' }}";
+		protected string DebuggerDisplay => $"[{(int)StatusCode}] '{ReasonPhrase}', Request: {{ [{Message.RequestMessage.Method}] '{Message.RequestMessage.RequestUri}' }}";
 
 		/// <summary>
 		/// Gets the underlying HTTP response message.
 		/// </summary>
-		public HttpResponseMessage RawResponse { get; }
+		public HttpResponseMessage Message { get; }
 
 		/// <summary>
 		/// Gets or sets the status code of the HTTP response.
 		/// </summary>
 		public HttpStatusCode StatusCode
 		{
-			get => RawResponse.StatusCode;
-			set => RawResponse.StatusCode = value;
+			get => Message.StatusCode;
+			set => Message.StatusCode = value;
 		}
 
 	/// <summary>
 	/// Determine whether the HTTP response was successful.
 	/// </summary>
-	public bool IsSuccessStatusCode => RawResponse.IsSuccessStatusCode;
+	public bool IsSuccessStatusCode => Message.IsSuccessStatusCode;
 
 		/// <summary>
 		/// Throws an exception if the <see cref="IsSuccessStatusCode"/> is set to false.
 		/// </summary>
-		public void EnsureSuccessStatusCode() => RawResponse.EnsureSuccessStatusCode();
+		public void EnsureSuccessStatusCode() => Message.EnsureSuccessStatusCode();
 
 		/// <summary>
 		/// Gets or sets the reason phrase which typically is sent by the server together with the status code.
 		/// </summary>
 		public string ReasonPhrase
 		{
-			get => RawResponse.ReasonPhrase;
-			set => RawResponse.ReasonPhrase = value;
+			get => Message.ReasonPhrase;
+			set => Message.ReasonPhrase = value;
 		}
 
 		/// <summary>
 		/// Gets the collection of HTTP response headers.
 		/// </summary>
-		public HttpResponseHeaders Headers => RawResponse.Headers;
+		public HttpResponseHeaders Headers => Message.Headers;
 
 		/// <summary>
 		/// Gets or sets a key/value collection that can be used to share data within the scope of request/response.
@@ -147,9 +147,9 @@ namespace FluentlyHttpClient
 
 		public override string ToString() => $"{DebuggerDisplay}";
 
-		public FluentHttpResponse(HttpResponseMessage rawResponse, IDictionary<object, object> items = null)
+		public FluentHttpResponse(HttpResponseMessage message, IDictionary<object, object> items = null)
 		{
-			RawResponse = rawResponse;
+			Message = message;
 			Items = items ?? new Dictionary<object, object>();
 		}
 	}
