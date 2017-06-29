@@ -11,7 +11,7 @@ namespace Test
 	public class TimerHttpMiddlewareTest
 	{
 		[Fact]
-		public async void ShouldReturnContent()
+		public async void ShouldHaveTimeTaken()
 		{
 			var mockHttp = new MockHttpMessageHandler();
 			mockHttp.When("https://sketch7.com/api/heroes/azmodan")
