@@ -1,4 +1,5 @@
 ﻿using FluentlyHttpClient;
+using FluentlyHttpClient.Middleware;
 using FluentlyHttpClient.Test;
 using RichardSzalay.MockHttp;
 using System;
@@ -38,7 +39,10 @@ namespace Test
 			var fluentHttpClientFactory = GetNewClientFactory();
 			fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.UseTimer()
+				.UseTimer(new TimerHttpMiddlewareOptions
+				{
+					WarnThreshold = TimeSpan.Zero
+				})
 				.Register();
 
 			var httpClient = fluentHttpClientFactory.Get("sketch7");
