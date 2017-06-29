@@ -56,7 +56,7 @@ Configure a client using the Http Factory (you need at least one).
 // using startup
 public void Configure(IApplicationBuilder app, IFluentHttpClientFactory fluentHttpClientFactory)
 {
-  // keep a note of the identifier, its needed later.
+  // keep a note of the identifier, its needed later
   fluentHttpClientFactory.CreateBuilder(identifier: "platform")
     .WithBaseUrl("http://sketch7.com") // required
     .WithHeader("user-agent", "slabs-testify")
@@ -108,7 +108,7 @@ Hero hero = await httpClient.CreateRequest("/api/heroes/azmodan")
 ```
 
 ### Using fluent http client builder
-http client builder is used to configure http client in a fluent way.
+Http client builder is used to configure http client in a fluent way.
 
 #### Register to factory
 
@@ -145,21 +145,47 @@ fluentHttpClientFactory.CreateBuilder("platform")
 #### http client builder goodies
 
 ```cs
-// message handler - set HTTP handler stack to use for sending requests.
+// message handler - set HTTP handler stack to use for sending requests
 var mockHttp = new MockHttpMessageHandler();
-httpClientBuilder.WithMessageHandler(mockHttp)
+httpClientBuilder.WithMessageHandler(mockHttp);
 
 // request builder defaults - handler to customize defaults for request builder
-httpClientBuilder.WithRequestBuilderDefaults(builder => builder.AsPut())
+httpClientBuilder.WithRequestBuilderDefaults(builder => builder.AsPut());
 ```
 
 ### Using request builder
-*todo*
+Request builder is used to configure http client in a fluent way.
 
-- Query params
-- Interpolate
-- Returns: Response/Response<T>/Return
+#### Query params
+```cs
+requestBuilder.WithQueryParams(new 
+{
+  Take = 5,
+  Filter = "warrior"
+}); // => /url?filter=warrior&take=5
+```
 
+#### Interpolate Url
+```cs
+requestBuilder.WithUri("{Language}/heroes/{Hero}", new
+  {
+     Language = "en",
+     Hero = "azmodan"
+  }); // => /en/heroes/azmodan
+```
+
+#### ReturnAsReponse, ReturnAsResponse`<T>` and Return`<T>`
+
+```cs
+// send and returns HTTP response
+FluentHttpResponse response = requestBuilder.ReturnAsResponse();
+
+// send and returns HTTP response + deserialize and return result via `.Data`
+FluentHttpResponse<Hero> response = requestBuilder.ReturnAsResponse<Hero>();
+
+// send and returns derserialized result directly
+Hero hero = requestBuilder.Return<Hero>();
+```
 
 ### Re-using http client
 *todo*
