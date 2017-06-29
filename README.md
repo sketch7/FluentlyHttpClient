@@ -108,7 +108,7 @@ Hero hero = await httpClient.CreateRequest("/api/heroes/azmodan")
 ```
 
 ### Using fluent http client builder
-By using the http client builder it enable us to configure and http client in an expressive way.
+http client builder is used to configure http client in a fluent way.
 
 #### Register to factory
 
