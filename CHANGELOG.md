@@ -5,16 +5,15 @@
 
  ## [1.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...1.0.0) (2017-06-30)
 
+### Features
+
  - **http client factory:** `Remove` now disposes `IFluentHttpClient`.
- - **http client builder:** Rename `AddMiddleware` to `UseMiddleware`.
- - **http client builder:** `UseMiddleware<T>`, <T> is now constrained with `IFluentHttpMiddleware`.
  - **http client builder:** implement `WithFormatters` to be able to configure formatters.
 
  - **http client:** implement `IDisposable` in order to dispose underlying `HttpClient`.
 
  - **request builder:** implement `ReturnAsString`, `ReturnAsStream` and `ReturnAsByteArray`.
 
- - **request:** Rename `Url` to `Uri`.
  - **request:** `Method` and `Uri` has now also setters.
  - **request:** Add `Items` in order to share state across requests/response.
 
@@ -26,6 +25,14 @@
 
  - **timer middleware:** Now supports options, for configure `WarnThreshold`.
  - **timer middleware:** Add extension method `UseTimer` for convience.
+
+### Code Refactoring
+
+ - **http client builder:** Rename `AddMiddleware` to `UseMiddleware`.
+ - **http client builder:** `UseMiddleware<T>`, <T> is now constrained with `IFluentHttpMiddleware`.
+
+ - **request:** Rename `Url` to `Uri`.
+
 
 ### BREAKING CHANGES
  - `FluentHttpClientBuilder.AddMiddleware` has been renamed to `FluentHttpClientBuilder.UseMiddleware`.
