@@ -3,31 +3,31 @@
 namespace FluentlyHttpClient.Middleware
 {
 	/// <summary>
-	/// Middleware options.
+	/// Middleware configuration.
 	/// </summary>
-	public class MiddlewareOptions
+	public class MiddlewareConfig
 	{
 		/// <summary>
-		/// Middleware type.
+		/// Gets or sets the type for the middleware.
 		/// </summary>
 		public Type Type { get; set; }
 
 		/// <summary>
-		/// Middleware arguments.
+		/// Gets or sets the arguments for the middleware.
 		/// </summary>
 		public object[] Args { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
-		public MiddlewareOptions()
+		public MiddlewareConfig()
 		{
 		}
 
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
-		public MiddlewareOptions(Type type, object[] args)
+		public MiddlewareConfig(Type type, object[] args)
 		{
 			Type = type;
 			Args = args;

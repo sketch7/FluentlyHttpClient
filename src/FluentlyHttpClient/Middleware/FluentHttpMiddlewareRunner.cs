@@ -17,7 +17,7 @@ namespace FluentlyHttpClient.Middleware
 		/// <param name="request">Request to send.</param>
 		/// <param name="send">Actual send function.</param>
 		/// <returns>Returns response.</returns>
-		Task<FluentHttpResponse> Run(IList<MiddlewareOptions> middlewareCollection, FluentHttpRequest request, FluentHttpRequestDelegate send);
+		Task<FluentHttpResponse> Run(IList<MiddlewareConfig> middlewareCollection, FluentHttpRequest request, FluentHttpRequestDelegate send);
 	}
 
 	/// <summary>
@@ -42,7 +42,7 @@ namespace FluentlyHttpClient.Middleware
 		/// <param name="request">Request to send.</param>
 		/// <param name="send">Actual send function.</param>
 		/// <returns>Returns response.</returns>
-		public async Task<FluentHttpResponse> Run(IList<MiddlewareOptions> middlewareCollection, FluentHttpRequest request, FluentHttpRequestDelegate send)
+		public async Task<FluentHttpResponse> Run(IList<MiddlewareConfig> middlewareCollection, FluentHttpRequest request, FluentHttpRequestDelegate send)
 		{
 			if (middlewareCollection.Count == 0)
 				return await send(request);

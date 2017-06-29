@@ -107,7 +107,7 @@ namespace FluentlyHttpClient
 		private readonly Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 		private readonly IServiceProvider _serviceProvider;
 		private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
-		private readonly List<MiddlewareOptions> _middleware;
+		private readonly List<MiddlewareConfig> _middleware;
 
 		/// <summary>
 		/// Initializes an instance of <see cref="FluentHttpClient"/>.

@@ -33,7 +33,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets or sets the middleware to be used for each request.
 		/// </summary>
-		public List<MiddlewareOptions> Middleware { get; set; }
+		public List<MiddlewareConfig> Middleware { get; set; }
 
 		/// <summary>
 		/// Handler to customize request on creation. In order to specify defaults as desired, or so.

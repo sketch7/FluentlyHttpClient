@@ -19,7 +19,7 @@ namespace FluentlyHttpClient
 		private string _baseUrl;
 		private TimeSpan _timeout;
 		private readonly Dictionary<string, string> _headers = new Dictionary<string, string>();
-		private readonly List<MiddlewareOptions> _middleware = new List<MiddlewareOptions>();
+		private readonly List<MiddlewareConfig> _middleware = new List<MiddlewareConfig>();
 		private Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 		private HttpMessageHandler _httpMessageHandler;
 
@@ -135,7 +135,7 @@ namespace FluentlyHttpClient
 		/// <returns>Returns client builder for chaining.</returns>
 		public FluentHttpClientBuilder UseMiddleware(Type middleware, params object[] args)
 		{
-			_middleware.Add(new MiddlewareOptions(middleware, args));
+			_middleware.Add(new MiddlewareConfig(middleware, args));
 			return this;
 		}
 
