@@ -202,8 +202,17 @@ FluentHttpResponse<Hero> response = requestBuilder.ReturnAsResponse<Hero>();
 Hero hero = requestBuilder.Return<Hero>();
 ```
 
-### Re-using http client
-*todo*
+### Re-using http client from factory
+As a best practice, rather than using a string each time for the identifier, its better to create
+an extension method for it.
+
+```cs
+public static class FluentHttpClientFactoryExtensions
+{
+  public static IFluentHttpClient GetPlatform(this IFluentHttpClientFactory factory) 
+    => factory.Get("platform");
+}
+```
 
 ### Implementing a middleware
 *todo*
