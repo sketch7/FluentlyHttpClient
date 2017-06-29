@@ -21,7 +21,7 @@ namespace FluentlyHttpClient
 		public TimeSpan Timeout { get; set; }
 
 		/// <summary>
-		/// Gets or sets the identifier (key) for the http client.
+		/// Gets or sets the identifier (key) for the HTTP client.
 		/// </summary>
 		public string Identifier { get; set; }
 

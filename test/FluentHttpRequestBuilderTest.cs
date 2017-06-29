@@ -24,7 +24,7 @@ namespace Test
 					Hero = "azmodan"
 				}).Build();
 
-			Assert.Equal("en/heroes/azmodan", request.Url.ToString());
+			Assert.Equal("en/heroes/azmodan", request.Uri.ToString());
 		}
 	}
 
@@ -41,7 +41,7 @@ namespace Test
 					Filter = "all"
 				}).Build();
 
-			Assert.Equal("/org/sketch7?page=1&filter=all", request.Url.ToString());
+			Assert.Equal("/org/sketch7?page=1&filter=all", request.Uri.ToString());
 		}
 
 		[Fact]
@@ -55,7 +55,7 @@ namespace Test
 					Filter = "all"
 				}, lowerCaseQueryKeys: false).Build();
 
-			Assert.Equal("/org/sketch7?Page=1&Filter=all", request.Url.ToString());
+			Assert.Equal("/org/sketch7?Page=1&Filter=all", request.Uri.ToString());
 		}
 
 		[Fact]
@@ -69,7 +69,7 @@ namespace Test
 					Filter = "all"
 				}).Build();
 
-			Assert.Equal("/org/sketch7?hero=rex&page=1&filter=all", request.Url.ToString());
+			Assert.Equal("/org/sketch7?hero=rex&page=1&filter=all", request.Uri.ToString());
 		}
 
 		[Fact]
@@ -80,7 +80,7 @@ namespace Test
 				.WithQueryParams(new { })
 				.Build();
 
-			Assert.Equal("/org/sketch7", request.Url.ToString());
+			Assert.Equal("/org/sketch7", request.Uri.ToString());
 		}
 	}
 

@@ -13,9 +13,9 @@ namespace FluentlyHttpClient.Middleware
 		/// </summary>
 		public TimeSpan WarnThreshold { get; set; } = TimeSpan.FromMilliseconds(250);
 	}
-	
+
 	/// <summary>
-	/// Timer middleware for Http client.
+	/// Timer middleware for HTTP client.
 	/// </summary>
 	public class TimerHttpMiddleware : IFluentHttpMiddleware
 	{

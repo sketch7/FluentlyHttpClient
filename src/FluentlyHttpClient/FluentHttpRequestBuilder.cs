@@ -15,7 +15,7 @@ namespace FluentlyHttpClient
 	public class FluentHttpRequestBuilder
 	{
 		/// <summary>
-		/// Gets the Http Method for the Http Request.
+		/// Gets the HTTP Method for the Http Request.
 		/// </summary>
 		public HttpMethod HttpMethod { get; private set; } = HttpMethod.Get;
 
@@ -196,7 +196,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Send request and returns Http Response and also read content with the type specified (when success).
+		/// Send request and returns HTTP Response and also read content with the type specified (when success).
 		/// </summary>
 		/// <typeparam name="T">Type to return.</typeparam>
 		/// <returns>Return response with data typed.</returns>
@@ -212,15 +212,15 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Send request and returns Http Response.
+		/// Send request and returns HTTP Response.
 		/// </summary>
-		/// <returns>Returns an http response.</returns>
+		/// <returns>Returns an HTTP response.</returns>
 		public async Task<FluentHttpResponse> ReturnAsResponse() => await _fluentHttpClient.Send(this);
 
 		/// <summary>
-		/// Build http request.
+		/// Build HTTP request.
 		/// </summary>
-		/// <returns>Return http request instance.</returns>
+		/// <returns>Return HTTP request instance.</returns>
 		public FluentHttpRequest Build()
 		{
 			ValidateRequest();

@@ -39,7 +39,7 @@ namespace Test
 			var fluentHttpClientFactory = GetNewClientFactory();
 			fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.UseTimer(new TimerHttpMiddlewareOptions
+				.UseMiddleware<TimerHttpMiddlewareOptions>(new TimerHttpMiddlewareOptions
 				{
 					WarnThreshold = TimeSpan.Zero
 				})

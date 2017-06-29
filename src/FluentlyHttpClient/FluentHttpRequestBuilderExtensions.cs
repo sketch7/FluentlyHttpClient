@@ -4,7 +4,7 @@ using System.Net.Http;
 namespace FluentlyHttpClient
 {
 	/// <summary>
-	/// Fluent Http Request builder extensions.
+	/// Fluent HTTP request builder extensions.
 	/// </summary>
 	public static class FluentHttpRequestBuilderExtensions
 	{

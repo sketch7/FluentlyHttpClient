@@ -12,17 +12,17 @@ namespace FluentlyHttpClient
 	/// <summary>
 	/// Delegate which is mainly used by Middleware.
 	/// </summary>
-	/// <param name="request"></param>
-	/// <returns></returns>
+	/// <param name="request">HTTP request to send.</param>
+	/// <returns>Returns async response.</returns>
 	public delegate Task<FluentHttpResponse> FluentHttpRequestDelegate(FluentHttpRequest request);
 
 	/// <summary>
-	/// Fluent http request, which wraps the <see cref="HttpRequestMessage"/> and add additional features.
+	/// Fluent HTTP request, which wraps the <see cref="HttpRequestMessage"/> and add additional features.
 	/// </summary>
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public class FluentHttpRequest
 	{
-		private string DebuggerDisplay => $"[{Method}] '{Url}'";
+		private string DebuggerDisplay => $"[{Method}] '{Uri}'";
 
 		/// <summary>
 		/// Gets the Raw <see cref="HttpRequestMessage"/>.
@@ -30,19 +30,27 @@ namespace FluentlyHttpClient
 		public HttpRequestMessage RawRequest { get; }
 
 		/// <summary>
-		/// Gets the <see cref="HttpMethod"/> for the HTTP request.
+		/// Gets or sets the <see cref="HttpMethod"/> for the HTTP request.
 		/// </summary>
-		public HttpMethod Method => RawRequest.Method;
+		public HttpMethod Method
+		{
+			get => RawRequest.Method;
+			set => RawRequest.Method = value;
+		}
 
-		/// <summary>
-		/// Gets the <see cref="Uri"/> for the HTTP request.
-		/// </summary>
-		public Uri Url => RawRequest.RequestUri;
+	/// <summary>
+	/// Gets or sets the <see cref="System.Uri"/> for the HTTP request.
+	/// </summary>
+	public Uri Uri
+		{
+			get => RawRequest.RequestUri;
+			set => RawRequest.RequestUri = value;
+		}
 
-		/// <summary>
-		/// Gets the collection of HTTP request headers.
-		/// </summary>
-		public HttpRequestHeaders Headers => RawRequest.Headers;
+	/// <summary>
+	/// Gets the collection of HTTP request headers.
+	/// </summary>
+	public HttpRequestHeaders Headers => RawRequest.Headers;
 		
 		/// <summary>
 		/// Determine whether has success status otherwise it will throw or not.
@@ -63,7 +71,7 @@ namespace FluentlyHttpClient
 	}
 
 	/// <summary>
-	/// Fluent Http response, which wraps the <see cref="FluentHttpResponse"/> and add data.
+	/// Fluent HTTP response, which wraps the <see cref="FluentHttpResponse"/> and add data.
 	/// </summary>
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public class FluentHttpResponse<T> : FluentHttpResponse
@@ -82,7 +90,7 @@ namespace FluentlyHttpClient
 	}
 
 	/// <summary>
-	/// Fluent Http response, which wraps the <see cref="HttpResponseMessage"/> and add additional features.
+	/// Fluent HTTP response, which wraps the <see cref="HttpResponseMessage"/> and add additional features.
 	/// </summary>
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public class FluentHttpResponse
@@ -90,19 +98,23 @@ namespace FluentlyHttpClient
 		protected string DebuggerDisplay => $"[{(int)StatusCode}] '{ReasonPhrase}', Request: {{ [{RawResponse.RequestMessage.Method}] '{RawResponse.RequestMessage.RequestUri}' }}";
 
 		/// <summary>
-		/// Http raw response.
+		/// HTTP raw response.
 		/// </summary>
 		public HttpResponseMessage RawResponse { get; }
 
 		/// <summary>
-		/// Gets the status code of the HTTP response.
+		/// Gets or sets the status code of the HTTP response.
 		/// </summary>
-		public HttpStatusCode StatusCode => RawResponse.StatusCode;
+		public HttpStatusCode StatusCode
+		{
+			get => RawResponse.StatusCode;
+			set => RawResponse.StatusCode = value;
+		}
 
-		/// <summary>
-		/// Determine whether the HTTP response was successful.
-		/// </summary>
-		public bool IsSuccessStatusCode => RawResponse.IsSuccessStatusCode;
+	/// <summary>
+	/// Determine whether the HTTP response was successful.
+	/// </summary>
+	public bool IsSuccessStatusCode => RawResponse.IsSuccessStatusCode;
 
 		/// <summary>
 		/// Throws an exception if the <see cref="IsSuccessStatusCode"/> is set to false.
@@ -110,9 +122,13 @@ namespace FluentlyHttpClient
 		public void EnsureSuccessStatusCode() => RawResponse.EnsureSuccessStatusCode();
 
 		/// <summary>
-		/// Gets the reason phrase which typically is sent by the server together with the status code.
+		/// Gets or sets the reason phrase which typically is sent by the server together with the status code.
 		/// </summary>
-		public string ReasonPhrase => RawResponse.ReasonPhrase;
+		public string ReasonPhrase
+		{
+			get => RawResponse.ReasonPhrase;
+			set => RawResponse.ReasonPhrase = value;
+		}
 
 		/// <summary>
 		/// Gets the collection of HTTP response headers.

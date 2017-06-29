@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace FluentlyHttpClient.Middleware
 {
 	/// <summary>
-	/// Logging middleware for Http client.
+	/// Logging middleware for HTTP client.
 	/// </summary>
 	public class LoggerHttpMiddleware : IFluentHttpMiddleware
 	{

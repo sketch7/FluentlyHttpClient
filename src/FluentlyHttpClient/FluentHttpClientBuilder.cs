@@ -85,7 +85,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Set the identifier (unique key) for the Http Client.
+		/// Set the identifier (unique key) for the HTTP Client.
 		/// </summary>
 		/// <param name="identifier">Identifier to set.</param>
 		/// <returns>Returns client builder for chaining.</returns>
@@ -119,14 +119,14 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Register middleware for the http client, which each request pass-through. <c>NOTE order matters</c>.
+		/// Register middleware for the HTTP client, which each request pass-through. <c>NOTE order matters</c>.
 		/// </summary>
 		/// <typeparam name="T">Middleware type.</typeparam>
 		/// <returns>Returns client builder for chaining.</returns>
 		public FluentHttpClientBuilder UseMiddleware<T>(params object[] args) => UseMiddleware(typeof(T), args);
 
 		/// <summary>
-		/// Register middleware for the HttpClient, which each request pass-through. <c>NOTE order matters</c>.
+		/// Register middleware for the HTTP client, which each request pass-through. <c>NOTE order matters</c>.
 		/// </summary>
 		/// <returns>Returns client builder for chaining.</returns>
 		public FluentHttpClientBuilder UseMiddleware(Type middleware, params object[] args)
@@ -136,9 +136,9 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Build up http client options.
+		/// Build up HTTP client options.
 		/// </summary>
-		/// <returns>Returns http client options.</returns>
+		/// <returns>Returns HTTP client options.</returns>
 		public FluentHttpClientOptions Build()
 		{
 			var options = new FluentHttpClientOptions

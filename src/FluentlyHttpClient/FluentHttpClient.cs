@@ -24,7 +24,7 @@ namespace FluentlyHttpClient
 		string BaseUrl { get; }
 
 		/// <summary>
-		/// Raw http client. This should be avoided from being used.
+		/// Raw HTTP client. This should be avoided from being used.
 		/// However if something is not exposed and its really needed, it can be used from here.
 		/// </summary>
 		HttpClient RawHttpClient { get; }
@@ -56,14 +56,14 @@ namespace FluentlyHttpClient
 		/// Build and send HTTP request.
 		/// </summary>
 		/// <param name="builder">Request builder to build request from.</param>
-		/// <returns>Returns http response.</returns>
+		/// <returns>Returns HTTP response.</returns>
 		Task<FluentHttpResponse> Send(FluentHttpRequestBuilder builder);
 
 		/// <summary>
 		/// Send HTTP request.
 		/// </summary>
 		/// <param name="fluentRequest">HTTP fluent request to send.</param>
-		/// <returns>Returns http response.</returns>
+		/// <returns>Returns HTTP response.</returns>
 		Task<FluentHttpResponse> Send(FluentHttpRequest fluentRequest);
 	}
 
@@ -86,7 +86,7 @@ namespace FluentlyHttpClient
 		public string BaseUrl { get; }
 
 		/// <summary>
-		/// Raw http client. This should be avoided from being used.
+		/// Raw HTTP client. This should be avoided from being used.
 		/// However if something is not exposed and its really needed, it can be used from here.
 		/// </summary>
 		public HttpClient RawHttpClient { get; }
@@ -154,14 +154,14 @@ namespace FluentlyHttpClient
 		/// Build and send HTTP request.
 		/// </summary>
 		/// <param name="builder">Request builder to build request from.</param>
-		/// <returns>Returns http response.</returns>
+		/// <returns>Returns HTTP response.</returns>
 		public Task<FluentHttpResponse> Send(FluentHttpRequestBuilder builder) => Send(builder.Build());
 
 		/// <summary>
 		/// Send HTTP request.
 		/// </summary>
 		/// <param name="fluentRequest">HTTP fluent request to send.</param>
-		/// <returns>Returns http response.</returns>
+		/// <returns>Returns HTTP response.</returns>
 		public async Task<FluentHttpResponse> Send(FluentHttpRequest fluentRequest)
 		{
 			if (fluentRequest == null) throw new ArgumentNullException(nameof(fluentRequest));
