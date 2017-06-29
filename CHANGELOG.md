@@ -14,6 +14,7 @@
 
  - **response:** `StatusCode` and `ReasonPhrase` has now also setters.
  - **response:** `Items` now are shared with request.
+ - **response:** Expose `Content` from `Message`.
 
  - **middleware:** Now supports arguments via `UseMiddleware<T>(args)`.
 
