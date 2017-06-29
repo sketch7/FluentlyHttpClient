@@ -64,7 +64,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets or sets a key/value collection that can be used to share data within the scope of request/response.
 		/// </summary>
-		public IDictionary<object, object> Items { get; set; } = new Dictionary<object, object>();
+		public IDictionary<object, object> Items { get; protected set; } = new Dictionary<object, object>();
 
 		public FluentHttpRequest(HttpRequestMessage message)
 		{

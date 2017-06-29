@@ -6,7 +6,6 @@ using System.Net.Http.Headers;
 
 namespace FluentlyHttpClient
 {
-
 	/// <summary>
 	/// Fluent HTTP response, which wraps the <see cref="FluentHttpResponse"/> and add data.
 	/// </summary>
@@ -49,6 +48,24 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
+		/// Gets or sets the reason phrase which typically is sent by the server together with the status code.
+		/// </summary>
+		public string ReasonPhrase
+		{
+			get => Message.ReasonPhrase;
+			set => Message.ReasonPhrase = value;
+		}
+
+		/// <summary>
+		/// Gets or sets the content of HTTP response.
+		/// </summary>
+		public HttpContent Content
+		{
+			get => Message.Content;
+			set => Message.Content = value;
+		}
+
+		/// <summary>
 		/// Determine whether the HTTP response was successful.
 		/// </summary>
 		public bool IsSuccessStatusCode => Message.IsSuccessStatusCode;
@@ -59,15 +76,6 @@ namespace FluentlyHttpClient
 		public void EnsureSuccessStatusCode() => Message.EnsureSuccessStatusCode();
 
 		/// <summary>
-		/// Gets or sets the reason phrase which typically is sent by the server together with the status code.
-		/// </summary>
-		public string ReasonPhrase
-		{
-			get => Message.ReasonPhrase;
-			set => Message.ReasonPhrase = value;
-		}
-
-		/// <summary>
 		/// Gets the collection of HTTP response headers.
 		/// </summary>
 		public HttpResponseHeaders Headers => Message.Headers;
@@ -75,7 +83,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets or sets a key/value collection that can be used to share data within the scope of request/response.
 		/// </summary>
-		public IDictionary<object, object> Items { get; set; }
+		public IDictionary<object, object> Items { get; protected set; }
 
 		public override string ToString() => $"{DebuggerDisplay}";
 
