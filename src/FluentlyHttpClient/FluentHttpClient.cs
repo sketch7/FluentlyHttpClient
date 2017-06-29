@@ -24,8 +24,8 @@ namespace FluentlyHttpClient
 		string BaseUrl { get; }
 
 		/// <summary>
-		/// Raw HTTP client. This should be avoided from being used.
-		/// However if something is not exposed and its really needed, it can be used from here.
+		/// Underlying HTTP client. This should be avoided from being used,
+		/// however if something is not exposed and its really needed, it can be used from here.
 		/// </summary>
 		HttpClient RawHttpClient { get; }
 
@@ -86,8 +86,8 @@ namespace FluentlyHttpClient
 		public string BaseUrl { get; }
 
 		/// <summary>
-		/// Raw HTTP client. This should be avoided from being used.
-		/// However if something is not exposed and its really needed, it can be used from here.
+		/// Underlying HTTP client. This should be avoided from being used,
+		/// however if something is not exposed and its really needed, it can be used from here.
 		/// </summary>
 		public HttpClient RawHttpClient { get; }
 

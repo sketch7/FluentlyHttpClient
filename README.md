@@ -298,7 +298,7 @@ Options can be passed when register a middleware.
 ```cs
 fluentHttpClientFactory.CreateBuilder("platform")
     .UseMiddleware<LoggerHttpMiddleware>() // register a middleware (without args)
-    .UseMiddleware<TimerHttpMiddlewareOptions>(new TimerHttpMiddlewareOptions
+    .UseMiddleware<TimerHttpMiddleware>(new TimerHttpMiddlewareOptions
       {
           WarnThreshold = TimeSpan.Zero
       }) // register a middleware with options (args)
@@ -307,24 +307,24 @@ fluentHttpClientFactory.CreateBuilder("platform")
           WarnThreshold = TimeSpan.Zero
       }) // register a middleware using extension method
 ```
-As a best practice its best to provide an extension method for usage such as `UseTimer`.
-Especially if it has any arguments (options), as it won't be convenient to use.
+As a best practice, it's best to provide an extension method for usage such as `UseTimer` 
+especially when it has any arguments (options), as it won't be convenient to use.
 
 
 #### Request/Response items
 When using middleware additional data can be added to the request/response via the `.Items` of request/response,
-in order to share state across middleware or to extend response.
+in order to share state across middleware for the request or to extend response.
 
-As an example if we look at the timer middleware example its making use of it.
+The timer middleware example is making use of it.
 
 ```cs
-// adding item
+// set item
 response.SetTimeTaken(elapsed);
 
 // or similarly without extension method
 response.Items.Add("TIME_TAKEN", value)
 
-// reading item
+// get item
 TimeSpan timeTaken = response.GetTimeTaken();
 
 // or similarly without extension method
