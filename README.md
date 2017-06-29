@@ -26,6 +26,7 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
  - Highly extensible
 
 ## Installation
+Available for [.NET Standard 1.4+](https://docs.microsoft.com/en-gb/dotnet/standard/net-standard)
 
 ### nuget
 ```
@@ -219,8 +220,10 @@ Implementing a middleware for the HTTP client is quite straight forward, its ver
 ASP.NET Core MVC middleware.
 
 These are provided out of the box:
-- Timer Middleware - Determine how long request/response takes.
-- Logger Middleware - Log request/response.
+| Middleware | Description                                |
+|------------|--------------------------------------------|
+| Timer      | Determine how long request/response takes. |
+| Logger     | Log request/response.                      |
 
 The following is the timer middleware implementation (a bit simplified).
 
@@ -265,12 +268,58 @@ namespace FluentlyHttpClient
 
 ### Extending
 One of the key features is the ability to extend its own APIs easily.
+In fact, several functions of the library itself are extensions, by using extension methods.
 
-*todo*
+#### Extend Request Builder
+An example of how can the request builder be extended.
 
-### Test/Mocking
-*todo*
+```cs
+public static class FluentHttpRequestBuilderExtensions
+{
+  public static FluentHttpRequestBuilder WithBearerAuthentication(this FluentHttpRequestBuilder builder, string token)
+  {
+    if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
+    builder.WithHeader("Authorization", $"Bearer {token}");
+    return builder;
+  }
+}
+```
 
+### Testing/Mocking
+In order to test HTTP requests the library itself doesn't offer anything out of the box.
+However we've been using [RichardSzalay.MockHttp](https://github.com/richardszalay/mockhttp), which we recommend.
+
+#### Test example with RichardSzalay.MockHttp
+
+```cs
+[Fact]
+public async void ShouldReturnContent()
+{
+  var servicesProvider = new ServiceCollection()
+    .AddFluentlyHttpClient()
+    .AddLogging()
+    .BuildServiceProvider();
+  var fluentHttpClientFactory = servicesProvider.GetService<IFluentHttpClientFactory>();
+
+  var mockHttp = new MockHttpMessageHandler();
+  mockHttp.When("https://sketch7.com/api/heroes/azmodan")
+    .Respond("application/json", "{ 'name': 'Azmodan' }");
+
+  fluentHttpClientFactory.CreateBuilder("platform")
+    .WithBaseUrl("https://sketch7.com")
+    .AddMiddleware<TimerHttpMiddleware>()
+    .WithMessageHandler(mockHttp)
+    .Register();
+
+  var httpClient = fluentHttpClientFactory.Get("platform");
+  var response = await httpClient.CreateRequest("/api/heroes/azmodan")
+    .ReturnAsResponse<Hero>();
+
+  Assert.NotNull(response.Data);
+  Assert.Equal("Azmodan", response.Data.Name);
+  Assert.NotEqual(TimeSpan.Zero, response.GetTimeTaken());
+}
+```
 
 ## Contributing
 
