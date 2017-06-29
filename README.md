@@ -8,8 +8,6 @@
 
 Http Client for .NET Standard with fluent APIs which are intuitive, easy to use and also highly extensible.
 
-*NOTE: This project is under development and is not intended for general production use yet.*
-
 **Quick links**
 
 [Change logs][changeLog] | [Project Repository][projectUri]

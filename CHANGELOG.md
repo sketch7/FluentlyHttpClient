@@ -1,6 +1,9 @@
 # Fluently Http Changelog
 
- [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...0.4.0) (2017-?-?)
+ [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/0.1.0...1.1.0) (201X-X-X)
+
+
+ ## [1.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...1.0.0) (2017-06-30)
 
  - **http client factory:** `Remove` now disposes `IFluentHttpClient`.
  - **http client builder:** Rename `AddMiddleware` to `UseMiddleware`.
