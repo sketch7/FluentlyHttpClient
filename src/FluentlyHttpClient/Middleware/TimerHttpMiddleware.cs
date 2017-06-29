@@ -51,9 +51,7 @@ namespace FluentlyHttpClient
 		/// <param name="response">Response instance.</param>
 		/// <param name="value">Timespan value.</param>
 		public static void SetTimeTaken(this FluentHttpResponse response, TimeSpan value)
-		{
-			response.Items.Add(TimeTakenKey, value);
-		}
+			=> response.Items.Add(TimeTakenKey, value);
 
 		/// <summary>
 		/// Get time taken for the response. This is generally set via <see cref="TimerHttpMiddleware"/>.
@@ -61,8 +59,6 @@ namespace FluentlyHttpClient
 		/// <param name="response">Response to get time from.</param>
 		/// <returns>Returns timespan for the time taken.</returns>
 		public static TimeSpan GetTimeTaken(this FluentHttpResponse response)
-		{
-			return (TimeSpan)response.Items[TimeTakenKey];
-		}
+			=> (TimeSpan)response.Items[TimeTakenKey];
 	}
 }
