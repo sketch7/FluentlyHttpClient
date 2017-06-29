@@ -25,7 +25,7 @@ namespace FluentlyHttpClient
 		private string DebuggerDisplay => $"[{Method}] '{Uri}'";
 
 		/// <summary>
-		/// Gets the Raw <see cref="HttpRequestMessage"/>.
+		/// Gets the underlying HTTP request message.
 		/// </summary>
 		public HttpRequestMessage RawRequest { get; }
 
@@ -82,7 +82,7 @@ namespace FluentlyHttpClient
 	public class FluentHttpResponse<T> : FluentHttpResponse
 	{
 		/// <summary>
-		/// Data content.
+		/// Content data.
 		/// </summary>
 		public T Data { get; set; }
 
@@ -103,7 +103,7 @@ namespace FluentlyHttpClient
 		protected string DebuggerDisplay => $"[{(int)StatusCode}] '{ReasonPhrase}', Request: {{ [{RawResponse.RequestMessage.Method}] '{RawResponse.RequestMessage.RequestUri}' }}";
 
 		/// <summary>
-		/// HTTP raw response.
+		/// Gets the underlying HTTP response message.
 		/// </summary>
 		public HttpResponseMessage RawResponse { get; }
 
