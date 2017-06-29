@@ -11,6 +11,9 @@ using FluentlyHttpClient.Middleware;
 
 namespace FluentlyHttpClient
 {
+	/// <summary>
+	/// Interface for sending HTTP requests with a high level fluent API.
+	/// </summary>
 	public interface IFluentHttpClient : IDisposable
 	{
 		/// <summary>
@@ -106,6 +109,12 @@ namespace FluentlyHttpClient
 		private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
 		private readonly List<MiddlewareOptions> _middleware;
 
+		/// <summary>
+		/// Initializes an instance of <see cref="FluentHttpClient"/>.
+		/// </summary>
+		/// <param name="options"></param>
+		/// <param name="serviceProvider"></param>
+		/// <param name="middlewareRunner"></param>
 		public FluentHttpClient(FluentHttpClientOptions options, IServiceProvider serviceProvider, IFluentHttpMiddlewareRunner middlewareRunner)
 		{
 			_serviceProvider = serviceProvider;

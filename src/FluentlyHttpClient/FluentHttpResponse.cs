@@ -17,11 +17,18 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public T Data { get; set; }
 
+		/// <summary>
+		/// Initializes a new <see cref="FluentHttpResponse"/>.
+		/// </summary>
+		/// <param name="response"></param>
 		public FluentHttpResponse(FluentHttpResponse response) : base(response.Message)
 		{
 			Items = response.Items;
 		}
 
+		/// <summary>
+		/// Gets readable response info as string.
+		/// </summary>
 		public override string ToString() => $"{DebuggerDisplay}";
 	}
 
@@ -31,6 +38,9 @@ namespace FluentlyHttpClient
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public class FluentHttpResponse
 	{
+		/// <summary>
+		/// Gets readable string for debugger.
+		/// </summary>
 		protected string DebuggerDisplay => $"[{(int)StatusCode}] '{ReasonPhrase}', Request: {{ [{Message.RequestMessage.Method}] '{Message.RequestMessage.RequestUri}' }}";
 
 		/// <summary>
@@ -85,8 +95,16 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public IDictionary<object, object> Items { get; protected set; }
 
+		/// <summary>
+		/// Gets readable response info as string.
+		/// </summary>
 		public override string ToString() => $"{DebuggerDisplay}";
 
+		/// <summary>
+		/// Initializes a new <see cref="FluentHttpResponse"/>.
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="items"></param>
 		public FluentHttpResponse(HttpResponseMessage message, IDictionary<object, object> items = null)
 		{
 			Message = message;

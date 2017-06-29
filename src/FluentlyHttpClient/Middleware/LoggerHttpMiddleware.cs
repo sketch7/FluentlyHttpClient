@@ -11,12 +11,18 @@ namespace FluentlyHttpClient.Middleware
 		private readonly FluentHttpRequestDelegate _next;
 		private readonly ILogger _logger;
 
+		/// <summary>
+		/// Initializes a new instance.
+		/// </summary>
 		public LoggerHttpMiddleware(FluentHttpRequestDelegate next, ILogger<LoggerHttpMiddleware> logger)
 		{
 			_next = next;
 			_logger = logger;
 		}
 
+		/// <summary>
+		/// Function to invoke.
+		/// </summary>
 		public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
 		{
 			if (_logger.IsEnabled(LogLevel.Information))

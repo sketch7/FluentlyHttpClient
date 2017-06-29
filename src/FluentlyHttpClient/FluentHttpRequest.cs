@@ -66,11 +66,17 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public IDictionary<object, object> Items { get; protected set; } = new Dictionary<object, object>();
 
+		/// <summary>
+		/// Initializes a new instance.
+		/// </summary>
 		public FluentHttpRequest(HttpRequestMessage message)
 		{
 			Message = message;
 		}
 
+		/// <summary>
+		/// Gets readable request info as string.
+		/// </summary>
 		public override string ToString() => $"{DebuggerDisplay}";
 	}
 }

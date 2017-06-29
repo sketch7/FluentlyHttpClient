@@ -42,6 +42,9 @@ namespace FluentlyHttpClient
 		private bool _hasSuccessStatusOrThrow;
 		private CancellationToken _cancellationToken;
 
+		/// <summary>
+		/// Initializes a new instance.
+		/// </summary>
 		public FluentHttpRequestBuilder(IFluentHttpClient fluentHttpClient)
 		{
 			_fluentHttpClient = fluentHttpClient;
@@ -102,7 +105,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Set query string params to the Uri. e.g. .?page=1&filter=all'.
+		/// Set query string params to the Uri. e.g. .?page=1&amp;filter=all'.
 		/// </summary>
 		/// <param name="queryParams">Query data to add/append. Can be either dictionary or object.</param>
 		/// <param name="lowerCaseQueryKeys">Determine whether to lowercase query string keys.</param>

@@ -9,7 +9,7 @@ namespace FluentlyHttpClient
 	public static class FluentHttpClientExtensions
 	{
 		/// <summary>
-		/// Create and send a HTTP GET request and return specified <see cref="T"/> as result.
+		/// Create and send a HTTP GET request and return content.
 		/// </summary>
 		/// <typeparam name="T">Type to deserialize content to.</typeparam>
 		/// <param name="client">HTTP client instance.</param>
@@ -21,7 +21,7 @@ namespace FluentlyHttpClient
 			.Return<T>();
 
 		/// <summary>
-		/// Create and send a HTTP POST request and return specified <see cref="T"/> as result.
+		/// Create and send a HTTP POST request and return content.
 		/// </summary>
 		/// <typeparam name="T">Type to deserialize content to.</typeparam>
 		/// <param name="client">HTTP client instance.</param>
@@ -37,7 +37,7 @@ namespace FluentlyHttpClient
 			.Return<T>();
 
 		/// <summary>
-		/// Create and send a HTTP PUT request and return specified <see cref="T"/> as result.
+		/// Create and send a HTTP PUT request and return content.
 		/// </summary>
 		/// <typeparam name="T">Type to deserialize content to.</typeparam>
 		/// <param name="client">HTTP client instance.</param>
@@ -53,7 +53,7 @@ namespace FluentlyHttpClient
 			.Return<T>();
 
 		/// <summary>
-		/// Create and send a HTTP PATCH request and return specified <see cref="T"/> as result.
+		/// Create and send a HTTP PATCH request and return content.
 		/// </summary>
 		/// <typeparam name="T">Type to deserialize content to.</typeparam>
 		/// <param name="client">HTTP client instance</param>
@@ -69,7 +69,7 @@ namespace FluentlyHttpClient
 			.Return<T>();
 
 		/// <summary>
-		/// Create and send a HTTP DELETE request and return specified <see cref="T"/> as result.
+		/// Create and send a HTTP DELETE request and return content.
 		/// </summary>
 		/// <typeparam name="T">Type to deserialize content to.</typeparam>
 		/// <param name="client">HTTP client instance</param>

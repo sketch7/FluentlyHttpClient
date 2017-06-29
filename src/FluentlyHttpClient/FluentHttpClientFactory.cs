@@ -61,6 +61,10 @@ namespace FluentlyHttpClient
 		private readonly IServiceProvider _serviceProvider;
 		private readonly Dictionary<string, IFluentHttpClient> _clientsMap = new Dictionary<string, IFluentHttpClient>();
 
+		/// <summary>
+		/// Initializes a new instance of <see cref="FluentHttpClientFactory"/>.
+		/// </summary>
+		/// <param name="serviceProvider"></param>
 		public FluentHttpClientFactory(IServiceProvider serviceProvider)
 		{
 			_serviceProvider = serviceProvider;
@@ -152,7 +156,7 @@ namespace FluentlyHttpClient
 		public bool Has(string identifier) => _clientsMap.ContainsKey(identifier);
 
 		/// <summary>
-		/// Merge default options with the specified <see cref="options"/>.
+		/// Merge default options with the specified options.
 		/// </summary>
 		/// <param name="options">Options to check and merge with.</param>
 		protected void SetDefaultOptions(FluentHttpClientOptions options)

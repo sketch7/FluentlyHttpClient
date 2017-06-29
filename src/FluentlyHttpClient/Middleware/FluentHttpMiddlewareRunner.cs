@@ -27,11 +27,21 @@ namespace FluentlyHttpClient.Middleware
 	{
 		private readonly IServiceProvider _serviceProvider;
 
+		/// <summary>
+		/// Initializes a new instance.
+		/// </summary>
 		public FluentHttpMiddlewareRunner(IServiceProvider serviceProvider)
 		{
 			_serviceProvider = serviceProvider;
 		}
 
+		/// <summary>
+		/// Run specified middleware, and finally send the given request.
+		/// </summary>
+		/// <param name="middlewareCollection">Middleware to pipe.</param>
+		/// <param name="request">Request to send.</param>
+		/// <param name="send">Actual send function.</param>
+		/// <returns>Returns response.</returns>
 		public async Task<FluentHttpResponse> Run(IList<MiddlewareOptions> middlewareCollection, FluentHttpRequest request, FluentHttpRequestDelegate send)
 		{
 			if (middlewareCollection.Count == 0)

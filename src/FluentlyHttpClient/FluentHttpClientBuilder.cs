@@ -23,6 +23,9 @@ namespace FluentlyHttpClient
 		private Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 		private HttpMessageHandler _httpMessageHandler;
 
+		/// <summary>
+		/// Initializes a new instance.
+		/// </summary>
 		public FluentHttpClientBuilder(IFluentHttpClientFactory fluentHttpClientFactory)
 		{
 			_fluentHttpClientFactory = fluentHttpClientFactory;

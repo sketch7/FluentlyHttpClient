@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace FluentlyHttpClient
 {
+	/// <summary>
+	/// Extensions for object.
+	/// </summary>
 	public static class ObjectExtensions
 	{
 		/// <summary>Get the key=>value pairs represented by a dictionary or anonymous object.</summary>

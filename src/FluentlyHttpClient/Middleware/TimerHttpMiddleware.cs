@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace FluentlyHttpClient.Middleware
 {
+	/// <summary>
+	/// Timer HTTP middleware options.
+	/// </summary>
 	public class TimerHttpMiddlewareOptions
 	{
 		/// <summary>
@@ -23,6 +26,9 @@ namespace FluentlyHttpClient.Middleware
 		private readonly TimerHttpMiddlewareOptions _options;
 		private readonly ILogger _logger;
 
+		/// <summary>
+		/// Initializes a new instance.
+		/// </summary>
 		public TimerHttpMiddleware(FluentHttpRequestDelegate next, TimerHttpMiddlewareOptions options, ILogger<TimerHttpMiddleware> logger)
 		{
 			_next = next;
@@ -33,6 +39,9 @@ namespace FluentlyHttpClient.Middleware
 				throw new ArgumentException($"{nameof(_options.WarnThreshold)} must be greater than Zero.");
 		}
 
+		/// <summary>
+		/// Function to invoke.
+		/// </summary>
 		public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
 		{
 			var watch = Stopwatch.StartNew();
@@ -52,7 +61,10 @@ namespace FluentlyHttpClient.Middleware
 
 namespace FluentlyHttpClient
 {
-	public static class TimerFluentResponseExtensions
+	/// <summary>
+	/// Timer middleware extensions.
+	/// </summary>
+	public static class TimerMiddlwareExtensions
 	{
 		private const string TimeTakenKey = "TIME_TAKEN";
 
@@ -71,10 +83,7 @@ namespace FluentlyHttpClient
 		/// <returns>Returns timespan for the time taken.</returns>
 		public static TimeSpan GetTimeTaken(this FluentHttpResponse response)
 			=> (TimeSpan)response.Items[TimeTakenKey];
-	}
 
-	public static class FluentlyHttpMiddlwareExtensions
-	{
 		/// <summary>
 		/// Use timer middleware which measures how long the request takes.
 		/// </summary>
@@ -82,6 +91,5 @@ namespace FluentlyHttpClient
 		/// <param name="options">Options to specify for the timer middleware.</param>
 		public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, TimerHttpMiddlewareOptions options = null)
 			=> builder.UseMiddleware<TimerHttpMiddleware>(options ?? new TimerHttpMiddlewareOptions());
-		
 	}
 }
