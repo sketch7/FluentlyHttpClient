@@ -18,12 +18,13 @@ namespace Test
 		public void ShouldInterpolate()
 		{
 			var request = NewBuilder()
-				.WithUri("/org/{org}", new
+				.WithUri("{Language}/heroes/{Hero}", new
 				{
-					org = "sketch7"
+					Language = "en",
+					Hero = "azmodan"
 				}).Build();
 
-			Assert.Equal("/org/sketch7", request.Url.ToString());
+			Assert.Equal("en/heroes/azmodan", request.Url.ToString());
 		}
 	}
 
