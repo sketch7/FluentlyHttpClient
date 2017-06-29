@@ -26,7 +26,7 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
 ## Installation
 Available for [.NET Standard 1.4+](https://docs.microsoft.com/en-gb/dotnet/standard/net-standard)
 
-### nuget
+### NuGet
 ```
 PM> Install-Package FluentlyHttpClient
 ```
@@ -84,7 +84,7 @@ Hero hero = await httpClient.Post<Hero>("/api/heroes/azmodan", new
 ```
 
 #### Fluent Request API
-Fluent request API (request builder) allows to create more complex requests and provides further control on response.
+Fluent request API (request builder) allows to create more complex requests and provides further control on the response.
 
 ```cs
 // inject factory and get client
@@ -154,7 +154,7 @@ httpClientBuilder.WithRequestBuilderDefaults(builder => builder.AsPut());
 httpClientBuilder.WithFormatters(formatter => formatter.Add(new CustomFormatter()));
 ```
 
-### Request builder
+### Request Builder
 Request builder is used to build http requests in a fluent way.
 
 #### Usage
@@ -216,9 +216,9 @@ public static class FluentHttpClientFactoryExtensions
 ```
 
 ### Middleware
-Middleware are used to intercept request/response to add additional logic, or alter request/response.
+Middlewares are used to intercept request/response to add additional logic or alter request/response.
 
-Implementing a middleware for the HTTP client is quite straight forward, and its very similar to
+Implementing a middleware for the HTTP client is quite straight forward, and it's very similar to
 ASP.NET Core MVC middleware.
 
 These are provided out of the box:
@@ -229,7 +229,7 @@ These are provided out of the box:
 | Logger     | Log request/response.                         |
 
 Two important points to keep in mind:
- - First argument within constructor has to be `FluentHttpRequestDelegate` which is generally called `next`.
+ - The first argument within constructor has to be `FluentHttpRequestDelegate` which is generally called `next`.
  - During `Invoke` the `await _next(request);` must be invoked and return the response, in order to continue the flow.
 
  The following is the timer middleware implementation *(bit simplified)*.
@@ -286,14 +286,14 @@ TimeSpan timeTaken = response.GetTimeTaken();
 ```
 
 #### Middleware options
-Options to middleware can be passed via an argument. Note it has to be the second argument within constructor.
+Options to middleware can be passed via an argument. Note it has to be the second argument within the constructor.
 
 ```cs
                                                                        V - Options
 public TimerHttpMiddleware(FluentHttpRequestDelegate next, TimerHttpMiddlewareOptions options, ILogger<TimerHttpMiddleware> logger)
 ```
 
-Options can be passed when register a middleware.
+Options can be passed when registering a middleware.
 
 #### Use a middleware
 
@@ -354,8 +354,8 @@ public static class FluentHttpRequestBuilderExtensions
 ```
 
 ### Testing/Mocking
-In order to test HTTP requests the library itself doesn't offer anything out of the box.
-However we've been using [RichardSzalay.MockHttp](https://github.com/richardszalay/mockhttp), which we recommend.
+In order to test HTTP requests, the library itself doesn't offer anything out of the box.
+However, we've been using [RichardSzalay.MockHttp](https://github.com/richardszalay/mockhttp), which we recommend.
 
 #### Test example with RichardSzalay.MockHttp
 
