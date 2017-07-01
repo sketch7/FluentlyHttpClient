@@ -3,6 +3,7 @@ using FluentlyHttpClient.Test;
 using RichardSzalay.MockHttp;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 using static Test.RequestBuilderTestUtil;
@@ -173,7 +174,6 @@ namespace Test
 			fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.WithMessageHandler(mockHttp)
-				.UseTimer()
 				.Register();
 
 			var httpClient = fluentHttpClientFactory.Get("sketch7");
@@ -182,6 +182,39 @@ namespace Test
 
 			Assert.NotNull(response);
 			Assert.Equal(mockResponse, response);
+		}
+	}
+
+
+	public class RequestBuilder_PostWithBody
+	{
+		[Fact]
+		public async void ReturnAsString()
+		{
+			var mockResponse = "{ 'name': 'Azmodan' }";
+			var mockHttp = new MockHttpMessageHandler();
+			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes/azmodan")
+				.WithContent("{\"Title\":\"Lord of Sin\"}")
+				.Respond("application/json", "{ 'name': 'Azmodan', 'title': 'Lord of Sin' }");
+
+			var fluentHttpClientFactory = GetNewClientFactory();
+			fluentHttpClientFactory.CreateBuilder("sketch7")
+				.WithBaseUrl("https://sketch7.com")
+				.WithMessageHandler(mockHttp)
+				.Register();
+
+			var httpClient = fluentHttpClientFactory.Get("sketch7");
+			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
+				.AsPost()
+				.WithBody(new
+				{
+					Title = "Lord of Sin"
+				})
+				.ReturnAsResponse<Hero>();
+
+			response.EnsureSuccessStatusCode();
+			Assert.NotNull(response);
+			Assert.Equal("Lord of Sin", response.Data.Title);
 		}
 	}
 }
