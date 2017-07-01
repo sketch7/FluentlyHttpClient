@@ -192,7 +192,7 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
-		/// <summary>Set custom item that can be used to share data within the scope of request/response or middleware.</summary>
+		/// <summary>Set custom item that can be used to share data within the scope of request, response, and middleware.</summary>
 		/// <returns>Returns the request builder for chaining.</returns>
 		public FluentHttpRequestBuilder WithItem(object key, object value)
 		{

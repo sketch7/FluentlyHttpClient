@@ -2,6 +2,10 @@
 
  [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/0.1.0...1.1.0) (201X-X-X)
 
+### Features
+
+- **request builder:** implement `WithItem` which allows to set custom items that can be used to share data within the scope of request, response, and middleware.
+
 
  ## [1.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...1.0.0) (2017-06-30)
 
