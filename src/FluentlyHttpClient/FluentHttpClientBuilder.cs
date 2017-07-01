@@ -72,10 +72,7 @@ namespace FluentlyHttpClient
 		/// <returns>Returns client builder for chaining.</returns>
 		public FluentHttpClientBuilder WithHeader(string key, string value)
 		{
-			if (_headers.ContainsKey(key))
-				_headers[key] = value;
-			else
-				_headers.Add(key, value);
+			_headers.Set(key, value);
 			return this;
 		}
 

@@ -75,10 +75,7 @@ namespace FluentlyHttpClient
 		{
 			if (Headers == null)
 				Headers = new Dictionary<string, string>();
-			if (Headers.ContainsKey(key))
-				Headers[key] = value;
-			else
-				Headers.Add(key, value);
+			Headers.Set(key, value);
 			return this;
 		}
 
@@ -196,10 +193,7 @@ namespace FluentlyHttpClient
 		/// <returns>Returns the request builder for chaining.</returns>
 		public FluentHttpRequestBuilder WithItem(object key, object value)
 		{
-			if (Items.ContainsKey(key))
-				Items[key] = value;
-			else
-				Items.Add(key, value);
+			Items.Set(key, value);
 			return this;
 		}
 
