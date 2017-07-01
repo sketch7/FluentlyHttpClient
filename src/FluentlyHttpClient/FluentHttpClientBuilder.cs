@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Formatting;
+using Newtonsoft.Json.Serialization;
 
 namespace FluentlyHttpClient
 {
@@ -31,6 +32,7 @@ namespace FluentlyHttpClient
 		public FluentHttpClientBuilder(IFluentHttpClientFactory fluentHttpClientFactory)
 		{
 			_fluentHttpClientFactory = fluentHttpClientFactory;
+			_formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 		}
 
 		/// <summary>

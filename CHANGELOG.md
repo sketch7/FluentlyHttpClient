@@ -6,6 +6,8 @@
 
 - **request builder:** implement `WithItem` which allows to set custom items that can be used to share data within the scope of request, response, and middleware.
 
+- **http client builder:** formatter JSON is now configured with camelcase property names by default.
+
 - **logger middleware:** add extension method `UseLogging`.
 
 

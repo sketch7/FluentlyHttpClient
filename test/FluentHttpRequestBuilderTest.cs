@@ -193,7 +193,7 @@ namespace Test
 			var mockResponse = "{ 'name': 'Azmodan' }";
 			var mockHttp = new MockHttpMessageHandler();
 			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes/azmodan")
-				.WithContent("{\"Title\":\"Lord of Sin\"}")
+				.WithContent("{\"title\":\"Lord of Sin\"}")
 				.Respond("application/json", "{ 'name': 'Azmodan', 'title': 'Lord of Sin' }");
 
 			var fluentHttpClientFactory = GetNewClientFactory();
