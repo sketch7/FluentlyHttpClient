@@ -7,10 +7,11 @@
 - **request builder:** implement `WithItem` which allows to set custom items that can be used to share data within the scope of request, response, and middleware.
 - **request builder:** add `WithUserAgent` extension
 
-- **header builder:** extract interface `IFluentHttpHeaderBuilder` which both `FluentHttpClientBuilder` and `FluentHttpRequestBuilder` implements.
+- **header builder:** extract interface `IFluentHttpHeaderBuilder`, which both `FluentHttpClientBuilder` and `FluentHttpRequestBuilder` implements.
 This is done to be able to share implementations for extensions methods across `FluentHttpClientBuilder` and `FluentHttpRequestBuilder`
 
 - **http client builder:** formatter JSON is now configured with camelcase property names by default.
+- **http client builder:** now shares request builder headers extensions such as `WithUserAgent` and `WithBearerAuthentication`.
 
 - **logger middleware:** add extension method `UseLogging`.
 
