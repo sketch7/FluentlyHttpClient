@@ -267,6 +267,9 @@ namespace FluentlyHttpClient
 
 			if (string.IsNullOrWhiteSpace(Uri))
 				throw RequestValidationException.FieldNotSpecified(nameof(Uri));
+
+			if(HttpMethod == HttpMethod.Get && _httpBody != null)
+				throw new RequestValidationException("A request with Method 'GET' cannot have a body assigned.");
 		}
 
 		private static string BuildQueryString(object queryParams, bool lowerCaseQueryKeys)
