@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentlyHttpClient.Middleware;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +8,6 @@ using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using FluentlyHttpClient.Middleware;
 
 namespace FluentlyHttpClient
 {
@@ -196,7 +196,7 @@ namespace FluentlyHttpClient
 				? new HttpClient()
 				: new HttpClient(options.HttpMessageHandler);
 			httpClient.BaseAddress = new Uri(options.BaseUrl);
-			httpClient.DefaultRequestHeaders.Add("Accept", Formatters.SelectMany(x => x.SupportedMediaTypes).Select(x => x.MediaType));
+			httpClient.DefaultRequestHeaders.Add(HeaderTypes.Accept, Formatters.SelectMany(x => x.SupportedMediaTypes).Select(x => x.MediaType));
 			httpClient.Timeout = options.Timeout;
 
 			foreach (var headerEntry in options.Headers)
@@ -213,8 +213,8 @@ namespace FluentlyHttpClient
 			RawHttpClient?.Dispose();
 		}
 
-		private static FluentHttpResponse ToFluentResponse(HttpResponseMessage response, IDictionary<object, object> items) =>
-			new FluentHttpResponse(response, items);
+		private static FluentHttpResponse ToFluentResponse(HttpResponseMessage response, IDictionary<object, object> items)
+			=> new FluentHttpResponse(response, items);
 
 	}
 }
