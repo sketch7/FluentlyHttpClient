@@ -185,7 +185,6 @@ namespace Test
 		}
 	}
 
-
 	public class RequestBuilder_PostWithBody
 	{
 		[Fact]

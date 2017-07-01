@@ -34,6 +34,11 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public Dictionary<string, string> Headers { get; private set; }
 
+		/// <summary>
+		/// Get the key/value collection that can be used to share data within the scope of request/response or middleware.
+		/// </summary>
+		public Dictionary<object, object> Items { get; } = new Dictionary<object, object>();
+
 		private readonly IFluentHttpClient _fluentHttpClient;
 		private HttpContent _httpBody;
 		private static readonly Regex InterpolationRegex = new Regex(@"\{(\w+)\}", RegexOptions.Compiled);
@@ -179,11 +184,22 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
-		/// <summary>.</summary>
+		/// <summary>Set cancellation token for the request.</summary>
 		/// <returns>Returns the request builder for chaining.</returns>
 		public FluentHttpRequestBuilder WithCancellationToken(CancellationToken cancellationToken)
 		{
 			_cancellationToken = cancellationToken;
+			return this;
+		}
+
+		/// <summary>Set custom item that can be used to share data within the scope of request/response or middleware.</summary>
+		/// <returns>Returns the request builder for chaining.</returns>
+		public FluentHttpRequestBuilder WithItem(object key, object value)
+		{
+			if (Items.ContainsKey(key))
+				Items[key] = value;
+			else
+				Items.Add(key, value);
 			return this;
 		}
 
@@ -238,7 +254,7 @@ namespace FluentlyHttpClient
 				foreach (var header in Headers)
 					httpRequest.Headers.Add(header.Key, header.Value);
 
-			var fluentRequest = new FluentHttpRequest(httpRequest)
+			var fluentRequest = new FluentHttpRequest(httpRequest, Items)
 			{
 				HasSuccessStatusOrThrow = _hasSuccessStatusOrThrow,
 				CancellationToken = _cancellationToken
