@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -60,36 +59,6 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <returns>Returns request builder for chaining.</returns>
 		public static FluentHttpRequestBuilder AsPatch(this FluentHttpRequestBuilder builder) => builder.WithMethod(HttpMethodPatch);
-
-		#endregion
-
-		#region Headers
-
-		/// <summary>
-		/// Set bearer authentication header.
-		/// </summary>
-		/// <param name="builder">builder instance.</param>
-		/// <param name="token">Auth token to add.</param>
-		/// <returns>Returns request builder for chaining.</returns>
-		public static FluentHttpRequestBuilder WithBearerAuthentication(this FluentHttpRequestBuilder builder, string token)
-		{
-			if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
-			builder.WithHeader(HeaderTypes.Authorization, $"{AuthSchemeTypes.Bearer} {token}");
-			return builder;
-		}
-
-		/// <summary>
-		/// Set user-agent header.
-		/// </summary>
-		/// <param name="builder">builder instance.</param>
-		/// <param name="userAgent">User agent value to set.</param>
-		/// <returns>Returns request builder for chaining.</returns>
-		public static FluentHttpRequestBuilder WithUserAgent(this FluentHttpRequestBuilder builder, string userAgent)
-		{
-			if (string.IsNullOrEmpty(userAgent)) throw new ArgumentNullException(nameof(userAgent));
-			builder.WithHeader(HeaderTypes.UserAgent, userAgent);
-			return builder;
-		}
 
 		#endregion
 

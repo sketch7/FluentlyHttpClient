@@ -78,7 +78,9 @@ namespace FluentlyHttpClient
 		public FluentHttpClientBuilder CreateBuilder(string identifier)
 		{
 			var clientBuilder = ActivatorUtilities.CreateInstance<FluentHttpClientBuilder>(_serviceProvider, this)
-				.Withdentifier(identifier);
+				.Withdentifier(identifier)
+				.WithUserAgent("fluently")
+				.WithTimeout(15);
 			return clientBuilder;
 		}
 
@@ -109,9 +111,7 @@ namespace FluentlyHttpClient
 
 			if (Has(options.Identifier))
 				throw new ClientBuilderValidationException($"FluentHttpClient '{options.Identifier}' is already registered.");
-
-			SetDefaultOptions(options);
-
+			
 			if (string.IsNullOrEmpty(options.BaseUrl))
 				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.BaseUrl));
 
@@ -154,16 +154,5 @@ namespace FluentlyHttpClient
 		/// <param name="identifier">Identifier to check.</param>
 		/// <returns>Returns true when already exists.</returns>
 		public bool Has(string identifier) => _clientsMap.ContainsKey(identifier);
-
-		/// <summary>
-		/// Merge default options with the specified options.
-		/// </summary>
-		/// <param name="options">Options to check and merge with.</param>
-		protected void SetDefaultOptions(FluentHttpClientOptions options)
-		{
-			if (options == null) throw new ArgumentNullException(nameof(options));
-			if (options.Timeout == TimeSpan.Zero)
-				options.Timeout = TimeSpan.FromSeconds(15);
-		}
 	}
 }

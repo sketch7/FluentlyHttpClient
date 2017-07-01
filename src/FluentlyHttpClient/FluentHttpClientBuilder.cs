@@ -10,7 +10,7 @@ namespace FluentlyHttpClient
 	/// <summary>
 	/// Class to configure <see cref="IFluentHttpClient"/> with a fluent API.
 	/// </summary>
-	public class FluentHttpClientBuilder
+	public class FluentHttpClientBuilder : IFluentHttpHeaderBuilder<FluentHttpClientBuilder>
 	{
 		/// <summary>
 		/// Gets the identifier specified.

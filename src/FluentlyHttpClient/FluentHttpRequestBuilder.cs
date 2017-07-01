@@ -12,7 +12,7 @@ namespace FluentlyHttpClient
 	/// <summary>
 	/// Class to build <see cref="FluentHttpRequest"/> with a fluent API.
 	/// </summary>
-	public class FluentHttpRequestBuilder
+	public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpRequestBuilder>
 	{
 		/// <summary>
 		/// Gets the HTTP Method for the Http Request.
