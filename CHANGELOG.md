@@ -8,6 +8,8 @@
 - **request builder:** add `WithUserAgent` extension.
 - **request builder:** add validation for request when 'GET' and has body content, to not be allowed. As it will blow up the underlying HttpClient.
 
+- **request:** add `Formatters` which can be useful for middleware.
+
 - **header builder:** extract interface `IFluentHttpHeaderBuilder`, which both `FluentHttpClientBuilder` and `FluentHttpRequestBuilder` implements.
 This is done to be able to share implementations for extensions methods across `FluentHttpClientBuilder` and `FluentHttpRequestBuilder`
 

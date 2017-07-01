@@ -251,7 +251,8 @@ namespace FluentlyHttpClient
 			var fluentRequest = new FluentHttpRequest(httpRequest, Items)
 			{
 				HasSuccessStatusOrThrow = _hasSuccessStatusOrThrow,
-				CancellationToken = _cancellationToken
+				CancellationToken = _cancellationToken,
+				Formatters = _fluentHttpClient.Formatters
 			};
 			return fluentRequest;
 		}
