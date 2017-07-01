@@ -9,9 +9,11 @@
 - **request builder:** add validation for request when 'GET' and has body content, to not be allowed. As it will blow up the underlying HttpClient.
 
 - **request:** add `Formatters` which can be useful for middleware.
+- **message state:** extract interface `IFluentHttpMessageState`, which both `FluentHttpRequest` and `FluentHttpResponse` implements.
+This will allow sharing implementations for extensions methods across `FluentHttpRequest` and `FluentHttpResponse` related to `Items`.
 
 - **header builder:** extract interface `IFluentHttpHeaderBuilder`, which both `FluentHttpClientBuilder` and `FluentHttpRequestBuilder` implements.
-This is done to be able to share implementations for extensions methods across `FluentHttpClientBuilder` and `FluentHttpRequestBuilder`
+This will allow sharing implementations for extensions methods across `FluentHttpClientBuilder` and `FluentHttpRequestBuilder` related to `Headers`.
 
 - **http client builder:** formatter JSON is now configured with camelcase property names by default.
 - **http client builder:** now shares request builder headers extensions such as `WithUserAgent` and `WithBearerAuthentication`.

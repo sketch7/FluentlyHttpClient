@@ -20,7 +20,7 @@ namespace FluentlyHttpClient
 	/// Fluent HTTP request, which wraps the <see cref="HttpRequestMessage"/> and add additional features.
 	/// </summary>
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
-	public class FluentHttpRequest
+	public class FluentHttpRequest : IFluentHttpMessageState
 	{
 		private string DebuggerDisplay => $"[{Method}] '{Uri}'";
 
@@ -63,7 +63,7 @@ namespace FluentlyHttpClient
 		public CancellationToken CancellationToken { get; set; }
 
 		/// <summary>
-		/// Gets or sets a key/value collection that can be used to share data within the scope of request/response.
+		/// Gets or sets a key/value collection that can be used to share data within the scope of request/response or middleware.
 		/// </summary>
 		public IDictionary<object, object> Items { get; protected set; }
 
