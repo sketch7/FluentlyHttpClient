@@ -157,11 +157,24 @@ namespace Test
 			Assert.NotNull(localeHeader);
 			Assert.Equal("mt-MT", localeHeader);
 		}
+
+		[Fact]
+		public void WithUserAgent()
+		{
+			var builder = NewBuilder()
+					.WithUri("/org/sketch7")
+					.WithUserAgent("fluently")
+				;
+			var request = builder.Build();
+
+			var userAgentHeader = request.Headers.GetValues(HeaderTypes.UserAgent).FirstOrDefault();
+			Assert.NotNull(userAgentHeader);
+			Assert.Equal("fluently", userAgentHeader);
+		}
 	}
 
 	public class RequestBuilder_Return
 	{
-
 		[Fact]
 		public async void ReturnAsString()
 		{
