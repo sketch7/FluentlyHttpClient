@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using FluentlyHttpClient.Middleware;
 
 namespace FluentlyHttpClient.Middleware
 {
@@ -34,5 +35,21 @@ namespace FluentlyHttpClient.Middleware
 				_logger.LogInformation("Post-request... {response}", response);
 			return response;
 		}
+	}
+}
+
+namespace FluentlyHttpClient
+{
+	/// <summary>
+	/// Logger HTTP middleware extensions.
+	/// </summary>
+	public static class LoggerHttpMiddlwareExtensions
+	{
+		/// <summary>
+		/// Use logger middleware which logs out going requests and incoming responses.
+		/// </summary>
+		/// <param name="builder">Builder instance</param>
+		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder)
+			=> builder.UseMiddleware<LoggerHttpMiddleware>();
 	}
 }
