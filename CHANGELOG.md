@@ -17,6 +17,7 @@ This will allow sharing implementations for extensions methods across `FluentHtt
 
 - **http client builder:** formatter JSON is now configured with camelcase property names by default.
 - **http client builder:** now shares request builder headers extensions such as `WithUserAgent` and `WithBearerAuthentication`.
+- **http client builder:** implement `ConfigureDefaults` which enables to configure defaults for newly created http clients.
 
 - **logger middleware:** add extension method `UseLogging`.
 

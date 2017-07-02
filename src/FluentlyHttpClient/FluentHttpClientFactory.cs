@@ -15,6 +15,13 @@ namespace FluentlyHttpClient
 		/// <param name="identifier">identifier to set.</param>
 		/// <returns>Returns a new HTTP client builder.</returns>
 		FluentHttpClientBuilder CreateBuilder(string identifier);
+		
+		/// <summary>
+		/// Configure defaults for <see cref="FluentHttpClientBuilder"/> which every new one uses.
+		/// </summary>
+		/// <param name="configure">Configuration function.</param>
+		/// <returns>Returns client factory for chaining.</returns>
+		IFluentHttpClientFactory ConfigureDefaults(Action<FluentHttpClientBuilder> configure);
 
 		/// <summary>
 		/// Get <see cref="IFluentHttpClient"/> registered by identifier.
@@ -60,6 +67,7 @@ namespace FluentlyHttpClient
 	{
 		private readonly IServiceProvider _serviceProvider;
 		private readonly Dictionary<string, IFluentHttpClient> _clientsMap = new Dictionary<string, IFluentHttpClient>();
+		private Action<FluentHttpClientBuilder> _configure;
 
 		/// <summary>
 		/// Initializes a new instance of <see cref="FluentHttpClientFactory"/>.
@@ -81,7 +89,21 @@ namespace FluentlyHttpClient
 				.Withdentifier(identifier)
 				.WithUserAgent("fluently")
 				.WithTimeout(15);
+
+			_configure?.Invoke(clientBuilder);
+
 			return clientBuilder;
+		}
+
+		/// <summary>
+		/// Configure defaults for <see cref="FluentHttpClientBuilder"/> which every new one uses.
+		/// </summary>
+		/// <param name="configure">Configuration function.</param>
+		/// <returns>Returns client factory for chaining.</returns>
+		public IFluentHttpClientFactory ConfigureDefaults(Action<FluentHttpClientBuilder> configure)
+		{
+			_configure = configure;
+			return this;
 		}
 
 		/// <summary>
