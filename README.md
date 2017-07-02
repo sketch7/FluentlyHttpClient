@@ -140,6 +140,17 @@ fluentHttpClientFactory.CreateBuilder("platform")
     .Register();
 ```
 
+#### Configure defaults for Http Clients
+Its also possible to configure builder defaults for all http clients via `ConfigureDefaults` within `IFluentHttpClientFactory`.
+See example below.
+
+```cs
+fluentHttpClientFactory.ConfigureDefaults(builder
+    => builder.WithUserAgent("sketch7")
+        .WithTimeout(5)
+);
+```
+
 #### Http Client Builder extra goodies
 
 ```cs
@@ -152,6 +163,18 @@ httpClientBuilder.WithRequestBuilderDefaults(builder => builder.AsPut());
 
 // formatters - used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
 httpClientBuilder.WithFormatters(formatter => formatter.Add(new CustomFormatter()));
+```
+
+#### Re-using Http Client from Factory
+As a best practice rather than using a string each time for the identifier, it's better
+to create an extension method for it.
+
+```cs
+public static class FluentHttpClientFactoryExtensions
+{
+    public static IFluentHttpClient GetPlatformClient(this IFluentHttpClientFactory factory)
+        => factory.Get("platform");
+}
 ```
 
 ### Request Builder
@@ -201,18 +224,6 @@ FluentHttpResponse<Hero> response = requestBuilder.ReturnAsResponse<Hero>();
 
 // send and returns derserialized result directly
 Hero hero = requestBuilder.Return<Hero>();
-```
-
-### Re-using Http Client from Factory
-As a best practice rather than using a string each time for the identifier, it's better
-to create an extension method for it.
-
-```cs
-public static class FluentHttpClientFactoryExtensions
-{
-    public static IFluentHttpClient GetPlatformClient(this IFluentHttpClientFactory factory)
-        => factory.Get("platform");
-}
 ```
 
 ### Middleware
