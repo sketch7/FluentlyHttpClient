@@ -353,6 +353,33 @@ public static class FluentHttpRequestBuilderExtensions
 }
 ```
 
+#### Extending Request Builder/Client Builder headers
+In order to extend headers for both `FluentHttpClientBuilder` and `FluentHttpRequestBuilder`, the best approach would be to extend on 
+`IFluentHttpHeaderBuilder<T>`, this way it will be available for both. See example below.
+
+```cs
+public static class FluentHttpHeaderBuilderExtensions
+{
+  public static T WithBearerAuthentication<T>(this IFluentHttpHeaderBuilder<T> builder, string token)
+  {
+    if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
+    builder.WithHeader(HeaderTypes.Authorization, $"{AuthSchemeTypes.Bearer} {token}");
+    return (T)builder;
+  }
+```
+#### Extending Request/Response items
+In order to extend `Items` for both `FluentHttpRequest` and `FluentHttpResponse`, its best to extend `IFluentHttpMessageState`.
+This way it will be available for both. See example below.
+
+```cs
+public static IDictionary<string, string> GetErrorCodeMappings(this IFluentHttpMessageState message)
+{
+  if (message.Items.TryGetValue(ErrorCodeMappingKey, out var value))
+    return (IDictionary<string, string>)value;
+  return null;
+}
+```
+
 ### Testing/Mocking
 In order to test HTTP requests, the library itself doesn't offer anything out of the box.
 However, we've been using [RichardSzalay.MockHttp](https://github.com/richardszalay/mockhttp), which we recommend.
