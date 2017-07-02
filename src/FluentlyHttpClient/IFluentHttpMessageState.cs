@@ -3,7 +3,7 @@
 namespace FluentlyHttpClient
 {
 	/// <summary>
-	/// Interface which both <see cref="FluentHttpRequest"/> and <see cref="FluentHttpResponse"/> imeplements in order to share state across.
+	/// Interface which both <see cref="FluentHttpRequest"/> and <see cref="FluentHttpResponse"/> implements in order to share state across.
 	/// This can be useful for adding extension methods on which would be beneficial for both request and response.
 	/// </summary>
 	public interface IFluentHttpMessageState
