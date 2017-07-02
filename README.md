@@ -140,6 +140,17 @@ fluentHttpClientFactory.CreateBuilder("platform")
     .Register();
 ```
 
+#### Configure defaults for Http Clients
+Its also possible to configure builder defaults for all http clients via `ConfigureDefaults` within `IFluentHttpClientFactory`.
+See example below.
+
+```cs
+fluentHttpClientFactory.ConfigureDefaults(builder
+    => builder.WithUserAgent("sketch7")
+        .WithTimeout(5)
+);
+```
+
 #### Http Client Builder extra goodies
 
 ```cs
@@ -152,6 +163,18 @@ httpClientBuilder.WithRequestBuilderDefaults(builder => builder.AsPut());
 
 // formatters - used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
 httpClientBuilder.WithFormatters(formatter => formatter.Add(new CustomFormatter()));
+```
+
+#### Re-using Http Client from Factory
+As a best practice rather than using a string each time for the identifier, it's better
+to create an extension method for it.
+
+```cs
+public static class FluentHttpClientFactoryExtensions
+{
+    public static IFluentHttpClient GetPlatformClient(this IFluentHttpClientFactory factory)
+        => factory.Get("platform");
+}
 ```
 
 ### Request Builder
@@ -201,18 +224,6 @@ FluentHttpResponse<Hero> response = requestBuilder.ReturnAsResponse<Hero>();
 
 // send and returns derserialized result directly
 Hero hero = requestBuilder.Return<Hero>();
-```
-
-### Re-using Http Client from Factory
-As a best practice rather than using a string each time for the identifier, it's better
-to create an extension method for it.
-
-```cs
-public static class FluentHttpClientFactoryExtensions
-{
-    public static IFluentHttpClient GetPlatformClient(this IFluentHttpClientFactory factory)
-        => factory.Get("platform");
-}
 ```
 
 ### Middleware
@@ -350,6 +361,33 @@ public static class FluentHttpRequestBuilderExtensions
         builder.WithHeader("Authorization", $"Bearer {token}");
         return builder;
     }
+}
+```
+
+#### Extending Request Builder/Client Builder headers
+In order to extend headers for both `FluentHttpClientBuilder` and `FluentHttpRequestBuilder`, the best approach would be to extend on 
+`IFluentHttpHeaderBuilder<T>`, this way it will be available for both. See example below.
+
+```cs
+public static class FluentHttpHeaderBuilderExtensions
+{
+  public static T WithBearerAuthentication<T>(this IFluentHttpHeaderBuilder<T> builder, string token)
+  {
+    if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
+    builder.WithHeader(HeaderTypes.Authorization, $"{AuthSchemeTypes.Bearer} {token}");
+    return (T)builder;
+  }
+```
+#### Extending Request/Response items
+In order to extend `Items` for both `FluentHttpRequest` and `FluentHttpResponse`, its best to extend `IFluentHttpMessageState`.
+This way it will be available for both. See example below.
+
+```cs
+public static IDictionary<string, string> GetErrorCodeMappings(this IFluentHttpMessageState message)
+{
+  if (message.Items.TryGetValue(ErrorCodeMappingKey, out var value))
+    return (IDictionary<string, string>)value;
+  return null;
 }
 ```
 

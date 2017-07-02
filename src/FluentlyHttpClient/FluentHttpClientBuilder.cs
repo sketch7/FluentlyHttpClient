@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Formatting;
+using Newtonsoft.Json.Serialization;
 
 namespace FluentlyHttpClient
 {
 	/// <summary>
 	/// Class to configure <see cref="IFluentHttpClient"/> with a fluent API.
 	/// </summary>
-	public class FluentHttpClientBuilder
+	public class FluentHttpClientBuilder : IFluentHttpHeaderBuilder<FluentHttpClientBuilder>
 	{
 		/// <summary>
 		/// Gets the identifier specified.
@@ -31,6 +32,7 @@ namespace FluentlyHttpClient
 		public FluentHttpClientBuilder(IFluentHttpClientFactory fluentHttpClientFactory)
 		{
 			_fluentHttpClientFactory = fluentHttpClientFactory;
+			_formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 		}
 
 		/// <summary>
@@ -70,10 +72,7 @@ namespace FluentlyHttpClient
 		/// <returns>Returns client builder for chaining.</returns>
 		public FluentHttpClientBuilder WithHeader(string key, string value)
 		{
-			if (_headers.ContainsKey(key))
-				_headers[key] = value;
-			else
-				_headers.Add(key, value);
+			_headers.Set(key, value);
 			return this;
 		}
 

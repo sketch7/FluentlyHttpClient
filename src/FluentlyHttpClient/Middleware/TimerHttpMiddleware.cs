@@ -62,9 +62,9 @@ namespace FluentlyHttpClient.Middleware
 namespace FluentlyHttpClient
 {
 	/// <summary>
-	/// Timer middleware extensions.
+	/// Timer HTTP middleware extensions.
 	/// </summary>
-	public static class TimerMiddlwareExtensions
+	public static class TimerHttpMiddlwareExtensions
 	{
 		private const string TimeTakenKey = "TIME_TAKEN";
 

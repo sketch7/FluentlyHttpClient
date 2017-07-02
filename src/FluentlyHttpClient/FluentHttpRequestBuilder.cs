@@ -12,7 +12,7 @@ namespace FluentlyHttpClient
 	/// <summary>
 	/// Class to build <see cref="FluentHttpRequest"/> with a fluent API.
 	/// </summary>
-	public class FluentHttpRequestBuilder
+	public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpRequestBuilder>
 	{
 		/// <summary>
 		/// Gets the HTTP Method for the Http Request.
@@ -33,6 +33,11 @@ namespace FluentlyHttpClient
 		/// Get the headers to be sent with this request.
 		/// </summary>
 		public Dictionary<string, string> Headers { get; private set; }
+
+		/// <summary>
+		/// Get the key/value collection that can be used to share data within the scope of request/response or middleware.
+		/// </summary>
+		public Dictionary<object, object> Items { get; } = new Dictionary<object, object>();
 
 		private readonly IFluentHttpClient _fluentHttpClient;
 		private HttpContent _httpBody;
@@ -70,10 +75,7 @@ namespace FluentlyHttpClient
 		{
 			if (Headers == null)
 				Headers = new Dictionary<string, string>();
-			if (Headers.ContainsKey(key))
-				Headers[key] = value;
-			else
-				Headers.Add(key, value);
+			Headers.Set(key, value);
 			return this;
 		}
 
@@ -179,11 +181,19 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
-		/// <summary>.</summary>
+		/// <summary>Set cancellation token for the request.</summary>
 		/// <returns>Returns the request builder for chaining.</returns>
 		public FluentHttpRequestBuilder WithCancellationToken(CancellationToken cancellationToken)
 		{
 			_cancellationToken = cancellationToken;
+			return this;
+		}
+
+		/// <summary>Set custom item that can be used to share data within the scope of request, response, and middleware.</summary>
+		/// <returns>Returns the request builder for chaining.</returns>
+		public FluentHttpRequestBuilder WithItem(object key, object value)
+		{
+			Items.Set(key, value);
 			return this;
 		}
 
@@ -238,10 +248,11 @@ namespace FluentlyHttpClient
 				foreach (var header in Headers)
 					httpRequest.Headers.Add(header.Key, header.Value);
 
-			var fluentRequest = new FluentHttpRequest(httpRequest)
+			var fluentRequest = new FluentHttpRequest(httpRequest, Items)
 			{
 				HasSuccessStatusOrThrow = _hasSuccessStatusOrThrow,
-				CancellationToken = _cancellationToken
+				CancellationToken = _cancellationToken,
+				Formatters = _fluentHttpClient.Formatters
 			};
 			return fluentRequest;
 		}
@@ -257,6 +268,9 @@ namespace FluentlyHttpClient
 
 			if (string.IsNullOrWhiteSpace(Uri))
 				throw RequestValidationException.FieldNotSpecified(nameof(Uri));
+
+			if(HttpMethod == HttpMethod.Get && _httpBody != null)
+				throw new RequestValidationException("A request with Method 'GET' cannot have a body assigned.");
 		}
 
 		private static string BuildQueryString(object queryParams, bool lowerCaseQueryKeys)

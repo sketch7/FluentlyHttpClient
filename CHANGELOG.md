@@ -1,6 +1,29 @@
 # Fluently Http Changelog
 
- [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/0.1.0...1.1.0) (201X-X-X)
+ [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.1.0...1.2.0) (201X-X-X)
+
+## [1.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.0.0...1.1.0) (2017-07-02)
+
+### Features
+
+- **request builder:** implement `WithItem` which allows to set custom items that can be used to share data within the scope of request, response, and middleware.
+- **request builder:** add `WithUserAgent` extension.
+- **request builder:** add validation for request when 'GET' and has body content, to not be allowed. As it will blow up the underlying HttpClient.
+
+- **request:** add `Formatters` which can be useful for middleware.
+- **message state:** extract interface `IFluentHttpMessageState`, which both `FluentHttpRequest` and `FluentHttpResponse` implements.
+This will allow sharing implementations for extensions methods across `FluentHttpRequest` and `FluentHttpResponse` related to `Items`.
+
+- **header builder:** extract interface `IFluentHttpHeaderBuilder`, which both `FluentHttpClientBuilder` and `FluentHttpRequestBuilder` implements.
+This will allow sharing implementations for extensions methods across `FluentHttpClientBuilder` and `FluentHttpRequestBuilder` related to `Headers`.
+
+- **http client builder:** formatter JSON is now configured with camelcase property names by default.
+- **http client builder:** now shares request builder headers extensions such as `WithUserAgent` and `WithBearerAuthentication`.
+- **http client builder:** implement `ConfigureDefaults` which enables to configure defaults for newly created http clients.
+
+- **logger middleware:** add extension method `UseLogging`.
+
+- **consts:** add constants for headers and auth schemes `HeaderTypes` and `AuthSchemeTypes`
 
 
  ## [1.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...1.0.0) (2017-06-30)
@@ -15,23 +38,23 @@
  - **request builder:** implement `ReturnAsString`, `ReturnAsStream` and `ReturnAsByteArray`.
 
  - **request:** `Method` and `Uri` has now also setters.
- - **request:** Add `Items` in order to share state across requests/response.
+ - **request:** add `Items` in order to share state across requests/response.
 
  - **response:** `StatusCode` and `ReasonPhrase` has now also setters.
  - **response:** `Items` now are shared with request.
- - **response:** Expose `Content` from `Message`.
+ - **response:** expose `Content` from `Message`.
 
- - **middleware:** Now supports arguments via `UseMiddleware<T>(args)`.
+ - **middleware:**now supports arguments via `UseMiddleware<T>(args)`.
 
- - **timer middleware:** Now supports options, for configure `WarnThreshold`.
- - **timer middleware:** Add extension method `UseTimer` for convience.
+ - **timer middleware:** now supports options, for configure `WarnThreshold`.
+ - **timer middleware:** add extension method `UseTimer` for convience.
 
 ### Code Refactoring
 
- - **http client builder:** Rename `AddMiddleware` to `UseMiddleware`.
+ - **http client builder:** rename `AddMiddleware` to `UseMiddleware`.
  - **http client builder:** `UseMiddleware<T>`, <T> is now constrained with `IFluentHttpMiddleware`.
 
- - **request:** Rename `Url` to `Uri`.
+ - **request:** rename `Url` to `Uri`.
 
 
 ### BREAKING CHANGES

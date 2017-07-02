@@ -36,7 +36,7 @@ namespace FluentlyHttpClient
 	/// Fluent HTTP response, which wraps the <see cref="HttpResponseMessage"/> and add additional features.
 	/// </summary>
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
-	public class FluentHttpResponse
+	public class FluentHttpResponse : IFluentHttpMessageState
 	{
 		/// <summary>
 		/// Gets readable string for debugger.
@@ -91,7 +91,7 @@ namespace FluentlyHttpClient
 		public HttpResponseHeaders Headers => Message.Headers;
 
 		/// <summary>
-		/// Gets or sets a key/value collection that can be used to share data within the scope of request/response.
+		/// Gets or sets a key/value collection that can be used to share data within the scope of request/response or middleware.
 		/// </summary>
 		public IDictionary<object, object> Items { get; protected set; }
 

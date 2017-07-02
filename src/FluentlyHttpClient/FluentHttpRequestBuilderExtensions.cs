@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -62,19 +61,6 @@ namespace FluentlyHttpClient
 		public static FluentHttpRequestBuilder AsPatch(this FluentHttpRequestBuilder builder) => builder.WithMethod(HttpMethodPatch);
 
 		#endregion
-
-		/// <summary>
-		/// Add bearer authentication.
-		/// </summary>
-		/// <param name="builder">builder instance.</param>
-		/// <param name="token">Auth token to add.</param>
-		/// <returns>Returns request builder for chaining.</returns>
-		public static FluentHttpRequestBuilder WithBearerAuthentication(this FluentHttpRequestBuilder builder, string token)
-		{
-			if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
-			builder.WithHeader("Authorization", $"Bearer {token}");
-			return builder;
-		}
 
 		/// <summary>
 		/// Send request and read content as string.
