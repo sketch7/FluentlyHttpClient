@@ -46,7 +46,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns>Returns content within Graphql data response object</returns>
-		public static async Task<FluentHttpResponse> ReturnAsGqlResponse<T>(this FluentHttpRequestBuilder builder)
+		public static async Task<FluentHttpResponse<T>> ReturnAsGqlResponse<T>(this FluentHttpRequestBuilder builder)
 		{
 			var response = await builder.ReturnAsResponse<GqlResponse<T>>().ConfigureAwait(false);
 			return new FluentHttpResponse<T>(response)
