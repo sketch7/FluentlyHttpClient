@@ -111,6 +111,4 @@ namespace FluentlyHttpClient
 			Items = items ?? new Dictionary<object, object>();
 		}
 	}
-
-
 }
