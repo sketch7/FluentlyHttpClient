@@ -1,7 +1,7 @@
 ﻿namespace FluentlyHttpClient.GraphQL
 {
 	/// <summary>
-	/// Request object for GraphQL requests
+	/// Request object for GraphQL requests.
 	/// </summary>
 	public class GqlQuery
 	{

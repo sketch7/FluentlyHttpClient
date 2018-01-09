@@ -3,7 +3,7 @@
 namespace FluentlyHttpClient.GraphQL
 {
 	/// <summary>
-	/// Fluent HTTP response, which wraps the <see cref="HttpResponseMessage"/> and adds GraphQL data
+	/// Fluent HTTP response, which wraps the <see cref="HttpResponseMessage"/> and adds GraphQL data.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	public class GqlResponse<T>
