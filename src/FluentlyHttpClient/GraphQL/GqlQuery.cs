@@ -6,14 +6,13 @@ namespace FluentlyHttpClient
 	/// </summary>
 	public class GqlQuery
 	{
-
 		/// <summary>
-		/// GraphQL query string
+		/// Gets or sets GraphQL query.
 		/// </summary>
 		public string Query { get; set; }
 
 		/// <summary>
-		/// GraphQL object variables
+		/// Gets or sets GraphQL query variables.
 		/// </summary>
 		public object Variables { get; set; }
 	}

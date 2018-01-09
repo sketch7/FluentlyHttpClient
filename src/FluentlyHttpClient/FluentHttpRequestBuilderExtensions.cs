@@ -60,49 +60,7 @@ namespace FluentlyHttpClient
 		/// <returns>Returns request builder for chaining.</returns>
 		public static FluentHttpRequestBuilder AsPatch(this FluentHttpRequestBuilder builder) => builder.WithMethod(HttpMethodPatch);
 
-		/// <summary>
-		/// Set request as a graphql.
-		/// </summary>
-		/// <returns></returns>
-		public static FluentHttpRequestBuilder AsGql(this FluentHttpRequestBuilder builder, string query) => builder.AsPost().WithBody(new { query });
 
-		/// <summary>
-		/// Set request as graphql
-		/// </summary>
-		///<returns>Returns request builder for chaining.</returns>
-		public static FluentHttpRequestBuilder AsGql(this FluentHttpRequestBuilder builder, GqlQuery query) => builder.AsPost().WithBody(query);
-
-		/// <summary>
-		/// Creates a request using graphql.
-		/// </summary>
-		/// <returns>Returns request builder for chaining.</returns>
-		public static FluentHttpRequestBuilder CreateGqlRequest(
-			this IFluentHttpClient fluentHttpClient,
-			string query,
-			string endPoint = "api/graphql"
-		)
-		{
-			return fluentHttpClient.CreateRequest()
-				.WithUri(endPoint)
-				.AsPost()
-				.WithBody(new { query });
-		}
-
-		/// <summary>
-		/// Creates a request using graphql.
-		/// </summary>
-		/// <returns></returns>
-		public static FluentHttpRequestBuilder CreateGqlRequest(
-			this IFluentHttpClient fluentHttpClient,
-			GqlQuery query,
-			string endPoint = "api/graphql"
-		)
-		{
-			return fluentHttpClient.CreateRequest()
-				.WithUri(endPoint)
-				.AsPost()
-				.WithBody(query);
-		}
 
 		#endregion
 
@@ -134,23 +92,6 @@ namespace FluentlyHttpClient
 		{
 			var response = await builder.ReturnAsResponse().ConfigureAwait(false);
 			return await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-		}
-
-
-		/// <summary>
-		/// Send request and return as Graph QL response
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns>Returns content within Graphql data response object</returns>
-		public static async Task<FluentHttpResponse<GqlResponse<T>>> ReturnAsGqlResponse<T>(this FluentHttpRequestBuilder builder)
-		{
-			var response = await builder.ReturnAsResponse().ConfigureAwait(false);
-			var genericResponse = new FluentHttpResponse<GqlResponse<T>>(response);
-
-			genericResponse.Data = await genericResponse.Content.ReadAsAsync<GqlResponse<T>>()
-				.ConfigureAwait(false);
-
-			return genericResponse;
 		}
 	}
 }
