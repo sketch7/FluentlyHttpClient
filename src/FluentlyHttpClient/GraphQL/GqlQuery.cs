@@ -1,5 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
-namespace FluentlyHttpClient
+﻿namespace FluentlyHttpClient.GraphQL
 {
 	/// <summary>
 	/// Request object for GraphQL requests

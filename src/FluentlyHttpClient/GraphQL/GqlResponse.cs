@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace FluentlyHttpClient
+namespace FluentlyHttpClient.GraphQL
 {
 	/// <summary>
 	/// Fluent HTTP response, which wraps the <see cref="HttpResponseMessage"/> and adds GraphQL data
@@ -14,7 +14,7 @@ namespace FluentlyHttpClient
 		public T Data { get; }
 
 		/// <summary>
-		/// Initiales a new GqlResponse"/>.
+		/// Initialize a new GqlResponse"/>.
 		/// </summary>
 		/// <param name="data"></param>
 		public GqlResponse(T data)
