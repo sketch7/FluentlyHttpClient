@@ -59,9 +59,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <returns>Returns request builder for chaining.</returns>
 		public static FluentHttpRequestBuilder AsPatch(this FluentHttpRequestBuilder builder) => builder.WithMethod(HttpMethodPatch);
-
-
-
+		
 		#endregion
 
 		/// <summary>
