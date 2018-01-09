@@ -2,6 +2,7 @@
 using FluentlyHttpClient.Test;
 using RichardSzalay.MockHttp;
 using System.Net.Http;
+using FluentlyHttpClient.GraphQL;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -57,6 +58,37 @@ namespace Test
 
 			Assert.NotNull(hero);
 			Assert.Equal("Lord of Sin", hero.Title);
+		}
+
+		[Fact]
+		public async void GraphQL_ShouldReturnContent()
+		{
+			const string query = "{hero {name,title}}";
+
+			var mockHttp = new MockHttpMessageHandler();
+			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/graphql")
+				.With(request =>
+				{
+					var contentTask = request.Content.ReadAsAsync<GqlQuery>();
+					contentTask.Wait();
+					return contentTask.Result.Query == "{hero {name,title}}";
+				})
+				.Respond("application/json", "{ 'data': {'name': 'Azmodan', 'title': 'Lord of Sin' }}");
+
+			var fluentHttpClientFactory = GetNewClientFactory();
+			fluentHttpClientFactory.CreateBuilder("sketch7")
+				.WithBaseUrl("https://sketch7.com")
+				.WithMessageHandler(mockHttp)
+				.Register();
+
+			var httpClient = fluentHttpClientFactory.Get("sketch7");
+			var hero = await httpClient
+				.CreateGqlRequest(query)
+				.WithUri("/api/graphql")
+				.ReturnAsGqlResponse<Hero>();
+
+			Assert.NotNull(hero);
+			Assert.Equal("Lord of Sin", hero.Data.Title);
 		}
 	}
 
