@@ -18,12 +18,11 @@ namespace Test
 				.Respond("application/json", "{ 'name': 'Azmodan' }");
 
 			var fluentHttpClientFactory = GetNewClientFactory();
-			fluentHttpClientFactory.CreateBuilder("sketch7")
+			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.WithMessageHandler(mockHttp)
-				.Register();
+				.WithMessageHandler(mockHttp);
 
-			var httpClient = fluentHttpClientFactory.Get("sketch7");
+			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var hero = await httpClient.Get<Hero>("/api/heroes/azmodan");
 
 			Assert.NotNull(hero);
@@ -45,12 +44,11 @@ namespace Test
 				.Respond("application/json", "{ 'name': 'Azmodan', 'title': 'Lord of Sin' }");
 
 			var fluentHttpClientFactory = GetNewClientFactory();
-			fluentHttpClientFactory.CreateBuilder("sketch7")
+			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.WithMessageHandler(mockHttp)
-				.Register();
+				.WithMessageHandler(mockHttp);
 
-			var httpClient = fluentHttpClientFactory.Get("sketch7");
+			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var hero = await httpClient.Post<Hero>("/api/heroes/azmodan", new
 			{
 				Title = "Lord of Sin"
@@ -66,7 +64,7 @@ namespace Test
 			const string query = "{hero {name,title}}";
 
 			var mockHttp = new MockHttpMessageHandler();
-			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/graphql/")
+			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/graphql")
 				.With(request =>
 				{
 					var contentTask = request.Content.ReadAsAsync<GqlQuery>();
@@ -76,14 +74,12 @@ namespace Test
 				.Respond("application/json", "{ 'data': {'name': 'Azmodan', 'title': 'Lord of Sin' }}");
 
 			var fluentHttpClientFactory = GetNewClientFactory();
-			fluentHttpClientFactory.CreateBuilder("sketch7")
+			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.WithMessageHandler(mockHttp)
-				.Register();
+				.WithMessageHandler(mockHttp);
 
-			var httpClient = fluentHttpClientFactory.Get("sketch7");
-			var response = await httpClient
-				.CreateGqlRequest(query)
+			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			var response = await httpClient.CreateGqlRequest(query)
 				.WithUri("/api/graphql")
 				.ReturnAsGqlResponse<Hero>();
 
