@@ -204,7 +204,6 @@ namespace Test
 		[Fact]
 		public async void ReturnAsString()
 		{
-			var mockResponse = "{ 'name': 'Azmodan' }";
 			var mockHttp = new MockHttpMessageHandler();
 			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes/azmodan")
 				.WithContent("{\"title\":\"Lord of Sin\"}")

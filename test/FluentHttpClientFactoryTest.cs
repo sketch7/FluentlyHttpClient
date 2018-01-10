@@ -39,7 +39,7 @@ namespace Test
 
 			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 
-			Assert.Equal(0, httpClient.Formatters.Count);
+			Assert.Empty(httpClient.Formatters);
 		}
 	}
 	public class ClientFactory_WithConfigureDefaults
