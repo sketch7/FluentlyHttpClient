@@ -11,8 +11,6 @@ jobs:
       - run:
           name: Print environment versions
           command: |
-            NPM_V=$(npm -v)
-            echo npm version':' $NPM_V
             DOTNET_CLI_V=$(dotnet --version)
             echo dotnet cli version':' $DOTNET_CLI_V
       - checkout
@@ -24,7 +22,7 @@ jobs:
           command: dotnet build
       - run:
           name: test
-          command: npm test
+          command: cd test && dotnet xunit
       - deploy:
           name: Publish NuGet
           command: |
