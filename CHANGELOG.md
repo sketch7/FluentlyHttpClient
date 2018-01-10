@@ -1,6 +1,12 @@
 # Fluently Http Changelog
 
  [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.1.0...1.2.0) (201X-X-X)
+ 
+ <!-- ## [1.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.1.0...1.2.0) (201X-X-X) -->
+
+### Features
+
+ - **consts:** add `XForwardedFor` in `HeaderTypes`
 
 ## [1.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.0.0...1.1.0) (2017-07-02)
 
