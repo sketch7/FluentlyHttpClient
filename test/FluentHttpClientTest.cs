@@ -66,12 +66,12 @@ namespace Test
 			const string query = "{hero {name,title}}";
 
 			var mockHttp = new MockHttpMessageHandler();
-			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/graphql")
+			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/graphql/")
 				.With(request =>
 				{
 					var contentTask = request.Content.ReadAsAsync<GqlQuery>();
 					contentTask.Wait();
-					return contentTask.Result.Query == "{hero {name,title}}";
+					return contentTask.Result.Query == query;
 				})
 				.Respond("application/json", "{ 'data': {'name': 'Azmodan', 'title': 'Lord of Sin' }}");
 
@@ -82,13 +82,14 @@ namespace Test
 				.Register();
 
 			var httpClient = fluentHttpClientFactory.Get("sketch7");
-			var hero = await httpClient
+			var response = await httpClient
 				.CreateGqlRequest(query)
 				.WithUri("/api/graphql")
 				.ReturnAsGqlResponse<Hero>();
 
-			Assert.NotNull(hero);
-			Assert.Equal("Lord of Sin", hero.Data.Title);
+			Assert.True(response.IsSuccessStatusCode);
+			Assert.NotNull(response.Data);
+			Assert.Equal("Lord of Sin", response.Data.Title);
 		}
 	}
 
