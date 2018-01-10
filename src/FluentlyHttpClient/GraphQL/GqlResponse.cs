@@ -14,7 +14,7 @@ namespace FluentlyHttpClient.GraphQL
 		public T Data { get; }
 
 		/// <summary>
-		/// Initialize a new GqlResponse"/>.
+		/// Initialize a new GqlResponse.
 		/// </summary>
 		/// <param name="data"></param>
 		public GqlResponse(T data)
