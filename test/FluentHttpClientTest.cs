@@ -92,5 +92,4 @@ namespace Test
 			Assert.Equal("Lord of Sin", response.Data.Title);
 		}
 	}
-
 }
