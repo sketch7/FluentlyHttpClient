@@ -16,6 +16,11 @@
 		public const string Authorization = "Authorization";
 
 		/// <summary>
+		/// Gets the X-Forwarded-For header name.
+		/// </summary>
+		public const string XForwardedFor = "X-Forwarded-For";
+
+		/// <summary>
 		/// Gets the User-Agent header name.
 		/// </summary>
 		public const string UserAgent = "User-Agent";
