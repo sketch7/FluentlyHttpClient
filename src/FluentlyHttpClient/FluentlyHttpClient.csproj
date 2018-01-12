@@ -6,7 +6,7 @@
     <Product>FluentlyHttpClient</Product>
     <Company>Sketch7</Company>
     <Authors>Stephen Lautier</Authors>
-    <PackageTags>httpclient fluentapi fluenthttp</PackageTags>
+    <PackageTags>httpclient fluentapi fluenthttp graphql graphqlclient</PackageTags>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/sketch7/FluentlyHttpClient.git</RepositoryUrl>

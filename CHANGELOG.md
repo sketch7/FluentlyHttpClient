@@ -1,12 +1,20 @@
 # Fluently Http Changelog
 
- [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.1.0...1.2.0) (201X-X-X)
- 
- <!-- ## [1.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.1.0...1.2.0) (201X-X-X) -->
+[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.2.0...1.3.0) (201X-X-X)
+
+## [1.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.1.0...1.2.0) (2018-01-12)
 
 ### Features
 
- - **consts:** add `XForwardedFor` in `HeaderTypes`
+ - **graphql:** add support for GraphQL to have simpler api's specifically for GraphQL. (thanks to [Kurt Cassar](https://github.com/nismolo) for contribution)
+ - **consts:** add `XForwardedFor` in `HeaderTypes`.
+
+New apis such as:
+ - `fluentHttpClient.CreateGqlRequest(query)` - Creates a new HTTP request and configure for GraphQL.
+ - `requestBuilder.AsGql(query)` - Configures an existing HTTP request builder as a GraphQL request.
+ - `requestBuilder.ReturnAsGqlResponse<T>()` - Sends request and unwrap GraphQL data to be available directly in the `.Data`.
+
+See documentation for an example on how it can be used.
 
 ## [1.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.0.0...1.1.0) (2017-07-02)
 
