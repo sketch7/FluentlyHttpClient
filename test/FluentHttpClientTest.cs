@@ -76,11 +76,11 @@ namespace Test
 			var fluentHttpClientFactory = GetNewClientFactory();
 			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
+				.WithRequestBuilderDefaults(requestBuilder => requestBuilder.WithUri("api/graphql"))
 				.WithMessageHandler(mockHttp);
 
 			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var response = await httpClient.CreateGqlRequest(query)
-				.WithUri("/api/graphql")
 				.ReturnAsGqlResponse<Hero>();
 
 			Assert.True(response.IsSuccessStatusCode);

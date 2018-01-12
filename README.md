@@ -231,6 +231,9 @@ Hero hero = requestBuilder.Return<Hero>();
 FluentlyHttpClient :heart: GraphQL. First class support for GraphQL to be able to create request/response even simpler.
 
 ```cs
+// configure globally to use uri for GraphQL endpoint.
+httpClientBuilder.WithRequestBuilderDefaults(requestBuilder => requestBuilder.WithUri("api/graphql"));
+
 // send and returns HTTP response + deserialize and return result via `.Data` directly
 FluentHttpResponse<Hero> response =
   await fluentHttpClient.CreateGqlRequest("{ hero {name, title } }")
