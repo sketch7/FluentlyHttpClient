@@ -14,6 +14,7 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
 
 ## Features
  - Fluent APIs
+ - Highly extensible
  - Middleware Support
    - Custom Classes with DI enabled
    - Access to both Request/Response within same scope (similar to MVC middleware)
@@ -21,7 +22,7 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
  - Multiple HttpClient support with a Fluent API for Client builder
  - Customizable Formatters (JSON, XML out of the box)
  - Url interpolation and query params e.g. person/{id} / person?id=1
- - Highly extensible
+ - GraphQL support
 
 ## Installation
 Available for [.NET Standard 1.4+](https://docs.microsoft.com/en-gb/dotnet/standard/net-standard)
@@ -224,6 +225,17 @@ FluentHttpResponse<Hero> response = requestBuilder.ReturnAsResponse<Hero>();
 
 // send and returns derserialized result directly
 Hero hero = requestBuilder.Return<Hero>();
+```
+
+### GraphQL
+FluentlyHttpClient :heart: GraphQL. First class support for GraphQL to be able to create request/response even simpler.
+
+```cs
+// send and returns HTTP response + deserialize and return result via `.Data` directly
+FluentHttpResponse<Hero> response =
+  await fluentHttpClient.CreateGqlRequest("{ hero {name, title } }")
+    .ReturnAsGqlResponse<Hero>();
+    // => response.Data.Title
 ```
 
 ### Middleware
