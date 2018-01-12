@@ -1,8 +1,8 @@
 # Fluently Http Changelog
 
- [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.2.0...1.3.0) (201X-X-X)
- 
- ## [1.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.1.0...1.2.0) (2018-01-12)
+[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.2.0...1.3.0) (201X-X-X)
+
+## [1.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.1.0...1.2.0) (2018-01-12)
 
 ### Features
 
