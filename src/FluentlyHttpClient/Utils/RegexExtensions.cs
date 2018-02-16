@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace FluentlyHttpClient
@@ -16,6 +17,17 @@ namespace FluentlyHttpClient
 		/// <param name="args">Arguments to interpolate with template.</param>
 		/// <returns>Returns string with tokens replaced.</returns>
 		public static string ReplaceTokens(this Regex re, string template, IDictionary<string, object> args)
-			=> re.Replace(template, match => args[match.Groups[1].Value].ToString());
+		{
+			string Evaluator(Match match)
+			{
+				var paramName = match.Groups[1].Value;
+				var paramValue = args[paramName];
+				if (paramValue == null)
+					throw new ArgumentNullException(nameof(args), $"Template has a param which its value is not provided. Param: '{paramName}'");
+				return args[match.Groups[1].Value].ToString();
+			};
+
+			return re.Replace(template, Evaluator);
+		}
 	}
 }
