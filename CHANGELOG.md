@@ -4,14 +4,14 @@
 
 ## [1.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/1.2.0...1.2.1) (2018-02-16)
 
-### Features
-
- - **collection extensions:** `Set` has been marked as obsolete, as it can be replaced by 1 liner.
-
 ### Bug Fixes
  - **regex extensions:** `ReplaceTokens` now validates object instead of throwing null reference exception.
  This now will give better errors when using interpolations without value.
  - **request builder:** `WithQueryParams` now omits query param when value is null instead of null reference exception.
+
+### Deprecated code
+
+ - **collection extensions:** `Set` has been marked as obsolete, as it can be replaced by 1 liner.
 
 ## [1.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.1.0...1.2.0) (2018-01-12)
 
