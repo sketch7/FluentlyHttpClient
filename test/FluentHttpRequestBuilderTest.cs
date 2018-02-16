@@ -1,4 +1,5 @@
-﻿using FluentlyHttpClient;
+﻿using System;
+using FluentlyHttpClient;
 using FluentlyHttpClient.Test;
 using RichardSzalay.MockHttp;
 using System.Collections.Generic;
@@ -22,6 +23,16 @@ namespace Test
 				}).Build();
 
 			Assert.Equal("en/heroes/azmodan", request.Uri.ToString());
+		}
+
+		[Fact]
+		public void NullValue_ShouldThrow()
+		{
+			var requestBuilder = GetNewRequestBuilder();
+			Assert.Throws<ArgumentNullException>("args", () => requestBuilder.WithUri("{Language}/heroes", new
+			{
+				Language = (string)null
+			}));
 		}
 	}
 
@@ -54,6 +65,36 @@ namespace Test
 
 			Assert.Equal("/org/sketch7?Page=1&Filter=all", request.Uri.ToString());
 		}
+
+		[Fact]
+		public void OnlyNullValue_RemainAsIs()
+		{
+			string filter = null;
+			var builder = GetNewRequestBuilder();
+			var request = builder.WithUri("/org/sketch7")
+				.WithQueryParams(new
+				{
+					filter,
+				}).Build();
+
+			Assert.Equal("/org/sketch7", request.Uri.ToString());
+		}
+
+		[Fact]
+		public void NullValue_Omitted()
+		{
+			string filter = null;
+			var builder = GetNewRequestBuilder();
+			var request = builder.WithUri("/org/sketch7")
+				.WithQueryParams(new
+				{
+					filter,
+					Page = 1
+				}).Build();
+
+			Assert.Equal("/org/sketch7?page=1", request.Uri.ToString());
+		}
+
 
 		[Fact]
 		public void AppendQuery()

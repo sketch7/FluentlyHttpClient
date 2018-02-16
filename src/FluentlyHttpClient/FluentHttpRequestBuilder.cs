@@ -75,7 +75,7 @@ namespace FluentlyHttpClient
 		{
 			if (Headers == null)
 				Headers = new Dictionary<string, string>();
-			Headers.Set(key, value);
+			Headers[key] = value;
 			return this;
 		}
 
@@ -193,7 +193,7 @@ namespace FluentlyHttpClient
 		/// <returns>Returns the request builder for chaining.</returns>
 		public FluentHttpRequestBuilder WithItem(object key, object value)
 		{
-			Items.Set(key, value);
+			Items[key] = value;
 			return this;
 		}
 
@@ -269,7 +269,7 @@ namespace FluentlyHttpClient
 			if (string.IsNullOrWhiteSpace(Uri))
 				throw RequestValidationException.FieldNotSpecified(nameof(Uri));
 
-			if(HttpMethod == HttpMethod.Get && _httpBody != null)
+			if (HttpMethod == HttpMethod.Get && _httpBody != null)
 				throw new RequestValidationException("A request with Method 'GET' cannot have a body assigned.");
 		}
 
@@ -284,7 +284,11 @@ namespace FluentlyHttpClient
 
 			var queryCollection = new HttpValueCollection();
 			foreach (var item in dict)
+			{
+				if (item.Value == null) continue;
+
 				queryCollection[lowerCaseQueryKeys ? item.Key.ToLower() : item.Key] = item.Value.ToString();
+			}
 			return queryCollection.ToString();
 		}
 

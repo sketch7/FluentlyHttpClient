@@ -14,23 +14,18 @@ namespace FluentlyHttpClient
 		/// <param name="arguments">The key=>value pairs in the query argument. If this is a dictionary, the keys and values are used. Otherwise, the property names and values are used.</param>
 		public static IDictionary<string, object> ToDictionary(this object arguments)
 		{
-			// null
-			if (arguments == null)
-				return new Dictionary<string, object>();
-
-			// generic dictionary
-			if (arguments is IDictionary<string, object> args)
-				return args;
-
-			// dictionary
-			if (arguments is IDictionary argDict)
+			switch (arguments)
 			{
-				IDictionary<string, object> dict = new Dictionary<string, object>();
-				foreach (var key in argDict.Keys)
-					dict.Add(key.ToString(), argDict[key]);
-				return dict;
+				case null:
+					return new Dictionary<string, object>();
+				case IDictionary<string, object> args:
+					return args;
+				case IDictionary argDict:
+					IDictionary<string, object> dict = new Dictionary<string, object>();
+					foreach (var key in argDict.Keys)
+						dict.Add(key.ToString(), argDict[key]);
+					return dict;
 			}
-
 			// object
 			return arguments.GetType()
 				.GetRuntimeProperties()
