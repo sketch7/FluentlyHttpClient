@@ -140,7 +140,7 @@ namespace FluentlyHttpClient
 
 			MediaTypeFormatter formatter = contentType != null
 				? Formatters.FirstOrDefault(x => x.SupportedMediaTypes.Any(m => m.MediaType == contentType.MediaType))
-				: Formatters.FirstOrDefault();
+				: Formatters.FirstOrDefault(); // todo: configure default media type
 			if (formatter == null)
 				throw new InvalidOperationException($"No media type formatters are available for '{contentType}' content-type.");
 

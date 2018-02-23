@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace FluentlyHttpClient.Test
 {
 	/// <summary>
@@ -7,6 +5,7 @@ namespace FluentlyHttpClient.Test
 	/// </summary>
 	public class Hero
 	{
+		public string Key { get; set; }
 		public string Name { get; set; }
 		public string Title { get; set; }
 	}
