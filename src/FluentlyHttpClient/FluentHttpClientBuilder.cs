@@ -1,9 +1,8 @@
-﻿using FluentlyHttpClient.Middleware;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Formatting;
-using Newtonsoft.Json.Serialization;
+using FluentlyHttpClient.Middleware;
 
 namespace FluentlyHttpClient
 {
@@ -24,7 +23,7 @@ namespace FluentlyHttpClient
 		private readonly List<MiddlewareConfig> _middleware = new List<MiddlewareConfig>();
 		private Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 		private HttpMessageHandler _httpMessageHandler;
-		private readonly MediaTypeFormatterCollection _formatters = new MediaTypeFormatterCollection();
+		private readonly FormatterOptions _formatterOptions = new FormatterOptions();
 
 		/// <summary>
 		/// Initializes a new instance.
@@ -32,7 +31,6 @@ namespace FluentlyHttpClient
 		public FluentHttpClientBuilder(IFluentHttpClientFactory fluentHttpClientFactory)
 		{
 			_fluentHttpClientFactory = fluentHttpClientFactory;
-			_formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 		}
 
 		/// <summary>
@@ -64,23 +62,14 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
-		/// <summary>
-		/// Add the specified header and its value for each request.
-		/// </summary>
-		/// <param name="key">Header to add.</param>
-		/// <param name="value">Value for the header.</param>
-		/// <returns>Returns client builder for chaining.</returns>
+		/// <inheritdoc />
 		public FluentHttpClientBuilder WithHeader(string key, string value)
 		{
 			_headers[key] = value;
 			return this;
 		}
 
-		/// <summary>
-		/// Add the specified headers and their value for each request.
-		/// </summary>
-		/// <param name="headers">Headers to add.</param>
-		/// <returns>Returns client builder for chaining.</returns>
+		/// <inheritdoc />
 		public FluentHttpClientBuilder WithHeaders(IDictionary<string, string> headers)
 		{
 			foreach (var item in headers)
@@ -127,9 +116,21 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="configure">Action to configure formatters.</param>
 		/// <returns>Returns client builder for chaining.</returns>
+		[Obsolete("Use ConfigureFormatters instead.")]
 		public FluentHttpClientBuilder WithFormatters(Action<MediaTypeFormatterCollection> configure)
 		{
-			configure(_formatters);
+			configure(_formatterOptions.Formatters);
+			return this;
+		}
+
+		/// <summary>
+		/// Configure formatters to be used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
+		/// </summary>
+		/// <param name="configure">Action to configure formatters.</param>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder ConfigureFormatters(Action<FormatterOptions> configure)
+		{
+			configure(_formatterOptions);
 			return this;
 		}
 
@@ -157,6 +158,7 @@ namespace FluentlyHttpClient
 		/// <returns>Returns HTTP client options.</returns>
 		public FluentHttpClientOptions Build()
 		{
+			_formatterOptions.Resort();
 			var options = new FluentHttpClientOptions
 			{
 				Timeout = _timeout,
@@ -166,7 +168,8 @@ namespace FluentlyHttpClient
 				Middleware = _middleware,
 				RequestBuilderDefaults = _requestBuilderDefaults,
 				HttpMessageHandler = _httpMessageHandler,
-				Formatters = _formatters
+				Formatters = _formatterOptions.Formatters,
+				DefaultFormatter = _formatterOptions.Default
 			};
 			return options;
 		}

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using FluentlyHttpClient.Middleware;
+using Newtonsoft.Json.Serialization;
 
 namespace FluentlyHttpClient
 {
@@ -50,5 +52,46 @@ namespace FluentlyHttpClient
 		/// Gets or sets formatters to be used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
 		/// </summary>
 		public MediaTypeFormatterCollection Formatters { get; set; }
+
+		/// <summary>
+		/// Gets or sets the default formatter to be used for content negotiation body format. e.g. JSON, XML, etc...
+		/// </summary>
+		public MediaTypeFormatter DefaultFormatter { get; set; }
+	}
+
+	/// <summary>
+	/// Content negotiation formatter options. e.g. JSON, XML, etc...
+	/// </summary>
+	public class FormatterOptions
+	{
+		public FormatterOptions()
+		{
+			Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+		}
+
+		/// <summary>
+		/// Configure formatters to be used.
+		/// </summary>
+		public MediaTypeFormatterCollection Formatters { get; } = new MediaTypeFormatterCollection();
+
+		/// <summary>
+		/// Set default formatter to be used when serializing body content and the preferred "Accept".
+		/// </summary>
+		public MediaTypeFormatter Default { get; set; }
+
+		/// <summary>
+		/// Resort formatters from the provided options.
+		/// </summary>
+		internal void Resort()
+		{
+			if (Default == null)
+				return;
+
+			var defaultFormatter = Formatters.FirstOrDefault(x => x == Default);
+			if (defaultFormatter != null)
+				Formatters.Remove(defaultFormatter);
+			// place default formatter as first one so it will be preferred.
+			Formatters.Insert(0, Default);
+		}
 	}
 }
