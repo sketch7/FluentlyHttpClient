@@ -65,12 +65,7 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
-		/// <summary>
-		/// Add the specified header and its value for the request.
-		/// </summary>
-		/// <param name="key">Header to add.</param>
-		/// <param name="value">Value for the header.</param>
-		/// <returns>Returns request builder for chaining.</returns>
+		/// <inheritdoc />
 		public FluentHttpRequestBuilder WithHeader(string key, string value)
 		{
 			if (Headers == null)
@@ -79,11 +74,7 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
-		/// <summary>
-		/// Add the specified headers and their value for the request.
-		/// </summary>
-		/// <param name="headers">Headers to add.</param>
-		/// <returns>Returns request builder for chaining.</returns>
+		/// <inheritdoc />
 		public FluentHttpRequestBuilder WithHeaders(IDictionary<string, string> headers)
 		{
 			foreach (var item in headers)

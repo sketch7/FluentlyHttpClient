@@ -78,11 +78,7 @@ namespace FluentlyHttpClient
 			_serviceProvider = serviceProvider;
 		}
 
-		/// <summary>
-		/// Creates a new <see cref="FluentHttpClientBuilder"/>.
-		/// </summary>
-		/// <param name="identifier">identifier to set.</param>
-		/// <returns>Returns a new HTTP client builder.</returns>
+		/// <inheritdoc />
 		public FluentHttpClientBuilder CreateBuilder(string identifier)
 		{
 			var clientBuilder = ActivatorUtilities.CreateInstance<FluentHttpClientBuilder>(_serviceProvider, this)
@@ -95,23 +91,14 @@ namespace FluentlyHttpClient
 			return clientBuilder;
 		}
 
-		/// <summary>
-		/// Configure defaults for <see cref="FluentHttpClientBuilder"/> which every new one uses.
-		/// </summary>
-		/// <param name="configure">Configuration function.</param>
-		/// <returns>Returns client factory for chaining.</returns>
+		/// <inheritdoc />
 		public IFluentHttpClientFactory ConfigureDefaults(Action<FluentHttpClientBuilder> configure)
 		{
 			_configure = configure;
 			return this;
 		}
 
-		/// <summary>
-		/// Get <see cref="IFluentHttpClient"/> registered by identifier.
-		/// </summary>
-		/// <param name="identifier">Identifier to get.</param>
-		/// <exception cref="KeyNotFoundException">Throws an exception when identifier is not found.</exception>
-		/// <returns>Returns HTTP client.</returns>
+		/// <inheritdoc />
 		public IFluentHttpClient Get(string identifier)
 		{
 			if (!_clientsMap.TryGetValue(identifier, out var client))
@@ -119,11 +106,7 @@ namespace FluentlyHttpClient
 			return client;
 		}
 
-		/// <summary>
-		/// Add/register HTTP client from options.
-		/// </summary>
-		/// <param name="options">options to register.</param>
-		/// <returns>Returns HTTP client created.</returns>
+		/// <inheritdoc />
 		public IFluentHttpClient Add(FluentHttpClientOptions options)
 		{
 			if (options == null) throw new ArgumentNullException(nameof(options));
@@ -143,11 +126,7 @@ namespace FluentlyHttpClient
 			return client;
 		}
 
-		/// <summary>
-		/// Add/register HTTP Client from builder.
-		/// </summary>
-		/// <param name="clientBuilder">Client builder to register.</param>
-		/// <returns>Returns HTTP client created.</returns>
+		/// <inheritdoc />
 		public IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder)
 		{
 			if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
@@ -155,11 +134,7 @@ namespace FluentlyHttpClient
 			return Add(options);
 		}
 
-		/// <summary>
-		/// Remove/unregister HTTP Client.
-		/// </summary>
-		/// <param name="identifier">Identity to remove.</param>
-		/// <returns>Returns client factory for chaining.</returns>
+		/// <inheritdoc />
 		public IFluentHttpClientFactory Remove(string identifier)
 		{
 			if (!_clientsMap.TryGetValue(identifier, out var client))
@@ -170,11 +145,7 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
-		/// <summary>
-		/// Determine whether identifier is already registered.
-		/// </summary>
-		/// <param name="identifier">Identifier to check.</param>
-		/// <returns>Returns true when already exists.</returns>
+		/// <inheritdoc />
 		public bool Has(string identifier) => _clientsMap.ContainsKey(identifier);
 	}
 }
