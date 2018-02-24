@@ -2,7 +2,7 @@
 
 [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.3.0...1.3.1) (201X-X-X)
 
-## [1.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.2.1...1.3.0) (2018-02-X)
+## [1.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.2.1...1.3.0) (2018-02-24)
 
 ### Features
  - **http client builder:** add `ConfigureFormatters` which now able to configure `Default` formatter to be used.
