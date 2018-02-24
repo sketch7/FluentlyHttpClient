@@ -3,6 +3,7 @@ using FluentlyHttpClient.Test;
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -42,6 +43,75 @@ namespace Test
 			Assert.Empty(httpClient.Formatters);
 		}
 	}
+
+	public class ClientFactory_ConfigureFormatters
+	{
+		[Fact]
+		public void ShouldSetClientFormatters()
+		{
+			var fluentHttpClientFactory = GetNewClientFactory();
+			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.ConfigureFormatters(opts =>
+				{
+					opts.Formatters.Clear();
+				});
+
+			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+
+			Assert.Empty(httpClient.Formatters);
+		}
+
+		[Fact]
+		public void ShouldSetDefaultFormatter()
+		{
+			var fluentHttpClientFactory = GetNewClientFactory();
+			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.ConfigureFormatters(opts =>
+				{
+					opts.Default = opts.Formatters.XmlFormatter;
+				});
+
+			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+
+			Assert.Equal(httpClient.Formatters.XmlFormatter, httpClient.DefaultFormatter);
+		}
+
+		[Fact]
+		public void ShouldAutoRegisterDefault()
+		{
+			var jsonFormatter = new JsonMediaTypeFormatter();
+			var fluentHttpClientFactory = GetNewClientFactory();
+			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.ConfigureFormatters(opts =>
+				{
+					opts.Formatters.Clear();
+					opts.Default = jsonFormatter;
+				});
+
+			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+
+			Assert.Equal(jsonFormatter, httpClient.DefaultFormatter);
+		}
+
+		[Fact]
+		public void DefaultFormatterShouldBePlacedFirst()
+		{
+			var fluentHttpClientFactory = GetNewClientFactory();
+			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.ConfigureFormatters(opts =>
+				{
+					opts.Default = opts.Formatters.XmlFormatter;
+				});
+
+			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			Assert.Equal(httpClient.Formatters.First(), httpClient.DefaultFormatter);
+		}
+	}
+
 	public class ClientFactory_WithConfigureDefaults
 	{
 		[Fact]
