@@ -1,6 +1,16 @@
 # Fluently Http Changelog
 
-[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.2.1...1.3.0) (201X-X-X)
+[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.3.0...1.3.1) (201X-X-X)
+
+## [1.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.2.1...1.3.0) (2018-02-X)
+
+### Features
+ - **http client builder:** add `ConfigureFormatters` which now able to configure `Default` formatter to be used.
+ - **sample:** add sample for MessagePack formatter - see `MessagePackIntegrationTest` and `MessagePackMediaTypeFormatter`.
+
+### Deprecated code
+
+ - **http client builder:** `WithFormatters` has been marked as obsolete, instead the newly `ConfigureFormatters`.
 
 ## [1.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/1.2.0...1.2.1) (2018-02-16)
 
