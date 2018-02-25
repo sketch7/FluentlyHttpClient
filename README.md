@@ -163,7 +163,11 @@ httpClientBuilder.WithMessageHandler(mockHttp);
 httpClientBuilder.WithRequestBuilderDefaults(builder => builder.AsPut());
 
 // formatters - used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
-httpClientBuilder.WithFormatters(formatter => formatter.Add(new CustomFormatter()));
+httpClientBuilder.ConfigureFormatters(opts =>
+    {
+      opts.Default = new MessagePackMediaTypeFormatter();
+      opts.Formatters.Add(new CustomFormatter());
+    });
 ```
 
 #### Re-using Http Client from Factory

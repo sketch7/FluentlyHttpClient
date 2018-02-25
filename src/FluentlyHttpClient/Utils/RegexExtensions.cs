@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
+// ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient
 {
 	/// <summary>
