@@ -83,7 +83,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Get time taken option for the request.
+		/// Get timer warn threshold option for the request.
 		/// </summary>
 		/// <param name="request">Request to get time from.</param>
 		/// <returns>Returns timespan for the time taken.</returns>
