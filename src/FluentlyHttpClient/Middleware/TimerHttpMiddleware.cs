@@ -22,6 +22,7 @@ namespace FluentlyHttpClient.Middleware
 	/// </summary>
 	public class TimerHttpMiddleware : IFluentHttpMiddleware
 	{
+		private const string TimeTakenMessage = "Executed request {request} in {timeTakenMillis}ms";
 		private readonly FluentHttpRequestDelegate _next;
 		private readonly TimerHttpMiddlewareOptions _options;
 		private readonly ILogger _logger;
@@ -35,23 +36,23 @@ namespace FluentlyHttpClient.Middleware
 			_options = options;
 			_logger = logger;
 
-			if(_options.WarnThreshold <= TimeSpan.Zero)
+			if (_options.WarnThreshold <= TimeSpan.Zero)
 				throw new ArgumentException($"{nameof(_options.WarnThreshold)} must be greater than Zero.");
 		}
 
-		/// <summary>
-		/// Function to invoke.
-		/// </summary>
+		/// <inheritdoc />
 		public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
 		{
 			var watch = Stopwatch.StartNew();
 			var response = await _next(request);
 			var elapsed = watch.Elapsed;
-			
-			if (_logger.IsEnabled(LogLevel.Warning) && elapsed > _options.WarnThreshold)
-				_logger.LogWarning("Executed request {request} in {timeTakenMillis}ms", request, elapsed.TotalMilliseconds);
+			var threshold = request.GetTimerWarnThreshold()
+				.GetValueOrDefault(_options.WarnThreshold);
+
+			if (_logger.IsEnabled(LogLevel.Warning) && elapsed > threshold)
+				_logger.LogWarning(TimeTakenMessage, request, elapsed.TotalMilliseconds);
 			else if (_logger.IsEnabled(LogLevel.Information))
-				_logger.LogInformation("Executed request {request} in {timeTakenMillis}ms", request, elapsed.TotalMilliseconds);
+				_logger.LogInformation(TimeTakenMessage, request, elapsed.TotalMilliseconds);
 
 			response.SetTimeTaken(elapsed);
 			return response;
@@ -66,8 +67,35 @@ namespace FluentlyHttpClient
 	/// </summary>
 	public static class TimerHttpMiddlwareExtensions
 	{
-		private const string TimeTakenKey = "TIME_TAKEN";
+		private const string TimeTakenKey = "TIMER_TIME_TAKEN";
+		private const string WarnThresholdOptionKey = "TIMER_OPTION_WARN_THRESHOLD";
 
+		#region Request Extensions
+		/// <summary>
+		/// Set timer warn threshold for request.
+		/// </summary>
+		/// <param name="requestBuilder">Request builder instance.</param>
+		/// <param name="value">Timespan value.</param>
+		public static FluentHttpRequestBuilder WithTimerWarnThreshold(this FluentHttpRequestBuilder requestBuilder, TimeSpan value)
+		{
+			requestBuilder.Items[WarnThresholdOptionKey] = value;
+			return requestBuilder;
+		}
+
+		/// <summary>
+		/// Get time taken option for the request.
+		/// </summary>
+		/// <param name="request">Request to get time from.</param>
+		/// <returns>Returns timespan for the time taken.</returns>
+		public static TimeSpan? GetTimerWarnThreshold(this FluentHttpRequest request)
+		{
+			if (request.Items.TryGetValue(WarnThresholdOptionKey, out var result))
+				return (TimeSpan)result;
+			return null;
+		}
+		#endregion
+
+		#region Response Extensions
 		/// <summary>
 		/// Set time taken.
 		/// </summary>
@@ -83,6 +111,7 @@ namespace FluentlyHttpClient
 		/// <returns>Returns timespan for the time taken.</returns>
 		public static TimeSpan GetTimeTaken(this FluentHttpResponse response)
 			=> (TimeSpan)response.Items[TimeTakenKey];
+		#endregion
 
 		/// <summary>
 		/// Use timer middleware which measures how long the request takes.
