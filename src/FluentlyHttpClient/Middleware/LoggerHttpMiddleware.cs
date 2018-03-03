@@ -104,8 +104,8 @@ namespace FluentlyHttpClient
 			var options = (LoggerHttpMiddlewareOptions)result;
 			if (defaultOptions == null)
 				return options;
-			options.ShouldLogDetailedRequest = options.ShouldLogDetailedRequest.GetValueOrDefault(defaultOptions.ShouldLogDetailedRequest ?? false);
-			options.ShouldLogDetailedResponse = options.ShouldLogDetailedResponse.GetValueOrDefault(defaultOptions.ShouldLogDetailedResponse ?? false);
+			options.ShouldLogDetailedRequest = options.ShouldLogDetailedRequest ?? defaultOptions.ShouldLogDetailedRequest;
+			options.ShouldLogDetailedResponse = options.ShouldLogDetailedResponse ?? defaultOptions.ShouldLogDetailedResponse;
 			return options;
 		}
 		#endregion

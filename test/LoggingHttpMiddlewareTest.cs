@@ -66,5 +66,58 @@ namespace Test
 			Assert.NotNull(response);
 			Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 		}
+
+		[Fact]
+		public void DefaultLoggingOptions_ShouldBeMerged()
+		{
+			var fluentHttpClientFactory = GetNewClientFactory();
+			var loggerHttpMiddlewareOptions = new LoggerHttpMiddlewareOptions
+			{
+				ShouldLogDetailedRequest = true,
+				ShouldLogDetailedResponse = true
+			};
+			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+				.WithBaseUrl("https://sketch7.com")
+				.UseLogging(loggerHttpMiddlewareOptions);
+
+			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			var request = httpClient.CreateRequest("/api/heroes")
+				.AsPost()
+				.Build();
+
+			var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
+
+			Assert.True(options.ShouldLogDetailedRequest);
+			Assert.True(options.ShouldLogDetailedResponse);
+		}
+
+		[Fact]
+		public void RequestSpecificOptions_ShouldOverride()
+		{
+			var fluentHttpClientFactory = GetNewClientFactory();
+			var loggerHttpMiddlewareOptions = new LoggerHttpMiddlewareOptions
+			{
+				ShouldLogDetailedRequest = false,
+				ShouldLogDetailedResponse = false
+			};
+			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+				.WithBaseUrl("https://sketch7.com")
+				.UseLogging(loggerHttpMiddlewareOptions);
+
+			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			var request = httpClient.CreateRequest("/api/heroes")
+				.AsPost()
+				.WithLoggingOptions(new LoggerHttpMiddlewareOptions
+				{
+					ShouldLogDetailedResponse = true,
+					ShouldLogDetailedRequest = true
+				})
+				.Build();
+
+			var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
+
+			Assert.True(options.ShouldLogDetailedRequest);
+			Assert.True(options.ShouldLogDetailedResponse);
+		}
 	}
 }
