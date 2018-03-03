@@ -294,7 +294,7 @@ namespace FluentlyHttpClient
     // Response extension methods - useful to extend FluentHttpResponse
     public static class TimerFluentResponseExtensions
     {
-        private const string TimeTakenKey = "TIME_TAKEN";
+        private const string TimeTakenKey = "TIMER_TIME_TAKEN";
 
         public static void SetTimeTaken(this FluentHttpResponse response, TimeSpan value)
           => response.Items.Add(TimeTakenKey, value);

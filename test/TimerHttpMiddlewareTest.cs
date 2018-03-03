@@ -33,6 +33,28 @@ namespace Test
 		}
 
 		[Fact]
+		public async void ShouldWorkWithRequestThresholdOption()
+		{
+			var mockHttp = new MockHttpMessageHandler();
+			mockHttp.When("https://sketch7.com/api/heroes/azmodan")
+				.Respond("application/json", "{ 'name': 'Azmodan' }");
+
+			var fluentHttpClientFactory = GetNewClientFactory();
+			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+				.WithBaseUrl("https://sketch7.com")
+				.WithMessageHandler(mockHttp)
+				.UseTimer();
+
+			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
+				.WithTimerWarnThreshold(TimeSpan.FromSeconds(1))
+				.ReturnAsResponse<Hero>();
+
+			Assert.NotNull(response.Data);
+			Assert.NotEqual(TimeSpan.Zero, response.GetTimeTaken());
+		}
+
+		[Fact]
 		public async void ThrowsWhenWarnThresholdIsZero()
 		{
 			var fluentHttpClientFactory = GetNewClientFactory();

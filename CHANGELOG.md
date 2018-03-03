@@ -1,6 +1,14 @@
 # Fluently Http Changelog
 
-[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.3.0...1.3.1) (201X-X-X)
+[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.0...1.4.1) (201X-X-X)
+
+## [1.4.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.3.0...1.4.0) (2018-03-03)
+
+### Features
+ - **logger middleware:** add `LoggerHttpMiddlewareOptions` to configure `ShouldLogDetailedRequest` and `ShouldLogDetailedResponse`.
+ - **logger middleware:** add `WithLoggingOptions` on request builder, to specify options per request.
+ - **timer middleware:** add `WithTimerWarnThreshold` on request builder, to specify options per request.
+
 
 ## [1.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.2.1...1.3.0) (2018-02-24)
 
