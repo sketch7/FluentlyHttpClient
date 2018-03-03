@@ -82,7 +82,7 @@ namespace FluentlyHttpClient
 		public FluentHttpClientBuilder CreateBuilder(string identifier)
 		{
 			var clientBuilder = ActivatorUtilities.CreateInstance<FluentHttpClientBuilder>(_serviceProvider, this)
-				.Withdentifier(identifier)
+				.WithIdentifier(identifier)
 				.WithUserAgent("fluently")
 				.WithTimeout(15);
 

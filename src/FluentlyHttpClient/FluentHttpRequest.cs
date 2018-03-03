@@ -38,20 +38,20 @@ namespace FluentlyHttpClient
 			set => Message.Method = value;
 		}
 
-	/// <summary>
-	/// Gets or sets the <see cref="System.Uri"/> for the HTTP request.
-	/// </summary>
-	public Uri Uri
+		/// <summary>
+		/// Gets or sets the <see cref="System.Uri"/> for the HTTP request.
+		/// </summary>
+		public Uri Uri
 		{
 			get => Message.RequestUri;
 			set => Message.RequestUri = value;
 		}
 
-	/// <summary>
-	/// Gets the collection of HTTP request headers.
-	/// </summary>
-	public HttpRequestHeaders Headers => Message.Headers;
-		
+		/// <summary>
+		/// Gets the collection of HTTP request headers.
+		/// </summary>
+		public HttpRequestHeaders Headers => Message.Headers;
+
 		/// <summary>
 		/// Determine whether has success status otherwise it will throw or not.
 		/// </summary>
@@ -62,9 +62,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public CancellationToken CancellationToken { get; set; }
 
-		/// <summary>
-		/// Gets or sets a key/value collection that can be used to share data within the scope of request/response or middleware.
-		/// </summary>
+		/// <inheritdoc />
 		public IDictionary<object, object> Items { get; protected set; }
 
 		/// <summary>
@@ -78,7 +76,9 @@ namespace FluentlyHttpClient
 		public FluentHttpRequest(HttpRequestMessage message, IDictionary<object, object> items = null)
 		{
 			Message = message;
-			Items = items ?? new Dictionary<object, object>();
+			Items = items == null
+				? new Dictionary<object, object>()
+				: new Dictionary<object, object>(items);
 		}
 
 		/// <summary>

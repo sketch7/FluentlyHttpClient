@@ -1,6 +1,17 @@
 # Fluently Http Changelog
 
-[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.0...1.4.1) (201X-X-X)
+[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.1...1.4.2) (201X-X-X)
+
+## [1.4.1](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.0...1.4.1) (2018-03-04)
+
+### Bug Fixes
+ - **request builder:** items within request/response e.g. time taken (from timer middleware) were updating the request builder items which 
+ was causing susequent requests built by the same request builder to fail.
+ - **http client builder:** `Withdentifier` has been renamed correctly to `WithIdentifier` previous one was marked as obsolete.
+
+ ### Deprecated code
+
+ - **http client builder:** `Withdentifier` has been marked as obsolete, instead the newly `WithIdentifier`.
 
 ## [1.4.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.3.0...1.4.0) (2018-03-03)
 

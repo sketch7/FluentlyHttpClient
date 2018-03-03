@@ -243,7 +243,7 @@ namespace Test
 	public class RequestBuilder_PostWithBody
 	{
 		[Fact]
-		public async void ReturnAsString()
+		public async void ReturnAsTypedObject()
 		{
 			var mockHttp = new MockHttpMessageHandler();
 			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes/azmodan")
@@ -268,6 +268,43 @@ namespace Test
 			response.EnsureSuccessStatusCode();
 			Assert.NotNull(response);
 			Assert.Equal("Lord of Sin", response.Data.Title);
+		}
+	}
+
+	public class RequestBuilder_ReturnMulti
+	{
+		[Fact]
+		public async void ShouldSendTwoRequests()
+		{
+			var mockHttp = new MockHttpMessageHandler();
+			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes/azmodan")
+				.Respond("application/json", "{ 'name': 'Azmodan', 'title': 'Lord of Sin' }");
+
+			var fluentHttpClientFactory = GetNewClientFactory();
+			fluentHttpClientFactory.CreateBuilder("sketch7")
+				.WithBaseUrl("https://sketch7.com")
+				.WithMessageHandler(mockHttp)
+				.UseLogging()
+				.UseTimer()
+				.Register();
+
+			var httpClient = fluentHttpClientFactory.Get("sketch7");
+			var requestBuilder = httpClient.CreateRequest("/api/heroes/azmodan")
+				.AsPost()
+				.WithBody(new
+				{
+					Title = "Lord of Sin"
+				});
+			var response1 =	await requestBuilder.ReturnAsResponse<Hero>();
+			var response2 =	await requestBuilder.ReturnAsResponse<Hero>();
+
+			response1.EnsureSuccessStatusCode();
+			Assert.NotNull(response1);
+			Assert.Equal("Lord of Sin", response1.Data.Title);
+
+			response2.EnsureSuccessStatusCode();
+			Assert.NotNull(response2);
+			Assert.Equal("Lord of Sin", response2.Data.Title);
 		}
 	}
 }

@@ -64,6 +64,9 @@ namespace FluentlyHttpClient
 	/// </summary>
 	public class FormatterOptions
 	{
+		/// <summary>
+		/// Initializes formatter options with the default settings.
+		/// </summary>
 		public FormatterOptions()
 		{
 			Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
