@@ -82,7 +82,15 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="identifier">Identifier to set.</param>
 		/// <returns>Returns client builder for chaining.</returns>
-		public FluentHttpClientBuilder Withdentifier(string identifier)
+		[Obsolete("Use the correctly typed one instead 'WithIdentifier'.. ooops!")]
+		public FluentHttpClientBuilder Withdentifier(string identifier) => WithIdentifier(identifier);
+
+		/// <summary>
+		/// Set the identifier (unique key) for the HTTP Client.
+		/// </summary>
+		/// <param name="identifier">Identifier to set.</param>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder WithIdentifier(string identifier)
 		{
 			Identifier = identifier;
 			return this;
