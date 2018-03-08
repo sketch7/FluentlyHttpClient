@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using MessagePack.Resolvers;
+using Sketch7.MessagePack.MediaTypeFormatter;
 using Xunit;
 
 namespace FluentlyHttpClient.Test.Integration
@@ -7,7 +8,7 @@ namespace FluentlyHttpClient.Test.Integration
 	public class MessagePackIntegrationTest
 	{
 		private readonly MessagePackMediaTypeFormatter _messagePackMediaTypeFormatter = new MessagePackMediaTypeFormatter(ContractlessStandardResolver.Instance);
-		
+
 		// [Fact]
 		public async void ShouldMakeRequest_Get()
 		{

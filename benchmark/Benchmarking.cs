@@ -7,11 +7,11 @@ using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Attributes.Jobs;
 using FluentlyHttpClient.Middleware;
 using FluentlyHttpClient.Test;
-using FluentlyHttpClient.Test.Integration;
 using MessagePack.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
 using Serilog;
+using Sketch7.MessagePack.MediaTypeFormatter;
 
 namespace FluentlyHttpClient.Benchmarks
 {
