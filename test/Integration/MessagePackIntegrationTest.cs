@@ -21,7 +21,6 @@ namespace FluentlyHttpClient.Test.Integration
 					opts.Default = _messagePackMediaTypeFormatter;
 				})
 			;
-			;
 			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
 				.ReturnAsResponse<Hero>();
