@@ -2,6 +2,12 @@
 
 [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.1...1.4.2) (201X-X-X)
 
+## [1.4.2](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.1...1.4.2) (2018-03-18)
+
+### Features
+ - **timer middleware:** now logs even when an exception is thrown, which might be useful when a timeout has triggered.
+ - **timer middleware:** `SetTimeTaken` now returns `FluentHttpResponse` instead of `void`.
+
 ## [1.4.1](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.0...1.4.1) (2018-03-04)
 
 ### Bug Fixes
