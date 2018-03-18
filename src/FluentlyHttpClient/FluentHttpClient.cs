@@ -95,9 +95,7 @@ namespace FluentlyHttpClient
 		/// <inheritdoc />
 		public MediaTypeFormatterCollection Formatters { get; }
 
-		/// <summary>
-		/// Gets the default formatter to be used when serializing body content. e.g. JSON, XML, etc...
-		/// </summary>
+		/// <inheritdoc />
 		public MediaTypeFormatter DefaultFormatter { get; }
 
 		/// <inheritdoc />

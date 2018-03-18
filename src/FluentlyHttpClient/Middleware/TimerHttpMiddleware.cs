@@ -44,18 +44,24 @@ namespace FluentlyHttpClient.Middleware
 		public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
 		{
 			var watch = Stopwatch.StartNew();
-			var response = await _next(request);
-			var elapsed = watch.Elapsed;
-			var threshold = request.GetTimerWarnThreshold()
-				.GetValueOrDefault(_options.WarnThreshold);
 
-			if (_logger.IsEnabled(LogLevel.Warning) && elapsed > threshold)
-				_logger.LogWarning(TimeTakenMessage, request, elapsed.TotalMilliseconds);
-			else if (_logger.IsEnabled(LogLevel.Information))
-				_logger.LogInformation(TimeTakenMessage, request, elapsed.TotalMilliseconds);
+			FluentHttpResponse response;
+			try
+			{
+				response = await _next(request);
+			}
+			finally
+			{
+				var threshold = request.GetTimerWarnThreshold()
+					.GetValueOrDefault(_options.WarnThreshold);
 
-			response.SetTimeTaken(elapsed);
-			return response;
+				if (_logger.IsEnabled(LogLevel.Warning) && watch.Elapsed > threshold)
+					_logger.LogWarning(TimeTakenMessage, request, watch.Elapsed.TotalMilliseconds);
+				else if (_logger.IsEnabled(LogLevel.Information))
+					_logger.LogInformation(TimeTakenMessage, request, watch.Elapsed.TotalMilliseconds);
+			}
+
+			return response.SetTimeTaken(watch.Elapsed);
 		}
 	}
 }
@@ -101,8 +107,11 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="response">Response instance.</param>
 		/// <param name="value">Timespan value.</param>
-		public static void SetTimeTaken(this FluentHttpResponse response, TimeSpan value)
-			=> response.Items.Add(TimeTakenKey, value);
+		public static FluentHttpResponse SetTimeTaken(this FluentHttpResponse response, TimeSpan value)
+		{
+			response.Items.Add(TimeTakenKey, value);
+			return response;
+		}
 
 		/// <summary>
 		/// Get time taken for the response. This is generally set via <see cref="TimerHttpMiddleware"/>.
