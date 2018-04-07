@@ -236,8 +236,15 @@ namespace FluentlyHttpClient
 				httpRequest.Content = _httpBody;
 
 			if (Headers != null)
+			{ 
 				foreach (var header in Headers)
-					httpRequest.Headers.Add(header.Key, header.Value);
+				{
+					if (header.Key == HeaderTypes.UserAgent)
+						httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
+					else
+						httpRequest.Headers.Add(header.Key, header.Value);
+				}
+			}
 
 			var fluentRequest = new FluentHttpRequest(httpRequest, Items)
 			{

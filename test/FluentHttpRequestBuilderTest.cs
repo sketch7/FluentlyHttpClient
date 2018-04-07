@@ -214,6 +214,21 @@ namespace Test
 			Assert.NotNull(userAgentHeader);
 			Assert.Equal("fluently", userAgentHeader);
 		}
+
+		[Fact]
+		public void WithUserAgent_WeirdButValid()
+		{
+			const string userAgent = "Mozilla/5.0 (Linux; Android 6.0; vivo 1601 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/63.0.3239.111 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/153.0.0.53.88;]";
+			var builder = GetNewRequestBuilder()
+					.WithUri("/org/sketch7")
+					.WithUserAgent(userAgent)
+				;
+			var request = builder.Build();
+
+			var userAgentHeader = request.Headers.GetValues(HeaderTypes.UserAgent).FirstOrDefault();
+			Assert.NotNull(userAgentHeader);
+			Assert.Equal(userAgent, userAgentHeader);
+		}
 	}
 
 	public class RequestBuilder_Return
