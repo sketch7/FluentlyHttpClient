@@ -1,6 +1,11 @@
 # Fluently Http Changelog
 
-[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.3...1.4.4) (201X-X-X)
+[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.4...1.4.5) (201X-X-X)
+
+## [1.4.4](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.3...1.4.4) (2018-06-11)
+
+### Bug Fixes
+ - **request builder:** fix issue with query string `.WithQueryParams` when value is empty string.
 
 ## [1.4.3](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.2...1.4.3) (2018-04-07)
 

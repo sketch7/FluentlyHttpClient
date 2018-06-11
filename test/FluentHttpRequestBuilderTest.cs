@@ -66,10 +66,12 @@ namespace Test
 			Assert.Equal("/org/sketch7?Page=1&Filter=all", request.Uri.ToString());
 		}
 
-		[Fact]
-		public void OnlyNullValue_RemainAsIs()
+		[Theory]
+		[InlineData(null)]
+		[InlineData("")]
+		public void NullOrEmptyValue_RemainAsIs(string data)
 		{
-			string filter = null;
+			string filter = data;
 			var builder = GetNewRequestBuilder();
 			var request = builder.WithUri("/org/sketch7")
 				.WithQueryParams(new

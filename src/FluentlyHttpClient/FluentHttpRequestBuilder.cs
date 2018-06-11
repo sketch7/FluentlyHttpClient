@@ -283,9 +283,10 @@ namespace FluentlyHttpClient
 			var queryCollection = new HttpValueCollection();
 			foreach (var item in dict)
 			{
-				if (item.Value == null) continue;
+				var value = item.Value?.ToString();
+				if (string.IsNullOrEmpty(value)) continue;
 
-				queryCollection[lowerCaseQueryKeys ? item.Key.ToLower() : item.Key] = item.Value.ToString();
+				queryCollection[lowerCaseQueryKeys ? item.Key.ToLower() : item.Key] = value;
 			}
 			return queryCollection.ToString();
 		}
