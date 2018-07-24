@@ -280,7 +280,7 @@ namespace FluentlyHttpClient
 			if (dict.Count == 0)
 				return string.Empty;
 
-			var queryCollection = new HttpValueCollection();
+			var queryCollection = new Dictionary<string, string>();
 			foreach (var item in dict)
 			{
 				var value = item.Value?.ToString();
@@ -288,7 +288,7 @@ namespace FluentlyHttpClient
 
 				queryCollection[lowerCaseQueryKeys ? item.Key.ToLower() : item.Key] = value;
 			}
-			return queryCollection.ToString();
+			return queryCollection.ToQueryString();
 		}
 
 		private static string BuildUri(string uri, object queryParams, bool lowerCaseQueryKeys)
