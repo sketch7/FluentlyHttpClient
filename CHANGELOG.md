@@ -2,6 +2,18 @@
 
 [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.4...1.4.5) (201X-X-X)
 
+## [2.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.5...1.4.4) (2018-06-11)
+
+### Features
+ - **deps:** update to .net standard 2.0 + .net core 2.1.
+ - **deps:** remove `WinInsider.System.Net.Http.Formatting` and replaced with `Microsoft.AspNet.WebApi.Client`.
+ - **timer middleware:** add `UseTimer(this FluentHttpClientBuilder builder, Action<TimerHttpMiddlewareOptions> configure = null)` overload.
+ - **logger middleware:** add `WithLoggingOptions(this FluentHttpRequestBuilder builder, Action<LoggerHttpMiddlewareOptions> configure = null)` overload.
+ - **logger middleware:** add `UseLogging(this FluentHttpClientBuilder builder, Action<LoggerHttpMiddlewareOptions> configure = null)` overload.
+
+### Changes
+ - **timer middleware:** increase warning threshold to `400`ms by default.
+
 ## [1.4.4](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.3...1.4.4) (2018-06-11)
 
 ### Bug Fixes
@@ -97,7 +109,7 @@ This will allow sharing implementations for extensions methods across `FluentHtt
 - **consts:** add constants for headers and auth schemes `HeaderTypes` and `AuthSchemeTypes`
 
 
- ## [1.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...1.0.0) (2017-06-30)
+## [1.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...1.0.0) (2017-06-30)
 
 ### Features
 

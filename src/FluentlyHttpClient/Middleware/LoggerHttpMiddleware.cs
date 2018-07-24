@@ -93,6 +93,18 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
+		/// Set logging options for the request.
+		/// </summary>
+		/// <param name="requestBuilder">Request builder instance.</param>
+		/// <param name="configure">Action to configure logging options.</param>
+		public static FluentHttpRequestBuilder WithLoggingOptions(this FluentHttpRequestBuilder requestBuilder, Action<LoggerHttpMiddlewareOptions> configure)
+		{
+			var options = new LoggerHttpMiddlewareOptions();
+			configure?.Invoke(options)
+			return requestBuilder.WithLoggingOptions(options);
+		}
+
+		/// <summary>
 		/// Get logging option for the request.
 		/// </summary>
 		/// <param name="request">Request to get options from.</param>
@@ -117,5 +129,17 @@ namespace FluentlyHttpClient
 		/// <param name="options"></param>
 		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, LoggerHttpMiddlewareOptions options = null)
 			=> builder.UseMiddleware<LoggerHttpMiddleware>(options ?? new LoggerHttpMiddlewareOptions());
+
+		/// <summary>
+		/// Use logger middleware which logs out going requests and incoming responses.
+		/// </summary>
+		/// <param name="builder">Builder instance</param>
+		/// <param name="configure">Action to configure logging options.</param>
+		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, Action<LoggerHttpMiddlewareOptions> configure = null)
+		{
+			var options = new LoggerHttpMiddlewareOptions();
+			configure?.Invoke(options)
+			return builder.UseLogging(options);
+		}
 	}
 }
