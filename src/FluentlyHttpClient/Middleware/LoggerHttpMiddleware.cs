@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using FluentlyHttpClient.Middleware;
 
@@ -100,7 +101,7 @@ namespace FluentlyHttpClient
 		public static FluentHttpRequestBuilder WithLoggingOptions(this FluentHttpRequestBuilder requestBuilder, Action<LoggerHttpMiddlewareOptions> configure)
 		{
 			var options = new LoggerHttpMiddlewareOptions();
-			configure?.Invoke(options)
+			configure?.Invoke(options);
 			return requestBuilder.WithLoggingOptions(options);
 		}
 
@@ -135,10 +136,10 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="builder">Builder instance</param>
 		/// <param name="configure">Action to configure logging options.</param>
-		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, Action<LoggerHttpMiddlewareOptions> configure = null)
+		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, Action<LoggerHttpMiddlewareOptions> configure)
 		{
 			var options = new LoggerHttpMiddlewareOptions();
-			configure?.Invoke(options)
+			configure?.Invoke(options);
 			return builder.UseLogging(options);
 		}
 	}

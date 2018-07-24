@@ -135,11 +135,11 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="builder">Builder instance</param>
 		/// <param name="configure">Action to configure timer options.</param>
-		public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, Action<TimerHttpMiddlewareOptions> configure = null)
+		public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, Action<TimerHttpMiddlewareOptions> configure)
 		{
 			var options = new TimerHttpMiddlewareOptions();
-			configure?.Invoke(options)
-			return builder.UseTimer<TimerHttpMiddleware>(options);
+			configure?.Invoke(options);
+			return builder.UseTimer(options);
 		}
 	}
 }

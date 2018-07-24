@@ -2,9 +2,6 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Columns;
-using BenchmarkDotNet.Attributes.Exporters;
-using BenchmarkDotNet.Attributes.Jobs;
 using FluentlyHttpClient.Middleware;
 using FluentlyHttpClient.Test;
 using MessagePack.Resolvers;
@@ -15,7 +12,7 @@ using Sketch7.MessagePack.MediaTypeFormatter;
 
 namespace FluentlyHttpClient.Benchmarks
 {
-	[ClrJob(isBaseline: true), CoreJob, MonoJob]
+	[ClrJob(baseline: true), CoreJob, MonoJob]
 	[RPlotExporter, RankColumn]
 	public class Benchmarking
 	{
