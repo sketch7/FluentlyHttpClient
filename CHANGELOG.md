@@ -1,8 +1,8 @@
 # Fluently Http Changelog
 
-[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.4...1.4.5) (201X-X-X)
+[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/2.0.0...2.1.0) (201X-X-X)
 
-## [2.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.5...1.4.4) (2018-06-11)
+## [2.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.5...2.0.0) (2018-06-11)
 
 ### Features
 - **deps:** update to .net standard 2.0 + .net core 2.1.
