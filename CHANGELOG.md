@@ -1,6 +1,27 @@
 # Fluently Http Changelog
 
-[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.4...1.4.5) (201X-X-X)
+[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/2.0.0...2.1.0) (201X-X-X)
+
+## [2.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.5...2.0.0) (2018-06-11)
+
+### Features
+- **deps:** update to .net standard 2.0 + .net core 2.1.
+- **deps:** remove `WinInsider.System.Net.Http.Formatting` and replaced with `Microsoft.AspNet.WebApi.Client`.
+- **http client:** now using `IHttpClientFactory` inorder to create `HttpClient` (without message handler)
+- **services:** `AddFluentlyHttpClient` now uses `TryAddSingleton` and registers `AddHttpClient`
+- **request builder:** when building querystring now supports collections 
+
+  e.g. `Roles = new List<string> { "warrior", "assassin" }` => `roles=warrior&roles=assassin`
+- **timer middleware:** add `UseTimer(this FluentHttpClientBuilder builder, Action<TimerHttpMiddlewareOptions> configure = null)` overload.
+- **logger middleware:** add `WithLoggingOptions(this FluentHttpRequestBuilder builder, Action<LoggerHttpMiddlewareOptions> configure = null)` overload.
+- **logger middleware:** add `UseLogging(this FluentHttpClientBuilder builder, Action<LoggerHttpMiddlewareOptions> configure = null)` overload.
+
+### Changes
+ - **timer middleware:** increase warning threshold to `400`ms by default.
+
+### BREAKING CHANGES
+- Removed deprecated code
+  - `IDictionary.Set`, `FluentHttpClientBuilder.Withdentifier` (typo) and `FluentHttpClientBuilder.WithFormatters`
 
 ## [1.4.4](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.3...1.4.4) (2018-06-11)
 
@@ -97,7 +118,7 @@ This will allow sharing implementations for extensions methods across `FluentHtt
 - **consts:** add constants for headers and auth schemes `HeaderTypes` and `AuthSchemeTypes`
 
 
- ## [1.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...1.0.0) (2017-06-30)
+## [1.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...1.0.0) (2017-06-30)
 
 ### Features
 

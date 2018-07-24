@@ -25,7 +25,9 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
  - GraphQL support
 
 ## Installation
-Available for [.NET Standard 1.4+](https://docs.microsoft.com/en-gb/dotnet/standard/net-standard)
+Available for [.NET Standard 2.0+](https://docs.microsoft.com/en-gb/dotnet/standard/net-standard)
+
+NOTE: 1.x depends on .NET Standard 1.4+, use that if you need older .NET standard.
 
 ### NuGet
 ```

@@ -82,14 +82,6 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="identifier">Identifier to set.</param>
 		/// <returns>Returns client builder for chaining.</returns>
-		[Obsolete("Use the correctly typed one instead 'WithIdentifier'.. ooops!")]
-		public FluentHttpClientBuilder Withdentifier(string identifier) => WithIdentifier(identifier);
-
-		/// <summary>
-		/// Set the identifier (unique key) for the HTTP Client.
-		/// </summary>
-		/// <param name="identifier">Identifier to set.</param>
-		/// <returns>Returns client builder for chaining.</returns>
 		public FluentHttpClientBuilder WithIdentifier(string identifier)
 		{
 			Identifier = identifier;
@@ -116,18 +108,6 @@ namespace FluentlyHttpClient
 		public FluentHttpClientBuilder WithMessageHandler(HttpMessageHandler handler)
 		{
 			_httpMessageHandler = handler;
-			return this;
-		}
-
-		/// <summary>
-		/// Configure formatters to be used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
-		/// </summary>
-		/// <param name="configure">Action to configure formatters.</param>
-		/// <returns>Returns client builder for chaining.</returns>
-		[Obsolete("Use ConfigureFormatters instead.")]
-		public FluentHttpClientBuilder WithFormatters(Action<MediaTypeFormatterCollection> configure)
-		{
-			configure(_formatterOptions.Formatters);
 			return this;
 		}
 

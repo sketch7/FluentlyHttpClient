@@ -28,22 +28,6 @@ namespace Test
 		}
 	}
 
-	public class ClientFactory_WithFormatters
-	{
-		[Fact]
-		public void ShouldSetClientFormatters()
-		{
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
-				.WithBaseUrl("http://abc.com")
-				.WithFormatters(formatter => formatter.Clear());
-
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
-
-			Assert.Empty(httpClient.Formatters);
-		}
-	}
-
 	public class ClientFactory_ConfigureFormatters
 	{
 		[Fact]

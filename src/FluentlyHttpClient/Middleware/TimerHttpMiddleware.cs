@@ -14,7 +14,7 @@ namespace FluentlyHttpClient.Middleware
 		/// <summary>
 		/// Gets or sets the threshold warning timespan in order to log as warning.
 		/// </summary>
-		public TimeSpan WarnThreshold { get; set; } = TimeSpan.FromMilliseconds(250);
+		public TimeSpan WarnThreshold { get; set; } = TimeSpan.FromMilliseconds(400);
 	}
 
 	/// <summary>
@@ -22,7 +22,7 @@ namespace FluentlyHttpClient.Middleware
 	/// </summary>
 	public class TimerHttpMiddleware : IFluentHttpMiddleware
 	{
-		private const string TimeTakenMessage = "Executed request {request} in {timeTakenMillis}ms";
+		private const string TimeTakenMessage = "Executed request {request} in {timeTakenMillis:n0}ms";
 		private readonly FluentHttpRequestDelegate _next;
 		private readonly TimerHttpMiddlewareOptions _options;
 		private readonly ILogger _logger;
@@ -56,9 +56,9 @@ namespace FluentlyHttpClient.Middleware
 					.GetValueOrDefault(_options.WarnThreshold);
 
 				if (_logger.IsEnabled(LogLevel.Warning) && watch.Elapsed > threshold)
-					_logger.LogWarning(TimeTakenMessage, request, watch.Elapsed.TotalMilliseconds);
+					_logger.LogWarning(TimeTakenMessage, request, watch.ElapsedMilliseconds);
 				else if (_logger.IsEnabled(LogLevel.Information))
-					_logger.LogInformation(TimeTakenMessage, request, watch.Elapsed.TotalMilliseconds);
+					_logger.LogInformation(TimeTakenMessage, request, watch.ElapsedMilliseconds);
 			}
 
 			return response.SetTimeTaken(watch.Elapsed);
@@ -126,8 +126,20 @@ namespace FluentlyHttpClient
 		/// Use timer middleware which measures how long the request takes.
 		/// </summary>
 		/// <param name="builder">Builder instance</param>
-		/// <param name="options">Options to specify for the timer middleware.</param>
+		/// <param name="options">Options to specify for the timer options.</param>
 		public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, TimerHttpMiddlewareOptions options = null)
 			=> builder.UseMiddleware<TimerHttpMiddleware>(options ?? new TimerHttpMiddlewareOptions());
+
+		/// <summary>
+		/// Use timer middleware which measures how long the request takes.
+		/// </summary>
+		/// <param name="builder">Builder instance</param>
+		/// <param name="configure">Action to configure timer options.</param>
+		public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, Action<TimerHttpMiddlewareOptions> configure)
+		{
+			var options = new TimerHttpMiddlewareOptions();
+			configure?.Invoke(options);
+			return builder.UseTimer(options);
+		}
 	}
 }

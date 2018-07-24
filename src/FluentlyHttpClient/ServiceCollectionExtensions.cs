@@ -1,6 +1,7 @@
-﻿using FluentlyHttpClient;
-using System;
+﻿using System;
+using FluentlyHttpClient;
 using FluentlyHttpClient.Middleware;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -19,8 +20,10 @@ namespace Microsoft.Extensions.DependencyInjection
 		{
 			if (services == null) throw new ArgumentNullException(nameof(services));
 
-			services.AddSingleton<IFluentHttpClientFactory, FluentHttpClientFactory>();
-			services.AddSingleton<IFluentHttpMiddlewareRunner, FluentHttpMiddlewareRunner>();
+			services.TryAddSingleton<IFluentHttpClientFactory, FluentHttpClientFactory>();
+			services.TryAddSingleton<IFluentHttpMiddlewareRunner, FluentHttpMiddlewareRunner>();
+
+			services.AddHttpClient();
 
 			return services;
 		}

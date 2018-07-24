@@ -1,5 +1,6 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.Web;
 
 // ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient
@@ -10,12 +11,52 @@ namespace FluentlyHttpClient
 	public static class CollectionExtensions
 	{
 		/// <summary>
-		/// Add or update a key with the specified value.
+		/// Convert dictionary to querystring.
 		/// </summary>
 		/// <param name="dict">Dictionary</param>
-		/// <param name="key">Key to add/update.</param>
-		/// <param name="value">Value to set.</param>
-		[Obsolete("Instead simply use dic[key] = value")]
-		public static void Set<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue value) => dict[key] = value;
+		/// <returns>Returns querystring.</returns>
+		public static string ToQueryString<TKey, TValue>(this IDictionary<TKey, TValue> dict)
+		{
+			string AddQueryString(string key, string value, string uri)
+			{
+				if (string.IsNullOrEmpty(value)) return value;
+
+				if (uri.Length > 0)
+					uri = $"{uri}&";
+
+				uri = $"{uri}{key}={HttpUtility.UrlEncode(value)}";
+				return uri;
+			}
+
+			if (dict == null || dict.Count == 0)
+				return string.Empty;
+
+			var qs = string.Empty;
+			foreach (var item in dict)
+			{
+				if (item.Value == null)
+					continue;
+
+				if (item.Value is string)
+				{
+					qs = AddQueryString(item.Key.ToString(), item.Value.ToString(), qs);
+					break;
+				}
+
+				switch (item.Value)
+				{
+					case IEnumerable values:
+						foreach (var value in values)
+							qs = AddQueryString(item.Key.ToString(), value.ToString(), qs);
+						break;
+					
+					default:
+						qs = AddQueryString(item.Key.ToString(), item.Value.ToString(), qs);
+						break;
+				}
+			}
+
+			return qs;
+		}
 	}
 }

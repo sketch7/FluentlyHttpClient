@@ -1,10 +1,10 @@
 ﻿using System;
-using FluentlyHttpClient;
-using FluentlyHttpClient.Test;
-using RichardSzalay.MockHttp;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using FluentlyHttpClient;
+using FluentlyHttpClient.Test;
+using RichardSzalay.MockHttp;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -97,7 +97,6 @@ namespace Test
 			Assert.Equal("/org/sketch7?page=1", request.Uri.ToString());
 		}
 
-
 		[Fact]
 		public void AppendQuery()
 		{
@@ -121,6 +120,35 @@ namespace Test
 				.Build();
 
 			Assert.Equal("/org/sketch7", request.Uri.ToString());
+		}
+
+		[Fact]
+		public void CollectionQueryString()
+		{
+			var builder = GetNewRequestBuilder();
+			var request = builder.WithUri("/org/sketch7/heroes")
+				.WithQueryParams(new
+				{
+					Roles = new List<string> { "warrior", "assassin" },
+					Powers = new List<int> { 1337, 2337 }
+				}).Build();
+
+			Assert.Equal("/org/sketch7/heroes?roles=warrior&roles=assassin&powers=1337&powers=2337", request.Uri.ToString());
+		}
+
+		[Fact(Skip = "Not implemented yet")]
+		public void CollectionQueryString_CommaSeperated()
+		{
+			var builder = GetNewRequestBuilder();
+			var request = builder.WithUri("/org/sketch7/heroes")
+				.WithQueryParams(new
+				{
+					Roles = new List<string> { "warrior", "assassin" },
+				}
+				// opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated
+				).Build();
+
+			Assert.Equal("/org/sketch7/heroes?roles=warrior,assassin", request.Uri.ToString());
 		}
 	}
 
@@ -312,8 +340,8 @@ namespace Test
 				{
 					Title = "Lord of Sin"
 				});
-			var response1 =	await requestBuilder.ReturnAsResponse<Hero>();
-			var response2 =	await requestBuilder.ReturnAsResponse<Hero>();
+			var response1 = await requestBuilder.ReturnAsResponse<Hero>();
+			var response2 = await requestBuilder.ReturnAsResponse<Hero>();
 
 			response1.EnsureSuccessStatusCode();
 			Assert.NotNull(response1);
