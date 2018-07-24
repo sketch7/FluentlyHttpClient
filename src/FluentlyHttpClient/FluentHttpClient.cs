@@ -184,7 +184,7 @@ namespace FluentlyHttpClient
 		private HttpClient Configure(FluentHttpClientOptions options)
 		{
 			var httpClient = options.HttpMessageHandler == null
-			 ? _httpClientFactory.CreateClient()
+			 ? _httpClientFactory.CreateClient(options.Identifier)
 			 : new HttpClient(options.HttpMessageHandler);
 			httpClient.BaseAddress = new Uri(options.BaseUrl);
 			httpClient.DefaultRequestHeaders.Add(HeaderTypes.Accept, Formatters.SelectMany(x => x.SupportedMediaTypes).Select(x => x.MediaType));
