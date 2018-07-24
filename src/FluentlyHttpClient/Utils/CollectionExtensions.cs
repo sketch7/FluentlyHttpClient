@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Web;
 
 // ReSharper disable once CheckNamespace
@@ -16,19 +17,43 @@ namespace FluentlyHttpClient
 		/// <returns>Returns querystring.</returns>
 		public static string ToQueryString<TKey, TValue>(this IDictionary<TKey, TValue> dict)
 		{
-			if (dict == null || dict.Count == 0)
-				return "";
+			string AddQueryString(string key, string value, string uri)
+			{
+				if (string.IsNullOrEmpty(value)) return value;
 
-			var qs = "";
+				if (uri.Length > 0)
+					uri = $"{uri}&";
+
+				uri = $"{uri}{key}={HttpUtility.UrlEncode(value)}";
+				return uri;
+			}
+
+			if (dict == null || dict.Count == 0)
+				return string.Empty;
+
+			var qs = string.Empty;
 			foreach (var item in dict)
 			{
-				var value = item.Value?.ToString();
-				if (string.IsNullOrEmpty(value)) continue;
+				if (item.Value == null)
+					continue;
 
-				if (qs.Length > 0)
-					qs = $"{qs}&";
+				if (item.Value is string)
+				{
+					qs = AddQueryString(item.Key.ToString(), item.Value.ToString(), qs);
+					break;
+				}
 
-				qs = $"{qs}{item.Key}={HttpUtility.UrlEncode(item.Value.ToString())}";
+				switch (item.Value)
+				{
+					case IEnumerable values:
+						foreach (var value in values)
+							qs = AddQueryString(item.Key.ToString(), value.ToString(), qs);
+						break;
+					
+					default:
+						qs = AddQueryString(item.Key.ToString(), item.Value.ToString(), qs);
+						break;
+				}
 			}
 
 			return qs;

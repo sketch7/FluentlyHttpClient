@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -236,7 +237,7 @@ namespace FluentlyHttpClient
 				httpRequest.Content = _httpBody;
 
 			if (Headers != null)
-			{ 
+			{
 				foreach (var header in Headers)
 				{
 					if (header.Key == HeaderTypes.UserAgent)
@@ -280,13 +281,16 @@ namespace FluentlyHttpClient
 			if (dict.Count == 0)
 				return string.Empty;
 
-			var queryCollection = new Dictionary<string, string>();
+			var queryCollection = new Dictionary<string, IEnumerable>();
 			foreach (var item in dict)
 			{
 				var value = item.Value?.ToString();
 				if (string.IsNullOrEmpty(value)) continue;
 
-				queryCollection[lowerCaseQueryKeys ? item.Key.ToLower() : item.Key] = value;
+				if (item.Value is IEnumerable values)
+					queryCollection[lowerCaseQueryKeys ? item.Key.ToLower() : item.Key] = values;
+				else
+					queryCollection[lowerCaseQueryKeys ? item.Key.ToLower() : item.Key] = new List<string>(1) { value };
 			}
 			return queryCollection.ToQueryString();
 		}

@@ -104,6 +104,7 @@ namespace FluentlyHttpClient
 		private readonly Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 		private readonly IServiceProvider _serviceProvider;
 		private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
+		private readonly IHttpClientFactory _httpClientFactory;
 		private readonly List<MiddlewareConfig> _middleware;
 
 		/// <summary>
@@ -112,10 +113,17 @@ namespace FluentlyHttpClient
 		/// <param name="options"></param>
 		/// <param name="serviceProvider"></param>
 		/// <param name="middlewareRunner"></param>
-		public FluentHttpClient(FluentHttpClientOptions options, IServiceProvider serviceProvider, IFluentHttpMiddlewareRunner middlewareRunner)
+		/// <param name="httpClientFactory"></param>
+		public FluentHttpClient(
+			FluentHttpClientOptions options,
+			IServiceProvider serviceProvider,
+			IFluentHttpMiddlewareRunner middlewareRunner,
+			IHttpClientFactory httpClientFactory
+		)
 		{
 			_serviceProvider = serviceProvider;
 			_middlewareRunner = middlewareRunner;
+			_httpClientFactory = httpClientFactory;
 			_middleware = options.Middleware;
 			_requestBuilderDefaults = options.RequestBuilderDefaults;
 
@@ -176,8 +184,8 @@ namespace FluentlyHttpClient
 		private HttpClient Configure(FluentHttpClientOptions options)
 		{
 			var httpClient = options.HttpMessageHandler == null
-				? new HttpClient()
-				: new HttpClient(options.HttpMessageHandler);
+			 ? _httpClientFactory.CreateClient()
+			 : new HttpClient(options.HttpMessageHandler);
 			httpClient.BaseAddress = new Uri(options.BaseUrl);
 			httpClient.DefaultRequestHeaders.Add(HeaderTypes.Accept, Formatters.SelectMany(x => x.SupportedMediaTypes).Select(x => x.MediaType));
 			httpClient.Timeout = options.Timeout;

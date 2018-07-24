@@ -7,6 +7,11 @@
 ### Features
 - **deps:** update to .net standard 2.0 + .net core 2.1.
 - **deps:** remove `WinInsider.System.Net.Http.Formatting` and replaced with `Microsoft.AspNet.WebApi.Client`.
+- **http client:** now using `IHttpClientFactory` inorder to create `HttpClient` (without message handler)
+- **services:** `AddFluentlyHttpClient` now uses `TryAddSingleton` and registers `AddHttpClient`
+- **request builder:** when building querystring now supports collections 
+
+  e.g. `Roles = new List<string> { "warrior", "assassin" }` => `roles=warrior&roles=assassin`
 - **timer middleware:** add `UseTimer(this FluentHttpClientBuilder builder, Action<TimerHttpMiddlewareOptions> configure = null)` overload.
 - **logger middleware:** add `WithLoggingOptions(this FluentHttpRequestBuilder builder, Action<LoggerHttpMiddlewareOptions> configure = null)` overload.
 - **logger middleware:** add `UseLogging(this FluentHttpClientBuilder builder, Action<LoggerHttpMiddlewareOptions> configure = null)` overload.
