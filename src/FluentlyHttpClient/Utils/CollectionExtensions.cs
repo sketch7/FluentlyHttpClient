@@ -40,7 +40,7 @@ namespace FluentlyHttpClient
 				if (item.Value is string)
 				{
 					qs = AddQueryString(item.Key.ToString(), item.Value.ToString(), qs);
-					break;
+					continue;
 				}
 
 				switch (item.Value)
