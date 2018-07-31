@@ -2,7 +2,12 @@
 
 [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/2.0.0...2.1.0) (201X-X-X)
 
-## [2.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.5...2.0.0) (2018-06-11)
+## [2.0.1](https://github.com/sketch7/FluentlyHttpClient/compare/2.0.0...2.0.1) (2018-07-31)
+
+### Bug Fixes
+ - **querystring builder:** fix issue with query string when have multiple values.
+
+## [2.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.5...2.0.0) (2018-06-24)
 
 ### Features
 - **deps:** update to .net standard 2.0 + .net core 2.1.
