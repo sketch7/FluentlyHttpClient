@@ -10,7 +10,7 @@
     - `KeyPerValue` e.g. `"filter=assassin&filter=fighter"`
     - `CommaSeparated` e.g. `"filter=assassin,fighter"`
   - `CollectionItemFormatter` - Allows you to format item value e.g. take enum description value. (see tests)
-  - `KeyFormatter` - Allows you to format key with a function e.g. lowercase, camelCase, PascalCase by utilizing other libraries such as humanizer or custom.
+  - `KeyFormatter` - Allows you to format key with via a custom function e.g. lowercase, camelCase, PascalCase and you can utilize other libraries such as [humanizer](http://humanizr.net/).
 
 - **request builder:** now using the new querystring options `WithQueryParams(object queryParams, QueryStringOptions options)` (and similar with `Action`)
 - **request builder:** `WithQueryParamsOptions(QueryStringOptions options)` (and similar with `Action`) which can be used nicer in conjuction with `WithRequestBuilderDefaults` as below:
