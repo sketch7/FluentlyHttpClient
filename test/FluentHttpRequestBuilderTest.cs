@@ -136,7 +136,7 @@ namespace Test
 			Assert.Equal("/org/sketch7/heroes?roles=warrior&roles=assassin&powers=1337&powers=2337", request.Uri.ToString());
 		}
 
-		[Fact(Skip = "Not implemented yet")]
+		[Fact]
 		public void CollectionQueryString_CommaSeperated()
 		{
 			var builder = GetNewRequestBuilder();
@@ -144,8 +144,8 @@ namespace Test
 				.WithQueryParams(new
 				{
 					Roles = new List<string> { "warrior", "assassin" },
-				}
-				// opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated
+				},
+				 opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated
 				).Build();
 
 			Assert.Equal("/org/sketch7/heroes?roles=warrior,assassin", request.Uri.ToString());

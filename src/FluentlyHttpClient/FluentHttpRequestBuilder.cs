@@ -43,10 +43,11 @@ namespace FluentlyHttpClient
 		private readonly IFluentHttpClient _fluentHttpClient;
 		private HttpContent _httpBody;
 		private static readonly Regex InterpolationRegex = new Regex(@"\{(\w+)\}", RegexOptions.Compiled);
+		private static readonly Func<string, string> LowerCaseString = key => key.ToLower();
 		private object _queryParams;
-		private bool _lowerCaseQueryKeys;
 		private bool _hasSuccessStatusOrThrow;
 		private CancellationToken _cancellationToken;
+		private QueryStringOptions _queryStringOptions;
 
 		/// <summary>
 		/// Initializes a new instance.
@@ -104,11 +105,76 @@ namespace FluentlyHttpClient
 		/// <param name="queryParams">Query data to add/append. Can be either dictionary or object.</param>
 		/// <param name="lowerCaseQueryKeys">Determine whether to lowercase query string keys.</param>
 		/// <returns>Returns request builder for chaining.</returns>
-		public FluentHttpRequestBuilder WithQueryParams(object queryParams, bool lowerCaseQueryKeys = true)
+		[Obsolete("Instead use overload with QueryStringOptions.")]
+		public FluentHttpRequestBuilder WithQueryParams(object queryParams, bool lowerCaseQueryKeys)
 		{
-			_lowerCaseQueryKeys = lowerCaseQueryKeys;
+			if (lowerCaseQueryKeys)
+			{
+				var options = _queryStringOptions ?? new QueryStringOptions();
+				options.KeyFormatter = LowerCaseString;
+				WithQueryParamsOptions(options);
+			}
+
 			_queryParams = queryParams;
 			return this;
+		}
+
+		/// <summary>
+		/// Set query string params to the Uri. e.g. .?page=1&amp;filter=all'.
+		/// </summary>
+		/// <param name="queryParams">Query data to add/append. Can be either dictionary or object.</param>
+		/// <param name="options">Query string options to use.</param>
+		/// <returns>Returns request builder for chaining.</returns>
+		public FluentHttpRequestBuilder WithQueryParams(object queryParams, QueryStringOptions options = null)
+		{
+			options = options ?? _queryStringOptions;
+
+			if (options?.KeyFormatter == null)
+			{
+				options = options ?? new QueryStringOptions();
+				options.KeyFormatter = LowerCaseString; // deprecated: default to lower for backwards compatability.
+			}
+
+			_queryParams = queryParams;
+			return WithQueryParamsOptions(options);
+		}
+
+		/// <summary>
+		/// Set query string params to the Uri. e.g. .?page=1&amp;filter=all'.
+		/// </summary>
+		/// <param name="queryParams">Query data to add/append. Can be either dictionary or object.</param>
+		/// <param name="configure">Function to configure query string options.</param>
+		/// <returns>Returns request builder for chaining.</returns>
+		public FluentHttpRequestBuilder WithQueryParams(object queryParams, Action<QueryStringOptions> configure)
+		{
+			if (configure == null) throw new ArgumentNullException(nameof(configure));
+			var options = new QueryStringOptions();
+			configure(options);
+			return WithQueryParams(queryParams, options);
+		}
+
+		/// <summary>
+		/// Set query string params options.
+		/// </summary>
+		/// <param name="options">Query string options to use.</param>
+		/// <returns>Returns request builder for chaining.</returns>
+		public FluentHttpRequestBuilder WithQueryParamsOptions(QueryStringOptions options)
+		{
+			_queryStringOptions = options;
+			return this;
+		}
+
+		/// <summary>
+		/// Set query string params options.
+		/// </summary>
+		/// <param name="configure">Function to configure query string options.</param>
+		/// <returns>Returns request builder for chaining.</returns>
+		public FluentHttpRequestBuilder WithQueryParamsOptions(Action<QueryStringOptions> configure)
+		{
+			if (configure == null) throw new ArgumentNullException(nameof(configure));
+			var options = new QueryStringOptions();
+			configure(options);
+			return WithQueryParamsOptions(options);
 		}
 
 		/// <summary>Set the body content of the HTTP request.</summary>
@@ -118,7 +184,7 @@ namespace FluentlyHttpClient
 		/// <exception cref="InvalidOperationException">No MediaTypeFormatters are available on the API client for this content type.</exception>
 		public FluentHttpRequestBuilder WithBody<T>(T body, MediaTypeHeaderValue contentType = null)
 		{
-			MediaTypeFormatter formatter = _fluentHttpClient.GetFormatter(contentType);
+			var formatter = _fluentHttpClient.GetFormatter(contentType);
 			string mediaType = contentType?.MediaType;
 			return WithBody(body, formatter, mediaType);
 		}
@@ -130,7 +196,7 @@ namespace FluentlyHttpClient
 		/// <returns>Returns the request builder for chaining.</returns>
 		public FluentHttpRequestBuilder WithBody(object body, MediaTypeHeaderValue contentType = null)
 		{
-			MediaTypeFormatter formatter = _fluentHttpClient.GetFormatter(contentType);
+			var formatter = _fluentHttpClient.GetFormatter(contentType);
 			string mediaType = contentType?.MediaType;
 			return WithBody(body, formatter, mediaType);
 		}
@@ -151,9 +217,7 @@ namespace FluentlyHttpClient
 		/// <param name="mediaType">HTTP media type (or <c>null</c> for the <paramref name="formatter"/>'s default).</param>
 		/// <returns>Returns the request builder for chaining.</returns>
 		public FluentHttpRequestBuilder WithBody<T>(T body, MediaTypeFormatter formatter, string mediaType = null)
-		{
-			return WithBodyContent(new ObjectContent<T>(body, formatter, mediaType));
-		}
+			=> WithBodyContent(new ObjectContent<T>(body, formatter, mediaType));
 
 		/// <summary>Set the body content of the HTTP request.</summary>
 		/// <param name="body">Formatted HTTP body content.</param>
@@ -231,7 +295,7 @@ namespace FluentlyHttpClient
 		{
 			ValidateRequest();
 
-			var uri = BuildUri(Uri, _queryParams, _lowerCaseQueryKeys);
+			var uri = BuildUri(Uri, _queryParams, _queryStringOptions);
 			var httpRequest = new HttpRequestMessage(HttpMethod, uri);
 			if (_httpBody != null)
 				httpRequest.Content = _httpBody;
@@ -272,7 +336,7 @@ namespace FluentlyHttpClient
 				throw new RequestValidationException("A request with Method 'GET' cannot have a body assigned.");
 		}
 
-		private static string BuildQueryString(object queryParams, bool lowerCaseQueryKeys)
+		private static string BuildQueryString(object queryParams, QueryStringOptions options)
 		{
 			if (queryParams == null)
 				return string.Empty;
@@ -281,23 +345,16 @@ namespace FluentlyHttpClient
 			if (dict.Count == 0)
 				return string.Empty;
 
-			var queryCollection = new Dictionary<string, IEnumerable>();
+			var queryCollection = new Dictionary<string, object>();
 			foreach (var item in dict)
-			{
-				var value = item.Value?.ToString();
-				if (string.IsNullOrEmpty(value)) continue;
+				queryCollection[item.Key] = item.Value;
 
-				if (item.Value is IEnumerable values)
-					queryCollection[lowerCaseQueryKeys ? item.Key.ToLower() : item.Key] = values;
-				else
-					queryCollection[lowerCaseQueryKeys ? item.Key.ToLower() : item.Key] = new List<string>(1) { value };
-			}
-			return queryCollection.ToQueryString();
+			return queryCollection.ToQueryString(options);
 		}
 
-		private static string BuildUri(string uri, object queryParams, bool lowerCaseQueryKeys)
+		private static string BuildUri(string uri, object queryParams, QueryStringOptions options)
 		{
-			var queryString = BuildQueryString(queryParams, lowerCaseQueryKeys);
+			var queryString = BuildQueryString(queryParams, options);
 			if (string.IsNullOrEmpty(queryString))
 				return uri;
 

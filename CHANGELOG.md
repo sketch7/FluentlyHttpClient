@@ -1,6 +1,34 @@
 # Fluently Http Changelog
 
-[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/2.0.0...2.1.0) (201X-X-X)
+[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.0...2.2.0) (201X-X-X)
+
+## [2.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.0.1...2.1.0) (2018-09-14)
+
+### Features
+- **util:** implemented more powerful options to querystring
+  - `CollectionMode` - this will allow to configure collection items in querystrings as below:
+    - `KeyPerValue` e.g. `"filter=assassin&filter=fighter"`
+    - `CommaSeparated` e.g. `"filter=assassin,fighter"`
+  - `CollectionItemFormatter` - Allows you to format item value e.g. take enum description value. (see tests)
+  - `KeyFormatter` - Allows you to format key with a function e.g. lowercase, camelCase, PascalCase by utilizing other libraries such as humanizer or custom.
+
+- **request builder:** now using the new querystring options `WithQueryParams(object queryParams, QueryStringOptions options)` (and similar with `Action`)
+- **request builder:** `WithQueryParamsOptions(QueryStringOptions options)` (and similar with `Action`) which can be used nicer in conjuction with `WithRequestBuilderDefaults` as below:
+
+```cs
+clientBuilder.WithRequestBuilderDefaults(builder =>
+  builder.WithQueryParamsOptions(opts =>
+  {
+    opts.CollectionMode = QueryStringCollectionMode.CommaSeparated;
+    opts.KeyFormatter = key => key.ToUpper();
+  })
+);
+```
+
+### Deprecated code
+
+ - **request builder:** `WithQueryParams(object queryParams, bool lowerCaseQueryKeys)` has been marked as obsolete, instead the newly `WithQueryParams(object queryParams, Action<QueryStringOptions> configure)`.
+  e.g. `WithQueryParams(params, opts => opts.KeyFormatter = key => key.ToLower())`
 
 ## [2.0.1](https://github.com/sketch7/FluentlyHttpClient/compare/2.0.0...2.0.1) (2018-07-31)
 
