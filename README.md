@@ -204,11 +204,14 @@ LoginResponse loginResponse =
 
 #### Query params
 ```cs
-requestBuilder.WithQueryParams(new 
+requestBuilder.WithQueryParams(new
     {
         Take = 5,
-        Filter = "warrior"
-    }); // => /url?filter=warrior&take=5
+        Roles = new List<string> { "warrior", "assassin" },
+    }, opts => {
+        opts.CollectionMode = QueryStringCollectionMode.CommaSeparated;
+        opts.KeyFormatter = key => key.ToLower();
+    }); // => /url?roles=warrior,assassin&take=5
 ```
 
 #### Interpolate Url
