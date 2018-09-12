@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Web;
 
 // ReSharper disable once CheckNamespace
@@ -25,8 +26,11 @@ namespace FluentlyHttpClient
 	/// <summary>
 	/// Querystring formatting options.
 	/// </summary>
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public class QueryStringOptions
 	{
+		protected string DebuggerDisplay => $"CollectionMode: '{CollectionMode}'";
+
 		/// <summary>
 		/// Get or set the query string collection mode to format.
 		/// </summary>
