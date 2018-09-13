@@ -1,6 +1,7 @@
 ﻿using FluentlyHttpClient;
 using FluentlyHttpClient.Test;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -25,6 +26,31 @@ namespace Test
 
 			Assert.NotNull(request);
 			Assert.Equal(HttpMethod.Put, request.Method);
+		}
+
+		[Fact]
+		public void ShouldHaveQueryParamsDefaultsSet()
+		{
+			var fluentHttpClientFactory = GetNewClientFactory();
+			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.WithRequestBuilderDefaults(builder =>
+					builder.WithQueryParamsOptions(opts =>
+					{
+						opts.CollectionMode = QueryStringCollectionMode.CommaSeparated;
+						opts.KeyFormatter = key => key.ToUpper();
+					})
+				);
+
+			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			var request = httpClient.CreateRequest("/api/heroes")
+				.WithQueryParams(new
+				{
+					Roles = new List<string> { "warrior", "assassin" },
+				})
+				.Build();
+
+			Assert.Equal("/api/heroes?ROLES=warrior,assassin", request.Uri.ToString());
 		}
 	}
 
