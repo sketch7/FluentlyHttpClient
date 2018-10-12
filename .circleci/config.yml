@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: /app
     docker:
-      - image: stephenlautier/netcore-docker-ci:2.1.0
+      - image: stephenlautier/netcore-docker-ci:2.1
     environment:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -40,7 +40,7 @@ jobs:
             fi
 
             PACKAGE_VERSION=$(node -p "require('./package.json').version")
-            dotnet pack /p:PackageVersion=$PACKAGE_VERSION -o ../../ -c release --include-symbols
+            dotnet pack /p:PackageVersion=$PACKAGE_VERSION //p:AssemblyVersion=$PACKAGE_VERSION -o ../../ -c release --include-symbols
             dotnet nuget push *.nupkg -k $API_KEY -s https://www.nuget.org/api/v2/package
 
             print_title "git tag"
