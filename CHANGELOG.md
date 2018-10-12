@@ -1,6 +1,6 @@
 # Fluently Http Changelog
 
-[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.1...2.3.0) (201X-X-X)
+[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.1...2.2.0) (201X-X-X)
 
 
 ## [2.1.1](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.0...2.1.1) (2018-10-13)
