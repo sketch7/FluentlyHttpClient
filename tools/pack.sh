@@ -5,4 +5,4 @@ PACKAGE_VERSION=$(node -p "require('./package.json').version")
 VERSION_SUFFIX=dev
 echo version: $PACKAGE_VERSION
 
-dotnet pack //p:PackageVersion=$PACKAGE_VERSION-$VERSION_SUFFIX -o ../../ -c release --include-symbols
+dotnet pack //p:PackageVersion=$PACKAGE_VERSION-$VERSION_SUFFIX //p:AssemblyVersion=$PACKAGE_VERSION -o ../../ -c release --include-symbols

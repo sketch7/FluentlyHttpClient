@@ -1,6 +1,13 @@
 # Fluently Http Changelog
 
-[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.0...2.2.0) (201X-X-X)
+[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.1...2.2.0) (201X-X-X)
+
+
+## [2.1.1](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.0...2.1.1) (2018-10-13)
+
+### Features
+- **util:** expose FluentlyHttpClient version via `FluentlyHttpClientMeta.Version`
+
 
 ## [2.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.0.1...2.1.0) (2018-09-14)
 
@@ -35,6 +42,7 @@ clientBuilder.WithRequestBuilderDefaults(builder =>
 ### Bug Fixes
  - **querystring builder:** fix issue with query string when have multiple values.
 
+
 ## [2.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.5...2.0.0) (2018-06-24)
 
 ### Features
@@ -56,10 +64,12 @@ clientBuilder.WithRequestBuilderDefaults(builder =>
 - Removed deprecated code
   - `IDictionary.Set`, `FluentHttpClientBuilder.Withdentifier` (typo) and `FluentHttpClientBuilder.WithFormatters`
 
+
 ## [1.4.4](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.3...1.4.4) (2018-06-11)
 
 ### Bug Fixes
  - **request builder:** fix issue with query string `.WithQueryParams` when value is empty string.
+
 
 ## [1.4.3](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.2...1.4.3) (2018-04-07)
 
@@ -67,11 +77,13 @@ clientBuilder.WithRequestBuilderDefaults(builder =>
  - **request builder:** losen parsing for `userAgent` header, since errors are thrown when having user agent like the below which seems to be still valid.
  `Mozilla/5.0 (Linux; Android 6.0; vivo 1601 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/63.0.3239.111 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/153.0.0.53.88;]`
 
+
 ## [1.4.2](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.1...1.4.2) (2018-03-18)
 
 ### Features
  - **timer middleware:** now logs even when an exception is thrown, which might be useful when a timeout has triggered.
  - **timer middleware:** `SetTimeTaken` now returns `FluentHttpResponse` instead of `void`.
+
 
 ## [1.4.1](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.0...1.4.1) (2018-03-04)
 
@@ -83,6 +95,7 @@ clientBuilder.WithRequestBuilderDefaults(builder =>
  ### Deprecated code
 
  - **http client builder:** `Withdentifier` has been marked as obsolete, instead the newly `WithIdentifier`.
+
 
 ## [1.4.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.3.0...1.4.0) (2018-03-03)
 
@@ -102,6 +115,7 @@ clientBuilder.WithRequestBuilderDefaults(builder =>
 
  - **http client builder:** `WithFormatters` has been marked as obsolete, instead the newly `ConfigureFormatters`.
 
+
 ## [1.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/1.2.0...1.2.1) (2018-02-16)
 
 ### Bug Fixes
@@ -112,6 +126,7 @@ clientBuilder.WithRequestBuilderDefaults(builder =>
 ### Deprecated code
 
  - **collection extensions:** `Set` has been marked as obsolete, as it can be replaced by 1 liner.
+
 
 ## [1.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.1.0...1.2.0) (2018-01-12)
 
@@ -126,6 +141,7 @@ New apis such as:
  - `requestBuilder.ReturnAsGqlResponse<T>()` - Sends request and unwrap GraphQL data to be available directly in the `.Data`.
 
 See documentation for an example on how it can be used.
+
 
 ## [1.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.0.0...1.1.0) (2017-07-02)
 
@@ -181,7 +197,6 @@ This will allow sharing implementations for extensions methods across `FluentHtt
 
  - **request:** rename `Url` to `Uri`.
 
-
 ### BREAKING CHANGES
  - `FluentHttpClientBuilder.AddMiddleware` has been renamed to `FluentHttpClientBuilder.UseMiddleware`.
  - `FluentHttpClientBuilder.UseMiddleware` is now constrained with `IFluentHttpMiddleware`.
@@ -212,7 +227,6 @@ This will allow sharing implementations for extensions methods across `FluentHtt
 - **http client:** implement `Patch` and `Delete` methods.
 - **http client:** extract interface `IFluentHttpClient` from `FluentHttpClient`.
 
-
 ### BREAKING CHANGES
 - `IFluentHttpResponse` has been removed and added `FluentHttpResponse` instead. In addition, most of `FluentHttpResponse<T>` method has been changed with `FluentHttpResponse`.
 Most of the changes should only effect the internals, apart from middlewares.
@@ -231,6 +245,7 @@ Most of the changes should only effect the internals, apart from middlewares.
   - `IFluentHttpMiddlewareRunner`
 - `FluentHttpClientFactory` usages now is changed with `IFluentHttpClientFactory`
 - `FluentHttpClient` usages now is changed with `IFluentHttpClient`
+
 
 ## [0.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.0...0.2.1) (2017-06-25)
 
