@@ -21,7 +21,7 @@ jobs:
           command: dotnet restore
       - run:
           name: dotnet build
-          command: dotnet build
+          command: dotnet build -c Release
       - run:
           name: test
           command: npm test
