@@ -6,6 +6,6 @@
     "prepublish:dev": "npm run pack",
     "publish:dev": "dotnet nuget push *.nupkg -k $API_KEY -s https://www.nuget.org/api/v2/package",
     "postpublish:dev": "rm -rf *.nupkg",
-    "test": "cd test && dotnet test"
+    "test": "find test/*.csproj | xargs -i dotnet test {} --no-build -c Release"
   }
 }
