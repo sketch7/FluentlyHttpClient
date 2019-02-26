@@ -35,6 +35,17 @@ namespace FluentlyHttpClient
 		public Dictionary<string, string> Headers { get; private set; }
 
 		/// <summary>
+		/// Get the default headers from the http client.
+		/// </summary>
+		public HttpRequestHeaders DefaultHeaders => _fluentHttpClient.Headers;
+
+		/// <summary>
+		/// Get the base url from the http client.
+		/// </summary>
+		public string BaseUrl => _fluentHttpClient.BaseUrl;
+
+
+		/// <summary>
 		/// Get the key/value collection that can be used to share data within the scope of request/response or middleware.
 		/// </summary>
 		public Dictionary<object, object> Items { get; } = new Dictionary<object, object>();
@@ -310,7 +321,7 @@ namespace FluentlyHttpClient
 				}
 			}
 
-			var fluentRequest = new FluentHttpRequest(httpRequest, Items)
+			var fluentRequest = new FluentHttpRequest(httpRequest, Items, this)
 			{
 				HasSuccessStatusOrThrow = _hasSuccessStatusOrThrow,
 				CancellationToken = _cancellationToken,

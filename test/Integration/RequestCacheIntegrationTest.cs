@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -16,19 +17,18 @@ namespace FluentlyHttpClient.Middleware
 {
 	public interface IRequestCacheService
 	{
-		Task<FluentHttpResponse> Get(FluentHttpRequest request);
-		Task Set(FluentHttpRequest request, FluentHttpResponse response);
+		Task<FluentHttpResponse> Get(string hash, FluentHttpRequest request);
+		Task Set(string hash, FluentHttpResponse response);
 		bool Matcher(FluentHttpRequest request);
+		string GenerateHash(FluentHttpRequest request);
 	}
 
 	public class MemoryRequestCacheService : IRequestCacheService
 	{
 		private readonly Dictionary<string, FluentHttpResponse> _cache = new Dictionary<string, FluentHttpResponse>();
 
-		public async Task<FluentHttpResponse> Get(FluentHttpRequest request)
+		public async Task<FluentHttpResponse> Get(string hash, FluentHttpRequest request)
 		{
-			var hash = GenerateHash(request);
-
 			_cache.TryGetValue(hash, out var response);
 			if (response == null)
 				return null;
@@ -37,25 +37,29 @@ namespace FluentlyHttpClient.Middleware
 			return cloned;
 		}
 
-		public async Task Set(FluentHttpRequest request, FluentHttpResponse response)
+		public async Task Set(string hash, FluentHttpResponse response)
 		{
-			var hash = GenerateHash(request);
-
 			var cloned = await Clone(response);
 
 			_cache[hash] = cloned;
 		}
 
+		// todo: make configurable instead?
 		public bool Matcher(FluentHttpRequest request)
 		{
 			return true;
 		}
 
-		private static string GenerateHash(FluentHttpRequest request)
+		public string GenerateHash(FluentHttpRequest request)
 		{
-			// todo: use also base uri, however in PreRequest currently we dont get that
-			string urlPart = request.Uri.IsAbsoluteUri ? request.Uri.PathAndQuery : request.Uri.ToString();
-			var hash = $"[{request.Method}]{urlPart}";
+			var headers = HeadersToDictionary(request.Builder.DefaultHeaders);
+			foreach (var requestHeader in request.Headers)
+				headers[requestHeader.Key] = string.Join(";", requestHeader.Value);
+
+			var urlHash = request.Uri.IsAbsoluteUri ? request.Uri : new Uri($"{request.Builder.BaseUrl.TrimEnd('/')}/{request.Uri}");
+			var headersHash = HeadersToString(headers);
+
+			var hash = $"method={request.Method};url={urlHash};headers={headersHash}";
 			return hash;
 		}
 
@@ -64,9 +68,11 @@ namespace FluentlyHttpClient.Middleware
 		{
 			var contentString = await response.Content.ReadAsStringAsync();
 			var contentType = response.Content.Headers.ContentType;
+			var encoding = Encoding.GetEncoding(contentType.CharSet);
+
 			var cloned = new FluentHttpResponse(new HttpResponseMessage(response.StatusCode)
 			{
-				Content = new StringContent(contentString, Encoding.UTF8, contentType.MediaType),
+				Content = new StringContent(contentString, encoding, contentType.MediaType),
 				ReasonPhrase = response.ReasonPhrase,
 				StatusCode = response.StatusCode,
 				Version = response.Message.Version,
@@ -78,12 +84,27 @@ namespace FluentlyHttpClient.Middleware
 			return cloned;
 		}
 
-		// todo: change to extension method and make reusable
+		// todo: change to extension method and make reusable CopyFrom(target)
 		private static void CopyHeaders(HttpHeaders destination, HttpHeaders source)
 		{
 			foreach (var header in source)
-				destination.Add(header.Key, header.Value);
+				destination.TryAddWithoutValidation(header.Key, header.Value);
 		}
+
+		// todo: make reusable
+		private static Dictionary<string, string> HeadersToDictionary(HttpHeaders headers)
+			=> headers.ToDictionary(x => x.Key, x => string.Join(";", x.Value));
+
+		// todo: make reusable
+		private static string HeadersToString(Dictionary<string, string> headers)
+		{
+			var headersHash = "";
+			foreach (var (key, value) in headers)
+				headersHash += $"{key}={value}&";
+			headersHash = headersHash.TrimEnd('&');
+			return headersHash;
+		}
+
 	}
 
 	/// <summary>
@@ -126,18 +147,20 @@ namespace FluentlyHttpClient.Middleware
 			if (!_requestCache.Matcher(request))
 				return await _next(request);
 
-			var response = await _requestCache.Get(request);
+			var hash = _requestCache.GenerateHash(request);
+
+			var response = await _requestCache.Get(hash, request);
 
 			if (response != null)
 			{
-				_logger.LogInformation("Pre-request - Returning a cached response");
+				_logger.LogInformation("Pre-request - Returning a cached response {hash}", hash);
 				return response;
 			}
 
 			response = await _next(request);
 
-			_logger.LogInformation("Post-Response - Caching request...");
-			await _requestCache.Set(request, response);
+			_logger.LogInformation("Post-Response - Caching request... {hash}", hash);
+			await _requestCache.Set(hash, response);
 
 			return response;
 		}
@@ -195,11 +218,14 @@ namespace FluentlyHttpClient.Test.Integration
 			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
 				//.WithBaseUrl("https://localhost:5001")
 				.WithBaseUrl("http://local.sketch7.io:5000")
+				.WithHeader("locale", "en-GB")
+				.WithHeader("X-SSV-VERSION", "2019.02-2")
 				.UseRequestCaching()
 				.UseTimer()
 			;
 			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
+				.WithBearerAuthentication("XXX")
 				.ReturnAsResponse<Hero>();
 
 			var responseReason = response.ReasonPhrase;
@@ -225,7 +251,6 @@ namespace FluentlyHttpClient.Test.Integration
 
 			//Assert.Equal(HttpStatusCode.OK, response.Headers.);
 		}
-
 		// [Fact]
 		//public async Task ShouldMakeRequest_Post()
 		//{

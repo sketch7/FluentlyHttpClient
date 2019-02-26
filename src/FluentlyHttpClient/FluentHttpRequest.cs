@@ -30,6 +30,11 @@ namespace FluentlyHttpClient
 		public HttpRequestMessage Message { get; }
 
 		/// <summary>
+		/// Gets the request builder which is responsible for this request message.
+		/// </summary>
+		public FluentHttpRequestBuilder Builder { get; }
+
+		/// <summary>
 		/// Gets or sets the <see cref="HttpMethod"/> for the HTTP request.
 		/// </summary>
 		public HttpMethod Method
@@ -70,12 +75,14 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public MediaTypeFormatterCollection Formatters { get; set; }
 
+		// todo: make builder non optional creating a breaking change
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
-		public FluentHttpRequest(HttpRequestMessage message, IDictionary<object, object> items = null)
+		public FluentHttpRequest(HttpRequestMessage message, IDictionary<object, object> items = null, FluentHttpRequestBuilder builder = null)
 		{
 			Message = message;
+			Builder = builder;
 			Items = items == null
 				? new Dictionary<object, object>()
 				: new Dictionary<object, object>(items);
