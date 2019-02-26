@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Serilog;
 using Xunit;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -25,41 +25,25 @@ namespace FluentlyHttpClient.Middleware
 	{
 		private readonly Dictionary<string, FluentHttpResponse> _cache = new Dictionary<string, FluentHttpResponse>();
 
-		public Task<FluentHttpResponse> Get(FluentHttpRequest request)
+		public async Task<FluentHttpResponse> Get(FluentHttpRequest request)
 		{
 			var hash = GenerateHash(request);
 
 			_cache.TryGetValue(hash, out var response);
-			return Task.FromResult(response);
+			if (response == null)
+				return null;
+
+			var cloned = await Clone(response);
+			return cloned;
 		}
 
 		public async Task Set(FluentHttpRequest request, FluentHttpResponse response)
 		{
 			var hash = GenerateHash(request);
 
+			var cloned = await Clone(response);
 
-			//var contetn = await response.Content.ReadAsStringAsync();
-			var contentStream = await response.Content.ReadAsStreamAsync();
-			//var x = await  response.Content.ReadAsHttpResponseMessageAsync();
-			var c = JsonConvert.SerializeObject(response.Content);
-			//var q = JsonConvert.DeserializeObject<FluentHttpResponse>(c);
-			//response.Content.ReadAsAsync()
-			var q = new FluentHttpResponse(new HttpResponseMessage(response.StatusCode)
-			{
-				//Content = new StringContent(contetn),
-				Content = new StreamContent(contentStream),
-				//Content = new ObjectContent(response.Me),
-				//Headers = response.Headers,
-				ReasonPhrase = response.ReasonPhrase,
-				StatusCode = response.StatusCode,
-				Version = response.Message.Version,
-				RequestMessage = request.Message,
-			});
-
-			//response.
-			_cache[hash] = q;
-			//_cache[hash] = response;
-			//return Task.CompletedTask;
+			_cache[hash] = cloned;
 		}
 
 		public bool Matcher(FluentHttpRequest request)
@@ -67,14 +51,30 @@ namespace FluentlyHttpClient.Middleware
 			return true;
 		}
 
-		// add Matcher
-
 		private static string GenerateHash(FluentHttpRequest request)
 		{
+			//request.Headers.
+
 			// todo: use also base uri, however in PreRequest currently we dont get that
 			string urlPart = request.Uri.IsAbsoluteUri ? request.Uri.PathAndQuery : request.Uri.ToString();
 			var hash = $"[{request.Method}]{urlPart}";
 			return hash;
+		}
+
+		private async Task<FluentHttpResponse> Clone(FluentHttpResponse response)
+		{
+			var contentString = await response.Content.ReadAsStringAsync();
+			var contentType = response.Content.Headers.ContentType;
+			var cloned = new FluentHttpResponse(new HttpResponseMessage(response.StatusCode)
+			{
+				Content = new StringContent(contentString, Encoding.UTF8, contentType.MediaType),
+				ReasonPhrase = response.ReasonPhrase,
+				StatusCode = response.StatusCode,
+				Version = response.Message.Version,
+				RequestMessage = response.Message.RequestMessage
+			}, response.Items);
+
+			return cloned;
 		}
 	}
 
@@ -202,8 +202,17 @@ namespace FluentlyHttpClient.Test.Integration
 
 			Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 			Assert.Equal("azmodan", response.Data.Key);
+
+			response = await httpClient.CreateRequest("/api/heroes/azmodan")
+				.ReturnAsResponse<Hero>();
+
+			Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+			Assert.Equal("azmodan", response.Data.Key);
 			Assert.Equal("Azmodan", response.Data.Name);
 			Assert.Equal("Lord of Sins", response.Data.Title);
+			Assert.Equal("Kestrel", response.Headers.Server.ToString());
+
+			//Assert.Equal(HttpStatusCode.OK, response.Headers.);
 		}
 
 		// [Fact]
