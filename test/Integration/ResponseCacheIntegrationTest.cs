@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using FluentHttpClient.Entity;
 using FluentlyHttpClient.Caching;
 using FluentlyHttpClient.Middleware;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Xunit;
@@ -92,6 +94,20 @@ namespace FluentlyHttpClient.Test.Integration
 
 			//Assert.Equal(HttpStatusCode.OK, response.Headers.);
 		}
+
+		//[Fact]
+		//public void ShouldMakeRequest_Database()
+		//{
+		//	var container = ServiceTestUtil.CreateContainer();
+		//	var serviceProvider = container.BuildServiceProvider();
+		//	var dbContext = serviceProvider.GetService<FluentHttpClientContext>();
+		//	dbContext.Database.Migrate();
+		//	//using (var context = new FluentHttpClientContext(
+		//	//	serviceProvider.GetRequiredService<DbContextOptions<FluentHttpClientContext>>()))
+		//	//{
+		//	//}
+
+		//}
 		// [Fact]
 		//public async Task ShouldMakeRequest_Post()
 		//{
