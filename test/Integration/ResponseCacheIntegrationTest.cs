@@ -95,19 +95,23 @@ namespace FluentlyHttpClient.Test.Integration
 			//Assert.Equal(HttpStatusCode.OK, response.Headers.);
 		}
 
-		//[Fact]
-		//public void ShouldMakeRequest_Database()
-		//{
-		//	var container = ServiceTestUtil.CreateContainer();
-		//	var serviceProvider = container.BuildServiceProvider();
-		//	var dbContext = serviceProvider.GetService<FluentHttpClientContext>();
-		//	dbContext.Database.Migrate();
-		//	//using (var context = new FluentHttpClientContext(
-		//	//	serviceProvider.GetRequiredService<DbContextOptions<FluentHttpClientContext>>()))
-		//	//{
-		//	//}
+		[Fact]
+		public void ShouldMakeRequest_Database()
+		{
+			var container = ServiceTestUtil.CreateContainer();
+			var serviceProvider = container.BuildServiceProvider();
+			var dbContext = serviceProvider.GetService<FluentHttpClientContext>();
+			//dbContext.Initialize();
+			dbContext.Database.Migrate();
 
-		//}
+			//dbContext.Database.
+
+			//using (var context = new FluentHttpClientContext(
+			//	serviceProvider.GetRequiredService<DbContextOptions<FluentHttpClientContext>>()))
+			//{
+			//}
+		}
+
 		// [Fact]
 		//public async Task ShouldMakeRequest_Post()
 		//{

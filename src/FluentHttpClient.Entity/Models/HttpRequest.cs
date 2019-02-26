@@ -1,4 +1,4 @@
-﻿namespace FluentHttpClient.Entity
+﻿namespace FluentHttpClient.Entity.Models
 {
 	public class HttpRequest
 	{
@@ -7,7 +7,7 @@
 		public string Url { get; set; }
 		public string Method { get; set; }
 		public string Headers { get; set; }
-		public string ResponseCode { get; set; }
+		public int ResponseCode { get; set; }
 		public string Content { get; set; }
 	}
 }
