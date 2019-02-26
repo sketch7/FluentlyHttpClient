@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using FluentlyHttpClient.Middleware;
@@ -13,7 +14,6 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace FluentlyHttpClient.Middleware
 {
-
 	public interface IRequestCacheService
 	{
 		Task<FluentHttpResponse> Get(FluentHttpRequest request);
@@ -53,14 +53,13 @@ namespace FluentlyHttpClient.Middleware
 
 		private static string GenerateHash(FluentHttpRequest request)
 		{
-			//request.Headers.
-
 			// todo: use also base uri, however in PreRequest currently we dont get that
 			string urlPart = request.Uri.IsAbsoluteUri ? request.Uri.PathAndQuery : request.Uri.ToString();
 			var hash = $"[{request.Method}]{urlPart}";
 			return hash;
 		}
 
+		// todo: move to be reusable
 		private async Task<FluentHttpResponse> Clone(FluentHttpResponse response)
 		{
 			var contentString = await response.Content.ReadAsStringAsync();
@@ -74,7 +73,16 @@ namespace FluentlyHttpClient.Middleware
 				RequestMessage = response.Message.RequestMessage
 			}, response.Items);
 
+			CopyHeaders(cloned.Headers, response.Headers);
+
 			return cloned;
+		}
+
+		// todo: change to extension method and make reusable
+		private static void CopyHeaders(HttpHeaders destination, HttpHeaders source)
+		{
+			foreach (var header in source)
+				destination.Add(header.Key, header.Value);
 		}
 	}
 
@@ -188,11 +196,13 @@ namespace FluentlyHttpClient.Test.Integration
 				//.WithBaseUrl("https://localhost:5001")
 				.WithBaseUrl("http://local.sketch7.io:5000")
 				.UseRequestCaching()
-					.UseTimer()
+				.UseTimer()
 			;
 			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
 				.ReturnAsResponse<Hero>();
+
+			var responseReason = response.ReasonPhrase;
 
 			Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 			Assert.Equal("azmodan", response.Data.Key);
@@ -211,6 +221,7 @@ namespace FluentlyHttpClient.Test.Integration
 			Assert.Equal("Azmodan", response.Data.Name);
 			Assert.Equal("Lord of Sins", response.Data.Title);
 			Assert.Equal("Kestrel", response.Headers.Server.ToString());
+			Assert.Equal(responseReason, response.ReasonPhrase);
 
 			//Assert.Equal(HttpStatusCode.OK, response.Headers.);
 		}
