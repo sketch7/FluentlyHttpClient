@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentHttpClient.Entity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentlyHttpClient.Test
@@ -8,6 +9,7 @@ namespace FluentlyHttpClient.Test
 		public static IServiceCollection CreateContainer()
 			=> new ServiceCollection()
 				.AddFluentlyHttpClient()
+				.AddFluentHttpClientEntity()
 				.AddLogging();
 
 		/// <summary>
