@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentlyHttpClient.Test
 {
@@ -13,9 +14,11 @@ namespace FluentlyHttpClient.Test
 		/// Create a new container and return IFluentHttpClientFactory.
 		/// </summary>
 		/// <returns></returns>
-		public static IFluentHttpClientFactory GetNewClientFactory()
+		public static IFluentHttpClientFactory GetNewClientFactory(Action<IServiceCollection> configureContainer = null)
 		{
-			var serviceProvider = CreateContainer().BuildServiceProvider();
+			var container = CreateContainer();
+			configureContainer?.Invoke(container);
+			var serviceProvider = container.BuildServiceProvider();
 			var fluentHttpClientFactory = serviceProvider.GetService<IFluentHttpClientFactory>();
 			return fluentHttpClientFactory;
 		}
