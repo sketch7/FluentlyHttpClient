@@ -3,22 +3,22 @@ using System.Threading.Tasks;
 using FluentHttpClient.Entity.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace FluentHttpClient.Entity
+namespace ConsoleApp1
 {
 	public class FluentHttpClientContext : DbContext
 	{
-		public FluentHttpClientContext(DbContextOptions options)
-			: base(options)
-		{ }
+		//public FluentHttpClientContext(DbContextOptions options)
+		//	: base(options)
+		//{ }
 
 		public DbSet<HttpRequest> HttpRequests { get; set; }
 
-		//protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-		//{
-			//  dotnet ef migrations add InitialCreate --startup-project ../../test/FluentlyHttpClient.Test.csproj -c FluentHttpClientContext
-
-		//	optionsBuilder.UseSqlServer(@"Server=(LocalDb)\MSSQLLocalDB;Database=FluentHttpClient;Integrated Security=True;");
-		//}
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		{
+			// dotnet ef migrations add InitialCreate --startup-project ../../ConsoleApp1/ConsoleApp1.csproj -c FluentHttpClientContext
+			var connString = @"Data Source=.\SQLEXPRESS;Database=FluentHttpClient;Integrated Security=True";
+			optionsBuilder.UseSqlServer(connString);
+		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
