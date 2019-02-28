@@ -77,7 +77,7 @@ namespace FluentlyHttpClient
 	/// <summary>
 	/// Logger HTTP middleware extensions.
 	/// </summary>
-	public static class LoggerHttpMiddlwareExtensions
+	public static class LoggerHttpMiddlewareExtensions
 	{
 		private const string LoggingOptionsKey = "LOGGING_OPTIONS";
 
