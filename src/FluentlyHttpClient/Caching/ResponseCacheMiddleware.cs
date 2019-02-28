@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace FluentlyHttpClient.Middleware
 {
 	/// <summary>
-	/// Request Caching HTTP middleware options.
+	/// Response Caching HTTP middleware options.
 	/// </summary>
 	public class ResponseCacheHttpMiddlewareOptions
 	{
@@ -19,14 +19,14 @@ namespace FluentlyHttpClient.Middleware
 	}
 
 	/// <summary>
-	/// Request caching middleware for HTTP client.
+	/// Response caching middleware for HTTP client.
 	/// </summary>
 	public class ResponseCacheHttpMiddleware : IFluentHttpMiddleware
 	{
 		private readonly FluentHttpRequestDelegate _next;
 		private readonly ResponseCacheHttpMiddlewareOptions _options;
 		private readonly ILogger _logger;
-		private readonly IResponseCacheService _requestCache;
+		private readonly IResponseCacheService _service;
 
 		/// <summary>
 		/// Initializes a new instance.
@@ -35,31 +35,31 @@ namespace FluentlyHttpClient.Middleware
 			FluentHttpRequestDelegate next,
 			ResponseCacheHttpMiddlewareOptions options,
 			ILogger<ResponseCacheHttpMiddleware> logger,
-			IResponseCacheService requestCache
+			IResponseCacheService service
 		)
 		{
 			_next = next;
 			_options = options;
 			_logger = logger;
-			_requestCache = requestCache;
+			_service = service;
 		}
 
 		/// <inheritdoc />
 		public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
 		{
-			var options = request.GetRequestCachingOptions(_options);
+			var options = request.GetResponseCachingOptions(_options);
 
-			if (options.ShouldIgnore || !_requestCache.Matcher(request))
+			if (options.ShouldIgnore || !_service.Matcher(request))
 				return await _next(request);
 
 			var hash = request.GetRequestHash();
 			if (string.IsNullOrEmpty(hash))
 			{
-				hash = _requestCache.GenerateHash(request);
+				hash = _service.GenerateHash(request);
 				request.SetRequestHash(hash);
 			}
 			
-			var response = await _requestCache.Get(hash, request);
+			var response = await _service.Get(hash, request);
 			if (response != null)
 			{
 				_logger.LogInformation("Pre-request - Returning a cached response {hash}", hash);
@@ -69,7 +69,7 @@ namespace FluentlyHttpClient.Middleware
 			response = await _next(request);
 
 			_logger.LogInformation("Post-Response - Caching request... {hash}", hash);
-			await _requestCache.Set(hash, response);
+			await _service.Set(hash, response);
 
 			return response;
 		}
@@ -79,7 +79,7 @@ namespace FluentlyHttpClient.Middleware
 namespace FluentlyHttpClient
 {
 	/// <summary>
-	/// Request Caching HTTP middleware extensions.
+	/// Response Caching HTTP middleware extensions.
 	/// </summary>
 	public static class ResponseCacheHttpMiddlewareExtensions
 	{
@@ -110,35 +110,35 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Set request caching options for the request.
+		/// Set response caching options for the request.
 		/// </summary>
 		/// <param name="requestBuilder">Request builder instance.</param>
 		/// <param name="options">Options to set.</param>
-		public static FluentHttpRequestBuilder WithRequestCachingOptions(this FluentHttpRequestBuilder requestBuilder, ResponseCacheHttpMiddlewareOptions options)
+		public static FluentHttpRequestBuilder WithResponseCachingOptions(this FluentHttpRequestBuilder requestBuilder, ResponseCacheHttpMiddlewareOptions options)
 		{
 			requestBuilder.Items[OptionsKey] = options;
 			return requestBuilder;
 		}
 
 		/// <summary>
-		/// Set request caching options for the request.
+		/// Set response caching options for the request.
 		/// </summary>
 		/// <param name="requestBuilder">Request builder instance.</param>
 		/// <param name="configure">Action to configure options.</param>
-		public static FluentHttpRequestBuilder WithRequestCachingOptions(this FluentHttpRequestBuilder requestBuilder, Action<ResponseCacheHttpMiddlewareOptions> configure)
+		public static FluentHttpRequestBuilder WithResponseCachingOptions(this FluentHttpRequestBuilder requestBuilder, Action<ResponseCacheHttpMiddlewareOptions> configure)
 		{
 			var options = new ResponseCacheHttpMiddlewareOptions();
 			configure?.Invoke(options);
-			return requestBuilder.WithRequestCachingOptions(options);
+			return requestBuilder.WithResponseCachingOptions(options);
 		}
 
 		/// <summary>
-		/// Get logging option for the request.
+		/// Get response caching options for the request.
 		/// </summary>
 		/// <param name="request">Request to get options from.</param>
 		/// <param name="defaultOptions"></param>
 		/// <returns>Returns merged logging options.</returns>
-		public static ResponseCacheHttpMiddlewareOptions GetRequestCachingOptions(this FluentHttpRequest request, ResponseCacheHttpMiddlewareOptions defaultOptions = null)
+		public static ResponseCacheHttpMiddlewareOptions GetResponseCachingOptions(this FluentHttpRequest request, ResponseCacheHttpMiddlewareOptions defaultOptions = null)
 		{
 			if (!request.Items.TryGetValue(OptionsKey, out var result)) return defaultOptions;
 			var options = (ResponseCacheHttpMiddlewareOptions)result;
