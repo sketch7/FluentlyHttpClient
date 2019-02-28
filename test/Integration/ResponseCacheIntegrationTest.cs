@@ -1,43 +1,13 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Tasks;
 using FluentHttpClient.Entity;
 using FluentlyHttpClient.Caching;
-using FluentlyHttpClient.Middleware;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Xunit;
 
 
-namespace FluentlyHttpClient
-{
-	/// <summary>
-	/// Request Caching HTTP middleware extensions.
-	/// </summary>
-	public static class ResponseCacheHttpMiddlewareExtensions
-	{
-		/// <summary>
-		/// Use response caching middleware which get from cache or get from remote and cache responses.
-		/// </summary>
-		/// <param name="builder">Builder instance</param>
-		/// <param name="options"></param>
-		public static FluentHttpClientBuilder UseResponseCaching(this FluentHttpClientBuilder builder, ResponseCacheHttpMiddlewareOptions options = null)
-			=> builder.UseMiddleware<ResponseCacheHttpMiddleware>(options ?? new ResponseCacheHttpMiddlewareOptions());
-
-		/// <summary>
-		/// Use response caching middleware which get from cache or get from remote and cache responses.
-		/// </summary>
-		/// <param name="builder">Builder instance</param>
-		/// <param name="configure">Action to configure caching options.</param>
-		public static FluentHttpClientBuilder UseResponseCaching(this FluentHttpClientBuilder builder, Action<ResponseCacheHttpMiddlewareOptions> configure)
-		{
-			var options = new ResponseCacheHttpMiddlewareOptions();
-			configure?.Invoke(options);
-			return builder.UseResponseCaching(options);
-		}
-	}
-}
 
 namespace FluentlyHttpClient.Test.Integration
 {
