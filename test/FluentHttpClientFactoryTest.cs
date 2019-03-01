@@ -1,10 +1,10 @@
-﻿using FluentlyHttpClient;
-using FluentlyHttpClient.Test;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
+using FluentlyHttpClient;
+using FluentlyHttpClient.Test;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -15,12 +15,11 @@ namespace Test
 		[Fact]
 		public void ShouldHaveWithCustomDefaultsSet()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
+			var httpClient = GetNewClientFactory().CreateBuilder("abc")
 				.WithBaseUrl("http://abc.com")
-				.WithRequestBuilderDefaults(builder => builder.AsPut());
+				.WithRequestBuilderDefaults(builder => builder.AsPut())
+				.Build();
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var request = httpClient.CreateRequest("/api")
 				.Build();
 
@@ -31,8 +30,7 @@ namespace Test
 		[Fact]
 		public void ShouldHaveQueryParamsDefaultsSet()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
+			var httpClient = GetNewClientFactory().CreateBuilder("abc")
 				.WithBaseUrl("http://abc.com")
 				.WithRequestBuilderDefaults(builder =>
 					builder.WithQueryParamsOptions(opts =>
@@ -40,9 +38,9 @@ namespace Test
 						opts.CollectionMode = QueryStringCollectionMode.CommaSeparated;
 						opts.KeyFormatter = key => key.ToUpper();
 					})
-				);
+				)
+				.Build();
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var request = httpClient.CreateRequest("/api/heroes")
 				.WithQueryParams(new
 				{
@@ -59,15 +57,10 @@ namespace Test
 		[Fact]
 		public void ShouldSetClientFormatters()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
+			var httpClient = GetNewClientFactory().CreateBuilder("abc")
 				.WithBaseUrl("http://abc.com")
-				.ConfigureFormatters(opts =>
-				{
-					opts.Formatters.Clear();
-				});
-
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+				.ConfigureFormatters(opts => { opts.Formatters.Clear(); })
+				.Build();
 
 			Assert.Empty(httpClient.Formatters);
 		}
@@ -75,15 +68,13 @@ namespace Test
 		[Fact]
 		public void ShouldSetDefaultFormatter()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
+			var httpClient = GetNewClientFactory().CreateBuilder("abc")
 				.WithBaseUrl("http://abc.com")
 				.ConfigureFormatters(opts =>
 				{
 					opts.Default = opts.Formatters.XmlFormatter;
-				});
-
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+				})
+				.Build();
 
 			Assert.Equal(httpClient.Formatters.XmlFormatter, httpClient.DefaultFormatter);
 		}
@@ -92,16 +83,14 @@ namespace Test
 		public void ShouldAutoRegisterDefault()
 		{
 			var jsonFormatter = new JsonMediaTypeFormatter();
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
+			var httpClient = GetNewClientFactory().CreateBuilder("abc")
 				.WithBaseUrl("http://abc.com")
 				.ConfigureFormatters(opts =>
 				{
 					opts.Formatters.Clear();
 					opts.Default = jsonFormatter;
-				});
-
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+				})
+				.Build();
 
 			Assert.Equal(jsonFormatter, httpClient.DefaultFormatter);
 		}
@@ -109,15 +98,14 @@ namespace Test
 		[Fact]
 		public void DefaultFormatterShouldBePlacedFirst()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
+			var httpClient = GetNewClientFactory().CreateBuilder("abc")
 				.WithBaseUrl("http://abc.com")
 				.ConfigureFormatters(opts =>
 				{
 					opts.Default = opts.Formatters.XmlFormatter;
-				});
+				})
+				.Build();
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			Assert.Equal(httpClient.Formatters.First(), httpClient.DefaultFormatter);
 		}
 	}
@@ -128,11 +116,10 @@ namespace Test
 		public void ShouldSetClientFormatters()
 		{
 			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.ConfigureDefaults(builder => builder.WithUserAgent("hots"))
+			var httpClient = fluentHttpClientFactory.ConfigureDefaults(builder => builder.WithUserAgent("hots"))
 				.CreateBuilder("abc")
-				.WithBaseUrl("http://abc.com");
-
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+				.WithBaseUrl("http://abc.com")
+				.Build();
 
 			var userAgentHeader = httpClient.Headers.GetValues("User-Agent").FirstOrDefault();
 			Assert.Equal("hots", userAgentHeader);
@@ -144,11 +131,10 @@ namespace Test
 		[Fact]
 		public void ShouldRegisterSuccessfully()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
-				.WithBaseUrl("http://abc.com");
+			var httpClient = GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.Build();
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			Assert.NotNull(httpClient);
 			Assert.Equal("abc", httpClient.Identifier);
 		}
@@ -156,16 +142,14 @@ namespace Test
 		[Fact]
 		public void ThrowsErrorWhenIdentifierNotSpecified()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder(null);
+			var clientBuilder = GetNewClientFactory().CreateBuilder(null);
 			Assert.Throws<ClientBuilderValidationException>(() => clientBuilder.Register());
 		}
 
 		[Fact]
 		public void ThrowsErrorWhenUriNotSpecified()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc");
+			var clientBuilder = GetNewClientFactory().CreateBuilder("abc");
 
 			Assert.Throws<ClientBuilderValidationException>(() => clientBuilder.Register());
 		}
@@ -173,8 +157,7 @@ namespace Test
 		[Fact]
 		public void ThrowsErrorWhenAlreadyRegistered()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")
+			var clientBuilder = GetNewClientFactory().CreateBuilder("abc")
 					.WithBaseUrl("http://abc.com")
 					.Register();
 

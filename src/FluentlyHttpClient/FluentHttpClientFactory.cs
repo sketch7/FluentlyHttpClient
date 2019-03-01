@@ -111,7 +111,7 @@ namespace FluentlyHttpClient
 		{
 			if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
 		
-			var client = clientBuilder.BuildClient();
+			var client = clientBuilder.Build();
 
 			if (Has(clientBuilder.Identifier))
 				throw new ClientBuilderValidationException($"FluentHttpClient '{clientBuilder.Identifier}' is already registered.");

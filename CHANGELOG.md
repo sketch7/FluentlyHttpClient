@@ -5,8 +5,15 @@
 
 ## [2.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.2...2.2.0) (2019-03-02)
 
-- **http client:** now able to create a new http client from an existing one and inheriting options with `.CreateClient`
-- **http client builder:** add  `.FromOptions` which gets configured via `FluentHttpClientOptions`
+- **http client:** now able to create a new http client from an existing one and inheriting options with `CreateClient`
+- **http client builder:** add `FromOptions` which gets configured via `FluentHttpClientOptions`
+- **http client builder:** rename `Build` to `BuildOptions` and `Build` now returns the http client
+
+
+### BREAKING CHANGES
+
+- **http client builder:** add `Build` has been renamed to `BuildOptions` and `Build` now returns an Http Client.
+Most probably it won't affect anyone since its more for internally used
 
 
 ## [2.1.2](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.1...2.1.2) (2018-10-24)

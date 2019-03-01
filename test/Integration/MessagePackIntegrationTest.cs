@@ -13,15 +13,15 @@ namespace FluentlyHttpClient.Test.Integration
 		public async void ShouldMakeRequest_Get()
 		{
 			var fluentHttpClientFactory = ServiceTestUtil.GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var httpClient = fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("http://localhost:5001")
-					.UseTimer()
+				.UseTimer()
 				.ConfigureFormatters(opts =>
 				{
 					opts.Default = _messagePackMediaTypeFormatter;
 				})
-			;
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+				.Build()
+				;
 			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
 				.ReturnAsResponse<Hero>();
 
@@ -35,14 +35,14 @@ namespace FluentlyHttpClient.Test.Integration
 		public async void ShouldMakeRequest_Post()
 		{
 			var fluentHttpClientFactory = ServiceTestUtil.GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var httpClient = fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("http://localhost:5001")
 				.ConfigureFormatters(opts =>
 					{
 						opts.Default = _messagePackMediaTypeFormatter;
 					})
+				.Build()
 				;
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var response = await httpClient.CreateRequest("/api/heroes")
 				.AsPost()
 				.WithBody(new Hero

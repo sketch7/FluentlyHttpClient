@@ -16,13 +16,12 @@ namespace Test
 			mockHttp.When("https://sketch7.com/api/heroes/azmodan")
 				.Respond("application/json", "{ 'name': 'Azmodan' }");
 
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var clientBuilder = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.WithMessageHandler(mockHttp)
 				.UseTimer();
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			var httpClient = clientBuilder.Build();
 			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
 				.ReturnAsResponse<Hero>();
 
@@ -38,13 +37,12 @@ namespace Test
 			mockHttp.When("https://sketch7.com/api/heroes/azmodan")
 				.Respond("application/json", "{ 'name': 'Azmodan' }");
 
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var clientBuilder = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.WithMessageHandler(mockHttp)
 				.UseTimer();
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			var httpClient = clientBuilder.Build();
 			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
 				.WithTimerWarnThreshold(TimeSpan.FromSeconds(1))
 				.ReturnAsResponse<Hero>();
@@ -56,15 +54,14 @@ namespace Test
 		[Fact]
 		public async void ThrowsWhenWarnThresholdIsZero()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var clientBuilder = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.UseTimer(x =>
 				{
 					x.WarnThreshold = TimeSpan.Zero;
 				});
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			var httpClient = clientBuilder.Build();
 			await Assert.ThrowsAsync<ArgumentException>(() => httpClient.Get<Hero>("/api/heroes/azmodan"));
 		}
 	}

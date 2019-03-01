@@ -149,7 +149,7 @@ namespace FluentlyHttpClient
 		/// Build up HTTP client options.
 		/// </summary>
 		/// <returns>Returns HTTP client options.</returns>
-		public FluentHttpClientOptions Build() // todo: rename to BuildOptions
+		public FluentHttpClientOptions BuildOptions()
 		{
 			_formatterOptions.Resort();
 			var options = new FluentHttpClientOptions
@@ -172,8 +172,8 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="options"></param>
 		/// <returns></returns>
-		public IFluentHttpClient BuildClient(FluentHttpClientOptions options = null)
-			=> BuildClient<FluentHttpClient>();// todo: rename to Build
+		public IFluentHttpClient Build(FluentHttpClientOptions options = null)
+			=> Build<FluentHttpClient>();
 
 		/// <summary>
 		/// Build a new http client.
@@ -181,11 +181,11 @@ namespace FluentlyHttpClient
 		/// <typeparam name="THttpClient">HttpClient type</typeparam>
 		/// <param name="options"></param>
 		/// <returns></returns>
-		public IFluentHttpClient BuildClient<THttpClient>(FluentHttpClientOptions options = null) // todo: rename to Build
+		public IFluentHttpClient Build<THttpClient>(FluentHttpClientOptions options = null)
 			where THttpClient : IFluentHttpClient
 		{
 			if (options == null)
-				options = Build();
+				options = BuildOptions();
 
 			if (string.IsNullOrEmpty(options.Identifier))
 				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.Identifier));
@@ -194,6 +194,7 @@ namespace FluentlyHttpClient
 				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.BaseUrl));
 
 			var client = ActivatorUtilities.CreateInstance<THttpClient>(_serviceProvider, options, _fluentHttpClientFactory);
+			// todo: should we register?
 			return client;
 		}
 

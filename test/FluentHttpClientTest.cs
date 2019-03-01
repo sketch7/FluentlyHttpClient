@@ -18,12 +18,11 @@ namespace Test
 			mockHttp.When("https://sketch7.com/api/heroes/azmodan")
 				.Respond("application/json", "{ 'name': 'Azmodan' }");
 
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var clientBuilder = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.WithMessageHandler(mockHttp);
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			var httpClient = clientBuilder.Build();
 			var hero = await httpClient.Get<Hero>("/api/heroes/azmodan");
 
 			Assert.NotNull(hero);
@@ -44,12 +43,11 @@ namespace Test
 				})
 				.Respond("application/json", "{ 'name': 'Azmodan', 'title': 'Lord of Sin' }");
 
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var clientBuilder = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.WithMessageHandler(mockHttp);
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			var httpClient = clientBuilder.Build();
 			var hero = await httpClient.Post<Hero>("/api/heroes/azmodan", new
 			{
 				Title = "Lord of Sin"
@@ -62,18 +60,17 @@ namespace Test
 		[Fact]
 		public void Create_ShouldReturnANewClient()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var clientBuilder = GetNewClientFactory().CreateBuilder("sketch7")
 					.WithBaseUrl("https://sketch7.com")
 					.WithHeader("X-SSV-Locale", "en-GB")
 					.WithRequestBuilderDefaults(requestBuilder => requestBuilder.WithUri("api/graphql"))
 				;
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			var httpClient = clientBuilder.Build();
 			var subClient = httpClient.CreateClient("subclient")
 					.WithHeader("X-SSV-Locale", "de")
 					.WithHeader("X-SSV-Country", "de")
-					.BuildClient()
+					.Build()
 				;
 
 			var httpClientLocale = httpClient.Headers.GetValues("X-SSV-Locale").FirstOrDefault();
@@ -103,13 +100,12 @@ namespace Test
 				})
 				.Respond("application/json", "{ 'data': {'name': 'Azmodan', 'title': 'Lord of Sin' }}");
 
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var clientBuilder = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.WithRequestBuilderDefaults(requestBuilder => requestBuilder.WithUri("api/graphql"))
 				.WithMessageHandler(mockHttp);
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			var httpClient = clientBuilder.Build();
 			var response = await httpClient.CreateGqlRequest(query)
 				.ReturnAsGqlResponse<Hero>();
 

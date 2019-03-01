@@ -19,16 +19,16 @@ namespace Test
 				.Respond("application/json", "{ 'name': 'Azmodan' }");
 
 			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var httpClient = fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.UseLogging(new LoggerHttpMiddlewareOptions
 				{
 					ShouldLogDetailedRequest = true,
 					ShouldLogDetailedResponse = true
 				})
-				.WithMessageHandler(mockHttp);
+				.WithMessageHandler(mockHttp)
+				.Build();
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var hero = await httpClient.Get<Hero>("/api/heroes/azmodan");
 
 			Assert.NotNull(hero);
@@ -41,18 +41,18 @@ namespace Test
 			var mockHttp = new MockHttpMessageHandler();
 			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes")
 				.Respond("application/json", "");
-
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			
+			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.UseLogging(new LoggerHttpMiddlewareOptions
 				{
 					ShouldLogDetailedRequest = true,
 					ShouldLogDetailedResponse = true
 				})
-				.WithMessageHandler(mockHttp);
+				.WithMessageHandler(mockHttp)
+				.Build()
+				;
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var response = await httpClient.CreateRequest("/api/heroes")
 				.AsPost()
 				.WithBody(new Hero
@@ -73,18 +73,18 @@ namespace Test
 			var mockHttp = new MockHttpMessageHandler();
 			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes")
 				.Respond("application/json", "");
-
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			
+			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.UseLogging(x =>
 				{
 					x.ShouldLogDetailedRequest = true;
 					x.ShouldLogDetailedResponse = true;
 				})
-				.WithMessageHandler(mockHttp);
+				.WithMessageHandler(mockHttp)
+				.Build()
+				;
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var response = await httpClient.CreateRequest("/api/heroes")
 				.AsPost()
 				.WithBody(new Hero
@@ -108,11 +108,12 @@ namespace Test
 				ShouldLogDetailedRequest = true,
 				ShouldLogDetailedResponse = true
 			};
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var httpClient = fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.UseLogging(loggerHttpMiddlewareOptions);
-
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+				.UseLogging(loggerHttpMiddlewareOptions)
+				.Build()
+				;
+			
 			var request = httpClient.CreateRequest("/api/heroes")
 				.AsPost()
 				.Build();
@@ -132,11 +133,12 @@ namespace Test
 				ShouldLogDetailedRequest = false,
 				ShouldLogDetailedResponse = false
 			};
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var httpClient = fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.UseLogging(loggerHttpMiddlewareOptions);
+				.UseLogging(loggerHttpMiddlewareOptions)
+				.Build()
+				;
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var request = httpClient.CreateRequest("/api/heroes")
 				.AsPost()
 				.WithLoggingOptions(new LoggerHttpMiddlewareOptions
@@ -161,11 +163,12 @@ namespace Test
 				ShouldLogDetailedRequest = false,
 				ShouldLogDetailedResponse = false
 			};
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var httpClient = fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.UseLogging(loggerHttpMiddlewareOptions);
+				.UseLogging(loggerHttpMiddlewareOptions)
+				.Build()
+				;
 
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			var request = httpClient.CreateRequest("/api/heroes")
 				.AsPost()
 				.WithLoggingOptions(x =>
