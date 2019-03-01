@@ -198,7 +198,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Register to <see cref="IFluentHttpClientFactory"/>, same as <see cref="IFluentHttpClientFactory.Add(FluentHttpClientBuilder)"/> for convience.
+		/// Register to factory <see cref="IFluentHttpClientFactory"/> and build, same as <see cref="IFluentHttpClientFactory.Add(FluentHttpClientBuilder)"/> for convenience.
 		/// </summary>
 		public FluentHttpClientBuilder Register()
 		{
