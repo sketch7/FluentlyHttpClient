@@ -190,8 +190,7 @@ namespace FluentlyHttpClient
 			httpClient.DefaultRequestHeaders.Add(HeaderTypes.Accept, Formatters.SelectMany(x => x.SupportedMediaTypes).Select(x => x.MediaType));
 			httpClient.Timeout = options.Timeout;
 
-			foreach (var headerEntry in options.Headers)
-				httpClient.DefaultRequestHeaders.Add(headerEntry.Key, headerEntry.Value);
+			httpClient.DefaultRequestHeaders.AddRange(options.Headers);
 
 			return httpClient;
 		}

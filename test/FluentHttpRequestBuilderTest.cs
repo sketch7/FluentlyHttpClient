@@ -352,4 +352,48 @@ namespace Test
 			Assert.Equal("Lord of Sin", response2.Data.Title);
 		}
 	}
+
+	public class HttpMessage_GenerateHash
+	{
+		private static IFluentHttpClient GetClient()
+		{
+			var fluentHttpClientFactory = GetNewClientFactory();
+			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+					//.WithBaseUrl("https://localhost:5001")
+					.WithBaseUrl("http://local.sketch7.io:5000")
+					.WithHeader("locale", "en-GB")
+					.WithHeader("X-SSV-VERSION", "2019.02-2")
+				;
+			return fluentHttpClientFactory.Add(clientBuilder);
+		}
+
+		[Fact]
+		public void ShouldBeEqual()
+		{
+			var httpClient = GetClient();
+
+			var request1 = httpClient.CreateRequest("/api/heroes/azmodan");
+			var request2 = httpClient.CreateRequest("/api/heroes/azmodan");
+
+			var request1Hash = request1.Build().GenerateHash();
+			var request2Hash = request2.Build().GenerateHash();
+
+			Assert.Equal(request1Hash, request2Hash);
+		}
+
+		[Fact]
+		public void ShouldHandleHeaders()
+		{
+			var httpClient = GetClient();
+
+			var requestWithToken = httpClient.CreateRequest("/api/heroes/azmodan")
+				.WithBearerAuthentication("XXX");
+			var noTokenRequest = httpClient.CreateRequest("/api/heroes/azmodan");
+
+			var tokenRequestHash = requestWithToken.Build().GenerateHash();
+			var noTokenRequestHash = noTokenRequest.Build().GenerateHash();
+
+			Assert.NotEqual(tokenRequestHash, noTokenRequestHash);
+		}
+	}
 }

@@ -16,6 +16,7 @@ namespace FluentlyHttpClient.Middleware
 		/// Ignore the request from being cached.
 		/// </summary>
 		public bool ShouldIgnore { get; set; }
+		public Predicate<FluentHttpRequest> Matcher { get; set; }
 	}
 
 	/// <summary>
@@ -49,13 +50,13 @@ namespace FluentlyHttpClient.Middleware
 		{
 			var options = request.GetResponseCachingOptions(_options);
 
-			if (options.ShouldIgnore || !_service.Matcher(request))
+			if (options.ShouldIgnore || options.Matcher != null && !options.Matcher(request))
 				return await _next(request);
 
 			var hash = request.GetRequestHash();
 			if (string.IsNullOrEmpty(hash))
 			{
-				hash = _service.GenerateHash(request);
+				hash = request.GenerateHash();
 				request.SetRequestHash(hash);
 			}
 			
@@ -144,6 +145,7 @@ namespace FluentlyHttpClient
 			var options = (ResponseCacheHttpMiddlewareOptions)result;
 			if (defaultOptions == null)
 				return options;
+			options.Matcher = defaultOptions.Matcher;
 			return options;
 		}
 		#endregion

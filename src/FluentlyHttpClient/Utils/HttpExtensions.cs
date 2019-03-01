@@ -27,6 +27,18 @@ namespace FluentlyHttpClient
 			=> headers.ToDictionary(x => x.Key, x => string.Join(";", x.Value));
 
 		/// <summary>
+		/// Add from dictionary.
+		/// </summary>
+		/// <param name="headers"></param>
+		/// <param name="values">Headers to add from.</param>
+		/// <returns></returns>
+		public static void AddRange(this HttpHeaders headers, Dictionary<string, string> values)
+		{
+			foreach (var headerEntry in values)
+				headers.Add(headerEntry.Key, headerEntry.Value);
+		}
+
+		/// <summary>
 		/// Converts headers dictionary to hash string.
 		/// </summary>
 		/// <param name="headers"></param>
