@@ -2,6 +2,7 @@
 using MessagePack.Resolvers;
 using Sketch7.MessagePack.MediaTypeFormatter;
 using Xunit;
+using static FluentlyHttpClient.Test.ServiceTestUtil;
 
 namespace FluentlyHttpClient.Test.Integration
 {
@@ -12,16 +13,15 @@ namespace FluentlyHttpClient.Test.Integration
 		// [Fact]
 		public async void ShouldMakeRequest_Get()
 		{
-			var fluentHttpClientFactory = ServiceTestUtil.GetNewClientFactory();
-			var httpClient = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("http://localhost:5001")
 				.UseTimer()
 				.ConfigureFormatters(opts =>
 				{
 					opts.Default = _messagePackMediaTypeFormatter;
 				})
-				.Build()
-				;
+				.Build();
+
 			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
 				.ReturnAsResponse<Hero>();
 
@@ -34,15 +34,14 @@ namespace FluentlyHttpClient.Test.Integration
 		// [Fact]
 		public async void ShouldMakeRequest_Post()
 		{
-			var fluentHttpClientFactory = ServiceTestUtil.GetNewClientFactory();
-			var httpClient = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("http://localhost:5001")
 				.ConfigureFormatters(opts =>
 					{
 						opts.Default = _messagePackMediaTypeFormatter;
 					})
-				.Build()
-				;
+				.Build();
+
 			var response = await httpClient.CreateRequest("/api/heroes")
 				.AsPost()
 				.WithBody(new Hero
