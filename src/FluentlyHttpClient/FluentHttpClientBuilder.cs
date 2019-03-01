@@ -194,7 +194,6 @@ namespace FluentlyHttpClient
 				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.BaseUrl));
 
 			var client = ActivatorUtilities.CreateInstance<THttpClient>(_serviceProvider, options, _fluentHttpClientFactory);
-			// todo: should we register?
 			return client;
 		}
 
