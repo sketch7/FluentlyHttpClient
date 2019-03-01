@@ -39,7 +39,7 @@ namespace FluentlyHttpClient.Caching
 			return true;
 		}
 
-		// todo: make this more reusable/overridable e.g. IRequestHashGenerator?
+		// todo: make this more reusable/overridable modify pre-generate e.g. IRequestHashGenerator?
 		public string GenerateHash(FluentHttpRequest request)
 		{
 			var headers = request.Builder.DefaultHeaders.ToDictionary();

@@ -5,7 +5,7 @@ namespace FluentlyHttpClient.Test
 {
 	public class MemoryResponseCache_GenerateHash
 	{
-		private IFluentHttpClient GetClient()
+		private static IFluentHttpClient GetClient()
 		{
 			var fluentHttpClientFactory = ServiceTestUtil.GetNewClientFactory();
 			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
