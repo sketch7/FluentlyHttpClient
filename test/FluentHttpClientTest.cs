@@ -1,8 +1,9 @@
-﻿using FluentlyHttpClient;
+﻿using System.Linq;
+using System.Net.Http;
+using FluentlyHttpClient;
+using FluentlyHttpClient.GraphQL;
 using FluentlyHttpClient.Test;
 using RichardSzalay.MockHttp;
-using System.Net.Http;
-using FluentlyHttpClient.GraphQL;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -56,6 +57,35 @@ namespace Test
 
 			Assert.NotNull(hero);
 			Assert.Equal("Lord of Sin", hero.Title);
+		}
+
+		[Fact]
+		public void Create_ShouldReturnANewClient()
+		{
+			var fluentHttpClientFactory = GetNewClientFactory();
+			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+					.WithBaseUrl("https://sketch7.com")
+					.WithHeader("X-SSV-Locale", "en-GB")
+					.WithRequestBuilderDefaults(requestBuilder => requestBuilder.WithUri("api/graphql"))
+				;
+
+			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+			var subClient = httpClient.CreateClient("subclient")
+					.WithHeader("X-SSV-Locale", "de")
+					.WithHeader("X-SSV-Country", "de")
+					.BuildClient()
+				;
+
+			var httpClientLocale = httpClient.Headers.GetValues("X-SSV-Locale").FirstOrDefault();
+			var subClientLocale = subClient.Headers.GetValues("X-SSV-Locale").FirstOrDefault();
+
+			httpClient.Headers.TryGetValues("X-SSV-Country", out var countryValues);
+			var subClientCountry = subClient.Headers.GetValues("X-SSV-Country").FirstOrDefault();
+
+			Assert.Equal("en-GB", httpClientLocale);
+			Assert.Equal("de", subClientLocale);
+			Assert.Null(countryValues?.FirstOrDefault());
+			Assert.Equal("de", subClientCountry);
 		}
 
 		[Fact]

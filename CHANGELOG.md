@@ -3,6 +3,12 @@
 [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.1...2.2.0) (201X-X-X)
 
 
+## [2.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.2...2.2.0) (2019-03-02)
+
+- **http client:** now able to create a new http client from an existing one and inheriting options with `.CreateClient`
+- **http client builder:** add  `.FromOptions` which gets configured via `FluentHttpClientOptions`
+
+
 ## [2.1.2](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.1...2.1.2) (2018-10-24)
 
 ### Chore
@@ -42,6 +48,7 @@ clientBuilder.WithRequestBuilderDefaults(builder =>
 
  - **request builder:** `WithQueryParams(object queryParams, bool lowerCaseQueryKeys)` has been marked as obsolete, instead the newly `WithQueryParams(object queryParams, Action<QueryStringOptions> configure)`.
   e.g. `WithQueryParams(params, opts => opts.KeyFormatter = key => key.ToLower())`
+
 
 ## [2.0.1](https://github.com/sketch7/FluentlyHttpClient/compare/2.0.0...2.0.1) (2018-07-31)
 

@@ -107,31 +107,26 @@ namespace FluentlyHttpClient
 		}
 
 		/// <inheritdoc />
-		public IFluentHttpClient Add(FluentHttpClientOptions options)
+		public IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder)
 		{
-			if (options == null) throw new ArgumentNullException(nameof(options));
+			if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
+		
+			var client = clientBuilder.BuildClient();
 
-			if (string.IsNullOrEmpty(options.Identifier))
-				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.Identifier));
-
-			if (Has(options.Identifier))
-				throw new ClientBuilderValidationException($"FluentHttpClient '{options.Identifier}' is already registered.");
-			
-			if (string.IsNullOrEmpty(options.BaseUrl))
-				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.BaseUrl));
-
-			// todo: find a way how to use DI with additional param (or so) to factory for abstraction.
-			var client = (IFluentHttpClient)ActivatorUtilities.CreateInstance<FluentHttpClient>(_serviceProvider, options);
-			_clientsMap.Add(options.Identifier, client);
+			if (Has(clientBuilder.Identifier))
+				throw new ClientBuilderValidationException($"FluentHttpClient '{clientBuilder.Identifier}' is already registered.");
+			_clientsMap.Add(clientBuilder.Identifier, client);
 			return client;
 		}
 
 		/// <inheritdoc />
-		public IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder)
+		public IFluentHttpClient Add(FluentHttpClientOptions options)
 		{
-			if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
-			var options = clientBuilder.Build();
-			return Add(options);
+			if (options == null) throw new ArgumentNullException(nameof(options));
+
+			var builder = CreateBuilder(options.Identifier)
+				.FromOptions(options);
+			return Add(builder);
 		}
 
 		/// <inheritdoc />
