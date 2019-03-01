@@ -37,7 +37,7 @@ namespace FluentlyHttpClient.Caching
 			_cache[hash] = cloned;
 		}
 
-		// todo: make configurable instead?
+		// todo: make global configurable instead?
 		public bool Matcher(FluentHttpRequest request)
 		{
 			return true;
@@ -45,14 +45,14 @@ namespace FluentlyHttpClient.Caching
 
 		public string GenerateHash(FluentHttpRequest request)
 		{
-			var headers = HeadersToDictionary(request.Builder.DefaultHeaders);
+			var headers = request.Builder.DefaultHeaders.ToDictionary();
 			foreach (var requestHeader in request.Headers)
 				headers[requestHeader.Key] = string.Join(";", requestHeader.Value);
 
 			var urlHash = request.Uri.IsAbsoluteUri
 				? request.Uri
 				: new Uri($"{request.Builder.BaseUrl.TrimEnd('/')}/{request.Uri}");
-			var headersHash = HeadersToString(headers);
+			var headersHash = headers.ToHeadersHashString();
 
 			var hash = $"method={request.Method};url={urlHash};headers={headersHash}";
 			return hash;
@@ -74,30 +74,9 @@ namespace FluentlyHttpClient.Caching
 				RequestMessage = response.Message.RequestMessage
 			}, response.Items);
 
-			CopyHeaders(cloned.Headers, response.Headers);
+			cloned.Headers.CopyFrom(response.Headers);
 
 			return cloned;
-		}
-
-		// todo: change to extension method and make reusable CopyFrom(target)
-		private static void CopyHeaders(HttpHeaders destination, HttpHeaders source)
-		{
-			foreach (var header in source)
-				destination.TryAddWithoutValidation(header.Key, header.Value);
-		}
-
-		// todo: make reusable
-		private static Dictionary<string, string> HeadersToDictionary(HttpHeaders headers)
-			=> headers.ToDictionary(x => x.Key, x => string.Join(";", x.Value));
-
-		// todo: make reusable
-		private static string HeadersToString(Dictionary<string, string> headers)
-		{
-			var headersHash = "";
-			foreach (var header in headers)
-				headersHash += $"{header.Key}={header.Value}&";
-			headersHash = headersHash.TrimEnd('&');
-			return headersHash;
 		}
 
 	}
