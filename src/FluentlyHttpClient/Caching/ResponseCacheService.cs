@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FluentlyHttpClient.Caching
@@ -26,13 +22,13 @@ namespace FluentlyHttpClient.Caching
 			if (response == null)
 				return null;
 
-			var cloned = await Clone(response);
+			var cloned = await response.Clone();
 			return cloned;
 		}
 
 		public async Task Set(string hash, FluentHttpResponse response)
 		{
-			var cloned = await Clone(response);
+			var cloned = await response.Clone();
 
 			_cache[hash] = cloned;
 		}
@@ -43,6 +39,7 @@ namespace FluentlyHttpClient.Caching
 			return true;
 		}
 
+		// todo: make this more reusable/overridable e.g. IRequestHashGenerator?
 		public string GenerateHash(FluentHttpRequest request)
 		{
 			var headers = request.Builder.DefaultHeaders.ToDictionary();
@@ -51,32 +48,11 @@ namespace FluentlyHttpClient.Caching
 
 			var urlHash = request.Uri.IsAbsoluteUri
 				? request.Uri
-				: new Uri($"{request.Builder.BaseUrl.TrimEnd('/')}/{request.Uri}");
+				: new Uri($"{request.Builder.BaseUrl.TrimEnd('/')}/{request.Uri.ToString().TrimStart('/')}");
 			var headersHash = headers.ToHeadersHashString();
 
 			var hash = $"method={request.Method};url={urlHash};headers={headersHash}";
 			return hash;
-		}
-
-		// todo: move to be reusable
-		private async Task<FluentHttpResponse> Clone(FluentHttpResponse response)
-		{
-			var contentString = await response.Content.ReadAsStringAsync();
-			var contentType = response.Content.Headers.ContentType;
-			var encoding = Encoding.GetEncoding(contentType.CharSet);
-
-			var cloned = new FluentHttpResponse(new HttpResponseMessage(response.StatusCode)
-			{
-				Content = new StringContent(contentString, encoding, contentType.MediaType),
-				ReasonPhrase = response.ReasonPhrase,
-				StatusCode = response.StatusCode,
-				Version = response.Message.Version,
-				RequestMessage = response.Message.RequestMessage
-			}, response.Items);
-
-			cloned.Headers.CopyFrom(response.Headers);
-
-			return cloned;
 		}
 
 	}
