@@ -3,7 +3,9 @@ using System.Net.Http;
 using FluentlyHttpClient;
 using FluentlyHttpClient.GraphQL;
 using FluentlyHttpClient.Test;
+using MessagePack.Resolvers;
 using RichardSzalay.MockHttp;
+using Sketch7.MessagePack.MediaTypeFormatter;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -11,6 +13,8 @@ namespace Test
 {
 	public class HttpClient
 	{
+		private readonly MessagePackMediaTypeFormatter _messagePackMediaTypeFormatter = new MessagePackMediaTypeFormatter(ContractlessStandardResolver.Instance);
+
 		[Fact]
 		public async void Get_ShouldReturnContent()
 		{
@@ -63,6 +67,8 @@ namespace Test
 			var clientBuilder = GetNewClientFactory().CreateBuilder("sketch7")
 					.WithBaseUrl("https://sketch7.com")
 					.WithHeader("locale", "en-GB")
+					.UseTimer()
+					.ConfigureFormatters(x => x.Formatters.Add(_messagePackMediaTypeFormatter))
 					.WithRequestBuilderDefaults(requestBuilder =>
 					{
 						requestBuilder.WithMethod(HttpMethod.Trace)
@@ -78,6 +84,7 @@ namespace Test
 					.WithRequestBuilderDefaults(x => x.WithItem("context", "reward"))
 					.WithHeader("locale", "de")
 					.WithHeader("country", "de")
+					.UseLogging()
 					.Build();
 
 			var httpClientRequest = httpClient.CreateRequest();
@@ -100,6 +107,8 @@ namespace Test
 			Assert.Equal(httpClientRequest.Items["error-mapping"], subClientRequest.Items["error-mapping"]);
 			Assert.Equal("user", httpClientRequest.Items["context"]);
 			Assert.Equal("reward", subClientRequest.Items["context"]);
+			Assert.Equal(httpClient.Formatters.Count, subClient.Formatters.Count);
+			// todo: check middleware count?
 		}
 
 		[Fact]

@@ -8,9 +8,10 @@
 - **http client:** now able to create a new http client from an existing one and inheriting options with `CreateClient`
 - **http client builder:** add `FromOptions` which gets configured via `FluentHttpClientOptions`
 - **http client builder:** rename `Build` to `BuildOptions` and `Build` now returns the http client
-- **http client builder:** `WithRequestBuilderDefaults` now will be combined with previous, if you want 
-to clear the previous (as it was working), use `WithRequestBuilderDefaults(..., replace: true)`. This behavior is changed
-because its more expected that they are combined, especially when creating a sub client, as you might replace the defaults if you add something else.
+- **http client builder:** `WithRequestBuilderDefaults` now will combine previous defaults instead of replacing them.
+If you want to replace the previous defaults (as it was working), use `WithRequestBuilderDefaults(..., replace: true)`.
+This behavior is changed because its more expected that they are combined, especially when creating a sub client and adding/changing request defaults
+something would have lost the original (parent) defaults.
 - **http client factory:** add overload `Add(IFluentHttpClient)`
 
 ### BREAKING CHANGES

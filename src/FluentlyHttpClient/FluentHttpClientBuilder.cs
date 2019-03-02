@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -225,10 +227,28 @@ namespace FluentlyHttpClient
 			_middleware.AddRange(options.Middleware);
 			_requestBuilderDefaults = options.RequestBuilderDefaults;
 			_httpMessageHandler = options.HttpMessageHandler;
-			_formatterOptions.Formatters.AddRange(options.Formatters);
+			var formatters = _formatterOptions.Formatters.Union(options.Formatters, MediaTypeFormatterComparer.Instance).ToList();
+			_formatterOptions.Formatters.Clear();
+			_formatterOptions.Formatters.AddRange(formatters);
 			_formatterOptions.Default = options.DefaultFormatter;
 
 			return this;
+		}
+	}
+
+
+	internal class MediaTypeFormatterComparer : IEqualityComparer<MediaTypeFormatter>
+	{
+		public static MediaTypeFormatterComparer Instance = new MediaTypeFormatterComparer();
+
+		public bool Equals(MediaTypeFormatter x, MediaTypeFormatter y)
+		{
+			return x.GetType() == y.GetType();
+		}
+
+		public int GetHashCode(MediaTypeFormatter obj)
+		{
+			return obj.GetType().GetHashCode();
 		}
 	}
 }
