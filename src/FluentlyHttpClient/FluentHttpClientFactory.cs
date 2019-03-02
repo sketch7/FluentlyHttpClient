@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentlyHttpClient
 {
@@ -15,7 +15,7 @@ namespace FluentlyHttpClient
 		/// <param name="identifier">identifier to set.</param>
 		/// <returns>Returns a new HTTP client builder.</returns>
 		FluentHttpClientBuilder CreateBuilder(string identifier);
-		
+
 		/// <summary>
 		/// Configure defaults for <see cref="FluentHttpClientBuilder"/> which every new one uses.
 		/// </summary>
@@ -117,7 +117,7 @@ namespace FluentlyHttpClient
 		public IFluentHttpClient Add(IFluentHttpClient client)
 		{
 			if (client == null) throw new ArgumentNullException(nameof(client));
-		
+
 			if (Has(client.Identifier))
 				throw new ClientBuilderValidationException($"FluentHttpClient '{client.Identifier}' is already registered.");
 			_clientsMap.Add(client.Identifier, client);
@@ -128,7 +128,7 @@ namespace FluentlyHttpClient
 		public IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder)
 		{
 			if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
-		
+
 			var client = clientBuilder.Build();
 			return Add(client);
 		}

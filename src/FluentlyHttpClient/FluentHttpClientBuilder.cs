@@ -180,7 +180,7 @@ namespace FluentlyHttpClient
 		/// <param name="options"></param>
 		/// <returns></returns>
 		public IFluentHttpClient Build(FluentHttpClientOptions options = null)
-			=> Build<FluentHttpClient>();
+			=> Build<FluentHttpClient>(options);
 
 		/// <summary>
 		/// Build a new http client.
