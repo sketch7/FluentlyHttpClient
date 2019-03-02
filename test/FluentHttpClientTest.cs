@@ -58,31 +58,48 @@ namespace Test
 		}
 
 		[Fact]
-		public void Create_ShouldReturnANewClient()
+		public void CreateClient_ShouldInheritOptions()
 		{
 			var clientBuilder = GetNewClientFactory().CreateBuilder("sketch7")
 					.WithBaseUrl("https://sketch7.com")
-					.WithHeader("X-SSV-Locale", "en-GB")
-					.WithRequestBuilderDefaults(requestBuilder => requestBuilder.WithUri("api/graphql"))
+					.WithHeader("locale", "en-GB")
+					.WithRequestBuilderDefaults(requestBuilder =>
+					{
+						requestBuilder.WithMethod(HttpMethod.Trace)
+							.WithUri("api/graphql")
+							.WithItem("error-mapping", "map this")
+							.WithItem("context", "user")
+							;
+					})
 				;
 
 			var httpClient = clientBuilder.Build();
 			var subClient = httpClient.CreateClient("subclient")
-					.WithHeader("X-SSV-Locale", "de")
-					.WithHeader("X-SSV-Country", "de")
-					.Build()
-				;
+					.WithRequestBuilderDefaults(x => x.WithItem("context", "reward"))
+					.WithHeader("locale", "de")
+					.WithHeader("country", "de")
+					.Build();
 
-			var httpClientLocale = httpClient.Headers.GetValues("X-SSV-Locale").FirstOrDefault();
-			var subClientLocale = subClient.Headers.GetValues("X-SSV-Locale").FirstOrDefault();
+			var httpClientRequest = httpClient.CreateRequest();
+			var subClientRequest = subClient.CreateRequest();
 
-			httpClient.Headers.TryGetValues("X-SSV-Country", out var countryValues);
-			var subClientCountry = subClient.Headers.GetValues("X-SSV-Country").FirstOrDefault();
+
+			var httpClientLocale = httpClient.Headers.GetValues("locale").FirstOrDefault();
+			var subClientLocale = subClient.Headers.GetValues("locale").FirstOrDefault();
+
+			httpClient.Headers.TryGetValues("country", out var countryValues);
+			var subClientCountry = subClient.Headers.GetValues("country").FirstOrDefault();
+
 
 			Assert.Equal("en-GB", httpClientLocale);
 			Assert.Equal("de", subClientLocale);
 			Assert.Null(countryValues?.FirstOrDefault());
 			Assert.Equal("de", subClientCountry);
+
+			Assert.Equal(httpClientRequest.HttpMethod, subClientRequest.HttpMethod);
+			Assert.Equal(httpClientRequest.Items["error-mapping"], subClientRequest.Items["error-mapping"]);
+			Assert.Equal("user", httpClientRequest.Items["context"]);
+			Assert.Equal("reward", subClientRequest.Items["context"]);
 		}
 
 		[Fact]

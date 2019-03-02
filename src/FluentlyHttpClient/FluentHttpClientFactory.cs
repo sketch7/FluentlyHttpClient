@@ -32,11 +32,11 @@ namespace FluentlyHttpClient
 		IFluentHttpClient Get(string identifier);
 
 		/// <summary>
-		/// Add/register HTTP Client from options.
+		/// Add/register HTTP Client.
 		/// </summary>
-		/// <param name="options">options to register.</param>
-		/// <returns>Returns HTTP client created.</returns>
-		IFluentHttpClient Add(FluentHttpClientOptions options);
+		/// <param name="client">Client to register.</param>
+		/// <returns>Returns HTTP client.</returns>
+		IFluentHttpClient Add(IFluentHttpClient client);
 
 		/// <summary>
 		/// Add/register HTTP Client from builder.
@@ -44,6 +44,13 @@ namespace FluentlyHttpClient
 		/// <param name="clientBuilder">Client builder to register.</param>
 		/// <returns>Returns HTTP client created.</returns>
 		IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder);
+
+		/// <summary>
+		/// Add/register HTTP Client from options.
+		/// </summary>
+		/// <param name="options">options to register.</param>
+		/// <returns>Returns HTTP client created.</returns>
+		IFluentHttpClient Add(FluentHttpClientOptions options);
 
 		/// <summary>
 		/// Remove/unregister HTTP Client.
@@ -107,20 +114,27 @@ namespace FluentlyHttpClient
 		}
 
 		/// <inheritdoc />
+		public IFluentHttpClient Add(IFluentHttpClient client)
+		{
+			if (client == null) throw new ArgumentNullException(nameof(client));
+		
+			if (Has(client.Identifier))
+				throw new ClientBuilderValidationException($"FluentHttpClient '{client.Identifier}' is already registered.");
+			_clientsMap.Add(client.Identifier, client);
+			return client;
+		}
+
+		/// <inheritdoc />
 		public IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder)
 		{
 			if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
 		
 			var client = clientBuilder.Build();
-
-			if (Has(clientBuilder.Identifier))
-				throw new ClientBuilderValidationException($"FluentHttpClient '{clientBuilder.Identifier}' is already registered.");
-			_clientsMap.Add(clientBuilder.Identifier, client);
-			return client;
+			return Add(client);
 		}
 
 		/// <inheritdoc />
-		public IFluentHttpClient Add(FluentHttpClientOptions options)
+		public IFluentHttpClient Add(FluentHttpClientOptions options) // todo: remove this from interface and make as extension method
 		{
 			if (options == null) throw new ArgumentNullException(nameof(options));
 

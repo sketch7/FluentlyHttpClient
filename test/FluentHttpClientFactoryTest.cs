@@ -28,6 +28,40 @@ namespace Test
 		}
 
 		[Fact]
+		public void ShouldHaveCustomDefaultsCombined()
+		{
+			var httpClient = GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.WithRequestBuilderDefaults(builder => builder.AsPut())
+				.WithRequestBuilderDefaults(builder => builder.WithItem("context", "user"))
+				.Build();
+
+			var request = httpClient.CreateRequest("/api")
+				.Build();
+
+			Assert.NotNull(request);
+			Assert.Equal(HttpMethod.Put, request.Method);
+			Assert.Equal("user", request.Items["context"]);
+		}
+
+		[Fact]
+		public void ShouldHavePreviousCustomDefaultsReplaced()
+		{
+			var httpClient = GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.WithRequestBuilderDefaults(builder => builder.AsPut())
+				.WithRequestBuilderDefaults(builder => builder.WithItem("context", "user"), replace: true)
+				.Build();
+
+			var request = httpClient.CreateRequest("/api")
+				.Build();
+
+			Assert.NotNull(request);
+			Assert.Equal(HttpMethod.Get, request.Method);
+			Assert.Equal("user", request.Items["context"]);
+		}
+
+		[Fact]
 		public void ShouldHaveQueryParamsDefaultsSet()
 		{
 			var httpClient = GetNewClientFactory().CreateBuilder("abc")

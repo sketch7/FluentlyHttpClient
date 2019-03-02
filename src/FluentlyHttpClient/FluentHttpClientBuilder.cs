@@ -98,10 +98,15 @@ namespace FluentlyHttpClient
 		/// In order to specify defaults as desired, or so.
 		/// </summary>
 		/// <param name="requestBuilderDefaults">Action which pass <see cref="FluentHttpRequestBuilder"/> for customization.</param>
+		/// <param name="replace">Determine whether invoking this again will replace previous defaults or be combined (defaults to combine).</param>
 		/// <returns>Returns client builder for chaining.</returns>
-		public FluentHttpClientBuilder WithRequestBuilderDefaults(Action<FluentHttpRequestBuilder> requestBuilderDefaults)
+		public FluentHttpClientBuilder WithRequestBuilderDefaults(Action<FluentHttpRequestBuilder> requestBuilderDefaults, bool replace = false)
 		{
-			_requestBuilderDefaults = requestBuilderDefaults;
+			if (replace)
+				_requestBuilderDefaults = requestBuilderDefaults;
+			else
+				_requestBuilderDefaults += requestBuilderDefaults;
+
 			return this;
 		}
 
