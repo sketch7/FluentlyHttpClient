@@ -143,6 +143,20 @@ fluentHttpClientFactory.CreateBuilder("platform")
     .Register();
 ```
 
+#### Create Http Client from Client
+Its also possible to create a new http client from an http client, sort of sub-client which inherits options from its creator.
+This might be good to pass defaults for a specific endpoint.
+
+```cs
+var httpClient = factory.Get("platform");
+var paymentsClient = httpClient.CreateClient("payments")
+  .WithHeader("X-Gateway", "xxx")
+  .WithTimeout(30)
+  .Build();
+```
+
+
+
 #### Configure defaults for Http Clients
 Its also possible to configure builder defaults for all http clients via `ConfigureDefaults` within `IFluentHttpClientFactory`.
 See example below.
@@ -437,13 +451,12 @@ public async void ShouldReturnContent()
     mockHttp.When("https://sketch7.com/api/heroes/azmodan")
       .Respond("application/json", "{ 'name': 'Azmodan' }");
 
-    fluentHttpClientFactory.CreateBuilder("platform")
+    var httpClient = fluentHttpClientFactory.CreateBuilder("platform")
       .WithBaseUrl("https://sketch7.com")
       .AddMiddleware<TimerHttpMiddleware>()
       .WithMessageHandler(mockHttp) // set message handler to mock
-      .Register();
+      .Build();
 
-    var httpClient = fluentHttpClientFactory.Get("platform");
     var response = await httpClient.CreateRequest("/api/heroes/azmodan")
       .ReturnAsResponse<Hero>();
 
