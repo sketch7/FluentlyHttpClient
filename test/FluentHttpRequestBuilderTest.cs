@@ -271,12 +271,12 @@ namespace Test
 			mockHttp.When("https://sketch7.com/api/heroes/azmodan")
 				.Respond("application/json", mockResponse);
 
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var httpClient = GetNewClientFactory()
+				.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.WithMessageHandler(mockHttp);
-
-			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
+				.WithMessageHandler(mockHttp)
+				.Build();
+			
 			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
 				.ReturnAsString();
 
@@ -295,13 +295,12 @@ namespace Test
 				.WithContent("{\"title\":\"Lord of Sin\"}")
 				.Respond("application/json", "{ 'name': 'Azmodan', 'title': 'Lord of Sin' }");
 
-			var fluentHttpClientFactory = GetNewClientFactory();
-			fluentHttpClientFactory.CreateBuilder("sketch7")
+			var httpClient = GetNewClientFactory()
+				.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.WithMessageHandler(mockHttp)
-				.Register();
+				.Build();
 
-			var httpClient = fluentHttpClientFactory.Get("sketch7");
 			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
 				.AsPost()
 				.WithBody(new

@@ -61,6 +61,13 @@ namespace FluentlyHttpClient
 		FluentHttpRequestBuilder CreateRequest(string uriTemplate = null, object interpolationData = null);
 
 		/// <summary>
+		/// Creates a new client and inherit options from the current.
+		/// </summary>
+		/// <param name="identifier">New identifier name</param>
+		/// <returns>Returns a new client builder instance.</returns>
+		FluentHttpClientBuilder CreateClient(string identifier);
+
+		/// <summary>
 		/// Build and send HTTP request.
 		/// </summary>
 		/// <param name="builder">Request builder to build request from.</param>
@@ -102,6 +109,8 @@ namespace FluentlyHttpClient
 		public HttpRequestHeaders Headers { get; }
 
 		private readonly Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
+		private readonly FluentHttpClientOptions _options;
+		private readonly IFluentHttpClientFactory _clientFactory;
 		private readonly IServiceProvider _serviceProvider;
 		private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
 		private readonly IHttpClientFactory _httpClientFactory;
@@ -111,16 +120,20 @@ namespace FluentlyHttpClient
 		/// Initializes an instance of <see cref="FluentHttpClient"/>.
 		/// </summary>
 		/// <param name="options"></param>
+		/// <param name="clientFactory"></param>
 		/// <param name="serviceProvider"></param>
 		/// <param name="middlewareRunner"></param>
 		/// <param name="httpClientFactory"></param>
 		public FluentHttpClient(
 			FluentHttpClientOptions options,
+			IFluentHttpClientFactory clientFactory,
 			IServiceProvider serviceProvider,
 			IFluentHttpMiddlewareRunner middlewareRunner,
 			IHttpClientFactory httpClientFactory
 		)
 		{
+			_options = options;
+			_clientFactory = clientFactory;
 			_serviceProvider = serviceProvider;
 			_middlewareRunner = middlewareRunner;
 			_httpClientFactory = httpClientFactory;
@@ -142,7 +155,7 @@ namespace FluentlyHttpClient
 			if (!Formatters.Any())
 				throw new InvalidOperationException("No media type formatters available.");
 
-			MediaTypeFormatter formatter = contentType != null
+			var formatter = contentType != null
 				? Formatters.FirstOrDefault(x => x.SupportedMediaTypes.Any(m => m.MediaType == contentType.MediaType))
 				: DefaultFormatter ?? Formatters.FirstOrDefault();
 			if (formatter == null)
@@ -179,6 +192,13 @@ namespace FluentlyHttpClient
 				response.EnsureSuccessStatusCode();
 
 			return response;
+		}
+
+		/// <inheritdoc />
+		public FluentHttpClientBuilder CreateClient(string identifier)
+		{
+			return _clientFactory.CreateBuilder(identifier)
+				.FromOptions(_options);
 		}
 
 		private HttpClient Configure(FluentHttpClientOptions options)

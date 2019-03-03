@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using FluentlyHttpClient.Middleware;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentlyHttpClient
 {
@@ -15,6 +18,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public string Identifier { get; private set; }
 
+		private readonly IServiceProvider _serviceProvider;
 		private readonly IFluentHttpClientFactory _fluentHttpClientFactory;
 		private string _baseUrl;
 		private TimeSpan _timeout;
@@ -27,8 +31,12 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
-		public FluentHttpClientBuilder(IFluentHttpClientFactory fluentHttpClientFactory)
+		public FluentHttpClientBuilder(
+			IServiceProvider serviceProvider,
+			IFluentHttpClientFactory fluentHttpClientFactory
+		)
 		{
+			_serviceProvider = serviceProvider;
 			_fluentHttpClientFactory = fluentHttpClientFactory;
 		}
 
@@ -92,10 +100,15 @@ namespace FluentlyHttpClient
 		/// In order to specify defaults as desired, or so.
 		/// </summary>
 		/// <param name="requestBuilderDefaults">Action which pass <see cref="FluentHttpRequestBuilder"/> for customization.</param>
+		/// <param name="replace">Determine whether invoking this again will replace previous defaults or be combined (defaults to combine).</param>
 		/// <returns>Returns client builder for chaining.</returns>
-		public FluentHttpClientBuilder WithRequestBuilderDefaults(Action<FluentHttpRequestBuilder> requestBuilderDefaults)
+		public FluentHttpClientBuilder WithRequestBuilderDefaults(Action<FluentHttpRequestBuilder> requestBuilderDefaults, bool replace = false)
 		{
-			_requestBuilderDefaults = requestBuilderDefaults;
+			if (replace)
+				_requestBuilderDefaults = requestBuilderDefaults;
+			else
+				_requestBuilderDefaults += requestBuilderDefaults;
+
 			return this;
 		}
 
@@ -143,7 +156,7 @@ namespace FluentlyHttpClient
 		/// Build up HTTP client options.
 		/// </summary>
 		/// <returns>Returns HTTP client options.</returns>
-		public FluentHttpClientOptions Build()
+		public FluentHttpClientOptions BuildOptions()
 		{
 			_formatterOptions.Resort();
 			var options = new FluentHttpClientOptions
@@ -162,12 +175,80 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Register to <see cref="IFluentHttpClientFactory"/>, same as <see cref="IFluentHttpClientFactory.Add(FluentHttpClientBuilder)"/> for convience.
+		/// Builds a new http client (with default FluentHttpClient implementation).
+		/// </summary>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		public IFluentHttpClient Build(FluentHttpClientOptions options = null)
+			=> Build<FluentHttpClient>(options);
+
+		/// <summary>
+		/// Build a new http client.
+		/// </summary>
+		/// <typeparam name="THttpClient">HttpClient type</typeparam>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		public IFluentHttpClient Build<THttpClient>(FluentHttpClientOptions options = null)
+			where THttpClient : IFluentHttpClient
+		{
+			if (options == null)
+				options = BuildOptions();
+
+			if (string.IsNullOrEmpty(options.Identifier))
+				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.Identifier));
+
+			if (string.IsNullOrEmpty(options.BaseUrl))
+				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.BaseUrl));
+
+			var client = ActivatorUtilities.CreateInstance<THttpClient>(_serviceProvider, options, _fluentHttpClientFactory);
+			return client;
+		}
+
+		/// <summary>
+		/// Register to factory <see cref="IFluentHttpClientFactory"/> and build, same as <see cref="IFluentHttpClientFactory.Add(FluentHttpClientBuilder)"/> for convenience.
 		/// </summary>
 		public FluentHttpClientBuilder Register()
 		{
 			_fluentHttpClientFactory.Add(this);
 			return this;
+		}
+
+		/// <summary>
+		/// Set options from the specified options config.
+		/// </summary>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		public FluentHttpClientBuilder FromOptions(FluentHttpClientOptions options)
+		{
+			_timeout = options.Timeout;
+			_baseUrl = options.BaseUrl;
+			Identifier = options.Identifier;
+			WithHeaders(options.Headers);
+			_middleware.AddRange(options.Middleware);
+			_requestBuilderDefaults = options.RequestBuilderDefaults;
+			_httpMessageHandler = options.HttpMessageHandler;
+			var formatters = _formatterOptions.Formatters.Union(options.Formatters, MediaTypeFormatterComparer.Instance).ToList();
+			_formatterOptions.Formatters.Clear();
+			_formatterOptions.Formatters.AddRange(formatters);
+			_formatterOptions.Default = options.DefaultFormatter;
+
+			return this;
+		}
+	}
+
+
+	internal class MediaTypeFormatterComparer : IEqualityComparer<MediaTypeFormatter>
+	{
+		public static MediaTypeFormatterComparer Instance = new MediaTypeFormatterComparer();
+
+		public bool Equals(MediaTypeFormatter x, MediaTypeFormatter y)
+		{
+			return x.GetType() == y.GetType();
+		}
+
+		public int GetHashCode(MediaTypeFormatter obj)
+		{
+			return obj.GetType().GetHashCode();
 		}
 	}
 }

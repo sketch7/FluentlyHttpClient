@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentlyHttpClient
 {
@@ -15,7 +15,7 @@ namespace FluentlyHttpClient
 		/// <param name="identifier">identifier to set.</param>
 		/// <returns>Returns a new HTTP client builder.</returns>
 		FluentHttpClientBuilder CreateBuilder(string identifier);
-		
+
 		/// <summary>
 		/// Configure defaults for <see cref="FluentHttpClientBuilder"/> which every new one uses.
 		/// </summary>
@@ -32,11 +32,11 @@ namespace FluentlyHttpClient
 		IFluentHttpClient Get(string identifier);
 
 		/// <summary>
-		/// Add/register HTTP Client from options.
+		/// Add/register HTTP Client.
 		/// </summary>
-		/// <param name="options">options to register.</param>
-		/// <returns>Returns HTTP client created.</returns>
-		IFluentHttpClient Add(FluentHttpClientOptions options);
+		/// <param name="client">Client to register.</param>
+		/// <returns>Returns HTTP client.</returns>
+		IFluentHttpClient Add(IFluentHttpClient client);
 
 		/// <summary>
 		/// Add/register HTTP Client from builder.
@@ -44,6 +44,13 @@ namespace FluentlyHttpClient
 		/// <param name="clientBuilder">Client builder to register.</param>
 		/// <returns>Returns HTTP client created.</returns>
 		IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder);
+
+		/// <summary>
+		/// Add/register HTTP Client from options.
+		/// </summary>
+		/// <param name="options">options to register.</param>
+		/// <returns>Returns HTTP client created.</returns>
+		IFluentHttpClient Add(FluentHttpClientOptions options);
 
 		/// <summary>
 		/// Remove/unregister HTTP Client.
@@ -107,22 +114,13 @@ namespace FluentlyHttpClient
 		}
 
 		/// <inheritdoc />
-		public IFluentHttpClient Add(FluentHttpClientOptions options)
+		public IFluentHttpClient Add(IFluentHttpClient client)
 		{
-			if (options == null) throw new ArgumentNullException(nameof(options));
+			if (client == null) throw new ArgumentNullException(nameof(client));
 
-			if (string.IsNullOrEmpty(options.Identifier))
-				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.Identifier));
-
-			if (Has(options.Identifier))
-				throw new ClientBuilderValidationException($"FluentHttpClient '{options.Identifier}' is already registered.");
-			
-			if (string.IsNullOrEmpty(options.BaseUrl))
-				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.BaseUrl));
-
-			// todo: find a way how to use DI with additional param (or so) to factory for abstraction.
-			var client = (IFluentHttpClient)ActivatorUtilities.CreateInstance<FluentHttpClient>(_serviceProvider, options);
-			_clientsMap.Add(options.Identifier, client);
+			if (Has(client.Identifier))
+				throw new ClientBuilderValidationException($"FluentHttpClient '{client.Identifier}' is already registered.");
+			_clientsMap.Add(client.Identifier, client);
 			return client;
 		}
 
@@ -130,8 +128,19 @@ namespace FluentlyHttpClient
 		public IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder)
 		{
 			if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
-			var options = clientBuilder.Build();
-			return Add(options);
+
+			var client = clientBuilder.Build();
+			return Add(client);
+		}
+
+		/// <inheritdoc />
+		public IFluentHttpClient Add(FluentHttpClientOptions options) // todo: remove this from interface and make as extension method
+		{
+			if (options == null) throw new ArgumentNullException(nameof(options));
+
+			var builder = CreateBuilder(options.Identifier)
+				.FromOptions(options);
+			return Add(builder);
 		}
 
 		/// <inheritdoc />
