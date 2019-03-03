@@ -3,7 +3,7 @@
 [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.1...2.2.0) (201X-X-X)
 
 
-## [2.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.2...2.2.0) (2019-03-02)
+## [2.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.2...2.2.0) (2019-03-03)
 
 - **http client:** now able to create a new http client from an existing one and inheriting options with `CreateClient`
 - **http client builder:** add `FromOptions` which gets configured via `FluentHttpClientOptions`
