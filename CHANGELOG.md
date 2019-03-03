@@ -10,8 +10,7 @@
 - **http client builder:** rename `Build` to `BuildOptions` and `Build` now returns the http client
 - **http client builder:** `WithRequestBuilderDefaults` now will combine previous defaults instead of replacing them.
 If you want to replace the previous defaults (as it was working), use `WithRequestBuilderDefaults(..., replace: true)`.
-This behavior is changed because its more expected that they are combined, especially when creating a sub client and adding/changing request defaults
-something would have lost the original (parent) defaults.
+This behavior is changed because its more expected that they are combined, especially when creating a sub-client and adding/changing request defaults would loose the previous defaults from the creator (parent).
 - **http client factory:** add overload `Add(IFluentHttpClient)`
 
 ### BREAKING CHANGES
