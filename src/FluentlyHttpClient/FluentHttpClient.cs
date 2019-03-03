@@ -64,7 +64,7 @@ namespace FluentlyHttpClient
 		/// Creates a new client and inherit options from the current.
 		/// </summary>
 		/// <param name="identifier">New identifier name</param>
-		/// <returns>Returns a new client instance.</returns>
+		/// <returns>Returns a new client builder instance.</returns>
 		FluentHttpClientBuilder CreateClient(string identifier);
 
 		/// <summary>
