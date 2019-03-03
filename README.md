@@ -155,8 +155,6 @@ var paymentsClient = httpClient.CreateClient("payments")
   .Build();
 ```
 
-
-
 #### Configure defaults for Http Clients
 Its also possible to configure builder defaults for all http clients via `ConfigureDefaults` within `IFluentHttpClientFactory`.
 See example below.
