@@ -41,7 +41,7 @@ namespace Test
 			var mockHttp = new MockHttpMessageHandler();
 			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes")
 				.Respond("application/json", "");
-			
+
 			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.UseLogging(new LoggerHttpMiddlewareOptions
@@ -50,8 +50,7 @@ namespace Test
 					ShouldLogDetailedResponse = true
 				})
 				.WithMessageHandler(mockHttp)
-				.Build()
-				;
+				.Build();
 
 			var response = await httpClient.CreateRequest("/api/heroes")
 				.AsPost()
@@ -59,7 +58,7 @@ namespace Test
 				{
 					Key = "valeera",
 					Name = "Valeera",
-					Title = "Shadow of the Ucrowned"
+					Title = "Shadow of the Uncrowned"
 				})
 				.ReturnAsResponse();
 
@@ -73,7 +72,7 @@ namespace Test
 			var mockHttp = new MockHttpMessageHandler();
 			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes")
 				.Respond("application/json", "");
-			
+
 			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.UseLogging(x =>
@@ -82,8 +81,7 @@ namespace Test
 					x.ShouldLogDetailedResponse = true;
 				})
 				.WithMessageHandler(mockHttp)
-				.Build()
-				;
+				.Build();
 
 			var response = await httpClient.CreateRequest("/api/heroes")
 				.AsPost()
@@ -91,7 +89,7 @@ namespace Test
 				{
 					Key = "valeera",
 					Name = "Valeera",
-					Title = "Shadow of the Ucrowned"
+					Title = "Shadow of the Uncrowned"
 				})
 				.ReturnAsResponse();
 
@@ -102,18 +100,16 @@ namespace Test
 		[Fact]
 		public void DefaultLoggingOptions_ShouldBeMerged()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
 			var loggerHttpMiddlewareOptions = new LoggerHttpMiddlewareOptions
 			{
 				ShouldLogDetailedRequest = true,
 				ShouldLogDetailedResponse = true
 			};
-			var httpClient = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.UseLogging(loggerHttpMiddlewareOptions)
-				.Build()
-				;
-			
+				.Build();
+
 			var request = httpClient.CreateRequest("/api/heroes")
 				.AsPost()
 				.Build();
@@ -127,17 +123,15 @@ namespace Test
 		[Fact]
 		public void RequestSpecificOptions_ShouldOverride()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
 			var loggerHttpMiddlewareOptions = new LoggerHttpMiddlewareOptions
 			{
 				ShouldLogDetailedRequest = false,
 				ShouldLogDetailedResponse = false
 			};
-			var httpClient = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.UseLogging(loggerHttpMiddlewareOptions)
-				.Build()
-				;
+				.Build();
 
 			var request = httpClient.CreateRequest("/api/heroes")
 				.AsPost()
@@ -157,17 +151,15 @@ namespace Test
 		[Fact]
 		public void RequestSpecificOptions_ActionBased()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
 			var loggerHttpMiddlewareOptions = new LoggerHttpMiddlewareOptions
 			{
 				ShouldLogDetailedRequest = false,
 				ShouldLogDetailedResponse = false
 			};
-			var httpClient = fluentHttpClientFactory.CreateBuilder("sketch7")
+			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.UseLogging(loggerHttpMiddlewareOptions)
-				.Build()
-				;
+				.Build();
 
 			var request = httpClient.CreateRequest("/api/heroes")
 				.AsPost()

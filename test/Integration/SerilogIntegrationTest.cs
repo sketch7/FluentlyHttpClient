@@ -40,8 +40,7 @@ namespace FluentlyHttpClient.Test.Integration
 					ShouldLogDetailedRequest = false
 				})
 				.WithMessageHandler(mockHttp)
-				.Build()
-				;
+				.Build();
 
 			var hero = await httpClient.CreateRequest("/api/heroes")
 				.AsPost()
