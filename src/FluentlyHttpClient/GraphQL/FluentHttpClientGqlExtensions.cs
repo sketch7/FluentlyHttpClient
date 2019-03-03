@@ -45,7 +45,7 @@ namespace FluentlyHttpClient
 			var response = await builder.ReturnAsResponse<GqlResponse<T>>().ConfigureAwait(false);
 			return new FluentHttpResponse<T>(response)
 			{
-				Data = response.Data != null ? response.Data.Data : default(T)
+				Data = response.Data != null ? response.Data.Data : default
 			};
 		}
 	}

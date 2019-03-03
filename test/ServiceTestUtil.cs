@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentlyHttpClient.Test
 {
@@ -12,22 +13,20 @@ namespace FluentlyHttpClient.Test
 		/// <summary>
 		/// Create a new container and return IFluentHttpClientFactory.
 		/// </summary>
-		/// <returns></returns>
-		public static IFluentHttpClientFactory GetNewClientFactory()
+		public static IFluentHttpClientFactory GetNewClientFactory(Action<IServiceCollection> configureContainer = null)
 		{
-			var serviceProvider = CreateContainer().BuildServiceProvider();
-			var fluentHttpClientFactory = serviceProvider.GetService<IFluentHttpClientFactory>();
-			return fluentHttpClientFactory;
+			var container = CreateContainer();
+			configureContainer?.Invoke(container);
+			var serviceProvider = container.BuildServiceProvider();
+			return serviceProvider.GetService<IFluentHttpClientFactory>();
 		}
 
 		/// <summary>
 		/// Create a new container, configure http client and create new request.
 		/// </summary>
-		/// <returns></returns>
 		public static FluentHttpRequestBuilder GetNewRequestBuilder(string uri = "/api")
 		{
-			var serviceProvider = CreateContainer().BuildServiceProvider();
-			var fluentHttpClientFactory = serviceProvider.GetService<IFluentHttpClientFactory>();
+			var fluentHttpClientFactory = GetNewClientFactory();
 			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com");
 

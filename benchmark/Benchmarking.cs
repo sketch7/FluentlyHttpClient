@@ -39,7 +39,7 @@ namespace FluentlyHttpClient.Benchmarks
 				.Respond("application/json", request => request.Content.ReadAsStreamAsync().Result);
 
 			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/msgpack")
-				//.Respond("application/x-msgpack", "��Key�valeera�Name�Valeera�Title�Shadow of the Ucrowned")
+				//.Respond("application/x-msgpack", "��Key�valeera�Name�Valeera�Title�Shadow of the Uncrowned")
 				.Respond("application/x-msgpack", request => request.Content.ReadAsStreamAsync().Result);
 
 			var fluentHttpClientFactory = BuildContainer()
@@ -80,7 +80,7 @@ namespace FluentlyHttpClient.Benchmarks
 				{
 					Key = "valeera",
 					Name = "Valeera",
-					Title = "Shadow of the Ucrowned"
+					Title = "Shadow of the Uncrowned"
 				})
 				.Return<Hero>();
 		}
@@ -94,7 +94,7 @@ namespace FluentlyHttpClient.Benchmarks
 				{
 					Key = "valeera",
 					Name = "Valeera",
-					Title = "Shadow of the Ucrowned"
+					Title = "Shadow of the Uncrowned"
 				})
 				.Return<Hero>();
 		}

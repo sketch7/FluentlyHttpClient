@@ -12,7 +12,7 @@
     <RepositoryUrl>https://github.com/sketch7/FluentlyHttpClient.git</RepositoryUrl>
     <PackageProjectUrl>https://github.com/sketch7/FluentlyHttpClient</PackageProjectUrl>
     <PackageIconUrl>https://avatars0.githubusercontent.com/u/16617196?v=3&amp;s=200</PackageIconUrl>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

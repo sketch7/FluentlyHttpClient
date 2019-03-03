@@ -5,17 +5,9 @@ using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace FluentlyHttpClient
 {
-	/// <summary>
-	/// Delegate which is mainly used by Middleware.
-	/// </summary>
-	/// <param name="request">HTTP request to send.</param>
-	/// <returns>Returns async response.</returns>
-	public delegate Task<FluentHttpResponse> FluentHttpRequestDelegate(FluentHttpRequest request);
-
 	/// <summary>
 	/// Fluent HTTP request, which wraps the <see cref="HttpRequestMessage"/> and add additional features.
 	/// </summary>
@@ -28,6 +20,11 @@ namespace FluentlyHttpClient
 		/// Gets the underlying HTTP request message.
 		/// </summary>
 		public HttpRequestMessage Message { get; }
+
+		/// <summary>
+		/// Gets the request builder which is responsible for this request message.
+		/// </summary>
+		public FluentHttpRequestBuilder Builder { get; }
 
 		/// <summary>
 		/// Gets or sets the <see cref="HttpMethod"/> for the HTTP request.
@@ -73,9 +70,10 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
-		public FluentHttpRequest(HttpRequestMessage message, IDictionary<object, object> items = null)
+		public FluentHttpRequest(FluentHttpRequestBuilder builder, HttpRequestMessage message, IDictionary<object, object> items = null)
 		{
 			Message = message;
+			Builder = builder;
 			Items = items == null
 				? new Dictionary<object, object>()
 				: new Dictionary<object, object>(items);

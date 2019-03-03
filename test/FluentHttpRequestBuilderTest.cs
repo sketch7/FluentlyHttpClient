@@ -53,7 +53,7 @@ namespace Test
 		}
 
 		[Fact]
-		public void AddWithoutLowerKeys()
+		public void AddWithoutAsModel()
 		{
 			var builder = GetNewRequestBuilder();
 			var request = builder.WithUri("/org/sketch7")
@@ -61,7 +61,7 @@ namespace Test
 				{
 					Page = 1,
 					Filter = "all"
-				}, lowerCaseQueryKeys: false).Build();
+				}, c => c.KeyFormatter = null).Build();
 
 			Assert.Equal("/org/sketch7?Page=1&Filter=all", request.Uri.ToString());
 		}
@@ -137,7 +137,7 @@ namespace Test
 		}
 
 		[Fact]
-		public void CollectionQueryString_CommaSeperated()
+		public void CollectionQueryString_CommaSeparated()
 		{
 			var builder = GetNewRequestBuilder();
 			var request = builder.WithUri("/org/sketch7/heroes")
@@ -276,7 +276,7 @@ namespace Test
 				.WithBaseUrl("https://sketch7.com")
 				.WithMessageHandler(mockHttp)
 				.Build();
-			
+
 			var response = await httpClient.CreateRequest("/api/heroes/azmodan")
 				.ReturnAsString();
 

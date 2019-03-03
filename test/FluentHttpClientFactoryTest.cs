@@ -8,6 +8,7 @@ using FluentlyHttpClient.Test;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
+// ReSharper disable once CheckNamespace
 namespace Test
 {
 	public class ClientFactory_WithRequestBuilderDefaults
@@ -216,5 +217,4 @@ namespace Test
 			Assert.False(isRegistered);
 		}
 	}
-
 }

@@ -1,8 +1,8 @@
-﻿using FluentlyHttpClient.Middleware;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using FluentlyHttpClient.Middleware;
+using Microsoft.Extensions.Logging;
 
 namespace FluentlyHttpClient.Middleware
 {
@@ -23,37 +23,42 @@ namespace FluentlyHttpClient.Middleware
 	public class TimerHttpMiddleware : IFluentHttpMiddleware
 	{
 		private const string TimeTakenMessage = "Executed request {request} in {timeTakenMillis:n0}ms";
-		private readonly FluentHttpRequestDelegate _next;
+		private readonly FluentHttpMiddlewareDelegate _next;
 		private readonly TimerHttpMiddlewareOptions _options;
 		private readonly ILogger _logger;
 
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
-		public TimerHttpMiddleware(FluentHttpRequestDelegate next, TimerHttpMiddlewareOptions options, ILogger<TimerHttpMiddleware> logger)
+		public TimerHttpMiddleware(
+			FluentHttpMiddlewareDelegate next,
+			FluentHttpMiddlewareClientContext context,
+			TimerHttpMiddlewareOptions options,
+			ILoggerFactory loggerFactory
+		)
 		{
 			_next = next;
 			_options = options;
-			_logger = logger;
+			_logger = loggerFactory.CreateLogger($"{typeof(TimerHttpMiddleware).Namespace}.{context.Identifier}.Timer");
 
 			if (_options.WarnThreshold <= TimeSpan.Zero)
 				throw new ArgumentException($"{nameof(_options.WarnThreshold)} must be greater than Zero.");
 		}
 
 		/// <inheritdoc />
-		public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
+		public async Task<FluentHttpResponse> Invoke(FluentHttpMiddlewareContext context)
 		{
+			var request = context.Request;
 			var watch = Stopwatch.StartNew();
 
 			FluentHttpResponse response;
 			try
 			{
-				response = await _next(request);
+				response = await _next(context);
 			}
 			finally
 			{
-				var threshold = request.GetTimerWarnThreshold()
-					.GetValueOrDefault(_options.WarnThreshold);
+				var threshold = request.GetTimerWarnThreshold() ?? _options.WarnThreshold;
 
 				if (_logger.IsEnabled(LogLevel.Warning) && watch.Elapsed > threshold)
 					_logger.LogWarning(TimeTakenMessage, request, watch.ElapsedMilliseconds);
@@ -71,7 +76,7 @@ namespace FluentlyHttpClient
 	/// <summary>
 	/// Timer HTTP middleware extensions.
 	/// </summary>
-	public static class TimerHttpMiddlwareExtensions
+	public static class TimerHttpMiddlewareExtensions
 	{
 		private const string TimeTakenKey = "TIMER_TIME_TAKEN";
 		private const string WarnThresholdOptionKey = "TIMER_OPTION_WARN_THRESHOLD";

@@ -90,9 +90,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public HttpResponseHeaders Headers => Message.Headers;
 
-		/// <summary>
-		/// Gets or sets a key/value collection that can be used to share data within the scope of request/response or middleware.
-		/// </summary>
+		/// <inheritdoc />
 		public IDictionary<object, object> Items { get; protected set; }
 
 		/// <summary>

@@ -1,6 +1,33 @@
 # Fluently Http Changelog
 
-[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.1...2.2.0) (201X-X-X)
+[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.1.0) (201X-X-X)
+
+
+## [3.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.2.0...3.0.0) (2019-03-X)
+
+Middleware has been reworked, its now much more efficient as it creates instances per middleware per client, instead of every request.
+
+### Features
+- **middleware:** middleware has been reworked, and now are much more efficient
+- **util:** add several extensions when working with headers
+- **http request:** now exposes the request builder
+- **headers:** add `FluentHttpHeaders` since `HttpHeaders` (and all implementations) cannot create instances of, and changed all implementations to use it instead of `Dictionary<string, string>`.
+
+### BREAKING CHANGES
+- **middleware:** `FluentHttpRequestDelegate` has been removed in favor of `FluentHttpMiddlewareDelegate`
+- **middleware:** `IFluentHttpMiddlewareRunner` and `FluentHttpMiddlewareRunner` has been reworked
+- **middleware:** `IFluentHttpMiddleware` changed from `Invoke(FluentHttpRequest)` to `Invoke(FluentHttpMiddlewareContext)`
+- **middleware:** renamed `MiddlewareConfig` to `FluentHttpMiddlewareConfig` for consistency
+- **http client builder:** `FluentHttpClientOptions` middleware changed `List<MiddlewareConfig> Middleware` has been changed to `FluentHttpMiddlewareBuilder MiddlewareBuilder`
+- **http client factory:** removed `Add(FluentHttpClientOptions)` from `IFluentHttpClientFactory` and moved it as an extension method
+- **exceptions:** exceptions has been moved correctly to `FluentlyHttpClient` namespace
+- **util:** querystrings now defaults to camel casing instead of lower casing
+- **request builder:** `FluentHttpRequestBuilder.WithQueryParams(object, bool)` has been removed
+- **request builder:** change headers from `Dictionary<string, string>` to `FluentHttpHeaders`
+- **http client builder:** change options headers from `Dictionary<string, string>` to `FluentHttpHeaders`
+
+See [these changes](https://github.com/sketch7/FluentlyHttpClient/pull/25/files#diff-efc205ab9587ec42db3de44d14c0ce86) 
+in order to help you update an existing middleware to the new version (fear not, changes are minimal :)).
 
 
 ## [2.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.2...2.2.0) (2019-03-03)

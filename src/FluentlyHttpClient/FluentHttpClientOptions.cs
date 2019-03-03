@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -31,12 +30,12 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets or sets the headers which should be sent with each request.
 		/// </summary>
-		public Dictionary<string, string> Headers { get; set; }
+		public FluentHttpHeaders Headers { get; set; }
 
 		/// <summary>
-		/// Gets or sets the middleware to be used for each request.
+		/// Gets or sets the middleware builder.
 		/// </summary>
-		public List<MiddlewareConfig> Middleware { get; set; }
+		public FluentHttpMiddlewareBuilder MiddlewareBuilder { get; set; }
 
 		/// <summary>
 		/// Gets or sets handler to customize request on creation. In order to specify defaults as desired, or so.
