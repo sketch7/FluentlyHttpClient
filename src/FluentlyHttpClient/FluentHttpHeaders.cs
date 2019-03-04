@@ -62,7 +62,7 @@ namespace FluentlyHttpClient
 		public FluentHttpHeaders AddRange(IDictionary<string, string> headers)
 		{
 			foreach (var header in headers)
-				Add(header.Key, new[] { header.Value });
+				Add(header.Key, header.Value);
 			return this;
 		}
 
@@ -116,7 +116,7 @@ namespace FluentlyHttpClient
 		public FluentHttpHeaders SetRange(IDictionary<string, string> headers)
 		{
 			foreach (var header in headers)
-				this[header.Key] = new[] { header.Value };
+				this[header.Key] = header.Value;
 			return this;
 		}
 
