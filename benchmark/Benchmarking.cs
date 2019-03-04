@@ -14,6 +14,7 @@ namespace FluentlyHttpClient.Benchmarks
 {
 	[ClrJob(baseline: true), CoreJob, MonoJob]
 	[RPlotExporter, RankColumn]
+	[MemoryDiagnoser]
 	public class Benchmarking
 	{
 		private IFluentHttpClient _jsonHttpClient;
