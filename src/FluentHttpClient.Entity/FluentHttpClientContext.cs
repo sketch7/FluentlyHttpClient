@@ -12,12 +12,20 @@ namespace FluentHttpClient.Entity
 		{ }
 
 		public DbSet<HttpRequest> HttpRequests { get; set; }
+		public DbSet<HttpResponse> HttpResponses { get; set; }
 
 		//protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		//{
-			//  dotnet ef migrations add InitialCreate --startup-project ../../test/FluentlyHttpClient.Test.csproj -c FluentHttpClientContext
+		//	//dotnet ef migrations add InitialCreate --startup - project../../test/FluentlyHttpClient.Test.csproj -c FluentHttpClientContext
 
-		//	optionsBuilder.UseSqlServer(@"Server=(LocalDb)\MSSQLLocalDB;Database=FluentHttpClient;Integrated Security=True;");
+		//  // dotnet ef migrations add InitialCreate --project src/FluentHttpClient.Entity/FluentHttpClient.Entity.csproj --startup-project src/ConsoleApp2/ConsoleApp2.csproj -c FluentHttpClientContext
+		//  // dotnet ef migrations add InitialCreate --project src/FluentHttpClient.Entity/FluentHttpClient.Entity.csproj --startup-project test/FluentlyHttpClient.Test.csproj -c FluentHttpClientContext
+		//	// dotnet ef migrations add InitialCreate --project ../src/FluentHttpClient.Entity/FluentHttpClient.Entity.csproj --startup-project ../test/FluentlyHttpClient.Test.csproj -c FluentHttpClientContext
+		//	var connString = @"Data Source=.\SQLEXPRESS;Database=FluentHttpClient;Integrated Security=True";
+
+		//	optionsBuilder.UseSqlServer(connString);
+		//	//optionsBuilder.UseSqlServer(connString, x => x.MigrationsAssembly("FluentHttpClient.Entity"));
+		//	//optionsBuilder.UseSqlServer(@"Server=(LocalDb)\MSSQLLocalDB;Database=FluentHttpClient;Integrated Security=True;");
 		//}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -35,9 +43,18 @@ namespace FluentHttpClient.Entity
 			modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 		}
 
-		public Task Initialize()
+		public Task InitializeAsync()
 		{
-			return Database.MigrateAsync();
+			//await Database.MigrateAsync();
+			return Database.EnsureCreatedAsync();
+		}
+
+		public void Initialize()
+		{
+			Database.GenerateCreateScript();
+			Database.Migrate();
+			//Database.
+			//Database.EnsureCreated();
 		}
 
 	}

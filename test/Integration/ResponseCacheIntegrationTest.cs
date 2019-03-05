@@ -71,8 +71,9 @@ namespace FluentlyHttpClient.Test.Integration
 			var container = ServiceTestUtil.CreateContainer();
 			var serviceProvider = container.BuildServiceProvider();
 			var dbContext = serviceProvider.GetService<FluentHttpClientContext>();
-			//dbContext.Initialize();
-			dbContext.Database.Migrate();
+			dbContext.Initialize();
+			//dbContext.Database.Migrate();
+			//dbContext.EnsureCreated();
 
 			//dbContext.Database.
 

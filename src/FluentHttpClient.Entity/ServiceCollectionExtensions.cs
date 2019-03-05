@@ -15,6 +15,7 @@ namespace FluentHttpClient.Entity
 			if (connectionString != string.Empty)
 				connString = connectionString;
 
+			//return services.AddDbContext<FluentHttpClientContext>();
 			return services.AddDbContext<FluentHttpClientContext>(options => options.UseSqlServer(connString));
 		}
 	}
