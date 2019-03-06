@@ -25,8 +25,7 @@ namespace FluentHttpClient.Entity.Migrations
                         .HasMaxLength(70);
 
                     b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(70);
+                        .IsRequired();
 
                     b.Property<string>("ContentHeaders")
                         .IsRequired()

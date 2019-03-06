@@ -18,7 +18,7 @@ namespace FluentHttpClient.Entity
 			builder.Property(x => x.Name).IsRequired().HasMaxLength(Constants.NormalTextLength);
 			builder.Property(x => x.Hash).IsRequired().HasMaxLength(Constants.NormalTextLength);
 			builder.Property(x => x.Url).IsRequired().HasMaxLength(Constants.DefaultDomainLength);
-			builder.Property(x => x.Content).IsRequired().HasMaxLength(Constants.NormalTextLength);
+			builder.Property(x => x.Content).IsRequired();
 			builder.Property(x => x.StatusCode).IsRequired();
 			builder.Property(x => x.ReasonPhrase).IsRequired().HasMaxLength(Constants.NormalTextLength);
 			builder.Property(x => x.Version).IsRequired().HasMaxLength(Constants.ShortTextLength);

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FluentHttpClient.Entity.Migrations
 {
     [DbContext(typeof(FluentHttpClientContext))]
-    [Migration("20190306190736_Initial")]
+    [Migration("20190306192308_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,8 +27,7 @@ namespace FluentHttpClient.Entity.Migrations
                         .HasMaxLength(70);
 
                     b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(70);
+                        .IsRequired();
 
                     b.Property<string>("ContentHeaders")
                         .IsRequired()

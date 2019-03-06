@@ -17,7 +17,7 @@ namespace FluentHttpClient.Entity.Migrations
                     Hash = table.Column<string>(maxLength: 70, nullable: false),
                     Name = table.Column<string>(maxLength: 70, nullable: false),
                     Url = table.Column<string>(maxLength: 255, nullable: false),
-                    Content = table.Column<string>(maxLength: 70, nullable: false),
+                    Content = table.Column<string>(nullable: false),
                     Headers = table.Column<string>(maxLength: 1000, nullable: false),
                     StatusCode = table.Column<int>(nullable: false),
                     ReasonPhrase = table.Column<string>(maxLength: 70, nullable: false),
