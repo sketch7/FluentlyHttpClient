@@ -1,22 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using FluentHttpClient.Entity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace FluentHttpClient.Entity
+namespace Microsoft.Extensions.DependencyInjection
 {
 	public static class ServiceCollectionExtensions
 	{
-		public static IServiceCollection AddFluentHttpClientEntity(this IServiceCollection services, string connectionString = "")
+		public static IServiceCollection AddFluentlyHttpClientEntity(this IServiceCollection services, string connectionString)
 		{
-			//var connection = @"Server=(LocalDb)\MSSQLLocalDB;Database=FluentHttpClient;Integrated Security=True;";
-			//var connection = @"Server=(LocalDb)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\FluentHttpClient.mdf;Initial Catalog=FluentHttpClient;Integrated Security=SSPI;";
-			//var connection = @"Server=(LocalDb)\MSSQLLocalDB;Initial Catalog=FluentHttpClient;AttachDbFileName=c:\FluentHttpClient.mdf;Integrated Security=True;MultipleActiveResultSets=True";
-			var connString = @"Data Source=.\SQLEXPRESS;Database=FluentHttpClient;Integrated Security=True";
+			if (string.IsNullOrWhiteSpace(connectionString))
+				throw new ArgumentNullException(nameof(connectionString));
 
-			if (connectionString != string.Empty)
-				connString = connectionString;
+			//connectionString = @"Data Source=.\SQLEXPRESS;Database=FluentHttpClient;Integrated Security=True";
 
-			//return services.AddDbContext<FluentHttpClientContext>();
-			return services.AddDbContext<FluentHttpClientContext>(options => options.UseSqlServer(connString));
+			services.TryAddTransient<IRemoteResponseCacheService, RemoteResponseCacheService>();
+			services.AddDbContext<FluentHttpClientContext>(options => options.UseSqlServer(connectionString));
+
+			return services;
 		}
 	}
 }

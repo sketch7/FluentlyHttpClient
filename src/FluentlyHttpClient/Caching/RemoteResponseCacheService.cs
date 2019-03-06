@@ -22,7 +22,14 @@ namespace FluentlyHttpClient.Caching
 		public HttpRequestMessage RequestMessage { get; set; }
 	}
 
-	public class HttpResponseSerializer
+
+	public interface IHttpResponseSerializer
+	{
+		Task<MessageItemStore> Serialize(FluentHttpResponse response);
+		Task<FluentHttpResponse> Deserialize(MessageItemStore item);
+	}
+
+	public class HttpResponseSerializer : IHttpResponseSerializer
 	{
 		/// <summary>
 		/// Convert to a serializable object.
@@ -79,25 +86,6 @@ namespace FluentlyHttpClient.Caching
 			//cloned.Headers.AddRange(headersMap);
 
 			return Task.FromResult(cloned);
-		}
-
-	}
-
-
-	public class RemoteResponseCacheService : IResponseCacheService
-	{
-		private readonly Dictionary<string, FluentHttpResponse> _cache = new Dictionary<string, FluentHttpResponse>();
-
-		public Task<FluentHttpResponse> Get(string hash, FluentHttpRequest request)
-		{
-			// todo: get from db
-			throw new NotImplementedException();
-		}
-
-		public async Task Set(string hash, FluentHttpResponse response)
-		{
-			// todo: insert in DB
-			throw new NotImplementedException();
 		}
 
 	}
