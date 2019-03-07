@@ -18,7 +18,7 @@ Middleware has been reworked, its now much more efficient as it creates instance
 - **middleware:** `IFluentHttpMiddlewareRunner` and `FluentHttpMiddlewareRunner` has been reworked
 - **middleware:** `IFluentHttpMiddleware` changed from `Invoke(FluentHttpRequest)` to `Invoke(FluentHttpMiddlewareContext)`
 - **middleware:** renamed `MiddlewareConfig` to `FluentHttpMiddlewareConfig` for consistency
-- **http client builder:** `FluentHttpClientOptions` middleware changed `List<MiddlewareConfig> Middleware` has been changed to `FluentHttpMiddlewareBuilder MiddlewareBuilder`
+- **http client builder:** `FluentHttpClientOptions` changed `List<MiddlewareConfig> Middleware` to `FluentHttpMiddlewareBuilder MiddlewareBuilder`
 - **http client factory:** removed `Add(FluentHttpClientOptions)` from `IFluentHttpClientFactory` and moved it as an extension method
 - **exceptions:** exceptions has been moved correctly to `FluentlyHttpClient` namespace
 - **util:** querystrings now defaults to camel casing instead of lower casing
