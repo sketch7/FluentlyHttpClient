@@ -16,6 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.AddSingleton<IResponseCacheService, RemoteResponseCacheService>();
 			services.AddDbContext<FluentHttpClientContext>(options => options.UseSqlServer(connectionString));
+			services.AddMemoryCache();
 
 			return services;
 		}

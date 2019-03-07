@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace FluentlyHttpClient.Caching
 {
@@ -11,22 +11,23 @@ namespace FluentlyHttpClient.Caching
 
 	public class MemoryResponseCacheService : IResponseCacheService
 	{
-		private readonly Dictionary<string, FluentHttpResponse> _cache = new Dictionary<string, FluentHttpResponse>();
+		private readonly IMemoryCache _cache;
 
-		public async Task<FluentHttpResponse> Get(string hash)
+		public MemoryResponseCacheService(IMemoryCache cache)
 		{
-			_cache.TryGetValue(hash, out var response);
-			if (response == null)
-				return null;
-
-			var cloned = await response.Clone();
-			return cloned;
+			_cache = cache;
 		}
 
-		public async Task Set(string hash, FluentHttpResponse response)
+		public Task<FluentHttpResponse> Get(string hash)
 		{
-			var cloned = await response.Clone();
-			_cache[hash] = cloned;
+			var result = _cache.Get<FluentHttpResponse>(hash);
+			return result?.Clone() ?? Task.FromResult<FluentHttpResponse>(null);
+		}
+
+		public Task Set(string hash, FluentHttpResponse response)
+		{
+			_cache.Set(hash, response);
+			return Task.CompletedTask;
 		}
 
 	}
