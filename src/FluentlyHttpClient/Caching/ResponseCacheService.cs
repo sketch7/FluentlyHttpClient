@@ -5,7 +5,7 @@ namespace FluentlyHttpClient.Caching
 {
 	public interface IResponseCacheService
 	{
-		Task<FluentHttpResponse> Get(string hash, FluentHttpRequest request);
+		Task<FluentHttpResponse> Get(string hash);
 		Task Set(string hash, FluentHttpResponse response);
 	}
 
@@ -13,7 +13,7 @@ namespace FluentlyHttpClient.Caching
 	{
 		private readonly Dictionary<string, FluentHttpResponse> _cache = new Dictionary<string, FluentHttpResponse>();
 
-		public async Task<FluentHttpResponse> Get(string hash, FluentHttpRequest request)
+		public async Task<FluentHttpResponse> Get(string hash)
 		{
 			_cache.TryGetValue(hash, out var response);
 			if (response == null)

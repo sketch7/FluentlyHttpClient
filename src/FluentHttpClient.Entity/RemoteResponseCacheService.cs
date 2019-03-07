@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FluentHttpClient.Entity
 {
-	public class RemoteResponseCacheService : IRemoteResponseCacheService
+	public class RemoteResponseCacheService : IResponseCacheService
 	{
 		private readonly FluentHttpClientContext _client;
 		private readonly IHttpResponseSerializer _serializer;
@@ -19,6 +19,9 @@ namespace FluentHttpClient.Entity
 		public async Task<FluentHttpResponse> Get(string hash)
 		{
 			var item = await _client.HttpResponses.FirstOrDefaultAsync(x => x.Hash == hash);
+
+			if (item == null) return null;
+
 			var result = await _serializer.Deserialize(item);
 			return result;
 		}
@@ -29,11 +32,5 @@ namespace FluentHttpClient.Entity
 			await _client.HttpResponses.AddAsync(item);
 			await _client.Commit();
 		}
-	}
-
-	public interface IRemoteResponseCacheService
-	{
-		Task<FluentHttpResponse> Get(string hash);
-		Task Set(string hash, FluentHttpResponse response);
 	}
 }

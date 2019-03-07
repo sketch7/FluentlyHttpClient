@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\src\FluentHttpClient.Entity\FluentHttpClient.Entity.csproj" />
     <ProjectReference Include="..\src\FluentlyHttpClient\FluentlyHttpClient.csproj" />
   </ItemGroup>
 

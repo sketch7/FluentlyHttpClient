@@ -14,8 +14,8 @@ namespace FluentHttpClient.Entity.Migrations
                 schema: "cache",
                 columns: table => new
                 {
-                    Hash = table.Column<string>(maxLength: 70, nullable: false),
-                    Name = table.Column<string>(maxLength: 70, nullable: false),
+                    Hash = table.Column<string>(maxLength: 1000, nullable: false),
+                    Name = table.Column<string>(maxLength: 70, nullable: true),
                     Url = table.Column<string>(maxLength: 255, nullable: false),
                     Content = table.Column<string>(nullable: false),
                     Headers = table.Column<string>(maxLength: 1000, nullable: false),

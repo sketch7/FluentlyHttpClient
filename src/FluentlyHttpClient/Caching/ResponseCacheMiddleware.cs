@@ -60,7 +60,7 @@ namespace FluentlyHttpClient.Middleware
 				request.SetRequestHash(hash);
 			}
 			
-			var response = await _service.Get(hash, request);
+			var response = await _service.Get(hash);
 			if (response != null)
 			{
 				_logger.LogInformation("Pre-request - Returning a cached response {hash}", hash);

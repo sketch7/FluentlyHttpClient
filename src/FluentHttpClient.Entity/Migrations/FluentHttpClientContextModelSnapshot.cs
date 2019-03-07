@@ -22,7 +22,7 @@ namespace FluentHttpClient.Entity.Migrations
                 {
                     b.Property<string>("Hash")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(70);
+                        .HasMaxLength(1000);
 
                     b.Property<string>("Content")
                         .IsRequired();
@@ -36,7 +36,6 @@ namespace FluentHttpClient.Entity.Migrations
                         .HasMaxLength(1000);
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(70);
 
                     b.Property<string>("ReasonPhrase")

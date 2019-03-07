@@ -10,12 +10,10 @@ namespace FluentlyHttpClient.Sample.Api.Controllers
 	public class ValuesController : ControllerBase
 	{
 		private readonly FluentHttpClientContext _client;
-		private readonly IRemoteResponseCacheService _service;
 
-		public ValuesController(FluentHttpClientContext client, IRemoteResponseCacheService service)
+		public ValuesController(FluentHttpClientContext client)
 		{
 			_client = client;
-			_service = service;
 		}
 
 		// GET api/values

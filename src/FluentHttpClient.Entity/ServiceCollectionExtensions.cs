@@ -1,7 +1,7 @@
 ﻿using System;
 using FluentHttpClient.Entity;
+using FluentlyHttpClient.Caching;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			//connectionString = @"Data Source=.\SQLEXPRESS;Database=FluentHttpClient;Integrated Security=True";
 
-			services.TryAddTransient<IRemoteResponseCacheService, RemoteResponseCacheService>();
+			services.AddSingleton<IResponseCacheService, RemoteResponseCacheService>();
 			services.AddDbContext<FluentHttpClientContext>(options => options.UseSqlServer(connectionString));
 
 			return services;

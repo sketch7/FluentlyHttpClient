@@ -24,3 +24,8 @@ dotnet ef database update --project src/FluentHttpClient.Entity/FluentHttpClient
 
 ## Features
 - **cache:** save responses to SQL Database
+
+## Consumers
+ - Register `.AddFluentlyHttpClientEntity` in your application DI. This require a connection string for the database.
+ - During bootstrap of the application call `Initialize` method from `FluentHttpClientContext`.
+ - Inject `IRemoteResponseCacheService`.
