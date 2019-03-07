@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FluentHttpClient.Entity.Migrations
 {
     [DbContext(typeof(FluentHttpClientContext))]
-    [Migration("20190306192308_Initial")]
+    [Migration("20190307111739_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,7 +61,7 @@ namespace FluentHttpClient.Entity.Migrations
 
                     b.HasKey("Hash");
 
-                    b.ToTable("HttpResponse","cache");
+                    b.ToTable("HttpResponses","cache");
                 });
 #pragma warning restore 612, 618
         }

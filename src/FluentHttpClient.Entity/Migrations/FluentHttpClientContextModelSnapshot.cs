@@ -59,7 +59,7 @@ namespace FluentHttpClient.Entity.Migrations
 
                     b.HasKey("Hash");
 
-                    b.ToTable("HttpResponse","cache");
+                    b.ToTable("HttpResponses","cache");
                 });
 #pragma warning restore 612, 618
         }

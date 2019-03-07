@@ -7,10 +7,6 @@ namespace FluentHttpClient.Entity
 {
 	public class FluentHttpClientContext : DbContext
 	{
-		// dotnet ef migrations add Initial --project src/FluentHttpClient.Entity/FluentHttpClient.Entity.csproj --startup-project samples/FluentlyHttpClient.Sample.Api/FluentlyHttpClient.Sample.Api.csproj -c FluentHttpClientContext
-
-		// dotnet ef database update --project src/FluentHttpClient.Entity/FluentHttpClient.Entity.csproj --startup-project samples/FluentlyHttpClient.Sample.Api/FluentlyHttpClient.Sample.Api.csproj -c FluentHttpClientContext
-
 		public FluentHttpClientContext(DbContextOptions options)
 			: base(options)
 		{ }
@@ -27,6 +23,11 @@ namespace FluentHttpClient.Entity
 		public Task Initialize()
 		{
 			return Database.MigrateAsync();
+		}
+
+		public Task Commit()
+		{
+			return SaveChangesAsync();
 		}
 	}
 }

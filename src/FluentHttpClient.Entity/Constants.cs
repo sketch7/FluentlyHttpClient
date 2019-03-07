@@ -9,6 +9,6 @@
 
 		public const string SchemaName = "cache";
 
-		public const string HttpResponseTable= "HttpResponse";
+		public const string HttpResponseTable= "HttpResponses";
 	}
 }

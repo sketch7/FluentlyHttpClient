@@ -27,6 +27,7 @@ namespace FluentHttpClient.Entity
 		{
 			var item = await _serializer.Serialize(response);
 			await _client.HttpResponses.AddAsync(item);
+			await _client.Commit();
 		}
 	}
 

@@ -10,7 +10,7 @@ namespace FluentHttpClient.Entity.Migrations
                 name: "cache");
 
             migrationBuilder.CreateTable(
-                name: "HttpResponse",
+                name: "HttpResponses",
                 schema: "cache",
                 columns: table => new
                 {
@@ -27,14 +27,14 @@ namespace FluentHttpClient.Entity.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HttpResponse", x => x.Hash);
+                    table.PrimaryKey("PK_HttpResponses", x => x.Hash);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "HttpResponse",
+                name: "HttpResponses",
                 schema: "cache");
         }
     }
