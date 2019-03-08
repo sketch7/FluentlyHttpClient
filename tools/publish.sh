@@ -4,7 +4,6 @@ err(){
 }
 
 echo -e "\e[36m ---- Publish ---- \e[39m"
-echo KEY=$SKETCH7_NUGET_API_KEY
 if [ "$SKETCH7_NUGET_API_KEY" == "" ]; then
 	err "'SKETCH7_NUGET_API_KEY' environment variable not defined."
 	exit 1
