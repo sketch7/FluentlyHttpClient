@@ -43,7 +43,6 @@ namespace FluentHttpClient.Entity
 			await _client.Commit();
 
 			_cache.Set(hash, response);
-
 		}
 	}
 }
