@@ -39,8 +39,7 @@ jobs:
               exit 1
             fi
 
-            PACKAGE_VERSION=$(node -p "require('./package.json').version")
-            dotnet pack -p:PackageVersion=$PACKAGE_VERSION -p:AssemblyVersion=$PACKAGE_VERSION -o ../../ -c release --include-symbols
+            npm run pack
             dotnet nuget push *.nupkg -k $API_KEY -s https://www.nuget.org/api/v2/package
 
             print_title "git tag"

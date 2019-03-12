@@ -2,7 +2,14 @@
 echo -e "\e[36m ---- Packing ---- \e[39m"
 
 PACKAGE_VERSION=$(node -p "require('./package.json').version")
-VERSION_SUFFIX=dev
-echo version: $PACKAGE_VERSION
+PACKAGE_VERSION_PREFIX=$(node -p "require('./package.json').versionPrefix")
 
-dotnet pack -p:PackageVersion=$PACKAGE_VERSION-$VERSION_SUFFIX -p:AssemblyVersion=$PACKAGE_VERSION -o ../../ -c release --include-symbols
+if [ -z "$PACKAGE_VERSION_PREFIX" ] && ([ -z "$CI" ] || [ "$CI" == false ]); then
+	PACKAGE_VERSION_PREFIX=dev
+fi
+
+UPCOMING_VERSION=$PACKAGE_VERSION-$PACKAGE_VERSION_PREFIX
+
+echo version: $UPCOMING_VERSION
+
+dotnet pack -p:PackageVersion=$UPCOMING_VERSION -p:AssemblyVersion=$PACKAGE_VERSION -o ../../ -c release --include-symbols
