@@ -48,13 +48,13 @@ namespace FluentlyHttpClient.Test.Integration
 				{
 					Key = "valeera",
 					Name = "Valeera",
-					Title = "Shadow of the Ucrowned"
+					Title = "Shadow of the Uncrowned"
 				})
 				.ReturnAsResponse<Hero>();
 			Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 			Assert.Equal("valeera", response.Data.Key);
 			Assert.Equal("Valeera", response.Data.Name);
-			Assert.Equal("Shadow of the Ucrowned", response.Data.Title);
+			Assert.Equal("Shadow of the Uncrowned", response.Data.Title);
 		}
 	}
 }

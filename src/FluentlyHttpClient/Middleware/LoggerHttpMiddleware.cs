@@ -1,7 +1,7 @@
 ﻿using System;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using FluentlyHttpClient.Middleware;
+using Microsoft.Extensions.Logging;
 
 namespace FluentlyHttpClient.Middleware
 {
@@ -28,28 +28,34 @@ namespace FluentlyHttpClient.Middleware
 	/// </summary>
 	public class LoggerHttpMiddleware : IFluentHttpMiddleware
 	{
-		private readonly FluentHttpRequestDelegate _next;
+		private readonly FluentHttpMiddlewareDelegate _next;
 		private readonly LoggerHttpMiddlewareOptions _options;
 		private readonly ILogger _logger;
 
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
-		public LoggerHttpMiddleware(FluentHttpRequestDelegate next, LoggerHttpMiddlewareOptions options, ILogger<LoggerHttpMiddleware> logger)
+		public LoggerHttpMiddleware(
+			FluentHttpMiddlewareDelegate next,
+			FluentHttpMiddlewareClientContext context,
+			LoggerHttpMiddlewareOptions options,
+			ILoggerFactory loggerFactory
+		)
 		{
 			_next = next;
 			_options = options;
-			_logger = logger;
+			_logger = loggerFactory.CreateLogger($"{typeof(LoggerHttpMiddleware).Namespace}.{context.Identifier}.Logger");
 		}
 
 		/// <inheritdoc />
-		public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
+		public async Task<FluentHttpResponse> Invoke(FluentHttpMiddlewareContext context)
 		{
+			var request = context.Request;
 			if (!_logger.IsEnabled(LogLevel.Information))
-				return await _next(request);
+				return await _next(context);
 
 			var options = request.GetLoggingOptions(_options);
-			if (request.Message.Content == null || !options.ShouldLogDetailedRequest.GetValueOrDefault(false))
+			if (request.Message.Content == null || !(options.ShouldLogDetailedRequest ?? false))
 				_logger.LogInformation("Pre-request... {request}", request);
 			else
 			{
@@ -57,9 +63,9 @@ namespace FluentlyHttpClient.Middleware
 				_logger.LogInformation("Pre-request... {request}\nContent: {requestContent}", request, requestContent);
 			}
 
-			var response = await _next(request);
+			var response = await _next(context);
 
-			if (response.Content == null || !options.ShouldLogDetailedResponse.GetValueOrDefault(false))
+			if (response.Content == null || !(options.ShouldLogDetailedResponse ?? false))
 			{
 				_logger.LogInformation("Post-request... {response}", response);
 				return response;
@@ -77,7 +83,7 @@ namespace FluentlyHttpClient
 	/// <summary>
 	/// Logger HTTP middleware extensions.
 	/// </summary>
-	public static class LoggerHttpMiddlwareExtensions
+	public static class LoggerHttpMiddlewareExtensions
 	{
 		private const string LoggingOptionsKey = "LOGGING_OPTIONS";
 

@@ -1,10 +1,10 @@
 {
   "name": "@sketch7/fluently-http-client",
-  "version": "2.2.0",
+  "version": "3.0.0-dev",
   "scripts": {
     "pack": "bash ./tools/pack.sh",
     "prepublish:dev": "npm run pack",
-    "publish:dev": "dotnet nuget push *.nupkg -k $API_KEY -s https://www.nuget.org/api/v2/package",
+    "publish:dev": "bash ./tools/publish.sh",
     "postpublish:dev": "rm -rf *.nupkg",
     "test": "find test/*.csproj | xargs -i dotnet test {} --no-build -c Release"
   }

@@ -52,17 +52,16 @@ namespace Test
 		}
 
 		[Fact]
-		public async void ThrowsWhenWarnThresholdIsZero()
+		public void ThrowsWhenWarnThresholdIsZero()
 		{
-			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
+			var httpClientBuilder = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.UseTimer(x =>
 				{
 					x.WarnThreshold = TimeSpan.Zero;
-				})
-				.Build();
+				});
 
-			await Assert.ThrowsAsync<ArgumentException>(() => httpClient.Get<Hero>("/api/heroes/azmodan"));
+			Assert.Throws<ArgumentException>(() => httpClientBuilder.Build());
 		}
 	}
 }

@@ -1,52 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Web;
 
 // ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient
 {
-	/// <summary>
-	/// Specify the querystring collection to be formatted as.
-	/// </summary>
-	public enum QueryStringCollectionMode
-	{
-		/// <summary>
-		/// Specifies querystring collections are formatted key per value e.g. 'filter=assassin&amp;filter=fighter'.
-		/// </summary>
-		KeyPerValue = 0,
-
-		/// <summary>
-		/// Specifies querystring collections are formatted as comma separated e.g. 'filter=assassin,fighter'.
-		/// </summary>
-		CommaSeparated = 1
-	}
-
-	/// <summary>
-	/// Querystring formatting options.
-	/// </summary>
-	[DebuggerDisplay("{DebuggerDisplay,nq}")]
-	public class QueryStringOptions
-	{
-		protected string DebuggerDisplay => $"CollectionMode: '{CollectionMode}'";
-
-		/// <summary>
-		/// Get or set the query string collection mode to format.
-		/// </summary>
-		public QueryStringCollectionMode CollectionMode { get; set; }
-
-		/// <summary>
-		/// Gets or sets the function to format a collection item. This will allow you to manipulate the value.
-		/// </summary>
-		public Func<object, string> CollectionItemFormatter { get; set; }
-
-		/// <summary>
-		/// Gets or sets the function to format the key e.g. lowercase.
-		/// </summary>
-		public Func<string, string> KeyFormatter { get; set; }
-	}
-
 	/// <summary>
 	/// Extensions for collections.
 	/// </summary>
@@ -155,8 +114,7 @@ namespace FluentlyHttpClient
 
 			if (uri.Length > 0) uri = $"{uri}&";
 
-			uri = $"{uri}{key}={HttpUtility.UrlEncode(value)}";
-			return uri;
+			return $"{uri}{key}={HttpUtility.UrlEncode(value)}";
 		}
 	}
 }

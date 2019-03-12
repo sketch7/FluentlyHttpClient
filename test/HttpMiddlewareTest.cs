@@ -1,7 +1,6 @@
-﻿using FluentlyHttpClient.Middleware;
+﻿using System.Threading.Tasks;
+using FluentlyHttpClient.Middleware;
 using RichardSzalay.MockHttp;
-using System;
-using System.Threading.Tasks;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -9,17 +8,17 @@ namespace FluentlyHttpClient.Test
 {
 	public class TestHttpMiddleware : IFluentHttpMiddleware
 	{
-		private readonly FluentHttpRequestDelegate _next;
+		private readonly FluentHttpMiddlewareDelegate _next;
 
-		public TestHttpMiddleware(FluentHttpRequestDelegate next)
+		public TestHttpMiddleware(FluentHttpMiddlewareDelegate next, FluentHttpMiddlewareClientContext _context)
 		{
 			_next = next;
 		}
 
-		public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
+		public async Task<FluentHttpResponse> Invoke(FluentHttpMiddlewareContext context)
 		{
-			request.Items["request"] = "item";
-			var response = await _next(request);
+			context.Request.Items["request"] = "item";
+			var response = await _next(context);
 			return response;
 		}
 	}

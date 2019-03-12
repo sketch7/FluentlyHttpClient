@@ -3,15 +3,15 @@
 namespace FluentlyHttpClient.Middleware
 {
 	/// <summary>
-	/// Interface for HTTP middleware.
+	/// Interface for fluent HTTP middleware.
 	/// </summary>
 	public interface IFluentHttpMiddleware
 	{
 		/// <summary>
-		/// Function to invoke when it runs.
+		/// Function to invoke when middleware runs.
 		/// </summary>
-		/// <param name="request">Request to send.</param>
+		/// <param name="context">Middleware invoke context.</param>
 		/// <returns>Returns response.</returns>
-		Task<FluentHttpResponse> Invoke(FluentHttpRequest request);
+		Task<FluentHttpResponse> Invoke(FluentHttpMiddlewareContext context);
 	}
 }

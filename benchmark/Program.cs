@@ -3,7 +3,7 @@ using BenchmarkDotNet.Running;
 
 namespace FluentlyHttpClient.Benchmarks
 {
-	class Program
+	static class Program
 	{
 		static void Main(string[] args)
 		{
