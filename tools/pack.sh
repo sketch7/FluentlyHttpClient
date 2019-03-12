@@ -9,9 +9,9 @@ if [ -z "$PACKAGE_VERSION_SUFFIX" ] && [ -z "$CI" ]; then
 fi
 
 if [ -n "$PACKAGE_VERSION_SUFFIX" ]; then
-VERSION=$VERSION-$PACKAGE_VERSION_SUFFIX
+	VERSION=$VERSION-$PACKAGE_VERSION_SUFFIX
 fi
 
 echo -e "\e[36m ---- Packing '$VERSION' ---- \e[39m"
 
-#dotnet pack -p:PackageVersion=$VERSION -p:AssemblyVersion=$PACKAGE_VERSION -o ../../ -c release --include-symbols
+dotnet pack -p:PackageVersion=$VERSION -p:AssemblyVersion=$PACKAGE_VERSION -o ../../ -c release --include-symbols
