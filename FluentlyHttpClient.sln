@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{D84074F3
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		.circleci\config.yml = .circleci\config.yml
+		Directory.Build.props = Directory.Build.props
 		NuGet.Config = NuGet.Config
 		tools\pack.sh = tools\pack.sh
 		package.json = package.json
@@ -33,7 +34,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentlyHttpClient.Benchmar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentHttpClient.Entity", "src\FluentHttpClient.Entity\FluentHttpClient.Entity.csproj", "{3CAD4F18-BF3A-42A1-A777-781EC9456C4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentlyHttpClient.Sample.Api", "samples\FluentlyHttpClient.Sample.Api\FluentlyHttpClient.Sample.Api.csproj", "{679DC1D2-E1A9-47D6-B4CF-8B35820D99E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentlyHttpClient.Sample.Api", "samples\FluentlyHttpClient.Sample.Api\FluentlyHttpClient.Sample.Api.csproj", "{679DC1D2-E1A9-47D6-B4CF-8B35820D99E3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{EF87A44F-A75B-4C2F-86CD-402EBB8D0F3F}"
 EndProject
