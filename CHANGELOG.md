@@ -9,16 +9,18 @@ Middleware has been reworked, its now much more efficient as it creates instance
 
 ### Features
 - **middleware:** middleware has been reworked, and now are much more efficient
-- **util:** add several extensions when working with headers
-- **http request:** now exposes the request builder
+- **middleware:** middleware now logs the identifier in source e.g. `FluentlyHttpClient.Middleware.sketch7.Timer`, given HttpClient identifier was `sketch7`,
+so logs can be more fine controlled
 - **headers:** add `FluentHttpHeaders` since `HttpHeaders` (and all implementations) cannot create instances of, and changed all implementations to use it instead of `Dictionary<string, string>`.
+- **util:** add several extensions when working with `HttpHeaders`
+- **http request:** now exposes the request builder
 
 ### BREAKING CHANGES
 - **middleware:** `FluentHttpRequestDelegate` has been removed in favor of `FluentHttpMiddlewareDelegate`
 - **middleware:** `IFluentHttpMiddlewareRunner` and `FluentHttpMiddlewareRunner` has been reworked
 - **middleware:** `IFluentHttpMiddleware` changed from `Invoke(FluentHttpRequest)` to `Invoke(FluentHttpMiddlewareContext)`
 - **middleware:** renamed `MiddlewareConfig` to `FluentHttpMiddlewareConfig` for consistency
-- **http client builder:** `FluentHttpClientOptions` middleware changed `List<MiddlewareConfig> Middleware` has been changed to `FluentHttpMiddlewareBuilder MiddlewareBuilder`
+- **http client builder:** `FluentHttpClientOptions` changed `List<MiddlewareConfig> Middleware` to `FluentHttpMiddlewareBuilder MiddlewareBuilder`
 - **http client factory:** removed `Add(FluentHttpClientOptions)` from `IFluentHttpClientFactory` and moved it as an extension method
 - **exceptions:** exceptions has been moved correctly to `FluentlyHttpClient` namespace
 - **util:** querystrings now defaults to camel casing instead of lower casing

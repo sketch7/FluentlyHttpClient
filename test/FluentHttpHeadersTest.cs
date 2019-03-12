@@ -32,7 +32,7 @@ namespace FluentlyHttpClient.Test
 				{HeaderTypes.Accept, new[] {"json", "msgpack"}}
 			});
 			Assert.Throws<ArgumentException>(() => headers.AddRange(new Dictionary<string, StringValues>{
-				{HeaderTypes.Accept, new[] {"xml"}}
+				{HeaderTypes.Accept, "xml"}
 			}));
 		}
 
@@ -44,7 +44,7 @@ namespace FluentlyHttpClient.Test
 				{HeaderTypes.Accept, new[] {"json", "msgpack"}}
 			});
 			headers.SetRange(new Dictionary<string, StringValues>{
-				{HeaderTypes.Accept, new[] {"xml"}}
+				{HeaderTypes.Accept, "xml"}
 			});
 			Assert.Equal("xml", headers.Accept);
 		}
