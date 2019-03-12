@@ -9,6 +9,7 @@ using Sketch7.MessagePack.MediaTypeFormatter;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
+// ReSharper disable once CheckNamespace
 namespace Test
 {
 	public class HttpClient

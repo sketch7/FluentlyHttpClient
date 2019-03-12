@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Headers;
 
 // ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient
 {
+	/// <summary>
+	/// HTTP extensions such as HttpHeaders.
+	/// </summary>
 	public static class HttpExtensions
 	{
 		/// <summary>
@@ -19,37 +21,14 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Converts from HttpHeaders dictionary.
+		/// Add all from fluent HTTP headers.
 		/// </summary>
-		/// <param name="headers"></param>
-		/// <returns></returns>
-		public static Dictionary<string, string> ToDictionary(this HttpHeaders headers)
-			=> headers.ToDictionary(x => x.Key, x => string.Join(";", x.Value));
-
-		/// <summary>
-		/// Add from dictionary.
-		/// </summary>
-		/// <param name="headers"></param>
+		/// <param name="headers">Headers to add to.</param>
 		/// <param name="values">Headers to add from.</param>
-		/// <returns></returns>
-		public static void AddRange(this HttpHeaders headers, Dictionary<string, string> values)
+		public static void AddRange(this HttpHeaders headers, FluentHttpHeaders values)
 		{
 			foreach (var headerEntry in values)
-				headers.Add(headerEntry.Key, headerEntry.Value);
-		}
-
-		/// <summary>
-		/// Converts headers dictionary to hash string.
-		/// </summary>
-		/// <param name="headers"></param>
-		/// <returns></returns>
-		public static string ToHeadersHashString(this Dictionary<string, string> headers)
-		{
-			var headersHash = "";
-			foreach (var header in headers)
-				headersHash += $"{header.Key}={header.Value}&";
-			headersHash = headersHash.TrimEnd('&');
-			return headersHash;
+				headers.Add(headerEntry.Key, (IEnumerable<string>)headerEntry.Value);
 		}
 	}
 }

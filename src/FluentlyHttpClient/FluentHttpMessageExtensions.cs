@@ -41,14 +41,16 @@ namespace FluentlyHttpClient
 		/// <returns></returns>
 		public static string GenerateHash(this FluentHttpRequest request)
 		{
-			var headers = request.Builder.DefaultHeaders.ToDictionary();
+
+			var headers = new FluentHttpHeaders(request.Builder.DefaultHeaders);
 			foreach (var requestHeader in request.Headers)
 				headers[requestHeader.Key] = string.Join(";", requestHeader.Value);
 
 			var urlHash = request.Uri.IsAbsoluteUri
 				? request.Uri
 				: new Uri($"{request.Builder.BaseUrl.TrimEnd('/')}/{request.Uri.ToString().TrimStart('/')}");
-			var headersHash = headers.ToHeadersHashString();
+
+			var headersHash = headers.ToHashString();
 
 			var hash = $"method={request.Method};url={urlHash};headers={headersHash}";
 			return hash;

@@ -26,7 +26,7 @@ namespace FluentlyHttpClient
 				if (paramValue == null)
 					throw new ArgumentNullException(nameof(args), $"Template has a param which its value is not provided. Param: '{paramName}'");
 				return args[match.Groups[1].Value].ToString();
-			};
+			}
 
 			return re.Replace(template, Evaluator);
 		}

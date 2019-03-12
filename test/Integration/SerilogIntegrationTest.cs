@@ -10,7 +10,7 @@ namespace FluentlyHttpClient.Test.Integration
 {
 	public class SerilogIntegrationTest
 	{
-		private IServiceProvider BuildContainer()
+		private static IServiceProvider BuildContainer()
 		{
 			Log.Logger = new LoggerConfiguration()
 				.WriteTo.Console()
@@ -48,7 +48,7 @@ namespace FluentlyHttpClient.Test.Integration
 				{
 					Key = "valeera",
 					Name = "Valeera",
-					Title = "Shadow of the Ucrowned"
+					Title = "Shadow of the Uncrowned"
 				})
 				.WithLoggingOptions(new LoggerHttpMiddlewareOptions
 				{

@@ -1,12 +1,19 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace FluentlyHttpClient.Middleware
 {
 	/// <summary>
 	/// Middleware configuration.
 	/// </summary>
-	public class MiddlewareConfig
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
+	public class FluentHttpMiddlewareConfig
 	{
+		/// <summary>
+		/// Debugger display.
+		/// </summary>
+		protected string DebuggerDisplay => $"Type: '{Type}', Args: '{Args}'";
+
 		/// <summary>
 		/// Gets or sets the type for the middleware.
 		/// </summary>
@@ -20,14 +27,14 @@ namespace FluentlyHttpClient.Middleware
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
-		public MiddlewareConfig()
+		public FluentHttpMiddlewareConfig()
 		{
 		}
 
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
-		public MiddlewareConfig(Type type, object[] args)
+		public FluentHttpMiddlewareConfig(Type type, object[] args = null)
 		{
 			Type = type;
 			Args = args;

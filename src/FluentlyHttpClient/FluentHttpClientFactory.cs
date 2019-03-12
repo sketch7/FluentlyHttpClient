@@ -32,28 +32,21 @@ namespace FluentlyHttpClient
 		IFluentHttpClient Get(string identifier);
 
 		/// <summary>
-		/// Add/register HTTP Client.
+		/// Add/register HTTP client.
 		/// </summary>
 		/// <param name="client">Client to register.</param>
 		/// <returns>Returns HTTP client.</returns>
 		IFluentHttpClient Add(IFluentHttpClient client);
 
 		/// <summary>
-		/// Add/register HTTP Client from builder.
+		/// Add/register HTTP client from builder.
 		/// </summary>
 		/// <param name="clientBuilder">Client builder to register.</param>
 		/// <returns>Returns HTTP client created.</returns>
 		IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder);
 
 		/// <summary>
-		/// Add/register HTTP Client from options.
-		/// </summary>
-		/// <param name="options">options to register.</param>
-		/// <returns>Returns HTTP client created.</returns>
-		IFluentHttpClient Add(FluentHttpClientOptions options);
-
-		/// <summary>
-		/// Remove/unregister HTTP Client.
+		/// Remove/unregister HTTP client.
 		/// </summary>
 		/// <param name="identifier">Identity to remove.</param>
 		/// <returns>Returns client factory for chaining.</returns>
@@ -131,16 +124,6 @@ namespace FluentlyHttpClient
 
 			var client = clientBuilder.Build();
 			return Add(client);
-		}
-
-		/// <inheritdoc />
-		public IFluentHttpClient Add(FluentHttpClientOptions options) // todo: remove this from interface and make as extension method
-		{
-			if (options == null) throw new ArgumentNullException(nameof(options));
-
-			var builder = CreateBuilder(options.Identifier)
-				.FromOptions(options);
-			return Add(builder);
 		}
 
 		/// <inheritdoc />

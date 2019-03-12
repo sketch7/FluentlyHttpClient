@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Primitives;
 
 namespace FluentlyHttpClient
 {
@@ -30,30 +31,28 @@ namespace FluentlyHttpClient
 		public string UriTemplate { get; private set; }
 
 		/// <summary>
-		/// Get the headers to be sent with this request.
+		/// Gets the headers to be sent with this request.
 		/// </summary>
-		public Dictionary<string, string> Headers { get; private set; }
+		public FluentHttpHeaders Headers { get; private set; }
 
 		/// <summary>
-		/// Get the default headers from the http client.
+		/// Gets the default headers from the HTTP client.
 		/// </summary>
 		public HttpRequestHeaders DefaultHeaders => _fluentHttpClient.Headers;
 
 		/// <summary>
-		/// Get the base url from the http client.
+		/// Gets the base url from the HTTP client.
 		/// </summary>
 		public string BaseUrl => _fluentHttpClient.BaseUrl;
 
-
 		/// <summary>
-		/// Get the key/value collection that can be used to share data within the scope of request/response or middleware.
+		/// Gets the key/value collection that can be used to share data within the scope of request/response or middleware.
 		/// </summary>
 		public Dictionary<object, object> Items { get; } = new Dictionary<object, object>();
 
 		private readonly IFluentHttpClient _fluentHttpClient;
 		private HttpContent _httpBody;
 		private static readonly Regex InterpolationRegex = new Regex(@"\{(\w+)\}", RegexOptions.Compiled);
-		private static readonly Func<string, string> LowerCaseString = key => key.ToLower();
 		private object _queryParams;
 		private bool _hasSuccessStatusOrThrow;
 		private CancellationToken _cancellationToken;
@@ -81,7 +80,7 @@ namespace FluentlyHttpClient
 		public FluentHttpRequestBuilder WithHeader(string key, string value)
 		{
 			if (Headers == null)
-				Headers = new Dictionary<string, string>();
+				Headers = new FluentHttpHeaders();
 			Headers[key] = value;
 			return this;
 		}
@@ -89,8 +88,14 @@ namespace FluentlyHttpClient
 		/// <inheritdoc />
 		public FluentHttpRequestBuilder WithHeaders(IDictionary<string, string> headers)
 		{
-			foreach (var item in headers)
-				WithHeader(item.Key, item.Value);
+			Headers.SetRange(headers);
+			return this;
+		}
+
+		/// <inheritdoc />
+		public FluentHttpRequestBuilder WithHeaders(IDictionary<string, StringValues> headers)
+		{
+			Headers.SetRange(headers);
 			return this;
 		}
 
@@ -113,37 +118,11 @@ namespace FluentlyHttpClient
 		/// Set query string params to the Uri. e.g. .?page=1&amp;filter=all'.
 		/// </summary>
 		/// <param name="queryParams">Query data to add/append. Can be either dictionary or object.</param>
-		/// <param name="lowerCaseQueryKeys">Determine whether to lowercase query string keys.</param>
-		/// <returns>Returns request builder for chaining.</returns>
-		[Obsolete("Instead use overload with QueryStringOptions.")]
-		public FluentHttpRequestBuilder WithQueryParams(object queryParams, bool lowerCaseQueryKeys)
-		{
-			if (lowerCaseQueryKeys)
-			{
-				var options = _queryStringOptions ?? new QueryStringOptions();
-				options.KeyFormatter = LowerCaseString;
-				WithQueryParamsOptions(options);
-			}
-
-			_queryParams = queryParams;
-			return this;
-		}
-
-		/// <summary>
-		/// Set query string params to the Uri. e.g. .?page=1&amp;filter=all'.
-		/// </summary>
-		/// <param name="queryParams">Query data to add/append. Can be either dictionary or object.</param>
 		/// <param name="options">Query string options to use.</param>
 		/// <returns>Returns request builder for chaining.</returns>
 		public FluentHttpRequestBuilder WithQueryParams(object queryParams, QueryStringOptions options = null)
 		{
 			options = options ?? _queryStringOptions;
-
-			if (options?.KeyFormatter == null)
-			{
-				options = options ?? new QueryStringOptions();
-				options.KeyFormatter = LowerCaseString; // deprecated: default to lower for backwards compatability.
-			}
 
 			_queryParams = queryParams;
 			return WithQueryParamsOptions(options);
@@ -285,8 +264,10 @@ namespace FluentlyHttpClient
 			var genericResponse = new FluentHttpResponse<T>(response);
 
 			if (genericResponse.IsSuccessStatusCode)
+			{
 				genericResponse.Data = await genericResponse.Content.ReadAsAsync<T>(_fluentHttpClient.Formatters, _cancellationToken)
-											.ConfigureAwait(false);
+					.ConfigureAwait(false);
+			}
 
 			return genericResponse;
 		}
@@ -315,19 +296,18 @@ namespace FluentlyHttpClient
 				foreach (var header in Headers)
 				{
 					if (header.Key == HeaderTypes.UserAgent)
-						httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
+						httpRequest.Headers.TryAddWithoutValidation(header.Key, (IEnumerable<string>)header.Value);
 					else
-						httpRequest.Headers.Add(header.Key, header.Value);
+						httpRequest.Headers.Add(header.Key, (IEnumerable<string>)header.Value);
 				}
 			}
 
-			var fluentRequest = new FluentHttpRequest(httpRequest, Items, this)
+			return new FluentHttpRequest(this, httpRequest, Items)
 			{
 				HasSuccessStatusOrThrow = _hasSuccessStatusOrThrow,
 				CancellationToken = _cancellationToken,
 				Formatters = _fluentHttpClient.Formatters
 			};
-			return fluentRequest;
 		}
 
 		/// <summary>

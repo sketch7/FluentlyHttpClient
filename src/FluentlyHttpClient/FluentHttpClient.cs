@@ -77,9 +77,9 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Send HTTP request.
 		/// </summary>
-		/// <param name="fluentRequest">HTTP fluent request to send.</param>
+		/// <param name="request">HTTP fluent request to send.</param>
 		/// <returns>Returns HTTP response.</returns>
-		Task<FluentHttpResponse> Send(FluentHttpRequest fluentRequest);
+		Task<FluentHttpResponse> Send(FluentHttpRequest request);
 	}
 
 	/// <summary>
@@ -88,7 +88,7 @@ namespace FluentlyHttpClient
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	public class FluentHttpClient : IFluentHttpClient
 	{
-		private string DebuggerDisplay => $"[{Identifier}] BaseUrl: '{BaseUrl}', MiddlewareCount: {_middleware.Count}";
+		private string DebuggerDisplay => $"[{Identifier}] BaseUrl: '{BaseUrl}', MiddlewareCount: {_middlewareBuilder.Count}";
 
 		/// <inheritdoc />
 		public string Identifier { get; }
@@ -113,8 +113,8 @@ namespace FluentlyHttpClient
 		private readonly IFluentHttpClientFactory _clientFactory;
 		private readonly IServiceProvider _serviceProvider;
 		private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
+		private readonly FluentHttpMiddlewareBuilder _middlewareBuilder;
 		private readonly IHttpClientFactory _httpClientFactory;
-		private readonly List<MiddlewareConfig> _middleware;
 
 		/// <summary>
 		/// Initializes an instance of <see cref="FluentHttpClient"/>.
@@ -122,23 +122,20 @@ namespace FluentlyHttpClient
 		/// <param name="options"></param>
 		/// <param name="clientFactory"></param>
 		/// <param name="serviceProvider"></param>
-		/// <param name="middlewareRunner"></param>
 		/// <param name="httpClientFactory"></param>
 		public FluentHttpClient(
 			FluentHttpClientOptions options,
 			IFluentHttpClientFactory clientFactory,
 			IServiceProvider serviceProvider,
-			IFluentHttpMiddlewareRunner middlewareRunner,
 			IHttpClientFactory httpClientFactory
 		)
 		{
 			_options = options;
 			_clientFactory = clientFactory;
 			_serviceProvider = serviceProvider;
-			_middlewareRunner = middlewareRunner;
 			_httpClientFactory = httpClientFactory;
-			_middleware = options.Middleware;
 			_requestBuilderDefaults = options.RequestBuilderDefaults;
+			_middlewareBuilder = options.MiddlewareBuilder;
 
 			Identifier = options.Identifier;
 			BaseUrl = options.BaseUrl;
@@ -147,6 +144,8 @@ namespace FluentlyHttpClient
 
 			RawHttpClient = Configure(options);
 			Headers = RawHttpClient.DefaultRequestHeaders;
+
+			_middlewareRunner = options.MiddlewareBuilder.Build(this);
 		}
 
 		/// <inheritdoc />
@@ -178,17 +177,18 @@ namespace FluentlyHttpClient
 		public Task<FluentHttpResponse> Send(FluentHttpRequestBuilder builder) => Send(builder.Build());
 
 		/// <inheritdoc />
-		public async Task<FluentHttpResponse> Send(FluentHttpRequest fluentRequest)
+		public async Task<FluentHttpResponse> Send(FluentHttpRequest request)
 		{
-			if (fluentRequest == null) throw new ArgumentNullException(nameof(fluentRequest));
-			var response = await _middlewareRunner.Run(_middleware, fluentRequest, async request =>
+			if (request == null) throw new ArgumentNullException(nameof(request));
+
+			var response = await _middlewareRunner.Run(request, async () =>
 			{
 				var result = await RawHttpClient.SendAsync(request.Message, request.CancellationToken)
 					.ConfigureAwait(false);
 				return ToFluentResponse(result, request.Items);
 			}).ConfigureAwait(false);
 
-			if (fluentRequest.HasSuccessStatusOrThrow)
+			if (request.HasSuccessStatusOrThrow)
 				response.EnsureSuccessStatusCode();
 
 			return response;
@@ -223,6 +223,5 @@ namespace FluentlyHttpClient
 
 		private static FluentHttpResponse ToFluentResponse(HttpResponseMessage response, IDictionary<object, object> items)
 			=> new FluentHttpResponse(response, items);
-
 	}
 }

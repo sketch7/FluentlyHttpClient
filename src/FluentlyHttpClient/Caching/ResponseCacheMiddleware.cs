@@ -24,7 +24,7 @@ namespace FluentlyHttpClient.Middleware
 	/// </summary>
 	public class ResponseCacheHttpMiddleware : IFluentHttpMiddleware
 	{
-		private readonly FluentHttpRequestDelegate _next;
+		private readonly FluentHttpMiddlewareDelegate _next;
 		private readonly ResponseCacheHttpMiddlewareOptions _options;
 		private readonly ILogger _logger;
 		private readonly IResponseCacheService _service;
@@ -33,7 +33,7 @@ namespace FluentlyHttpClient.Middleware
 		/// Initializes a new instance.
 		/// </summary>
 		public ResponseCacheHttpMiddleware(
-			FluentHttpRequestDelegate next,
+			FluentHttpMiddlewareDelegate next,
 			ResponseCacheHttpMiddlewareOptions options,
 			ILogger<ResponseCacheHttpMiddleware> logger,
 			IResponseCacheService service
@@ -46,12 +46,14 @@ namespace FluentlyHttpClient.Middleware
 		}
 
 		/// <inheritdoc />
-		public async Task<FluentHttpResponse> Invoke(FluentHttpRequest request)
+		public async Task<FluentHttpResponse> Invoke(FluentHttpMiddlewareContext context)
 		{
+			var request = context.Request;
+
 			var options = request.GetResponseCachingOptions(_options);
 
 			if (options.ShouldIgnore || options.Matcher != null && !options.Matcher(request))
-				return await _next(request);
+				return await _next(context);
 
 			var hash = request.GetRequestHash();
 			if (string.IsNullOrEmpty(hash))
@@ -59,7 +61,7 @@ namespace FluentlyHttpClient.Middleware
 				hash = request.GenerateHash();
 				request.SetRequestHash(hash);
 			}
-			
+
 			var response = await _service.Get(hash);
 			if (response != null)
 			{
@@ -67,7 +69,7 @@ namespace FluentlyHttpClient.Middleware
 				return response;
 			}
 
-			response = await _next(request);
+			response = await _next(context);
 
 			_logger.LogInformation("Post-Response - Caching request... {hash}", hash);
 			await _service.Set(hash, response);

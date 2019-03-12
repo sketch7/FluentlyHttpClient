@@ -77,12 +77,11 @@ namespace FluentlyHttpClient
 		/// <param name="data">Payload data content to send.</param>
 		/// <param name="contentType">(Optional) content type to use when sending data.</param>
 		/// <returns>Returns task with the result data.</returns>
-		public static Task<T> Delete<T>(this IFluentHttpClient client, string uri, object data, MediaTypeHeaderValue contentType = null) 
+		public static Task<T> Delete<T>(this IFluentHttpClient client, string uri, object data, MediaTypeHeaderValue contentType = null)
 			=> client.CreateRequest(uri)
 			.AsDelete()
 			.WithSuccessStatus()
 			.WithBody(data, contentType)
 			.Return<T>();
-
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
+using FluentlyHttpClient;
 using FluentlyHttpClient.Caching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -27,13 +28,13 @@ namespace FluentHttpClient.Entity
 				.HasMaxLength(Constants.LongTextLength)
 				.HasConversion(
 				x => JsonConvert.SerializeObject(x),
-				x => JsonConvert.DeserializeObject<Dictionary<string, string>>(x));
+				x => JsonConvert.DeserializeObject<FluentHttpHeaders>(x));
 			builder.Property(x => x.Headers)
 				.IsRequired()
 				.HasMaxLength(Constants.LongTextLength)
 				.HasConversion(
 				x => JsonConvert.SerializeObject(x),
-				x => JsonConvert.DeserializeObject<Dictionary<string, string>>(x));
+				x => JsonConvert.DeserializeObject<FluentHttpHeaders>(x));
 			builder.Property(x => x.RequestMessage)
 				.IsRequired()
 				.HasMaxLength(Constants.LongTextLength)
