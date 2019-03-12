@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using FluentlyHttpClient;
 using FluentlyHttpClient.Test;
+using Microsoft.Extensions.Primitives;
 using RichardSzalay.MockHttp;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
@@ -214,8 +215,28 @@ namespace Test
 		{
 			var builder = GetNewRequestBuilder()
 					.WithUri("/org/sketch7")
-					.WithHeader("chiko", "hex")
 					.WithHeaders(new Dictionary<string, string>
+					{
+						["chiko"] = "hexII",
+						["locale"] = "mt-MT"
+					})
+				;
+			var request = builder.Build();
+
+			var chikoHeader = request.Headers.GetValues("chiko").FirstOrDefault();
+			var localeHeader = request.Headers.GetValues("locale").FirstOrDefault();
+			Assert.NotNull(chikoHeader);
+			Assert.Equal("hexII", chikoHeader);
+			Assert.NotNull(localeHeader);
+			Assert.Equal("mt-MT", localeHeader);
+		}
+
+		[Fact]
+		public void AddHeadersStringValues()
+		{
+			var builder = GetNewRequestBuilder()
+					.WithUri("/org/sketch7")
+					.WithHeaders(new Dictionary<string, StringValues>
 					{
 						["chiko"] = "hexII",
 						["locale"] = "mt-MT"
