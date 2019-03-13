@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using FluentlyHttpClient;
+﻿using System.Net.Http;
 using FluentlyHttpClient.Caching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -10,6 +8,7 @@ namespace FluentHttpClient.Entity
 {
 	public class HttpResponseMapping : IEntityTypeConfiguration<MessageItemStore>
 	{
+		private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings();
 		public void Configure(EntityTypeBuilder<MessageItemStore> builder)
 		{
 			builder.ToTable(Constants.HttpResponseTable, Constants.SchemaName);
@@ -26,15 +25,13 @@ namespace FluentHttpClient.Entity
 			builder.Property(x => x.ContentHeaders)
 				.IsRequired()
 				.HasMaxLength(Constants.LongTextLength)
-				.HasConversion(
-				x => JsonConvert.SerializeObject(x),
-				x => JsonConvert.DeserializeObject<FluentHttpHeaders>(x));
+				.HasConversion(FluentHttpHeadersConversion.Convert)
+				;
 			builder.Property(x => x.Headers)
 				.IsRequired()
 				.HasMaxLength(Constants.LongTextLength)
-				.HasConversion(
-				x => JsonConvert.SerializeObject(x),
-				x => JsonConvert.DeserializeObject<FluentHttpHeaders>(x));
+				.HasConversion(FluentHttpHeadersConversion.Convert)
+				;
 			builder.Property(x => x.RequestMessage)
 				.IsRequired()
 				.HasMaxLength(Constants.LongTextLength)

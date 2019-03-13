@@ -34,14 +34,15 @@ namespace FluentlyHttpClient.Middleware
 		/// </summary>
 		public ResponseCacheHttpMiddleware(
 			FluentHttpMiddlewareDelegate next,
+			FluentHttpMiddlewareClientContext context,
 			ResponseCacheHttpMiddlewareOptions options,
-			ILogger<ResponseCacheHttpMiddleware> logger,
+			ILoggerFactory loggerFactory,
 			IResponseCacheService service
 		)
 		{
 			_next = next;
 			_options = options;
-			_logger = logger;
+			_logger = loggerFactory.CreateLogger($"{typeof(ResponseCacheHttpMiddleware).Namespace}.{context.Identifier}.ResponseCache");
 			_service = service;
 		}
 

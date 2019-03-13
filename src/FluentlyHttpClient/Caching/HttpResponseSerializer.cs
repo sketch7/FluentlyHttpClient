@@ -42,13 +42,13 @@ namespace FluentlyHttpClient.Caching
 				Content = await response.Content.ReadAsStringAsync()
 			};
 
-			message.ContentHeaders.SetRange(response.Content.Headers);
+			message.ContentHeaders = new FluentHttpHeaders(response.Content.Headers);
 			message.Hash = response.GetRequestHash();
 			message.ReasonPhrase = response.ReasonPhrase;
 			message.StatusCode = (int)response.StatusCode;
 			message.Url = response.Message.RequestMessage.RequestUri.ToString();
 			message.Version = response.Message.Version.ToString();
-			message.Headers.SetRange(response.Headers);
+			message.Headers = new FluentHttpHeaders(response.Headers);
 			message.RequestMessage = response.Message.RequestMessage;
 
 			return message;

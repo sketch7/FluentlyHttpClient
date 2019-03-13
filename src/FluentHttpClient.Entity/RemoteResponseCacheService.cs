@@ -33,7 +33,7 @@ namespace FluentHttpClient.Entity
 				return await _serializer.Deserialize(item);
 			});
 
-			return await result.Clone();
+			return result != null ? await result.Clone() : null;
 		}
 
 		public async Task Set(string hash, FluentHttpResponse response)
