@@ -8,7 +8,6 @@ namespace FluentHttpClient.Entity
 {
 	public class HttpResponseMapping : IEntityTypeConfiguration<MessageItemStore>
 	{
-		private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings();
 		public void Configure(EntityTypeBuilder<MessageItemStore> builder)
 		{
 			builder.ToTable(Constants.HttpResponseTable, Constants.SchemaName);
