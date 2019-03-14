@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FluentHttpClient.Entity
 {
-	public class FluentHttpClientContext : DbContext
+	public class FluentHttpClientDbContext : DbContext
 	{
-		public FluentHttpClientContext(DbContextOptions options)
+		public FluentHttpClientDbContext(DbContextOptions options)
 			: base(options)
 		{ }
 

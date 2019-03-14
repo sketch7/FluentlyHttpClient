@@ -9,18 +9,18 @@ namespace FluentlyHttpClient.Sample.Api.Controllers
 	[ApiController]
 	public class ValuesController : ControllerBase
 	{
-		private readonly FluentHttpClientContext _client;
+		private readonly FluentHttpClientDbContext _dbContext;
 
-		public ValuesController(FluentHttpClientContext client)
+		public ValuesController(FluentHttpClientDbContext dbContext)
 		{
-			_client = client;
+			_dbContext = dbContext;
 		}
 
 		// GET api/values
 		[HttpGet]
 		public async Task<IEnumerable<string>> Get()
 		{
-			await _client.Initialize();
+			await _dbContext.Initialize();
 			return new string[] { "value1", "value2" };
 		}
 

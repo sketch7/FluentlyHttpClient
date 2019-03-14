@@ -8,16 +8,16 @@ namespace FluentHttpClient.Entity
 {
 	public class RemoteResponseCacheService : IResponseCacheService
 	{
-		private readonly FluentHttpClientContext _client;
+		private readonly FluentHttpClientDbContext _clientDb;
 		private readonly IHttpResponseSerializer _serializer;
 		private readonly IMemoryCache _cache;
 
 		public RemoteResponseCacheService(
-			FluentHttpClientContext client,
+			FluentHttpClientDbContext clientDb,
 			IHttpResponseSerializer serializer,
 			IMemoryCache cache)
 		{
-			_client = client;
+			_clientDb = clientDb;
 			_serializer = serializer;
 			_cache = cache;
 		}
@@ -26,7 +26,7 @@ namespace FluentHttpClient.Entity
 		{
 			var result = await _cache.GetOrCreate(hash, async _ =>
 			{
-				var item = await _client.HttpResponses.FirstOrDefaultAsync(x => x.Hash == hash);
+				var item = await _clientDb.HttpResponses.FirstOrDefaultAsync(x => x.Hash == hash);
 
 				if (item == null) return null;
 
@@ -39,8 +39,8 @@ namespace FluentHttpClient.Entity
 		public async Task Set(string hash, FluentHttpResponse response)
 		{
 			var item = await _serializer.Serialize(response);
-			await _client.HttpResponses.AddAsync(item);
-			await _client.Commit();
+			await _clientDb.HttpResponses.AddAsync(item);
+			await _clientDb.Commit();
 
 			_cache.Set(hash, response);
 		}

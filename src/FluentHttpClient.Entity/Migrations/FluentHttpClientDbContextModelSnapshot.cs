@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FluentHttpClient.Entity.Migrations
 {
-    [DbContext(typeof(FluentHttpClientContext))]
-    partial class FluentHttpClientContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(FluentHttpClientDbContext))]
+    partial class FluentHttpClientDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FluentHttpClient.Entity.Migrations
 {
-    [DbContext(typeof(FluentHttpClientContext))]
-    [Migration("20190312174601_Initial")]
+    [DbContext(typeof(FluentHttpClientDbContext))]
+    [Migration("20190314132759_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
