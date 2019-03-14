@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Threading.Tasks;
-using FluentlyHttpClient.Caching;
 using Microsoft.EntityFrameworkCore;
 
 namespace FluentHttpClient.Entity
@@ -11,7 +10,7 @@ namespace FluentHttpClient.Entity
 			: base(options)
 		{ }
 
-		public DbSet<MessageItemStore> HttpResponses { get; set; }
+		public DbSet<HttpResponse> HttpResponses { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

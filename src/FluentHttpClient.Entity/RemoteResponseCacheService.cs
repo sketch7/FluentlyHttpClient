@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using FluentHttpClient.Entity.Extensions;
 using FluentlyHttpClient;
 using FluentlyHttpClient.Caching;
 using Microsoft.EntityFrameworkCore;
@@ -24,9 +25,10 @@ namespace FluentHttpClient.Entity
 
 		public async Task<FluentHttpResponse> Get(string hash)
 		{
-			var result = await _cache.GetOrCreate(hash, async _ =>
+			var id = await hash.ComputeHash();
+			var result = await _cache.GetOrCreate(id, async _ =>
 			{
-				var item = await _clientDb.HttpResponses.FirstOrDefaultAsync(x => x.Hash == hash);
+				var item = await _clientDb.HttpResponses.FirstOrDefaultAsync(x => x.Id == id);
 
 				if (item == null) return null;
 
@@ -38,7 +40,9 @@ namespace FluentHttpClient.Entity
 
 		public async Task Set(string hash, FluentHttpResponse response)
 		{
-			var item = await _serializer.Serialize(response);
+			var item = await _serializer.Serialize<HttpResponse>(response);
+			item.Id = await hash.ComputeHash();
+
 			await _clientDb.HttpResponses.AddAsync(item);
 			await _clientDb.Commit();
 

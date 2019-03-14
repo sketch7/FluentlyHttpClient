@@ -7,25 +7,10 @@ using System.Threading.Tasks;
 
 namespace FluentlyHttpClient.Caching
 {
-	public class MessageItemStore
-	{
-		public string Name { get; set; }
-		public string Hash { get; set; }
-		public string Url { get; set; }
-		public string Content { get; set; }
-		public FluentHttpHeaders Headers { get; set; }
-		public int StatusCode { get; set; }
-		public string ReasonPhrase { get; set; }
-		public string Version { get; set; }
-		public FluentHttpHeaders ContentHeaders { get; set; }
-		public HttpRequestMessage RequestMessage { get; set; }
-	}
-
-
 	public interface IHttpResponseSerializer
 	{
-		Task<MessageItemStore> Serialize(FluentHttpResponse response);
-		Task<FluentHttpResponse> Deserialize(MessageItemStore item);
+		Task<TMessageItemStore> Serialize<TMessageItemStore>(FluentHttpResponse response) where TMessageItemStore : IMessageItemStore, new();
+		Task<FluentHttpResponse> Deserialize(IMessageItemStore item);
 	}
 
 	public class HttpResponseSerializer : IHttpResponseSerializer
@@ -35,9 +20,9 @@ namespace FluentlyHttpClient.Caching
 		/// </summary>
 		/// <param name="response"></param>
 		/// <returns></returns>
-		public async Task<MessageItemStore> Serialize(FluentHttpResponse response)
+		public async Task<TMessageItemStore> Serialize<TMessageItemStore>(FluentHttpResponse response) where TMessageItemStore : IMessageItemStore, new()
 		{
-			var message = new MessageItemStore
+			var message = new TMessageItemStore
 			{
 				Content = await response.Content.ReadAsStringAsync()
 			};
@@ -59,7 +44,7 @@ namespace FluentlyHttpClient.Caching
 		/// </summary>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public Task<FluentHttpResponse> Deserialize(MessageItemStore item)
+		public Task<FluentHttpResponse> Deserialize(IMessageItemStore item)
 		{
 			var contentType = new ContentType(item.ContentHeaders["Content-Type"]);
 			var encoding = string.IsNullOrEmpty(contentType.CharSet) ? Encoding.UTF8 : Encoding.GetEncoding(contentType.CharSet);

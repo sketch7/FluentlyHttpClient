@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FluentHttpClient.Entity.Migrations
 {
     [DbContext(typeof(FluentHttpClientDbContext))]
-    [Migration("20190314132759_Initial")]
+    [Migration("20190314190801_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,22 +20,26 @@ namespace FluentHttpClient.Entity.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("FluentlyHttpClient.Caching.MessageItemStore", b =>
+            modelBuilder.Entity("FluentHttpClient.Entity.HttpResponse", b =>
                 {
-                    b.Property<string>("Hash")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(1000);
+                        .HasMaxLength(70);
 
                     b.Property<string>("Content")
                         .IsRequired();
 
                     b.Property<string>("ContentHeaders")
                         .IsRequired()
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1500);
+
+                    b.Property<string>("Hash")
+                        .IsRequired()
+                        .HasMaxLength(1500);
 
                     b.Property<string>("Headers")
                         .IsRequired()
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1500);
 
                     b.Property<string>("Name")
                         .HasMaxLength(70);
@@ -46,19 +50,19 @@ namespace FluentHttpClient.Entity.Migrations
 
                     b.Property<string>("RequestMessage")
                         .IsRequired()
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1500);
 
                     b.Property<int>("StatusCode");
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(1500);
 
                     b.Property<string>("Version")
                         .IsRequired()
                         .HasMaxLength(30);
 
-                    b.HasKey("Hash");
+                    b.HasKey("Id");
 
                     b.ToTable("HttpResponses","cache");
                 });
