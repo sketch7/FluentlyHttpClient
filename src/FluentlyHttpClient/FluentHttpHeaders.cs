@@ -196,7 +196,7 @@ namespace FluentlyHttpClient
 			IEnumerable<KeyValuePair<string, StringValues>> headers = this;
 
 			if (_options.HashingExclude != null)
-				headers = headers.Where(x => _options.HashingExclude(x));
+				headers = headers.Where(x => !_options.HashingExclude(x));
 
 			var headersHash = "";
 			foreach (var header in headers)

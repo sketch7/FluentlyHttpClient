@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using FluentlyHttpClient;
 using FluentlyHttpClient.Test;
-using Microsoft.Extensions.Primitives;
 using RichardSzalay.MockHttp;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
@@ -216,28 +215,8 @@ namespace Test
 		{
 			var builder = GetNewRequestBuilder()
 					.WithUri("/org/sketch7")
+					.WithHeader("chiko", "hex")
 					.WithHeaders(new Dictionary<string, string>
-					{
-						["chiko"] = "hexII",
-						["locale"] = "mt-MT"
-					})
-				;
-			var request = builder.Build();
-
-			var chikoHeader = request.Headers.GetValues("chiko").FirstOrDefault();
-			var localeHeader = request.Headers.GetValues("locale").FirstOrDefault();
-			Assert.NotNull(chikoHeader);
-			Assert.Equal("hexII", chikoHeader);
-			Assert.NotNull(localeHeader);
-			Assert.Equal("mt-MT", localeHeader);
-		}
-
-		[Fact]
-		public void AddHeadersStringValues()
-		{
-			var builder = GetNewRequestBuilder()
-					.WithUri("/org/sketch7")
-					.WithHeaders(new Dictionary<string, StringValues>
 					{
 						["chiko"] = "hexII",
 						["locale"] = "mt-MT"
@@ -425,12 +404,10 @@ namespace Test
 		}
 
 		[Fact]
-		public void ShouldExcludeGlobal()
+		public void ShouldExcludeForRequest()
 		{
-			var requestWithHeaders = GetNewRequestBuilder(configureClient: c =>
-				{
-					//c.WithRequestHashOptions(opts => )
-				})
+			var requestWithHeaders = GetNewRequestBuilder()
+				.WithRequestHashOptions(opts => opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.Authorization))
 				.WithUri("/api/heroes/azmodan")
 				.WithBearerAuthentication("XXX")
 				.WithHeader("local", "en-GB")
@@ -439,6 +416,38 @@ namespace Test
 			var requestHashWithHeaders = requestWithHeaders.Build().GenerateHash();
 
 			const string requestHashWithHeadersAssert = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&local=en-GB";
+			Assert.Equal(requestHashWithHeadersAssert, requestHashWithHeaders);
+		}
+
+		[Fact]
+		public void ShouldExclude_Combined()
+		{
+			var requestWithHeaders = GetNewRequestBuilder(configureClient: cb =>
+						{
+							cb.WithRequestBuilderDefaults(rb =>
+								{
+									rb.WithRequestHashOptions(opts =>
+									{
+										opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.Authorization)
+											.WithHeadersExclude(pair =>
+											{
+												return pair.Key == HeaderTypes.Accept;
+											});
+									});
+								});
+						})
+				.WithRequestHashOptions(opts => opts.WithHeadersExclude(pair =>
+				{
+					return pair.Key == HeaderTypes.UserAgent;
+				}))
+				.WithUri("/api/heroes/azmodan")
+				.WithBearerAuthentication("XXX")
+				.WithHeader("local", "en-GB")
+				;
+
+			var requestHashWithHeaders = requestWithHeaders.Build().GenerateHash();
+
+			const string requestHashWithHeadersAssert = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=local=en-GB";
 			Assert.Equal(requestHashWithHeadersAssert, requestHashWithHeaders);
 		}
 	}

@@ -32,24 +32,5 @@ namespace FluentlyHttpClient
 
 			return cloned;
 		}
-
-		/// <summary>
-		/// Generate request hash.
-		/// </summary>
-		/// <param name="request">Request to generate hash for.</param>
-		public static string GenerateHash(this FluentHttpRequest request)
-		{
-			var headers = new FluentHttpHeaders(request.Builder.DefaultHeaders)
-				.AddRange(request.Headers);
-
-			var urlHash = request.Uri.IsAbsoluteUri
-				? request.Uri
-				: new Uri($"{request.Builder.BaseUrl.TrimEnd('/')}/{request.Uri.ToString().TrimStart('/')}");
-
-			var headersHash = headers.ToHashString();
-
-			var hash = $"method={request.Method};url={urlHash};headers={headersHash}";
-			return hash;
-		}
 	}
 }
