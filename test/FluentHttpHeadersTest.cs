@@ -4,6 +4,7 @@ using System.Net.Http;
 using Microsoft.Extensions.Primitives;
 using Xunit;
 
+// ReSharper disable InconsistentNaming
 namespace FluentlyHttpClient.Test
 {
 	public class FluentHttpHeaders_Add
@@ -158,6 +159,20 @@ namespace FluentlyHttpClient.Test
 			var hash = headers.ToHashString();
 
 			Assert.Equal("Authorization=the-xx&Accept=json,msgpack", hash);
+		}
+
+		[Fact]
+		public void ShouldFilterWithHashingFilter()
+		{
+			var headers = new FluentHttpHeaders(opts => opts.HashingExclude = pair => pair.Key == HeaderTypes.Authorization)
+			{
+				{HeaderTypes.Authorization, "the-xx"},
+				{HeaderTypes.Accept, new[] {"json", "msgpack"}},
+				{HeaderTypes.XForwardedHost, "sketch7.com"},
+			};
+			var hash = headers.ToHashString();
+
+			Assert.Equal("Accept=json,msgpack&X-Forwarded-Host=sketch7.com", hash);
 		}
 	}
 }

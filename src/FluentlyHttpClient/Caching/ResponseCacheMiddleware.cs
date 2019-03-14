@@ -57,12 +57,6 @@ namespace FluentlyHttpClient.Middleware
 				return await _next(context);
 
 			var hash = request.GetRequestHash();
-			if (string.IsNullOrEmpty(hash))
-			{
-				hash = request.GenerateHash();
-				request.SetRequestHash(hash);
-			}
-
 			var response = await _service.Get(hash);
 			if (response != null)
 			{
@@ -105,12 +99,28 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Get request hash.
 		/// </summary>
-		/// <param name="message">Message to get hash from.</param>
+		/// <param name="request">Request to get hash from.</param>
 		/// <returns>Returns hash string for the request.</returns>
-		public static string GetRequestHash(this IFluentHttpMessageState message)
+		public static string GetRequestHash(this FluentHttpRequest request)
 		{
-			message.Items.TryGetValue(HashKey, out var value);
-			return (string)value;
+			if (request.Items.TryGetValue(HashKey, out var value))
+				return (string)value;
+
+			var valueStr = request.GenerateHash();
+			request.SetRequestHash(valueStr);
+			return valueStr;
+		}
+
+		/// <summary>
+		/// Get request hash.
+		/// </summary>
+		/// <param name="response">Response to get hash from.</param>
+		/// <returns>Returns hash string for the request.</returns>
+		public static string GetRequestHash(this FluentHttpResponse response)
+		{
+			if (response.Items.TryGetValue(HashKey, out var value))
+				return (string)value;
+			return null;
 		}
 
 		/// <summary>

@@ -9,6 +9,7 @@ using RichardSzalay.MockHttp;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
+// ReSharper disable InconsistentNaming
 namespace Test
 {
 	public class RequestBuilder_WithUri
@@ -406,14 +407,39 @@ namespace Test
 		{
 			var httpClient = GetClient();
 
-			var requestWithToken = httpClient.CreateRequest("/api/heroes/azmodan")
-				.WithBearerAuthentication("XXX");
-			var noTokenRequest = httpClient.CreateRequest("/api/heroes/azmodan");
+			var requestWithHeaders = httpClient.CreateRequest("/api/heroes/azmodan")
+				.WithBearerAuthentication("XXX")
+				.WithHeader("local", "en-GB")
+				;
+			var requestNoHeaders = httpClient.CreateRequest("/api/heroes/azmodan");
 
-			var tokenRequestHash = requestWithToken.Build().GenerateHash();
-			var noTokenRequestHash = noTokenRequest.Build().GenerateHash();
+			var requestHashWithHeaders = requestWithHeaders.Build().GenerateHash();
+			var noTokenRequestHash = requestNoHeaders.Build().GenerateHash();
 
-			Assert.NotEqual(tokenRequestHash, noTokenRequestHash);
+			Assert.NotEqual(requestHashWithHeaders, noTokenRequestHash);
+
+			const string requestHashWithHeadersAssert = "method=GET;url=http://local.sketch7.io:5000/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&locale=en-GB&X-SSV-VERSION=2019.02-2&Authorization=Bearer XXX&local=en-GB";
+			const string noHeadersRequestHashAssert = "method=GET;url=http://local.sketch7.io:5000/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&locale=en-GB&X-SSV-VERSION=2019.02-2";
+			Assert.Equal(requestHashWithHeadersAssert, requestHashWithHeaders);
+			Assert.Equal(noHeadersRequestHashAssert, noTokenRequestHash);
+		}
+
+		[Fact]
+		public void ShouldExcludeGlobal()
+		{
+			var requestWithHeaders = GetNewRequestBuilder(configureClient: c =>
+				{
+					//c.WithRequestHashOptions(opts => )
+				})
+				.WithUri("/api/heroes/azmodan")
+				.WithBearerAuthentication("XXX")
+				.WithHeader("local", "en-GB")
+				;
+
+			var requestHashWithHeaders = requestWithHeaders.Build().GenerateHash();
+
+			const string requestHashWithHeadersAssert = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&local=en-GB";
+			Assert.Equal(requestHashWithHeadersAssert, requestHashWithHeaders);
 		}
 	}
 }
