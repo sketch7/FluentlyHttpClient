@@ -14,20 +14,21 @@ namespace FluentHttpClient.Entity.Migrations
                 schema: "cache",
                 columns: table => new
                 {
-                    Hash = table.Column<string>(maxLength: 1000, nullable: false),
+                    Id = table.Column<string>(maxLength: 70, nullable: false),
                     Name = table.Column<string>(maxLength: 70, nullable: true),
-                    Url = table.Column<string>(maxLength: 255, nullable: false),
+                    Hash = table.Column<string>(maxLength: 1500, nullable: false),
+                    Url = table.Column<string>(maxLength: 1500, nullable: false),
                     Content = table.Column<string>(nullable: false),
-                    Headers = table.Column<string>(maxLength: 1000, nullable: false),
+                    Headers = table.Column<string>(maxLength: 1500, nullable: false),
                     StatusCode = table.Column<int>(nullable: false),
                     ReasonPhrase = table.Column<string>(maxLength: 70, nullable: false),
                     Version = table.Column<string>(maxLength: 30, nullable: false),
-                    ContentHeaders = table.Column<string>(maxLength: 1000, nullable: false),
-                    RequestMessage = table.Column<string>(maxLength: 1000, nullable: false)
+                    ContentHeaders = table.Column<string>(maxLength: 1500, nullable: false),
+                    RequestMessage = table.Column<string>(maxLength: 1500, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HttpResponses", x => x.Hash);
+                    table.PrimaryKey("PK_HttpResponses", x => x.Id);
                 });
         }
 
