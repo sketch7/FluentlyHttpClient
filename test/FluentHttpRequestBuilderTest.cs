@@ -428,6 +428,7 @@ namespace Test
 								{
 									requestBuilder.WithRequestHashOptions(opts =>
 									{
+										//opts.UriManipulation = uri => "";
 										opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.Authorization)
 											.WithHeadersExclude(pair => pair.Key == HeaderTypes.Accept);
 									});

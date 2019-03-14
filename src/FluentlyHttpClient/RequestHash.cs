@@ -60,14 +60,17 @@ namespace FluentlyHttpClient
 
 			var headers = new FluentHttpHeaders(request.Builder.DefaultHeaders, headersOptions)
 				.AddRange(request.Headers);
+			var headersHash = headers.ToHashString();
 
-			var urlHash = request.Uri.IsAbsoluteUri
+			var uri = request.Uri.IsAbsoluteUri
 				? request.Uri
 				: new Uri($"{request.Builder.BaseUrl.TrimEnd('/')}/{request.Uri.ToString().TrimStart('/')}");
 
-			var headersHash = headers.ToHashString();
+			var uriHash = options?.UriManipulation == null
+				? uri.ToString()
+				: options?.UriManipulation.Invoke(uri);
 
-			var hash = $"method={request.Method};url={urlHash};headers={headersHash}";
+			var hash = $"method={request.Method};url={uriHash};headers={headersHash}";
 			return hash;
 		}
 
@@ -107,6 +110,12 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public Predicate<KeyValuePair<string, StringValues>> HeadersExclude { get; private set; }
 
+		/// <summary>
+		/// Add headers exclude filtering (it will be combined).
+		/// </summary>
+		/// <param name="predicate">Predicate to add for excluding headers.</param>
+		/// <param name="replace">Determine whether to replace instead of combine.</param>
+		/// <returns></returns>
 		public RequestHashOptions WithHeadersExclude(Predicate<KeyValuePair<string, StringValues>> predicate, bool replace = false)
 		{
 			if (replace)
@@ -122,5 +131,7 @@ namespace FluentlyHttpClient
 
 			return this;
 		}
+
+		public Func<Uri, string> UriManipulation { get; set; }
 	}
 }
