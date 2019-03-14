@@ -422,11 +422,11 @@ namespace Test
 		[Fact]
 		public void WithHashingOptions_ShouldExcludeHeadersCombined()
 		{
-			var requestWithHeaders = GetNewRequestBuilder(configureClient: cb =>
+			var requestWithHeaders = GetNewRequestBuilder(configureClient: clientBuilder =>
 						{
-							cb.WithRequestBuilderDefaults(rb =>
+							clientBuilder.WithRequestBuilderDefaults(requestBuilder =>
 								{
-									rb.WithRequestHashOptions(opts =>
+									requestBuilder.WithRequestHashOptions(opts =>
 									{
 										opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.Authorization)
 											.WithHeadersExclude(pair => pair.Key == HeaderTypes.Accept);
