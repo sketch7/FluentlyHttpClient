@@ -62,7 +62,7 @@ namespace FluentlyHttpClient.Caching
 		public Task<FluentHttpResponse> Deserialize(MessageItemStore item)
 		{
 			var contentType = new ContentType(item.ContentHeaders["Content-Type"]);
-			var encoding = Encoding.GetEncoding(contentType.CharSet);
+			var encoding = string.IsNullOrEmpty(contentType.CharSet) ? Encoding.UTF8 : Encoding.GetEncoding(contentType.CharSet);
 
 			var cloned = new FluentHttpResponse(new HttpResponseMessage((HttpStatusCode)item.StatusCode)
 			{

@@ -19,7 +19,7 @@ namespace FluentlyHttpClient
 		{
 			var contentString = await response.Content.ReadAsStringAsync();
 			var contentType = response.Content.Headers.ContentType;
-			var encoding = Encoding.GetEncoding(contentType.CharSet);
+			var encoding = string.IsNullOrEmpty(contentType.CharSet) ? Encoding.UTF8 : Encoding.GetEncoding(contentType.CharSet);
 
 			var cloned = new FluentHttpResponse(new HttpResponseMessage(response.StatusCode)
 			{

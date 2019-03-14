@@ -2,6 +2,7 @@
 using FluentlyHttpClient;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace FluentHttpClient.Entity
 {
@@ -20,10 +21,10 @@ namespace FluentHttpClient.Entity
 
 	public static class FluentHttpHeadersConversion
 	{
-		private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings();
+		private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings { ContractResolver = new DefaultContractResolver() };
 
 		public static ValueConverter<FluentHttpHeaders, string> Convert = new ValueConverter<FluentHttpHeaders, string>(
-			x => JsonConvert.SerializeObject(x),
+			x => JsonConvert.SerializeObject(x, Settings),
 			x => new FluentHttpHeaders(JsonConvert.DeserializeObject<Dictionary<string, string[]>>(x, Settings)));
 	}
 }

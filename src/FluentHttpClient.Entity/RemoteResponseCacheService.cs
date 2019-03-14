@@ -42,7 +42,7 @@ namespace FluentHttpClient.Entity
 			await _clientDb.HttpResponses.AddAsync(item);
 			await _clientDb.Commit();
 
-			_cache.Set(hash, response);
+			await _cache.Set(hash, Task.FromResult(response));
 		}
 	}
 }
