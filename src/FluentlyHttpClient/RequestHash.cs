@@ -117,7 +117,7 @@ namespace FluentlyHttpClient
 				if (headersExclude == null)
 					HeadersExclude = predicate;
 				else
-					HeadersExclude = p => headersExclude.Invoke(p) || predicate(p);
+					HeadersExclude = p => headersExclude(p) || predicate(p);
 			}
 
 			return this;
