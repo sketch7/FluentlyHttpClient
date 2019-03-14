@@ -8,4 +8,4 @@ if [ "$SKETCH7_NUGET_API_KEY" == "" ]; then
 	err "'SKETCH7_NUGET_API_KEY' environment variable not defined."
 	exit 1
 fi
-dotnet nuget push *.nupkg -k $SKETCH7_NUGET_API_KEY -s https://www.nuget.org/api/v2/package
+find *.nupkg | xargs -i dotnet nuget push {} -k $SKETCH7_NUGET_API_KEY -s https://api.nuget.org/v3/index.json
