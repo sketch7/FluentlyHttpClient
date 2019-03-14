@@ -404,7 +404,7 @@ namespace Test
 		}
 
 		[Fact]
-		public void ShouldExcludeForRequest()
+		public void WithHashingOptions_ShouldExcludeHeaders()
 		{
 			var requestWithHeaders = GetNewRequestBuilder()
 				.WithRequestHashOptions(opts => opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.Authorization))
@@ -420,7 +420,7 @@ namespace Test
 		}
 
 		[Fact]
-		public void ShouldExclude_Combined()
+		public void WithHashingOptions_ShouldExcludeHeadersCombined()
 		{
 			var requestWithHeaders = GetNewRequestBuilder(configureClient: cb =>
 						{
@@ -429,26 +429,19 @@ namespace Test
 									rb.WithRequestHashOptions(opts =>
 									{
 										opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.Authorization)
-											.WithHeadersExclude(pair =>
-											{
-												return pair.Key == HeaderTypes.Accept;
-											});
+											.WithHeadersExclude(pair => pair.Key == HeaderTypes.Accept);
 									});
 								});
 						})
-				.WithRequestHashOptions(opts => opts.WithHeadersExclude(pair =>
-				{
-					return pair.Key == HeaderTypes.UserAgent;
-				}))
+				.WithRequestHashOptions(opts => opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.UserAgent))
 				.WithUri("/api/heroes/azmodan")
 				.WithBearerAuthentication("XXX")
 				.WithHeader("local", "en-GB")
 				;
 
-			var requestHashWithHeaders = requestWithHeaders.Build().GenerateHash();
+			var hash = requestWithHeaders.Build().GenerateHash();
 
-			const string requestHashWithHeadersAssert = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=local=en-GB";
-			Assert.Equal(requestHashWithHeadersAssert, requestHashWithHeaders);
+			Assert.Equal("method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=local=en-GB", hash);
 		}
 	}
 }
