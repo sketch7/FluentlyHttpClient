@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Net.Http;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
@@ -27,7 +28,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="request">Request to get hash from.</param>
 		/// <returns>Returns hash string for the request.</returns>
-		public static string GetRequestHash(this FluentHttpRequest request)
+		public static string GetHash(this FluentHttpRequest request)
 		{
 			if (request.Items.TryGetValue(HashKey, out var value))
 				return (string)value;
@@ -53,7 +54,7 @@ namespace FluentlyHttpClient
 		/// Generate request hash.
 		/// </summary>
 		/// <param name="request">Request to generate hash for.</param>
-		public static string GenerateHash(this FluentHttpRequest request)
+		internal static string GenerateHash(this FluentHttpRequest request)
 		{
 			var options = request.GetRequestHashOptions();
 			Action<FluentHttpHeadersOptions> headersOptions = null;
@@ -150,7 +151,6 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
-
 		/// <summary>
 		/// Exclude header by key e.g. Authorization.
 		/// </summary>
@@ -161,6 +161,15 @@ namespace FluentlyHttpClient
 			=> WithHeadersExclude(pair => pair.Key == key, replace);
 
 		/// <summary>
+		/// Exclude headers by keys e.g. Authorization.
+		/// </summary>
+		/// <param name="keys">Keys to exclude.</param>
+		/// <param name="replace">Determine whether to replace instead of combine.</param>
+		/// <returns>When true is returned header will be filtered.</returns>
+		public RequestHashOptions WithHeadersExcludeByKeys(ICollection<string> keys, bool replace = false)
+			=> WithHeadersExclude(pair => keys.Contains(pair.Key), replace);
+
+		/// <summary>
 		/// Hash uri manipulate e.g. to modify query strings etc...
 		/// </summary>
 		/// <param name="manipulate">Function to manipulate uri.</param>
@@ -168,6 +177,20 @@ namespace FluentlyHttpClient
 		{
 			UriManipulation = manipulate;
 			return this;
+		}
+
+		/// <summary>
+		/// Hash uri with query string manipulation only e.g. to modify query strings.
+		/// </summary>
+		/// <param name="manipulate">Function to manipulate uri query string.</param>
+		public RequestHashOptions WithUriQueryString(Action<NameValueCollection> manipulate)
+		{
+			return WithUri(uri =>
+			{
+				var ub = new UriBuilder(uri)
+					.ManipulateQueryString(manipulate);
+				return ub.Uri.ToString();
+			});
 		}
 
 		/// <summary>

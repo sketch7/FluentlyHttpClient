@@ -56,7 +56,7 @@ namespace FluentlyHttpClient.Middleware
 			if (options.ShouldIgnore || options.Matcher != null && !options.Matcher(request))
 				return await _next(context);
 
-			var hash = request.GetRequestHash();
+			var hash = request.GetHash();
 			var response = await _service.Get(hash);
 			if (response != null)
 			{
