@@ -446,15 +446,14 @@ namespace Test
 			Assert.Equal("method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=local=en-GB", hash);
 		}
 
-
 		[Fact]
 		public void WithHashingOptions_UriManipulate_Should()
 		{
 			var requestWithHeaders = GetNewRequestBuilder()
 					.WithRequestHashOptions(opts => opts.UriManipulation = uri =>
 					{
-						var ub = new UriBuilder(uri);
-						ub = RemoveQueryParam(ub, c => c.Remove("token"));
+						var ub = new UriBuilder(uri)
+							.ManipulateQueryString(c => c.Remove("token"));
 						return ub.Uri.ToString();
 					})
 					.WithUri("/api/heroes/azmodan")
@@ -467,18 +466,5 @@ namespace Test
 			Assert.Equal(requestHashWithHeadersAssert, requestHashWithHeaders);
 		}
 
-		// todo: extract?
-		private static UriBuilder RemoveQueryParam(UriBuilder builder, Action<NameValueCollection> configureQueryString)
-		{
-			if (string.IsNullOrEmpty(builder.Query))
-				return builder;
-
-			var queryString = HttpUtility.ParseQueryString(builder.Query);
-			configureQueryString(queryString);
-
-			builder.Query = queryString.ToString();
-
-			return builder;
-		}
 	}
 }
