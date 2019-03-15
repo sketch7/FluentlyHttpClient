@@ -33,7 +33,6 @@ namespace FluentlyHttpClient.Entity
 				;
 			builder.Property(x => x.RequestMessage)
 				.IsRequired()
-				.HasMaxLength(Constants.LongTextLength)
 				.HasConversion(
 				x => JsonConvert.SerializeObject(x),
 				x => JsonConvert.DeserializeObject<HttpRequestMessage>(x));
