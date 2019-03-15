@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
@@ -454,13 +455,11 @@ namespace Test
 					.WithRequestHashOptions(opts => opts.UriManipulation = uri =>
 					{
 						var ub = new UriBuilder(uri);
-						ub = RemoveQueryParam(ub, "token");
-
-
-						return ub.ToString();
+						ub = RemoveQueryParam(ub, c => c.Remove("token"));
+						return ub.Uri.ToString();
 					})
 					.WithUri("/api/heroes/azmodan")
-					.WithQueryParams(new {token = "XXX"})
+					.WithQueryParams(new { token = "XXX" })
 				;
 
 			var requestHashWithHeaders = requestWithHeaders.Build().GenerateHash();
@@ -470,13 +469,13 @@ namespace Test
 		}
 
 		// todo: extract?
-		private UriBuilder RemoveQueryParam(UriBuilder builder, string key)
+		private static UriBuilder RemoveQueryParam(UriBuilder builder, Action<NameValueCollection> configureQueryString)
 		{
 			if (string.IsNullOrEmpty(builder.Query))
 				return builder;
 
 			var queryString = HttpUtility.ParseQueryString(builder.Query);
-			queryString.Remove(key);
+			configureQueryString(queryString);
 
 			builder.Query = queryString.ToString();
 
