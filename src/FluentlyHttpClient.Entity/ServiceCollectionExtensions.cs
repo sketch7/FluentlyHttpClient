@@ -3,6 +3,7 @@ using FluentlyHttpClient.Caching;
 using FluentlyHttpClient.Entity;
 using Microsoft.EntityFrameworkCore;
 
+// ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
 	public static class ServiceCollectionExtensions
