@@ -44,7 +44,7 @@ namespace FluentlyHttpClient.Entity
 			await _clientDb.HttpResponses.AddAsync(item);
 			await _clientDb.Commit();
 
-			await _cache.Set(hash, Task.FromResult(response));
+			await _cache.Set(item.Id, Task.FromResult(response));
 		}
 	}
 }

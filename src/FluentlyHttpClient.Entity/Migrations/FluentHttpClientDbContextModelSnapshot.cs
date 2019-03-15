@@ -47,8 +47,7 @@ namespace FluentlyHttpClient.Entity.Migrations
                         .HasMaxLength(70);
 
                     b.Property<string>("RequestMessage")
-                        .IsRequired()
-                        .HasMaxLength(1500);
+                        .IsRequired();
 
                     b.Property<int>("StatusCode");
 
