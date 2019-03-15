@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace FluentlyHttpClient
 {
-	public static class HashingExtensions
+	public static class RequestHashingExtensions
 	{
 		private const string HashKey = "REQUEST_HASH";
 		private const string HashOptionsKey = "REQUEST_HASH_OPTIONS";
