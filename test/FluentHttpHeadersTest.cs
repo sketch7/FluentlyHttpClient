@@ -164,12 +164,12 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void ShouldFilterWithHashingFilter()
 		{
-			var headers = new FluentHttpHeaders(opts => opts.HashingExclude = pair => pair.Key == HeaderTypes.Authorization)
+			var headers = new FluentHttpHeaders
 			{
 				{HeaderTypes.Authorization, "the-xx"},
 				{HeaderTypes.Accept, new[] {"json", "msgpack"}},
 				{HeaderTypes.XForwardedHost, "sketch7.com"},
-			};
+			}.WithOptions(opts => opts.WithHashingExclude(pair => pair.Key == HeaderTypes.Authorization));
 			var hash = headers.ToHashString();
 
 			Assert.Equal("Accept=json,msgpack&X-Forwarded-Host=sketch7.com", hash);

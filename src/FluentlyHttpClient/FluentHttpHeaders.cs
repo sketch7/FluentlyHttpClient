@@ -14,7 +14,29 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Predicate function to exclude headers from being hashed in <see cref="FluentHttpHeaders.ToHashString"/>.
 		/// </summary>
-		public Predicate<KeyValuePair<string, StringValues>> HashingExclude { get; set; }
+		public Predicate<KeyValuePair<string, StringValues>> HashingExclude { get; private set; }
+
+		/// <summary>
+		/// Add headers exclude filtering (it will be combined).
+		/// </summary>
+		/// <param name="predicate">Predicate to add for excluding headers.</param>
+		/// <param name="replace">Determine whether to replace instead of combine.</param>
+		/// <returns>When true is returned header will be filtered.</returns>
+		public FluentHttpHeadersOptions WithHashingExclude(Predicate<KeyValuePair<string, StringValues>> predicate, bool replace = false)
+		{
+			if (replace)
+				HashingExclude = predicate;
+			else
+			{
+				var headersExclude = HashingExclude;
+				if (headersExclude == null)
+					HashingExclude = predicate;
+				else
+					HashingExclude = p => headersExclude(p) || predicate(p);
+			}
+
+			return this;
+		}
 	}
 
 	/// <summary>
@@ -23,28 +45,20 @@ namespace FluentlyHttpClient
 	public partial class FluentHttpHeaders : Dictionary<string, StringValues>
 	{
 		private static readonly FluentHttpHeadersOptions DefaultOptions = new FluentHttpHeadersOptions();
-		private readonly FluentHttpHeadersOptions _options;
+		private FluentHttpHeadersOptions _options = DefaultOptions;
 
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
-		public FluentHttpHeaders(Action<FluentHttpHeadersOptions> configureOptions = null)
+		public FluentHttpHeaders()
 		{
-			if (configureOptions == null)
-				_options = DefaultOptions;
-			else
-			{
-				_options = new FluentHttpHeadersOptions();
-				configureOptions(_options);
-			}
 		}
 
 		/// <summary>
 		/// Initializes a new instance with specified headers.
 		/// </summary>
 		/// <param name="headers">Headers to initialize with.</param>
-		public FluentHttpHeaders(IDictionary<string, string[]> headers, Action<FluentHttpHeadersOptions> configureOptions = null)
-		: this(configureOptions)
+		public FluentHttpHeaders(IDictionary<string, string[]> headers)
 		{
 			AddRange(headers);
 		}
@@ -53,8 +67,7 @@ namespace FluentlyHttpClient
 		/// Initializes a new instance with specified headers.
 		/// </summary>
 		/// <param name="headers">Headers to initialize with.</param>
-		public FluentHttpHeaders(IDictionary<string, IEnumerable<string>> headers, Action<FluentHttpHeadersOptions> configureOptions = null)
-		: this(configureOptions)
+		public FluentHttpHeaders(IDictionary<string, IEnumerable<string>> headers)
 		{
 			AddRange(headers);
 		}
@@ -63,8 +76,7 @@ namespace FluentlyHttpClient
 		/// Initializes a new instance with specified headers.
 		/// </summary>
 		/// <param name="headers">Headers to initialize with.</param>
-		public FluentHttpHeaders(IDictionary<string, string> headers, Action<FluentHttpHeadersOptions> configureOptions = null)
-			: this(configureOptions)
+		public FluentHttpHeaders(IDictionary<string, string> headers)
 		{
 			AddRange(headers);
 		}
@@ -73,8 +85,7 @@ namespace FluentlyHttpClient
 		/// Initializes a new instance with specified headers.
 		/// </summary>
 		/// <param name="headers">Headers to initialize with.</param>
-		public FluentHttpHeaders(HttpHeaders headers, Action<FluentHttpHeadersOptions> configureOptions = null)
-			: this(configureOptions)
+		public FluentHttpHeaders(HttpHeaders headers)
 		{
 			AddRange(headers);
 		}
@@ -185,6 +196,15 @@ namespace FluentlyHttpClient
 		{
 			foreach (var header in headers)
 				this[header.Key] = new StringValues(header.Value.ToArray());
+			return this;
+		}
+
+		public FluentHttpHeaders WithOptions(Action<FluentHttpHeadersOptions> configure)
+		{
+			if (_options == DefaultOptions)
+				_options = new FluentHttpHeadersOptions();
+			configure(_options);
+
 			return this;
 		}
 

@@ -57,12 +57,13 @@ namespace FluentlyHttpClient
 		internal static string GenerateHash(this FluentHttpRequest request)
 		{
 			var options = request.GetRequestHashOptions();
-			Action<FluentHttpHeadersOptions> headersOptions = null;
-			if (options?.HeadersExclude != null)
-				headersOptions = httpHeadersOptions => httpHeadersOptions.HashingExclude = options.HeadersExclude;
 
-			var headers = new FluentHttpHeaders(request.Builder.DefaultHeaders, headersOptions)
+			var headers = new FluentHttpHeaders(request.Builder.DefaultHeaders)
 				.AddRange(request.Headers);
+
+			if (options?.HeadersExclude != null)
+				headers.WithOptions(opts => opts.WithHashingExclude(options.HeadersExclude));
+
 			var headersHash = headers.ToHashString();
 
 			var uri = request.Uri.IsAbsoluteUri

@@ -24,6 +24,6 @@ namespace FluentlyHttpClient.Entity
 
 		public static ValueConverter<FluentHttpHeaders, string> Convert = new ValueConverter<FluentHttpHeaders, string>(
 			x => JsonConvert.SerializeObject(x, Settings),
-			x => new FluentHttpHeaders(JsonConvert.DeserializeObject<Dictionary<string, string[]>>(x, Settings), null));
+			x => new FluentHttpHeaders(JsonConvert.DeserializeObject<Dictionary<string, string[]>>(x, Settings)));
 	}
 }
