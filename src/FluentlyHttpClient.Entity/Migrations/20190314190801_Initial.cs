@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace FluentHttpClient.Entity.Migrations
+namespace FluentlyHttpClient.Entity.Migrations
 {
     public partial class Initial : Migration
     {

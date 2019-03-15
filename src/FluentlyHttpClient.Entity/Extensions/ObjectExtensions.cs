@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json;
-using System.Data.HashFunction.xxHash;
+﻿using System.Data.HashFunction.xxHash;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
-namespace FluentHttpClient.Entity.Extensions
+// ReSharper disable once CheckNamespace
+namespace FluentlyHttpClient.Entity
 {
 	// todo: extract to core library
 	public static class ObjectExtensions

@@ -1,4 +1,4 @@
-﻿namespace FluentHttpClient.Entity
+﻿namespace FluentlyHttpClient.Entity
 {
 	public static class Constants
 	{
@@ -9,6 +9,6 @@
 
 		public const string SchemaName = "cache";
 
-		public const string HttpResponseTable= "HttpResponses";
+		public const string HttpResponseTable = "HttpResponses";
 	}
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Newtonsoft.Json;
 
-namespace FluentHttpClient.Entity
+namespace FluentlyHttpClient.Entity
 {
 	public class HttpResponseMapping : IEntityTypeConfiguration<HttpResponse>
 	{

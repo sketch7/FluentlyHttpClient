@@ -9,7 +9,7 @@ This need to run from `FluentlyHttpClient` main directory
 
 **.NET CLI**
 ```bash
-dotnet ef migrations add Initial --project src/FluentHttpClient.Entity/FluentHttpClient.Entity.csproj --startup-project samples/FluentlyHttpClient.Sample.Api/FluentlyHttpClient.Sample.Api.csproj
+dotnet ef migrations add Initial --project src/FluentlyHttpClient.Entity/FluentlyHttpClient.Entity.csproj --startup-project samples/FluentlyHttpClient.Sample.Api/FluentlyHttpClient.Sample.Api.csproj
 ```
 
 ### Create/Update Database
@@ -19,7 +19,7 @@ There are two ways to execute the migration scripts, all migration scripts are i
 
 **.NET CLI**
 ```bash
-dotnet ef database update --project src/FluentHttpClient.Entity/FluentHttpClient.Entity.csproj --startup-project samples/FluentlyHttpClient.Sample.Api/FluentlyHttpClient.Sample.Api.csproj
+dotnet ef database update --project src/FluentlyHttpClient.Entity/FluentlyHttpClient.Entity.csproj --startup-project samples/FluentlyHttpClient.Sample.Api/FluentlyHttpClient.Sample.Api.csproj
 ```
 
 ## Features

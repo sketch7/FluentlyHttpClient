@@ -1,16 +1,17 @@
 ﻿using System.Reflection;
 using System.Threading.Tasks;
+using FluentlyHttpClient.Caching;
 using Microsoft.EntityFrameworkCore;
 
-namespace FluentHttpClient.Entity
+namespace FluentlyHttpClient.Entity
 {
-	public class FluentHttpClientDbContext : DbContext
+	public class FluentHttpClientContext : DbContext
 	{
-		public FluentHttpClientDbContext(DbContextOptions options)
+		public FluentHttpClientContext(DbContextOptions options)
 			: base(options)
 		{ }
 
-		public DbSet<HttpResponse> HttpResponses { get; set; }
+		public DbSet<MessageItemStore> HttpResponses { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

@@ -32,7 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmark", "benchmark", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentlyHttpClient.Benchmarks", "benchmark\FluentlyHttpClient.Benchmarks.csproj", "{4D5EB4E3-1076-4AEA-A534-107F321E41C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentHttpClient.Entity", "src\FluentHttpClient.Entity\FluentHttpClient.Entity.csproj", "{3CAD4F18-BF3A-42A1-A777-781EC9456C4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentlyHttpClient.Entity", "src\FluentlyHttpClient.Entity\FluentlyHttpClient.Entity.csproj", "{3CAD4F18-BF3A-42A1-A777-781EC9456C4C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentlyHttpClient.Sample.Api", "samples\FluentlyHttpClient.Sample.Api\FluentlyHttpClient.Sample.Api.csproj", "{679DC1D2-E1A9-47D6-B4CF-8B35820D99E3}"
 EndProject

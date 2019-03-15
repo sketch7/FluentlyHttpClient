@@ -33,7 +33,7 @@ namespace FluentlyHttpClient.Test
 			var response = await requestBuilder.ReturnAsResponse();
 
 			var serializer = new HttpResponseSerializer();
-			var message = await serializer.Serialize(response);
+			var message = await serializer.Serialize<MessageItemStore>(response);
 
 			Assert.Equal("http://local.sketch7.io:5000/api/heroes/azmodan", message.Url);
 
