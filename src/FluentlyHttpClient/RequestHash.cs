@@ -78,7 +78,6 @@ namespace FluentlyHttpClient
 			if (request.Message.Content is ObjectContent c)
 				contentHash = options?.HashBody?.Invoke(c.Value) ?? JsonConvert.SerializeObject(c.Value);
 
-
 			return $"method={request.Method};url={uriHash};headers={headersHash};content={contentHash}";
 		}
 
