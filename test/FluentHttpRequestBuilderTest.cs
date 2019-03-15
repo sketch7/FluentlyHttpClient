@@ -215,7 +215,6 @@ namespace Test
 		{
 			var builder = GetNewRequestBuilder()
 					.WithUri("/org/sketch7")
-					.WithHeader("chiko", "hex")
 					.WithHeaders(new Dictionary<string, string>
 					{
 						["chiko"] = "hexII",
