@@ -134,8 +134,7 @@ namespace Test
 					Powers = new List<int> { 1337, 2337 }
 				}).Build();
 
-			Assert.Equal("/org/sketch7/heroes?roles=warrior&roles=assassin&powers=1337&powers=2337",
-				request.Uri.ToString());
+			Assert.Equal("/org/sketch7/heroes?roles=warrior&roles=assassin&powers=1337&powers=2337", request.Uri.ToString());
 		}
 
 		[Fact]
@@ -146,8 +145,7 @@ namespace Test
 				.WithQueryParams(new
 				{
 					Roles = new List<string> { "warrior", "assassin" },
-				},
-					opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated
+				}, opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated
 				).Build();
 
 			Assert.Equal("/org/sketch7/heroes?roles=warrior,assassin", request.Uri.ToString());
@@ -250,8 +248,7 @@ namespace Test
 		[Fact]
 		public void WithUserAgent_WeirdButValid()
 		{
-			const string userAgent =
-				"Mozilla/5.0 (Linux; Android 6.0; vivo 1601 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/63.0.3239.111 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/153.0.0.53.88;]";
+			const string userAgent = "Mozilla/5.0 (Linux; Android 6.0; vivo 1601 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/63.0.3239.111 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/153.0.0.53.88;]";
 			var builder = GetNewRequestBuilder()
 					.WithUri("/org/sketch7")
 					.WithUserAgent(userAgent)
@@ -420,8 +417,7 @@ namespace Test
 
 				var hash = requestBuilder.Build().GetHash();
 
-				const string assertHash =
-					"method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&local=en-GB;content=";
+				const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&local=en-GB;content=";
 				Assert.Equal(assertHash, hash);
 			}
 
@@ -453,8 +449,7 @@ namespace Test
 
 				var hash = requestBuilder.Build().GetHash();
 
-				const string assertHash =
-					"method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=local=en-GB;content=";
+				const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=local=en-GB;content=";
 				Assert.Equal(assertHash, hash);
 			}
 
@@ -500,8 +495,7 @@ namespace Test
 
 				var hash = requestBuilder.Build().GetHash();
 
-				const string assertHash =
-					"method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content=";
+				const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content=";
 				Assert.Equal(assertHash, hash);
 			}
 
@@ -516,8 +510,7 @@ namespace Test
 
 				var hash = requestBuilder.Build().GetHash();
 
-				const string assertHash =
-					"method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content=";
+				const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content=";
 				Assert.Equal(assertHash, hash);
 			}
 
@@ -535,8 +528,7 @@ namespace Test
 
 				var requestHash = requestBuilder.Build().GetHash();
 
-				const string assertHash =
-					"method=POST;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content={\"email\":\"chiko@sketch7.com\"}";
+				const string assertHash = "method=POST;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content={\"email\":\"chiko@sketch7.com\"}";
 				Assert.Equal(assertHash, requestHash);
 			}
 
@@ -555,8 +547,7 @@ namespace Test
 
 				var hash = requestBuilder.Build().GetHash();
 
-				const string assertHash =
-					"method=POST;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content=";
+				const string assertHash = "method=POST;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content=";
 				Assert.Equal(assertHash, hash);
 			}
 		}
