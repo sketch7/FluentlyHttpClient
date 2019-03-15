@@ -199,6 +199,10 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
+		/// <summary>
+		/// Configure header options.
+		/// </summary>
+		/// <param name="configure">Configure options action.</param>
 		public FluentHttpHeaders WithOptions(Action<FluentHttpHeadersOptions> configure)
 		{
 			if (_options == DefaultOptions)
