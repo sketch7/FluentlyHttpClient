@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using FluentlyHttpClient;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace FluentHttpClient.Entity
+namespace FluentlyHttpClient.Entity
 {
 	//public class FluentHttpHeadersConverter : ValueConverter<FluentHttpHeaders, string>
 	//{

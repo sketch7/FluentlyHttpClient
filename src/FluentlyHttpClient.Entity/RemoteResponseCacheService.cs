@@ -1,11 +1,9 @@
 ﻿using System.Threading.Tasks;
-using FluentHttpClient.Entity.Extensions;
-using FluentlyHttpClient;
 using FluentlyHttpClient.Caching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace FluentHttpClient.Entity
+namespace FluentlyHttpClient.Entity
 {
 	public class RemoteResponseCacheService : IResponseCacheService
 	{

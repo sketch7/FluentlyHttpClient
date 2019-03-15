@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using FluentHttpClient.Entity;
+using FluentlyHttpClient.Entity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FluentlyHttpClient.Sample.Api.Controllers

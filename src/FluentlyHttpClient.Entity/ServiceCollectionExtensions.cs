@@ -1,6 +1,6 @@
 ﻿using System;
-using FluentHttpClient.Entity;
 using FluentlyHttpClient.Caching;
+using FluentlyHttpClient.Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Microsoft.Extensions.DependencyInjection

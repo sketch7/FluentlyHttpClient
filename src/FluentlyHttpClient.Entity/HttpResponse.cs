@@ -1,8 +1,7 @@
 ﻿using System.Net.Http;
-using FluentlyHttpClient;
 using FluentlyHttpClient.Caching;
 
-namespace FluentHttpClient.Entity
+namespace FluentlyHttpClient.Entity
 {
 	public class HttpResponse : IMessageItemStore
 	{
