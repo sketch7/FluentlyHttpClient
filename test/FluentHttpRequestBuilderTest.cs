@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Web;
 using FluentlyHttpClient;
 using FluentlyHttpClient.Test;
 using RichardSzalay.MockHttp;
@@ -443,6 +444,43 @@ namespace Test
 			var hash = requestWithHeaders.Build().GenerateHash();
 
 			Assert.Equal("method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=local=en-GB", hash);
+		}
+
+
+		[Fact]
+		public void WithHashingOptions_UriManipulate_Should()
+		{
+			var requestWithHeaders = GetNewRequestBuilder()
+					.WithRequestHashOptions(opts => opts.UriManipulation = uri =>
+					{
+						var ub = new UriBuilder(uri);
+						ub = RemoveQueryParam(ub, "token");
+
+
+						return ub.ToString();
+					})
+					.WithUri("/api/heroes/azmodan")
+					.WithQueryParams(new {token = "XXX"})
+				;
+
+			var requestHashWithHeaders = requestWithHeaders.Build().GenerateHash();
+
+			const string requestHashWithHeadersAssert = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently";
+			Assert.Equal(requestHashWithHeadersAssert, requestHashWithHeaders);
+		}
+
+		// todo: extract?
+		private UriBuilder RemoveQueryParam(UriBuilder builder, string key)
+		{
+			if (string.IsNullOrEmpty(builder.Query))
+				return builder;
+
+			var queryString = HttpUtility.ParseQueryString(builder.Query);
+			queryString.Remove(key);
+
+			builder.Query = queryString.ToString();
+
+			return builder;
 		}
 	}
 }
