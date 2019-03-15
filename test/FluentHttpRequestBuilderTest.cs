@@ -357,14 +357,12 @@ namespace Test
 	{
 		private static IFluentHttpClient GetClient()
 		{
-			var fluentHttpClientFactory = GetNewClientFactory();
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
-					//.WithBaseUrl("https://localhost:5001")
+			var clientBuilder = GetNewClientFactory().CreateBuilder("sketch7")
 					.WithBaseUrl("http://local.sketch7.io:5000")
 					.WithHeader("locale", "en-GB")
 					.WithHeader("X-SSV-VERSION", "2019.02-2")
 				;
-			return fluentHttpClientFactory.Add(clientBuilder);
+			return clientBuilder.Build();
 		}
 
 		[Fact]
@@ -404,7 +402,7 @@ namespace Test
 		}
 
 		[Fact]
-		public void WithHashingOptions_ShouldExcludeHeaders()
+		public void WithHashingOptions_WithHeadersExclude_ShouldExclude()
 		{
 			var requestBuilder = GetNewRequestBuilder()
 				.WithRequestHashOptions(opts => opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.Authorization))
@@ -413,14 +411,14 @@ namespace Test
 				.WithHeader("local", "en-GB")
 				;
 
-			var requestHashWithHeaders = requestBuilder.Build().GenerateHash();
+			var hash = requestBuilder.Build().GenerateHash();
 
-			const string requestHashWithHeadersAssert = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&local=en-GB";
-			Assert.Equal(requestHashWithHeadersAssert, requestHashWithHeaders);
+			const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&local=en-GB";
+			Assert.Equal(assertHash, hash);
 		}
 
 		[Fact]
-		public void WithHashingOptions_ShouldExcludeHeadersCombined()
+		public void WithHashingOptions_WithHeadersExclude_ShouldCombinedExclusions()
 		{
 			var requestBuilder = GetNewRequestBuilder(configureClient: clientBuilder =>
 						{
@@ -483,7 +481,7 @@ namespace Test
 		}
 
 		[Fact]
-		public void WithHashingOptions_Body_ShouldBeExcluded()
+		public void WithHashingOptions_WithBodyInvariant_BodyShouldBeExcluded()
 		{
 			var requestBuilder = GetNewRequestBuilder()
 					.WithRequestHashOptions(opts => opts.WithBodyInvariant())

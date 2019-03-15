@@ -77,8 +77,7 @@ namespace FluentlyHttpClient
 				contentHash = options?.HashBody?.Invoke(c.Value) ?? JsonConvert.SerializeObject(c.Value);
 
 
-			var hash = $"method={request.Method};url={uriHash};headers={headersHash};content={contentHash}";
-			return hash;
+			return $"method={request.Method};url={uriHash};headers={headersHash};content={contentHash}";
 		}
 
 		/// <summary>
@@ -113,15 +112,21 @@ namespace FluentlyHttpClient
 	public class RequestHashOptions
 	{
 		/// <summary>
-		/// Predicate function to exclude headers from being hashed in <see cref="FluentHttpHeaders.ToHashString"/>.
+		/// Gets headers exclude function from being hashed in <see cref="FluentHttpHeaders.ToHashString"/>.
 		/// </summary>
 		public Predicate<KeyValuePair<string, StringValues>> HeadersExclude { get; private set; }
 
+		/// <summary>
+		/// Gets the uri manipulation function to be hashed.
+		/// </summary>
 		public Func<Uri, string> UriManipulation { get; private set; }
 
+		/// <summary>
+		/// Gets the function to hash body object.
+		/// </summary>
 		public Func<object, string> HashBody { get; private set; }
 
-		private static readonly Func<object, string> InvariantContent = _c => string.Empty;
+		private static readonly Func<object, string> InvariantContent = c => string.Empty;
 
 		/// <summary>
 		/// Add headers exclude filtering (it will be combined).
@@ -144,6 +149,16 @@ namespace FluentlyHttpClient
 
 			return this;
 		}
+
+
+		/// <summary>
+		/// Exclude header by key e.g. Authorization.
+		/// </summary>
+		/// <param name="key">Key to exclude.</param>
+		/// <param name="replace">Determine whether to replace instead of combine.</param>
+		/// <returns>When true is returned header will be filtered.</returns>
+		public RequestHashOptions WithHeadersExcludeByKey(string key, bool replace = false)
+			=> WithHeadersExclude(pair => pair.Key == key, replace);
 
 		/// <summary>
 		/// Hash uri manipulate e.g. to modify query strings etc...
