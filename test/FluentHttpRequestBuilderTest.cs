@@ -405,7 +405,7 @@ namespace Test
 			Assert.Equal(noHeadersRequestHashAssert, noTokenRequestHash);
 		}
 
-		public class FluentRequest_GetHash_WithHashingOptions
+		public class WithHashingOptions
 		{
 			[Fact]
 			public void WithHeadersExclude_ShouldExclude()
@@ -462,16 +462,16 @@ namespace Test
 			public void WithHeadersExclude_ShouldCombinedExclusions()
 			{
 				var requestBuilder = GetNewRequestBuilder(configureClient: clientBuilder =>
+				{
+					clientBuilder.WithRequestBuilderDefaults(rb =>
+					{
+						rb.WithRequestHashOptions(opts =>
 						{
-							clientBuilder.WithRequestBuilderDefaults(rb =>
-							{
-								rb.WithRequestHashOptions(opts =>
-								{
-									opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.Authorization)
-										.WithHeadersExclude(pair => pair.Key == HeaderTypes.Accept);
-								});
-							});
-						})
+							opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.Authorization)
+								.WithHeadersExclude(pair => pair.Key == HeaderTypes.Accept);
+						});
+					});
+				})
 						.WithRequestHashOptions(opts =>
 							opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.UserAgent))
 						.WithUri("/api/heroes/azmodan")
@@ -560,6 +560,7 @@ namespace Test
 				Assert.Equal(assertHash, hash);
 			}
 		}
-
 	}
+
+
 }
