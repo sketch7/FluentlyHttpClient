@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 
 namespace FluentlyHttpClient
 {
@@ -68,9 +70,14 @@ namespace FluentlyHttpClient
 
 			var uriHash = options?.UriManipulation == null
 				? uri.ToString()
-				: options?.UriManipulation.Invoke(uri);
+				: options.UriManipulation.Invoke(uri);
 
-			var hash = $"method={request.Method};url={uriHash};headers={headersHash}";
+			var contentHash = string.Empty;
+			if (request.Message.Content is ObjectContent c)
+				contentHash = options?.HashBody?.Invoke(c.Value) ?? JsonConvert.SerializeObject(c.Value);
+
+
+			var hash = $"method={request.Method};url={uriHash};headers={headersHash};content={contentHash}";
 			return hash;
 		}
 
@@ -110,12 +117,18 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public Predicate<KeyValuePair<string, StringValues>> HeadersExclude { get; private set; }
 
+		public Func<Uri, string> UriManipulation { get; private set; }
+
+		public Func<object, string> HashBody { get; private set; }
+
+		private static readonly Func<object, string> InvariantContent = _c => string.Empty;
+
 		/// <summary>
 		/// Add headers exclude filtering (it will be combined).
 		/// </summary>
 		/// <param name="predicate">Predicate to add for excluding headers.</param>
 		/// <param name="replace">Determine whether to replace instead of combine.</param>
-		/// <returns></returns>
+		/// <returns>When true is returned header will be filtered.</returns>
 		public RequestHashOptions WithHeadersExclude(Predicate<KeyValuePair<string, StringValues>> predicate, bool replace = false)
 		{
 			if (replace)
@@ -132,6 +145,31 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
-		public Func<Uri, string> UriManipulation { get; set; }
+		/// <summary>
+		/// Hash uri manipulate e.g. to modify query strings etc...
+		/// </summary>
+		/// <param name="manipulate">Function to manipulate uri.</param>
+		public RequestHashOptions WithUri(Func<Uri, string> manipulate)
+		{
+			UriManipulation = manipulate;
+			return this;
+		}
+
+		/// <summary>
+		/// Hash body object content.
+		/// </summary>
+		/// <param name="hashContent">Function to hash object content.</param>
+		public RequestHashOptions WithBody(Func<object, string> hashContent)
+		{
+			HashBody = hashContent;
+			return this;
+		}
+
+		/// <summary>
+		/// Body content will not be hashed.
+		/// </summary>
+		public RequestHashOptions WithBodyInvariant()
+			=> WithBody(InvariantContent);
+
 	}
 }

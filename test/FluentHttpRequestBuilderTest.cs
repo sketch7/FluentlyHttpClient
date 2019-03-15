@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http;
-using System.Web;
 using FluentlyHttpClient;
 using FluentlyHttpClient.Test;
 using RichardSzalay.MockHttp;
@@ -408,14 +406,14 @@ namespace Test
 		[Fact]
 		public void WithHashingOptions_ShouldExcludeHeaders()
 		{
-			var requestWithHeaders = GetNewRequestBuilder()
+			var requestBuilder = GetNewRequestBuilder()
 				.WithRequestHashOptions(opts => opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.Authorization))
 				.WithUri("/api/heroes/azmodan")
 				.WithBearerAuthentication("XXX")
 				.WithHeader("local", "en-GB")
 				;
 
-			var requestHashWithHeaders = requestWithHeaders.Build().GenerateHash();
+			var requestHashWithHeaders = requestBuilder.Build().GenerateHash();
 
 			const string requestHashWithHeadersAssert = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&local=en-GB";
 			Assert.Equal(requestHashWithHeadersAssert, requestHashWithHeaders);
@@ -424,11 +422,11 @@ namespace Test
 		[Fact]
 		public void WithHashingOptions_ShouldExcludeHeadersCombined()
 		{
-			var requestWithHeaders = GetNewRequestBuilder(configureClient: clientBuilder =>
+			var requestBuilder = GetNewRequestBuilder(configureClient: clientBuilder =>
 						{
-							clientBuilder.WithRequestBuilderDefaults(requestBuilder =>
+							clientBuilder.WithRequestBuilderDefaults(rb =>
 								{
-									requestBuilder.WithRequestHashOptions(opts =>
+									rb.WithRequestHashOptions(opts =>
 									{
 										opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.Authorization)
 											.WithHeadersExclude(pair => pair.Key == HeaderTypes.Accept);
@@ -441,29 +439,66 @@ namespace Test
 				.WithHeader("local", "en-GB")
 				;
 
-			var hash = requestWithHeaders.Build().GenerateHash();
+			var hash = requestBuilder.Build().GenerateHash();
 
 			Assert.Equal("method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=local=en-GB", hash);
 		}
 
 		[Fact]
-		public void WithHashingOptions_UriManipulate_Should()
+		public void WithHashingOptions_UriManipulate_ShouldRemoveQuerystringParam()
 		{
-			var requestWithHeaders = GetNewRequestBuilder()
-					.WithRequestHashOptions(opts => opts.UriManipulation = uri =>
+			var requestBuilder = GetNewRequestBuilder()
+					.WithRequestHashOptions(opts => opts.WithUri(uri =>
 					{
 						var ub = new UriBuilder(uri)
 							.ManipulateQueryString(c => c.Remove("token"));
 						return ub.Uri.ToString();
-					})
+					}))
 					.WithUri("/api/heroes/azmodan")
 					.WithQueryParams(new { token = "XXX" })
 				;
 
-			var requestHashWithHeaders = requestWithHeaders.Build().GenerateHash();
+			var hash = requestBuilder.Build().GenerateHash();
 
-			const string requestHashWithHeadersAssert = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently";
-			Assert.Equal(requestHashWithHeadersAssert, requestHashWithHeaders);
+			const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently";
+			Assert.Equal(assertHash, hash);
+		}
+
+		[Fact]
+		public void WithHashingOptions_Body_ShouldBeIncluded()
+		{
+			var requestBuilder = GetNewRequestBuilder()
+					.WithUri("/api/heroes/azmodan")
+					.AsPost()
+					.WithBody(new
+					{
+						email = "chiko@sketch7.com"
+					})
+				;
+
+			var requestHash = requestBuilder.Build().GenerateHash();
+
+			const string assertHash = "method=POST;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content={\"email\":\"chiko@sketch7.com\"}";
+			Assert.Equal(assertHash, requestHash);
+		}
+
+		[Fact]
+		public void WithHashingOptions_Body_ShouldBeExcluded()
+		{
+			var requestBuilder = GetNewRequestBuilder()
+					.WithRequestHashOptions(opts => opts.WithBodyInvariant())
+					.WithUri("/api/heroes/azmodan")
+					.AsPost()
+					.WithBody(new
+					{
+						email = "chiko@sketch7.com"
+					})
+				;
+
+			var hash = requestBuilder.Build().GenerateHash();
+
+			const string assertHash = "method=POST;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content=";
+			Assert.Equal(assertHash, hash);
 		}
 
 	}
