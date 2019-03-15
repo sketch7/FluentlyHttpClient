@@ -14,6 +14,7 @@ so logs can be more fine controlled
 - **headers:** add `FluentHttpHeaders` since `HttpHeaders` (and all implementations) cannot create instances of, and changed all implementations to use it instead of `Dictionary<string, string>`.
 - **util:** add several extensions when working with `HttpHeaders`
 - **http request:** now exposes the request builder
+- **http request:** add request hash `FluentHttpRequest.GetHash`, `FluentHttpRequestBuilder.WithRequestHashOptions` which can be used to build an id hash for the request
 
 ### BREAKING CHANGES
 - **middleware:** `FluentHttpRequestDelegate` has been removed in favor of `FluentHttpMiddlewareDelegate`
