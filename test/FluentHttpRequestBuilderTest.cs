@@ -4,11 +4,11 @@ using System.Linq;
 using System.Net.Http;
 using FluentlyHttpClient;
 using FluentlyHttpClient.Test;
-using Microsoft.Extensions.Primitives;
 using RichardSzalay.MockHttp;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
+// ReSharper disable InconsistentNaming
 namespace Test
 {
 	public class RequestBuilder_WithUri
@@ -145,8 +145,7 @@ namespace Test
 				.WithQueryParams(new
 				{
 					Roles = new List<string> { "warrior", "assassin" },
-				},
-				 opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated
+				}, opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated
 				).Build();
 
 			Assert.Equal("/org/sketch7/heroes?roles=warrior,assassin", request.Uri.ToString());
@@ -185,8 +184,8 @@ namespace Test
 		public void AddHeader()
 		{
 			var builder = GetNewRequestBuilder()
-				.WithUri("/org/sketch7")
-				.WithHeader("chiko", "hex")
+					.WithUri("/org/sketch7")
+					.WithHeader("chiko", "hex")
 				;
 			var request = builder.Build();
 
@@ -215,28 +214,8 @@ namespace Test
 		{
 			var builder = GetNewRequestBuilder()
 					.WithUri("/org/sketch7")
+					.WithHeader("chiko", "hex")
 					.WithHeaders(new Dictionary<string, string>
-					{
-						["chiko"] = "hexII",
-						["locale"] = "mt-MT"
-					})
-				;
-			var request = builder.Build();
-
-			var chikoHeader = request.Headers.GetValues("chiko").FirstOrDefault();
-			var localeHeader = request.Headers.GetValues("locale").FirstOrDefault();
-			Assert.NotNull(chikoHeader);
-			Assert.Equal("hexII", chikoHeader);
-			Assert.NotNull(localeHeader);
-			Assert.Equal("mt-MT", localeHeader);
-		}
-
-		[Fact]
-		public void AddHeadersStringValues()
-		{
-			var builder = GetNewRequestBuilder()
-					.WithUri("/org/sketch7")
-					.WithHeaders(new Dictionary<string, StringValues>
 					{
 						["chiko"] = "hexII",
 						["locale"] = "mt-MT"
@@ -372,4 +351,207 @@ namespace Test
 			Assert.Equal("Lord of Sin", response2.Data.Title);
 		}
 	}
+
+	public class FluentRequest_GetHash
+	{
+		private static IFluentHttpClient GetClient()
+		{
+			var clientBuilder = GetNewClientFactory().CreateBuilder("sketch7")
+					.WithBaseUrl("http://local.sketch7.io:5000")
+					.WithHeader("locale", "en-GB")
+					.WithHeader("X-SSV-VERSION", "2019.02-2")
+				;
+			return clientBuilder.Build();
+		}
+
+		[Fact]
+		public void ShouldBeEqual()
+		{
+			var httpClient = GetClient();
+
+			var request1 = httpClient.CreateRequest("/api/heroes/azmodan");
+			var request2 = httpClient.CreateRequest("/api/heroes/azmodan");
+
+			var request1Hash = request1.Build().GetHash();
+			var request2Hash = request2.Build().GetHash();
+
+			Assert.Equal(request1Hash, request2Hash);
+		}
+
+		[Fact]
+		public void ShouldHandleHeaders()
+		{
+			var httpClient = GetClient();
+
+			var requestWithHeaders = httpClient.CreateRequest("/api/heroes/azmodan")
+					.WithBearerAuthentication("XXX")
+					.WithHeader("local", "en-GB")
+				;
+			var requestNoHeaders = httpClient.CreateRequest("/api/heroes/azmodan");
+
+			var requestHashWithHeaders = requestWithHeaders.Build().GetHash();
+			var noTokenRequestHash = requestNoHeaders.Build().GetHash();
+
+			Assert.NotEqual(requestHashWithHeaders, noTokenRequestHash);
+
+			const string requestHashWithHeadersAssert =
+				"method=GET;url=http://local.sketch7.io:5000/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&locale=en-GB&X-SSV-VERSION=2019.02-2&Authorization=Bearer XXX&local=en-GB;content=";
+			const string noHeadersRequestHashAssert =
+				"method=GET;url=http://local.sketch7.io:5000/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&locale=en-GB&X-SSV-VERSION=2019.02-2;content=";
+			Assert.Equal(requestHashWithHeadersAssert, requestHashWithHeaders);
+			Assert.Equal(noHeadersRequestHashAssert, noTokenRequestHash);
+		}
+
+		public class WithHashingOptions
+		{
+			[Fact]
+			public void WithHeadersExclude_ShouldExclude()
+			{
+				var requestBuilder = GetNewRequestBuilder()
+						.WithRequestHashOptions(opts =>
+							opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.Authorization))
+						.WithUri("/api/heroes/azmodan")
+						.WithBearerAuthentication("XXX")
+						.WithHeader("local", "en-GB")
+					;
+
+				var hash = requestBuilder.Build().GetHash();
+
+				const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&local=en-GB;content=";
+				Assert.Equal(assertHash, hash);
+			}
+
+			[Fact]
+			public void WithHeadersExcludeByKey_ShouldExclude()
+			{
+				var requestBuilder = GetNewRequestBuilder()
+						.WithRequestHashOptions(opts => opts.WithHeadersExcludeByKey(HeaderTypes.Accept))
+						.WithUri("/api/heroes/azmodan")
+						.WithHeader("local", "en-GB")
+					;
+
+				var hash = requestBuilder.Build().GetHash();
+
+				const string assertHash =
+					"method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=User-Agent=fluently&local=en-GB;content=";
+				Assert.Equal(assertHash, hash);
+			}
+
+			[Fact]
+			public void WithHeadersExcludeByKeys_ShouldExclude()
+			{
+				var requestBuilder = GetNewRequestBuilder()
+						.WithRequestHashOptions(opts =>
+							opts.WithHeadersExcludeByKeys(new[] { HeaderTypes.Accept, HeaderTypes.UserAgent }))
+						.WithUri("/api/heroes/azmodan")
+						.WithHeader("local", "en-GB")
+					;
+
+				var hash = requestBuilder.Build().GetHash();
+
+				const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=local=en-GB;content=";
+				Assert.Equal(assertHash, hash);
+			}
+
+			[Fact]
+			public void WithHeadersExclude_ShouldCombinedExclusions()
+			{
+				var requestBuilder = GetNewRequestBuilder(configureClient: clientBuilder =>
+				{
+					clientBuilder.WithRequestBuilderDefaults(rb =>
+					{
+						rb.WithRequestHashOptions(opts =>
+						{
+							opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.Authorization)
+								.WithHeadersExclude(pair => pair.Key == HeaderTypes.Accept);
+						});
+					});
+				})
+						.WithRequestHashOptions(opts =>
+							opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.UserAgent))
+						.WithUri("/api/heroes/azmodan")
+						.WithBearerAuthentication("XXX")
+						.WithHeader("local", "en-GB")
+					;
+
+				var hash = requestBuilder.Build().GetHash();
+
+				Assert.Equal("method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=local=en-GB;content=", hash);
+			}
+
+			[Fact]
+			public void WithUri_ShouldRemoveQuerystringParam()
+			{
+				var requestBuilder = GetNewRequestBuilder()
+						.WithRequestHashOptions(opts => opts.WithUri(uri =>
+						{
+							var ub = new UriBuilder(uri)
+								.ManipulateQueryString(c => c.Remove("token"));
+							return ub.Uri.ToString();
+						}))
+						.WithUri("/api/heroes/azmodan")
+						.WithQueryParams(new { token = "XXX" })
+					;
+
+				var hash = requestBuilder.Build().GetHash();
+
+				const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content=";
+				Assert.Equal(assertHash, hash);
+			}
+
+			[Fact]
+			public void WithUriQueryString_ShouldRemoveQuerystringParam()
+			{
+				var requestBuilder = GetNewRequestBuilder()
+						.WithRequestHashOptions(opts => opts.WithUriQueryString(qs => qs.Remove("token")))
+						.WithUri("/api/heroes/azmodan")
+						.WithQueryParams(new { token = "XXX" })
+					;
+
+				var hash = requestBuilder.Build().GetHash();
+
+				const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content=";
+				Assert.Equal(assertHash, hash);
+			}
+
+			[Fact]
+			public void Body_ShouldBeIncluded()
+			{
+				var requestBuilder = GetNewRequestBuilder()
+						.WithUri("/api/heroes/azmodan")
+						.AsPost()
+						.WithBody(new
+						{
+							email = "chiko@sketch7.com"
+						})
+					;
+
+				var requestHash = requestBuilder.Build().GetHash();
+
+				const string assertHash = "method=POST;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content={\"email\":\"chiko@sketch7.com\"}";
+				Assert.Equal(assertHash, requestHash);
+			}
+
+			[Fact]
+			public void WithBodyInvariant_BodyShouldBeExcluded()
+			{
+				var requestBuilder = GetNewRequestBuilder()
+						.WithRequestHashOptions(opts => opts.WithBodyInvariant())
+						.WithUri("/api/heroes/azmodan")
+						.AsPost()
+						.WithBody(new
+						{
+							email = "chiko@sketch7.com"
+						})
+					;
+
+				var hash = requestBuilder.Build().GetHash();
+
+				const string assertHash = "method=POST;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content=";
+				Assert.Equal(assertHash, hash);
+			}
+		}
+	}
+
+
 }
