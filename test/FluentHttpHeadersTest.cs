@@ -51,6 +51,25 @@ namespace FluentlyHttpClient.Test
 		}
 	}
 
+	public class FluentHttpHeaders_Extensions
+	{
+		[Fact]
+		public void ConvertType_ToDictionary()
+		{
+			var headers = new FluentHttpHeaders();
+			headers.SetRange(new Dictionary<string, StringValues>{
+				{HeaderTypes.Accept, new[] {"json", "msgpack"}}
+			});
+
+			var dictionary = headers.ToDictionary();
+
+			var result = dictionary.GetValueOrDefault(HeaderTypes.Accept);
+			Assert.Equal(2, result.Length);
+			Assert.Equal("json", result[0]);
+			Assert.Equal("msgpack", result[1]);
+		}
+	}
+
 	public class FluentHttpHeaders_Accessors
 	{
 		[Fact]

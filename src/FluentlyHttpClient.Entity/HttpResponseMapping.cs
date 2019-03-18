@@ -1,7 +1,6 @@
 ﻿using System.Net.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Newtonsoft.Json;
 
 namespace FluentlyHttpClient.Entity
 {
@@ -34,8 +33,8 @@ namespace FluentlyHttpClient.Entity
 			builder.Property(x => x.RequestMessage)
 				.IsRequired()
 				.HasConversion(
-				x => JsonConvert.SerializeObject(x),
-				x => JsonConvert.DeserializeObject<HttpRequestMessage>(x));
+				x => DataSerializer.Serialize(x),
+				x => DataSerializer.Deserialize<HttpRequestMessage>(x));
 		}
 	}
 }

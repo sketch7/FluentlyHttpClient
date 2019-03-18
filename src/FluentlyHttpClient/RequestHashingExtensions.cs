@@ -59,7 +59,7 @@ namespace FluentlyHttpClient
 			var options = request.GetRequestHashOptions();
 
 			var headers = new FluentHttpHeaders(request.Builder.DefaultHeaders)
-				.AddRange(request.Headers);
+				.SetRange(request.Headers);
 
 			if (options?.HeadersExclude != null)
 				headers.WithOptions(opts => opts.WithHashingExclude(options.HeadersExclude));
