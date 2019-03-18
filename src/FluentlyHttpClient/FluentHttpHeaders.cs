@@ -167,10 +167,10 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Get header by key or return null.
+		/// Get header as string by key or return null.
 		/// </summary>
 		/// <param name="header">Header to try get.</param>
-		public string GetSingle(string header)
+		public string GetValue(string header)
 			=> TryGetValue(header, out var value) ? value[0] : null;
 
 		/// <summary>
