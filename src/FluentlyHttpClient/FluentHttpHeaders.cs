@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
 
 namespace FluentlyHttpClient
@@ -15,7 +14,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Predicate function to exclude headers from being hashed in <see cref="FluentHttpHeaders.ToHashString"/>.
 		/// </summary>
-		public Predicate<KeyValuePair<string, StringValues>> HashingExclude { get; private set; }
+		public Predicate<KeyValuePair<string, string[]>> HashingExclude { get; private set; }
 
 		/// <summary>
 		/// Add headers exclude filtering (it will be combined).
@@ -23,7 +22,7 @@ namespace FluentlyHttpClient
 		/// <param name="predicate">Predicate to add for excluding headers.</param>
 		/// <param name="replace">Determine whether to replace instead of combine.</param>
 		/// <returns>When true is returned header will be filtered.</returns>
-		public FluentHttpHeadersOptions WithHashingExclude(Predicate<KeyValuePair<string, StringValues>> predicate, bool replace = false)
+		public FluentHttpHeadersOptions WithHashingExclude(Predicate<KeyValuePair<string, string[]>> predicate, bool replace = false)
 		{
 			if (replace)
 				HashingExclude = predicate;
@@ -43,7 +42,7 @@ namespace FluentlyHttpClient
 	/// <summary>
 	/// Collection of headers and their values.
 	/// </summary>
-	public partial class FluentHttpHeaders : Dictionary<string, StringValues>
+	public partial class FluentHttpHeaders : Dictionary<string, string[]>
 	{
 		private static readonly FluentHttpHeadersOptions DefaultOptions = new FluentHttpHeadersOptions();
 		private FluentHttpHeadersOptions _options = DefaultOptions;
@@ -92,6 +91,17 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
+		/// Add single header.
+		/// </summary>
+		/// <param name="key">Header to add.</param>
+		/// <param name="value">Header value to add.</param>
+		public FluentHttpHeaders Add(string key, string value)
+		{
+			this[key] = new[] { value };
+			return this;
+		}
+
+		/// <summary>
 		/// Add range and throws if already exists.
 		/// </summary>
 		/// <param name="headers">Headers to add from.</param>
@@ -120,7 +130,7 @@ namespace FluentlyHttpClient
 		public FluentHttpHeaders AddRange(IDictionary<string, string> headers)
 		{
 			foreach (var header in headers)
-				Add(header.Key, header.Value);
+				Add(header.Key, new[] { header.Value });
 			return this;
 		}
 
@@ -142,7 +152,7 @@ namespace FluentlyHttpClient
 		public FluentHttpHeaders AddRange(HttpHeaders headers)
 		{
 			foreach (var header in headers)
-				Add(header.Key, new StringValues(header.Value.ToArray()));
+				Add(header.Key, header.Value.ToArray());
 			return this;
 		}
 
@@ -157,13 +167,31 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
+		/// Get header by key or return null.
+		/// </summary>
+		/// <param name="header">Header to try get.</param>
+		public string GetSingle(string header)
+			=> TryGetValue(header, out var value) ? value[0] : null;
+
+		/// <summary>
+		/// Set range add/update if exists instead of throwing.
+		/// </summary>
+		/// <param name="key">Header to add.</param>
+		/// <param name="value">Header value to add.</param>
+		public FluentHttpHeaders Set(string key, string value)
+		{
+			this[key] = new[] { value };
+			return this;
+		}
+
+		/// <summary>
 		/// Set range add/update if exists instead of throwing.
 		/// </summary>
 		/// <param name="headers">Headers to set from.</param>
 		public FluentHttpHeaders SetRange(IDictionary<string, IEnumerable<string>> headers)
 		{
 			foreach (var header in headers)
-				this[header.Key] = new StringValues(header.Value.ToArray());
+				this[header.Key] = header.Value.ToArray();
 			return this;
 		}
 
@@ -172,6 +200,17 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="headers">Headers to set from.</param>
 		public FluentHttpHeaders SetRange(IDictionary<string, string> headers)
+		{
+			foreach (var header in headers)
+				Set(header.Key, header.Value);
+			return this;
+		}
+
+		/// <summary>
+		/// Set range add/update if exists instead of throwing.
+		/// </summary>
+		/// <param name="headers">Headers to set from.</param>
+		public FluentHttpHeaders SetRange(IDictionary<string, string[]> headers)
 		{
 			foreach (var header in headers)
 				this[header.Key] = header.Value;
@@ -185,7 +224,7 @@ namespace FluentlyHttpClient
 		public FluentHttpHeaders SetRange(IDictionary<string, StringValues> headers)
 		{
 			foreach (var header in headers)
-				this[header.Key] = header.Value;
+				Set(header.Key, header.Value);
 			return this;
 		}
 
@@ -196,7 +235,7 @@ namespace FluentlyHttpClient
 		public FluentHttpHeaders SetRange(HttpHeaders headers)
 		{
 			foreach (var header in headers)
-				this[header.Key] = new StringValues(header.Value.ToArray());
+				this[header.Key] = header.Value.ToArray();
 			return this;
 		}
 
@@ -218,14 +257,14 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public string ToHashString()
 		{
-			IEnumerable<KeyValuePair<string, StringValues>> headers = this;
+			var headers = (IEnumerable<KeyValuePair<string, string[]>>)this;
 
 			if (_options.HashingExclude != null)
 				headers = headers.Where(x => !_options.HashingExclude(x));
 
 			var headersHash = "";
 			foreach (var header in headers)
-				headersHash += $"{header.Key}={header.Value}&";
+				headersHash += $"{header.Key}={string.Join(",", header.Value)}&";
 			headersHash = headersHash.TrimEnd('&');
 			return headersHash;
 		}
@@ -263,7 +302,7 @@ namespace FluentlyHttpClient
 		public string Authorization
 		{
 			get => Get(HeaderTypes.Authorization);
-			set => this[HeaderTypes.Authorization] = value;
+			set => this[HeaderTypes.Authorization] = new[] { value };
 		}
 
 		/// <summary>
@@ -272,7 +311,7 @@ namespace FluentlyHttpClient
 		public string CacheControl
 		{
 			get => Get(HeaderTypes.CacheControl);
-			set => this[HeaderTypes.CacheControl] = value;
+			set => this[HeaderTypes.CacheControl] = new[] { value };
 		}
 
 		/// <summary>
@@ -281,7 +320,7 @@ namespace FluentlyHttpClient
 		public string ContentType
 		{
 			get => Get(HeaderTypes.ContentType);
-			set => this[HeaderTypes.ContentType] = value;
+			set => this[HeaderTypes.ContentType] = new[] { value };
 		}
 
 		/// <summary>
@@ -290,7 +329,7 @@ namespace FluentlyHttpClient
 		public string UserAgent
 		{
 			get => Get(HeaderTypes.UserAgent);
-			set => this[HeaderTypes.UserAgent] = value;
+			set => this[HeaderTypes.UserAgent] = new[] { value };
 		}
 
 		/// <summary>
@@ -308,7 +347,7 @@ namespace FluentlyHttpClient
 		public string XForwardedHost
 		{
 			get => Get(HeaderTypes.XForwardedHost);
-			set => this[HeaderTypes.XForwardedHost] = value;
+			set => this[HeaderTypes.XForwardedHost] = new[] { value };
 		}
 	}
 

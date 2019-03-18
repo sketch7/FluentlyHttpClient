@@ -75,12 +75,19 @@ namespace FluentlyHttpClient
 		/// <inheritdoc />
 		public FluentHttpClientBuilder WithHeader(string key, string value)
 		{
-			_headers[key] = value;
+			_headers.Set(key, value);
 			return this;
 		}
 
 		/// <inheritdoc />
 		public FluentHttpClientBuilder WithHeaders(IDictionary<string, string> headers)
+		{
+			_headers.SetRange(headers);
+			return this;
+		}
+
+		/// <inheritdoc />
+		public FluentHttpClientBuilder WithHeaders(IDictionary<string, string[]> headers)
 		{
 			_headers.SetRange(headers);
 			return this;

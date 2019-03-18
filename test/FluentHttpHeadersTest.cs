@@ -159,8 +159,8 @@ namespace FluentlyHttpClient.Test
 		{
 			var headers = new FluentHttpHeaders
 			{
-				{HeaderTypes.Authorization, "the-xx"},
-				{HeaderTypes.ContentType, "json" }
+				{HeaderTypes.Authorization, new[] {"the-xx"}},
+				{HeaderTypes.ContentType,new[]{ "json"} }
 			};
 			var hash = headers.ToHashString();
 
@@ -172,7 +172,7 @@ namespace FluentlyHttpClient.Test
 		{
 			var headers = new FluentHttpHeaders
 			{
-				{HeaderTypes.Authorization, "the-xx"},
+				{HeaderTypes.Authorization, new[] {"the-xx"}},
 				{HeaderTypes.Accept, new[] {"json", "msgpack"}}
 			};
 			var hash = headers.ToHashString();
@@ -185,9 +185,9 @@ namespace FluentlyHttpClient.Test
 		{
 			var headers = new FluentHttpHeaders
 			{
-				{HeaderTypes.Authorization, "the-xx"},
+				{HeaderTypes.Authorization, new[]{"the-xx"}},
 				{HeaderTypes.Accept, new[] {"json", "msgpack"}},
-				{HeaderTypes.XForwardedHost, "sketch7.com"},
+				{HeaderTypes.XForwardedHost, new[] {"sketch7.com"}},
 			}.WithOptions(opts => opts.WithHashingExclude(pair => pair.Key == HeaderTypes.Authorization));
 			var hash = headers.ToHashString();
 

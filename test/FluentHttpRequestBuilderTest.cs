@@ -487,9 +487,8 @@ namespace Test
 								.WithHeadersExclude(pair => pair.Key == HeaderTypes.Accept);
 						});
 					});
-				})
-						.WithRequestHashOptions(opts =>
-							opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.UserAgent))
+				}).WithRequestHashOptions(opts =>
+						opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.UserAgent))
 						.WithUri("/api/heroes/azmodan")
 						.WithBearerAuthentication("XXX")
 						.WithHeader("local", "en-GB")

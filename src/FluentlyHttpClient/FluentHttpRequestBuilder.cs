@@ -81,7 +81,7 @@ namespace FluentlyHttpClient
 		{
 			if (Headers == null)
 				Headers = new FluentHttpHeaders();
-			Headers[key] = value;
+			Headers.Set(key, value);
 			return this;
 		}
 
