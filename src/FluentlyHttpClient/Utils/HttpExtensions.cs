@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Net.Http.Headers;
+using System.Web;
 
 // ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient
@@ -29,6 +32,24 @@ namespace FluentlyHttpClient
 		{
 			foreach (var headerEntry in values)
 				headers.Add(headerEntry.Key, (IEnumerable<string>)headerEntry.Value);
+		}
+
+		/// <summary>
+		/// Manipulate querystring collection.
+		/// </summary>
+		/// <param name="builder"></param>
+		/// <param name="manipulateQueryString"></param>
+		public static UriBuilder ManipulateQueryString(this UriBuilder builder, Action<NameValueCollection> manipulateQueryString)
+		{
+			if (string.IsNullOrEmpty(builder.Query))
+				return builder;
+
+			var queryString = HttpUtility.ParseQueryString(builder.Query);
+			manipulateQueryString(queryString);
+
+			builder.Query = queryString.ToString();
+
+			return builder;
 		}
 	}
 }
