@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Primitives;
@@ -6,10 +7,46 @@ using Microsoft.Extensions.Primitives;
 namespace FluentlyHttpClient
 {
 	/// <summary>
+	/// <see cref="FluentHttpHeaders"/> options.
+	/// </summary>
+	public class FluentHttpHeadersOptions
+	{
+		/// <summary>
+		/// Predicate function to exclude headers from being hashed in <see cref="FluentHttpHeaders.ToHashString"/>.
+		/// </summary>
+		public Predicate<KeyValuePair<string, StringValues>> HashingExclude { get; private set; }
+
+		/// <summary>
+		/// Add headers exclude filtering (it will be combined).
+		/// </summary>
+		/// <param name="predicate">Predicate to add for excluding headers.</param>
+		/// <param name="replace">Determine whether to replace instead of combine.</param>
+		/// <returns>When true is returned header will be filtered.</returns>
+		public FluentHttpHeadersOptions WithHashingExclude(Predicate<KeyValuePair<string, StringValues>> predicate, bool replace = false)
+		{
+			if (replace)
+				HashingExclude = predicate;
+			else
+			{
+				var headersExclude = HashingExclude;
+				if (headersExclude == null)
+					HashingExclude = predicate;
+				else
+					HashingExclude = p => headersExclude(p) || predicate(p);
+			}
+
+			return this;
+		}
+	}
+
+	/// <summary>
 	/// Collection of headers and their values.
 	/// </summary>
 	public partial class FluentHttpHeaders : Dictionary<string, StringValues>
 	{
+		private static readonly FluentHttpHeadersOptions DefaultOptions = new FluentHttpHeadersOptions();
+		private FluentHttpHeadersOptions _options = DefaultOptions;
+
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
@@ -19,6 +56,15 @@ namespace FluentlyHttpClient
 
 		/// <summary>
 		/// Initializes a new instance.
+		/// </summary>
+		/// <param name="headers">Headers to initialize with.</param>
+		public FluentHttpHeaders(IDictionary<string, string[]> headers)
+		{
+			AddRange(headers);
+		}
+
+		/// <summary>
+		/// Initializes a new instance with specified headers.
 		/// </summary>
 		/// <param name="headers">Headers to initialize with.</param>
 		public FluentHttpHeaders(IDictionary<string, string[]> headers)
@@ -53,6 +99,17 @@ namespace FluentlyHttpClient
 			AddRange(headers);
 		}
 
+		public FluentHttpHeaders AddRange(IDictionary<string, string[]> headers)
+		{
+			foreach (var header in headers)
+				Add(header.Key, header.Value);
+			return this;
+		}
+
+		/// <summary>
+		/// Add range and throws if already exists.
+		/// </summary>
+		/// <param name="headers">Headers to add from.</param>
 		public FluentHttpHeaders AddRange(IDictionary<string, string[]> headers)
 		{
 			foreach (var header in headers)
@@ -159,11 +216,28 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
+		/// Configure header options.
+		/// </summary>
+		/// <param name="configure">Configure options action.</param>
+		public FluentHttpHeaders WithOptions(Action<FluentHttpHeadersOptions> configure)
+		{
+			if (_options == DefaultOptions)
+				_options = new FluentHttpHeadersOptions();
+			configure(_options);
+
+			return this;
+		}
+
+		/// <summary>
 		/// Converts headers to hash string.
 		/// </summary>
 		public string ToHashString()
 		{
-			var headers = this;
+			IEnumerable<KeyValuePair<string, StringValues>> headers = this;
+
+			if (_options.HashingExclude != null)
+				headers = headers.Where(x => !_options.HashingExclude(x));
+
 			var headersHash = "";
 			foreach (var header in headers)
 				headersHash += $"{header.Key}={header.Value}&";
