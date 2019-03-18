@@ -14,7 +14,6 @@ namespace FluentlyHttpClient
 		/// Clone response.
 		/// </summary>
 		/// <param name="response">Response to clone.</param>
-		/// <returns></returns>
 		public static async Task<FluentHttpResponse> Clone(this FluentHttpResponse response)
 		{
 			var contentString = await response.Content.ReadAsStringAsync();
@@ -32,28 +31,6 @@ namespace FluentlyHttpClient
 			cloned.Headers.CopyFrom(response.Headers);
 
 			return cloned;
-		}
-
-		/// <summary>
-		/// Generate request hash.
-		/// </summary>
-		/// <param name="request">Request to generate hash for.</param>
-		/// <returns></returns>
-		public static string GenerateHash(this FluentHttpRequest request)
-		{
-
-			var headers = new FluentHttpHeaders(request.Builder.DefaultHeaders);
-			foreach (var requestHeader in request.Headers)
-				headers[requestHeader.Key] = string.Join(";", requestHeader.Value);
-
-			var urlHash = request.Uri.IsAbsoluteUri
-				? request.Uri
-				: new Uri($"{request.Builder.BaseUrl.TrimEnd('/')}/{request.Uri.ToString().TrimStart('/')}");
-
-			var headersHash = headers.ToHashString();
-
-			var hash = $"method={request.Method};url={urlHash};headers={headersHash}";
-			return hash;
 		}
 	}
 }

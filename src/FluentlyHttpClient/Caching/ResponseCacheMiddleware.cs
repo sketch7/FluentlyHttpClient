@@ -56,13 +56,7 @@ namespace FluentlyHttpClient.Middleware
 			if (options.ShouldIgnore || options.Matcher != null && !options.Matcher(request))
 				return await _next(context);
 
-			var hash = request.GetRequestHash();
-			if (string.IsNullOrEmpty(hash))
-			{
-				hash = request.GenerateHash();
-				request.SetRequestHash(hash);
-			}
-
+			var hash = request.GetHash();
 			var response = await _service.Get(hash);
 			if (response != null)
 			{
@@ -88,30 +82,8 @@ namespace FluentlyHttpClient
 	public static class ResponseCacheHttpMiddlewareExtensions
 	{
 		private const string OptionsKey = "RESPONSE_CACHE_OPTIONS";
-		private const string HashKey = "RESPONSE_CACHE_HASH";
 
 		#region Request Extensions
-		/// <summary>
-		/// Set request hash.
-		/// </summary>
-		/// <param name="message">Message instance.</param>
-		/// <param name="value">Timespan value.</param>
-		public static IFluentHttpMessageState SetRequestHash(this IFluentHttpMessageState message, string value)
-		{
-			message.Items.Add(HashKey, value);
-			return message;
-		}
-
-		/// <summary>
-		/// Get request hash.
-		/// </summary>
-		/// <param name="message">Message to get hash from.</param>
-		/// <returns>Returns hash string for the request.</returns>
-		public static string GetRequestHash(this IFluentHttpMessageState message)
-		{
-			message.Items.TryGetValue(HashKey, out var value);
-			return (string)value;
-		}
 
 		/// <summary>
 		/// Set response caching options for the request.

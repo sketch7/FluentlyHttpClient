@@ -55,15 +55,6 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Initializes a new instance.
-		/// </summary>
-		/// <param name="headers">Headers to initialize with.</param>
-		public FluentHttpHeaders(IDictionary<string, string[]> headers)
-		{
-			AddRange(headers);
-		}
-
-		/// <summary>
 		/// Initializes a new instance with specified headers.
 		/// </summary>
 		/// <param name="headers">Headers to initialize with.</param>
@@ -97,13 +88,6 @@ namespace FluentlyHttpClient
 		public FluentHttpHeaders(HttpHeaders headers)
 		{
 			AddRange(headers);
-		}
-
-		public FluentHttpHeaders AddRange(IDictionary<string, string[]> headers)
-		{
-			foreach (var header in headers)
-				Add(header.Key, header.Value);
-			return this;
 		}
 
 		/// <summary>
