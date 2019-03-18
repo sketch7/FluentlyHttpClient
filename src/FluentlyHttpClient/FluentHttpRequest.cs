@@ -67,7 +67,6 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public MediaTypeFormatterCollection Formatters { get; set; }
 
-		// todo: make builder non optional creating a breaking change
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
