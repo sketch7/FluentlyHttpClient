@@ -196,7 +196,7 @@ namespace FluentlyHttpClient.Test
 		}
 
 		[Fact]
-		public void ShouldBeSerialized()
+		public void ShouldBeSerializable()
 		{
 			var headers = new FluentHttpHeaders
 			{
