@@ -211,17 +211,17 @@ namespace FluentlyHttpClient.Test
 			Assert.Collection(headersCopied, x =>
 			{
 				Assert.Equal(HeaderTypes.Authorization, x.Key);
-				Assert.Equal("the-xx", x.Value);
+				Assert.Equal("the-xx", x.Value[0]);
 			},
 			x =>
 			{
 				Assert.Equal(HeaderTypes.Accept, x.Key);
-				Assert.Equal("json,msgpack", x.Value);
+				Assert.Equal("json,msgpack", string.Join(",", x.Value));
 			},
 			x =>
 			{
 				Assert.Equal(HeaderTypes.XForwardedHost, x.Key);
-				Assert.Equal("sketch7.com", x.Value);
+				Assert.Equal("sketch7.com", x.Value[0]);
 			});
 		}
 	}
