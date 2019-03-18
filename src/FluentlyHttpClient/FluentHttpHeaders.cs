@@ -209,6 +209,19 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
+		/// Configure header options.
+		/// </summary>
+		/// <param name="configure">Configure options action.</param>
+		public FluentHttpHeaders WithOptions(Action<FluentHttpHeadersOptions> configure)
+		{
+			if (_options == DefaultOptions)
+				_options = new FluentHttpHeadersOptions();
+			configure(_options);
+
+			return this;
+		}
+
+		/// <summary>
 		/// Converts headers to hash string.
 		/// </summary>
 		public string ToHashString()
