@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 using Xunit;
 
 // ReSharper disable InconsistentNaming
@@ -192,6 +193,36 @@ namespace FluentlyHttpClient.Test
 			var hash = headers.ToHashString();
 
 			Assert.Equal("Accept=json,msgpack&X-Forwarded-Host=sketch7.com", hash);
+		}
+
+		[Fact]
+		public void ShouldBeSerialized()
+		{
+			var headers = new FluentHttpHeaders
+			{
+				{HeaderTypes.Authorization, "the-xx"},
+				{HeaderTypes.Accept, new[] {"json", "msgpack"}},
+				{HeaderTypes.XForwardedHost, "sketch7.com"},
+			};
+
+			var headersJson = JsonConvert.SerializeObject(headers);
+			var headersCopied = JsonConvert.DeserializeObject<FluentHttpHeaders>(headersJson);
+
+			Assert.Collection(headersCopied, x =>
+			{
+				Assert.Equal(HeaderTypes.Authorization, x.Key);
+				Assert.Equal("the-xx", x.Value);
+			},
+			x =>
+			{
+				Assert.Equal(HeaderTypes.Accept, x.Key);
+				Assert.Equal("json,msgpack", x.Value);
+			},
+			x =>
+			{
+				Assert.Equal(HeaderTypes.XForwardedHost, x.Key);
+				Assert.Equal("sketch7.com", x.Value);
+			});
 		}
 	}
 }
