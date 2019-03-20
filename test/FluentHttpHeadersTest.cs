@@ -223,6 +223,7 @@ namespace FluentlyHttpClient.Test
 				Assert.Equal(HeaderTypes.XForwardedHost, x.Key);
 				Assert.Equal("sketch7.com", x.Value[0]);
 			});
+			Assert.Equal("the-xx", headersCopied.Authorization);
 		}
 	}
 }
