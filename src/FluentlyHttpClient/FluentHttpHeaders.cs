@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -42,16 +43,36 @@ namespace FluentlyHttpClient
 	/// <summary>
 	/// Collection of headers and their values.
 	/// </summary>
-	public partial class FluentHttpHeaders : Dictionary<string, string[]>
+	public partial class FluentHttpHeaders : IEnumerable<KeyValuePair<string, string[]>>
 	{
 		private static readonly FluentHttpHeadersOptions DefaultOptions = new FluentHttpHeadersOptions();
 		private FluentHttpHeadersOptions _options = DefaultOptions;
+		public readonly Dictionary<string, string[]> _data = new Dictionary<string, string[]>();
+
+		public string[] this[string key]
+		{
+			get => _data[key];
+			set => _data[key] = value;
+		}
+
+		/// <summary>
+		/// Gets the headers count.
+		/// </summary>
+		public int Count => _data.Count;
 
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
 		public FluentHttpHeaders()
 		{
+		}
+
+		/// <summary>
+		/// Initializes a new instance.
+		/// </summary>
+		public FluentHttpHeaders(IEnumerable<KeyValuePair<string, string[]>> headers)
+		{
+			AddRange(headers);
 		}
 
 		/// <summary>
@@ -97,7 +118,29 @@ namespace FluentlyHttpClient
 		/// <param name="value">Header value to add.</param>
 		public FluentHttpHeaders Add(string key, string value)
 		{
-			Add(key, new[] { value });
+			_data.Add(key, new[] { value });
+			return this;
+		}
+
+		/// <summary>
+		/// Add single header.
+		/// </summary>
+		/// <param name="key">Header to add.</param>
+		/// <param name="value">Header value to add.</param>
+		public FluentHttpHeaders Add(string key, string[] value)
+		{
+			_data.Add(key, value);
+			return this;
+		}
+
+		/// <summary>
+		/// Add range and throws if already exists.
+		/// </summary>
+		/// <param name="headers">Headers to add from.</param>
+		public FluentHttpHeaders AddRange(IEnumerable<KeyValuePair<string, string[]>> headers)
+		{
+			foreach (var header in headers)
+				_data.Add(header.Key, header.Value);
 			return this;
 		}
 
@@ -108,7 +151,7 @@ namespace FluentlyHttpClient
 		public FluentHttpHeaders AddRange(IDictionary<string, string[]> headers)
 		{
 			foreach (var header in headers)
-				Add(header.Key, header.Value);
+				_data.Add(header.Key, header.Value);
 			return this;
 		}
 
@@ -119,7 +162,7 @@ namespace FluentlyHttpClient
 		public FluentHttpHeaders AddRange(IDictionary<string, IEnumerable<string>> headers)
 		{
 			foreach (var header in headers)
-				Add(header.Key, new StringValues(header.Value.ToArray()));
+				_data.Add(header.Key, header.Value.ToArray());
 			return this;
 		}
 
@@ -130,7 +173,7 @@ namespace FluentlyHttpClient
 		public FluentHttpHeaders AddRange(IDictionary<string, string> headers)
 		{
 			foreach (var header in headers)
-				Add(header.Key, new[] { header.Value });
+				_data.Add(header.Key, new[] { header.Value });
 			return this;
 		}
 
@@ -141,7 +184,7 @@ namespace FluentlyHttpClient
 		public FluentHttpHeaders AddRange(IDictionary<string, StringValues> headers)
 		{
 			foreach (var header in headers)
-				Add(header.Key, header.Value);
+				Add(header.Key, header.Value.ToArray());
 			return this;
 		}
 
@@ -152,7 +195,7 @@ namespace FluentlyHttpClient
 		public FluentHttpHeaders AddRange(HttpHeaders headers)
 		{
 			foreach (var header in headers)
-				Add(header.Key, header.Value.ToArray());
+				_data.Add(header.Key, header.Value.ToArray());
 			return this;
 		}
 
@@ -162,7 +205,7 @@ namespace FluentlyHttpClient
 		/// <param name="header">Header to try get.</param>
 		public StringValues Get(string header)
 		{
-			TryGetValue(header, out var value);
+			_data.TryGetValue(header, out var value);
 			return value;
 		}
 
@@ -171,7 +214,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="header">Header to try get.</param>
 		public string GetValue(string header)
-			=> TryGetValue(header, out var value) ? value[0] : null;
+			=> _data.TryGetValue(header, out var value) ? value[0] : null;
 
 		/// <summary>
 		/// Set single header add/update if exists instead of throwing.
@@ -189,7 +232,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="key">Header to add.</param>
 		/// <param name="value">Header value to add.</param>
-		public FluentHttpHeaders Set(string key, string[] value)
+		public FluentHttpHeaders Set(string key, string[] value) 
 		{
 			this[key] = value;
 			return this;
@@ -243,6 +286,17 @@ namespace FluentlyHttpClient
 		/// Set range add/update if exists instead of throwing.
 		/// </summary>
 		/// <param name="headers">Headers to set from.</param>
+		public FluentHttpHeaders SetRange(FluentHttpHeaders headers)
+		{
+			foreach (var header in headers)
+				this[header.Key] = header.Value;
+			return this;
+		}
+
+		/// <summary>
+		/// Set range add/update if exists instead of throwing.
+		/// </summary>
+		/// <param name="headers">Headers to set from.</param>
 		public FluentHttpHeaders SetRange(HttpHeaders headers)
 		{
 			foreach (var header in headers)
@@ -268,7 +322,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public string ToHashString()
 		{
-			var headers = (IEnumerable<KeyValuePair<string, string[]>>)this;
+			var headers = (IEnumerable<KeyValuePair<string, string[]>>)_data;
 
 			if (_options.HashingExclude != null)
 				headers = headers.Where(x => !_options.HashingExclude(x));
@@ -280,10 +334,16 @@ namespace FluentlyHttpClient
 			return headersHash;
 		}
 
+		public IEnumerator<KeyValuePair<string, string[]>> GetEnumerator() => _data.GetEnumerator();
+
 		/// <summary>
 		/// Converts to string.
 		/// </summary>
 		public override string ToString() => ToHashString();
+
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+		public Dictionary<string, string[]> ToDictionary() => _data;
 	}
 
 	// headers accessors
@@ -359,14 +419,6 @@ namespace FluentlyHttpClient
 		{
 			get => Get(HeaderTypes.XForwardedHost);
 			set => this[HeaderTypes.XForwardedHost] = new[] { value };
-		}
-	}
-
-	public static class FluentHttpHeadersExtensions
-	{
-		public static Dictionary<string, string[]> ToDictionary(this FluentHttpHeaders list)
-		{
-			return list.ToDictionary(x => x.Key, pair => pair.Value.ToArray());
 		}
 	}
 }

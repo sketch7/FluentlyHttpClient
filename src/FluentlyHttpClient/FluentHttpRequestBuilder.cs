@@ -103,6 +103,15 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
+		/// <inheritdoc />
+		public FluentHttpRequestBuilder WithHeaders(FluentHttpHeaders headers)
+		{
+			if (Headers == null)
+				Headers = new FluentHttpHeaders();
+			Headers.SetRange(headers);
+			return this;
+		}
+
 		/// <summary>
 		/// Set the uri of the HTTP request with optional interpolations.
 		/// </summary>

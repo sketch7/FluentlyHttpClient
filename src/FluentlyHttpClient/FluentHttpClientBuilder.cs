@@ -100,6 +100,13 @@ namespace FluentlyHttpClient
 			return this;
 		}
 
+		/// <inheritdoc />
+		public FluentHttpClientBuilder WithHeaders(FluentHttpHeaders headers)
+		{
+			_headers.SetRange(headers);
+			return this;
+		}
+
 		/// <summary>
 		/// Set the identifier (unique key) for the HTTP client.
 		/// </summary>
