@@ -97,7 +97,7 @@ namespace FluentlyHttpClient
 		/// <param name="value">Header value to add.</param>
 		public FluentHttpHeaders Add(string key, string value)
 		{
-			this[key] = new[] { value };
+			Add(key, new[] { value });
 			return this;
 		}
 
@@ -174,13 +174,24 @@ namespace FluentlyHttpClient
 			=> TryGetValue(header, out var value) ? value[0] : null;
 
 		/// <summary>
-		/// Set range add/update if exists instead of throwing.
+		/// Set single header add/update if exists instead of throwing.
 		/// </summary>
 		/// <param name="key">Header to add.</param>
 		/// <param name="value">Header value to add.</param>
 		public FluentHttpHeaders Set(string key, string value)
 		{
 			this[key] = new[] { value };
+			return this;
+		}
+
+		/// <summary>
+		/// Set single header add/update if exists instead of throwing.
+		/// </summary>
+		/// <param name="key">Header to add.</param>
+		/// <param name="value">Header value to add.</param>
+		public FluentHttpHeaders Set(string key, string[] value)
+		{
+			this[key] = value;
 			return this;
 		}
 
@@ -224,7 +235,7 @@ namespace FluentlyHttpClient
 		public FluentHttpHeaders SetRange(IDictionary<string, StringValues> headers)
 		{
 			foreach (var header in headers)
-				Set(header.Key, header.Value);
+				this[header.Key] = header.Value;
 			return this;
 		}
 

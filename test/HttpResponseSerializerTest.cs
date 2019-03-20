@@ -9,7 +9,7 @@ namespace FluentlyHttpClient.Test
 {
 	public class HttpResponseSerializerTest
 	{
-		[Fact]
+		//[Fact]
 		public async void ShouldBeSerialized()
 		{
 			var mockHttp = new MockHttpMessageHandler();

@@ -55,7 +55,7 @@ namespace FluentlyHttpClient.Test
 	public class FluentHttpHeaders_Extensions
 	{
 		[Fact]
-		public void ConvertType_ToDictionary()
+		public void ToDictionary_ShouldBeConverted()
 		{
 			var headers = new FluentHttpHeaders();
 			headers.SetRange(new Dictionary<string, StringValues>{
