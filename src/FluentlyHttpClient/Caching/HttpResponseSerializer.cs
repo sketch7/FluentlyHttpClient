@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Mime;
@@ -46,7 +47,7 @@ namespace FluentlyHttpClient.Caching
 		/// <returns></returns>
 		public Task<FluentHttpResponse> Deserialize(IMessageItemStore item)
 		{
-			var contentType = new ContentType(item.ContentHeaders["Content-Type"]);
+			var contentType = new ContentType(item.ContentHeaders.ContentType);
 			var encoding = string.IsNullOrEmpty(contentType.CharSet) ? Encoding.UTF8 : Encoding.GetEncoding(contentType.CharSet);
 
 			var cloned = new FluentHttpResponse(new HttpResponseMessage((HttpStatusCode)item.StatusCode)

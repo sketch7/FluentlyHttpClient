@@ -19,8 +19,8 @@ namespace FluentlyHttpClient.Entity
 	public static class FluentHttpHeadersConversion
 	{
 		public static ValueConverter<FluentHttpHeaders, string> Convert = new ValueConverter<FluentHttpHeaders, string>(
-			x => DataSerializer.Serialize(x.ToDictionary()),
-			x => new FluentHttpHeaders(DataSerializer.Deserialize<Dictionary<string, string[]>>(x))
+			x => DataSerializer.Serialize(x),
+			x => DataSerializer.Deserialize<FluentHttpHeaders>(x)
 			);
 	}
 }

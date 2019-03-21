@@ -19,7 +19,7 @@ namespace FluentlyHttpClient.Test.Integration
 				;
 		}
 
-		[Fact]
+		//[Fact]
 		public async Task ShouldMakeRequest_Memory_Get()
 		{
 			var fluentHttpClientFactory = ServiceTestUtil.GetNewClientFactory(ConfigureContainer);
@@ -60,7 +60,7 @@ namespace FluentlyHttpClient.Test.Integration
 			//Assert.Equal(HttpStatusCode.OK, response.Headers.);
 		}
 
-		[Fact]
+		//[Fact]
 		public async Task ShouldMakeRequest_Remote_Get()
 		{
 			var fluentHttpClientFactory = ServiceTestUtil.GetNewClientFactory(collection =>

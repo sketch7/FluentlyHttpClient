@@ -81,7 +81,7 @@ namespace FluentlyHttpClient
 		{
 			if (Headers == null)
 				Headers = new FluentHttpHeaders();
-			Headers[key] = value;
+			Headers.Set(key, value);
 			return this;
 		}
 
@@ -96,6 +96,15 @@ namespace FluentlyHttpClient
 
 		/// <inheritdoc />
 		public FluentHttpRequestBuilder WithHeaders(IDictionary<string, StringValues> headers)
+		{
+			if (Headers == null)
+				Headers = new FluentHttpHeaders();
+			Headers.SetRange(headers);
+			return this;
+		}
+
+		/// <inheritdoc />
+		public FluentHttpRequestBuilder WithHeaders(FluentHttpHeaders headers)
 		{
 			if (Headers == null)
 				Headers = new FluentHttpHeaders();
