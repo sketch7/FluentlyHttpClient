@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Mime;
@@ -10,8 +9,8 @@ namespace FluentlyHttpClient.Caching
 {
 	public interface IHttpResponseSerializer
 	{
-		Task<TMessageItemStore> Serialize<TMessageItemStore>(FluentHttpResponse response) where TMessageItemStore : IMessageItemStore, new();
-		Task<FluentHttpResponse> Deserialize(IMessageItemStore item);
+		Task<THttpResponseStore> Serialize<THttpResponseStore>(FluentHttpResponse response) where THttpResponseStore : IHttpResponseStore, new();
+		Task<FluentHttpResponse> Deserialize(IHttpResponseStore item);
 	}
 
 	public class HttpResponseSerializer : IHttpResponseSerializer
@@ -21,9 +20,9 @@ namespace FluentlyHttpClient.Caching
 		/// </summary>
 		/// <param name="response"></param>
 		/// <returns></returns>
-		public async Task<TMessageItemStore> Serialize<TMessageItemStore>(FluentHttpResponse response) where TMessageItemStore : IMessageItemStore, new()
+		public async Task<THttpResponseStore> Serialize<THttpResponseStore>(FluentHttpResponse response) where THttpResponseStore : IHttpResponseStore, new()
 		{
-			var message = new TMessageItemStore
+			var message = new THttpResponseStore
 			{
 				Content = await response.Content.ReadAsStringAsync()
 			};
@@ -45,7 +44,7 @@ namespace FluentlyHttpClient.Caching
 		/// </summary>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public Task<FluentHttpResponse> Deserialize(IMessageItemStore item)
+		public Task<FluentHttpResponse> Deserialize(IHttpResponseStore item)
 		{
 			var contentType = new ContentType(item.ContentHeaders.ContentType);
 			var encoding = string.IsNullOrEmpty(contentType.CharSet) ? Encoding.UTF8 : Encoding.GetEncoding(contentType.CharSet);

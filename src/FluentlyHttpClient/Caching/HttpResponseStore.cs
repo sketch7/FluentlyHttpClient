@@ -2,7 +2,7 @@
 
 namespace FluentlyHttpClient.Caching
 {
-	public interface IMessageItemStore
+	public interface IHttpResponseStore
 	{
 		string Name { get; set; }
 		string Hash { get; set; }
@@ -16,7 +16,7 @@ namespace FluentlyHttpClient.Caching
 		HttpRequestMessage RequestMessage { get; set; }
 	}
 
-	public class MessageItemStore : IMessageItemStore
+	public class HttpResponseStore : IHttpResponseStore
 	{
 		public string Name { get; set; }
 		public string Hash { get; set; }

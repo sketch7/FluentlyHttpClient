@@ -20,7 +20,7 @@ namespace FluentlyHttpClient.Entity.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("FluentlyHttpClient.Entity.HttpResponse", b =>
+            modelBuilder.Entity("FluentlyHttpClient.Entity.HttpResponseEntity", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()

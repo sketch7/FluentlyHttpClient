@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FluentlyHttpClient.Entity
 {
-	public class HttpResponseMapping : IEntityTypeConfiguration<HttpResponse>
+	public class HttpResponseMapping : IEntityTypeConfiguration<HttpResponseEntity>
 	{
-		public void Configure(EntityTypeBuilder<HttpResponse> builder)
+		public void Configure(EntityTypeBuilder<HttpResponseEntity> builder)
 		{
 			builder.ToTable(Constants.HttpResponseTable, Constants.SchemaName);
 

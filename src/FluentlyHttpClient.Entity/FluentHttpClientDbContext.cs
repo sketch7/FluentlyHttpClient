@@ -10,7 +10,7 @@ namespace FluentlyHttpClient.Entity
 			: base(options)
 		{ }
 
-		public DbSet<HttpResponse> HttpResponses { get; set; }
+		public DbSet<HttpResponseEntity> HttpResponses { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

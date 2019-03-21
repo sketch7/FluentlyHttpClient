@@ -3,7 +3,7 @@ using FluentlyHttpClient.Caching;
 
 namespace FluentlyHttpClient.Entity
 {
-	public class HttpResponse : IMessageItemStore
+	public class HttpResponseEntity : IHttpResponseStore
 	{
 		public string Id { get; set; }
 		public string Name { get; set; }

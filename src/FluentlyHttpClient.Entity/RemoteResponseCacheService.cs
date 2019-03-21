@@ -38,7 +38,7 @@ namespace FluentlyHttpClient.Entity
 
 		public async Task Set(string hash, FluentHttpResponse response)
 		{
-			var item = await _serializer.Serialize<HttpResponse>(response);
+			var item = await _serializer.Serialize<HttpResponseEntity>(response);
 			item.Id = await hash.ComputeHash();
 
 			await _clientDb.HttpResponses.AddAsync(item);
