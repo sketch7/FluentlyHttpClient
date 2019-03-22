@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 using FluentlyHttpClient.Caching;
 using FluentlyHttpClient.Entity;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,17 @@ namespace Microsoft.Extensions.DependencyInjection
 			//connectionString = @"Data Source=.\SQLEXPRESS;Database=FluentHttpClient;Integrated Security=True";
 
 			services.AddSingleton<IResponseCacheService, RemoteResponseCacheService>();
-			services.AddDbContext<FluentHttpClientDbContext>(options => options.UseSqlServer(connectionString));
+			var conn = new SqlConnectionStringBuilder(connectionString)
+			{
+				ConnectRetryCount = 5,
+				ConnectRetryInterval = 2,
+				MaxPoolSize = 600,
+				MinPoolSize = 5
+			};
+			//services.AddDbContext<FluentHttpClientDbContext>(options => options.UseSqlServer(conn.ToString(), builder => builder.EnableRetryOnFailure()));
+			//services.AddDbContextPool<FluentHttpClientDbContext>(options => options.UseSqlServer(conn.ToString(), builder => builder.EnableRetryOnFailure()));
+			//services.AddDbContextPool<FluentHttpClientDbContext>(options => options.UseSqlServer(conn.ToString(), builder => builder.EnableRetryOnFailure()));
+			services.AddDbContextPool<FluentHttpClientDbContext>((sp, options) => options.UseSqlServer(conn.ToString(), builder => builder.EnableRetryOnFailure()));
 			services.AddMemoryCache();
 
 			return services;
