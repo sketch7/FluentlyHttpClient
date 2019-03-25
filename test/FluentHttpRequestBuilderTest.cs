@@ -196,6 +196,24 @@ namespace Test
 		}
 
 		[Fact]
+		public void AddHeaderStringValues()
+		{
+			var builder = GetNewRequestBuilder()
+					.WithUri("/org/sketch7")
+					.WithHeader("locale", new StringValues(new[] { "mt", "en" }))
+				;
+			var request = builder.Build();
+
+			var headers = request.Headers.GetValues("locale");
+			Assert.NotNull(headers);
+			Assert.Collection(
+				headers,
+				x => Assert.Equal("mt", x),
+				x => Assert.Equal("en", x)
+			);
+		}
+
+		[Fact]
 		public void AddAlreadyExistsHeader_ShouldReplace()
 		{
 			var builder = GetNewRequestBuilder()
@@ -487,9 +505,8 @@ namespace Test
 								.WithHeadersExclude(pair => pair.Key == HeaderTypes.Accept);
 						});
 					});
-				})
-						.WithRequestHashOptions(opts =>
-							opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.UserAgent))
+				}).WithRequestHashOptions(opts =>
+						opts.WithHeadersExclude(pair => pair.Key == HeaderTypes.UserAgent))
 						.WithUri("/api/heroes/azmodan")
 						.WithBearerAuthentication("XXX")
 						.WithHeader("local", "en-GB")
