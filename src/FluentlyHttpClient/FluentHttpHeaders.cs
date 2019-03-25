@@ -231,10 +231,10 @@ namespace FluentlyHttpClient
 		/// Set single header add/update if exists instead of throwing.
 		/// </summary>
 		/// <param name="key">Header to add.</param>
-		/// <param name="value">Header value to add.</param>
-		public FluentHttpHeaders Set(string key, string[] value) 
+		/// <param name="values">Header values to add.</param>
+		public FluentHttpHeaders Set(string key, StringValues values)
 		{
-			this[key] = value;
+			this[key] = values;
 			return this;
 		}
 

@@ -20,6 +20,14 @@ namespace FluentlyHttpClient
 		T WithHeader(string key, string value);
 
 		/// <summary>
+		/// Add the specified header and its values for each request.
+		/// </summary>
+		/// <param name="key">Header to add.</param>
+		/// <param name="values">Values for the header.</param>
+		/// <returns>Returns client builder for chaining.</returns>
+		T WithHeader(string key, StringValues values);
+
+		/// <summary>
 		/// Add the specified headers and their value for each request.
 		/// </summary>
 		/// <param name="headers">Headers to add.</param>
