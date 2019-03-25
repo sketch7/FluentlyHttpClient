@@ -59,7 +59,7 @@ namespace FluentlyHttpClient
 			var options = request.GetRequestHashOptions();
 
 			var headers = new FluentHttpHeaders(request.Builder.DefaultHeaders)
-				.AddRange(request.Headers);
+				.SetRange(request.Headers);
 
 			if (options?.HeadersExclude != null)
 				headers.WithOptions(opts => opts.WithHashingExclude(options.HeadersExclude));
@@ -115,7 +115,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets headers exclude function from being hashed in <see cref="FluentHttpHeaders.ToHashString"/>.
 		/// </summary>
-		public Predicate<KeyValuePair<string, StringValues>> HeadersExclude { get; private set; }
+		public Predicate<KeyValuePair<string, string[]>> HeadersExclude { get; private set; }
 
 		/// <summary>
 		/// Gets the uri manipulation function to be hashed.
@@ -135,7 +135,7 @@ namespace FluentlyHttpClient
 		/// <param name="predicate">Predicate to add for excluding headers.</param>
 		/// <param name="replace">Determine whether to replace instead of combine.</param>
 		/// <returns>When true is returned header will be filtered.</returns>
-		public RequestHashOptions WithHeadersExclude(Predicate<KeyValuePair<string, StringValues>> predicate, bool replace = false)
+		public RequestHashOptions WithHeadersExclude(Predicate<KeyValuePair<string, string[]>> predicate, bool replace = false)
 		{
 			if (replace)
 				HeadersExclude = predicate;
