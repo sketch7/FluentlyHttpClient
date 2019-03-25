@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using FluentlyHttpClient.Caching;
 using FluentlyHttpClient.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -16,7 +17,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			//connectionString = @"Data Source=.\SQLEXPRESS;Database=FluentHttpClient;Integrated Security=True";
 
-			services.AddSingleton<IResponseCacheService, RemoteResponseCacheService>();
 			var conn = new SqlConnectionStringBuilder(connectionString)
 			{
 				ConnectRetryCount = 5,
@@ -24,13 +24,25 @@ namespace Microsoft.Extensions.DependencyInjection
 				MaxPoolSize = 600,
 				MinPoolSize = 5
 			};
-			//services.AddDbContext<FluentHttpClientDbContext>(options => options.UseSqlServer(conn.ToString(), builder => builder.EnableRetryOnFailure()));
-			//services.AddDbContextPool<FluentHttpClientDbContext>(options => options.UseSqlServer(conn.ToString(), builder => builder.EnableRetryOnFailure()));
-			//services.AddDbContextPool<FluentHttpClientDbContext>(options => options.UseSqlServer(conn.ToString(), builder => builder.EnableRetryOnFailure()));
-			services.AddDbContextPool<FluentHttpClientDbContext>((sp, options) =>
-				options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-					.UseSqlServer(conn.ToString(), builder => builder.EnableRetryOnFailure())
-				);
+
+			return services.AddFluentlyHttpClientEntity(conn, builder => builder.EnableRetryOnFailure());
+		}
+
+		public static IServiceCollection AddFluentlyHttpClientEntity(
+			this IServiceCollection services,
+			SqlConnectionStringBuilder connectionStringBuilder,
+			Action<SqlServerDbContextOptionsBuilder> builder = null
+			)
+		{
+			if (connectionStringBuilder == null)
+				throw new ArgumentNullException(nameof(SqlConnectionStringBuilder));
+
+			services.AddSingleton<IResponseCacheService, RemoteResponseCacheService>();
+
+			services.AddDbContextPool<FluentHttpClientDbContext>(options =>
+				   options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+				   .UseSqlServer(connectionStringBuilder.ToString(), builder)
+			);
 			services.AddMemoryCache();
 
 			return services;
