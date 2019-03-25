@@ -27,7 +27,10 @@ namespace Microsoft.Extensions.DependencyInjection
 			//services.AddDbContext<FluentHttpClientDbContext>(options => options.UseSqlServer(conn.ToString(), builder => builder.EnableRetryOnFailure()));
 			//services.AddDbContextPool<FluentHttpClientDbContext>(options => options.UseSqlServer(conn.ToString(), builder => builder.EnableRetryOnFailure()));
 			//services.AddDbContextPool<FluentHttpClientDbContext>(options => options.UseSqlServer(conn.ToString(), builder => builder.EnableRetryOnFailure()));
-			services.AddDbContextPool<FluentHttpClientDbContext>((sp, options) => options.UseSqlServer(conn.ToString(), builder => builder.EnableRetryOnFailure()));
+			services.AddDbContextPool<FluentHttpClientDbContext>((sp, options) =>
+				options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+					.UseSqlServer(conn.ToString(), builder => builder.EnableRetryOnFailure())
+				);
 			services.AddMemoryCache();
 
 			return services;
