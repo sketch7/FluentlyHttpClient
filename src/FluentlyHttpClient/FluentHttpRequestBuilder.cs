@@ -316,9 +316,9 @@ namespace FluentlyHttpClient
 				foreach (var header in _headers)
 				{
 					if (header.Key == HeaderTypes.UserAgent)
-						httpRequest.Headers.TryAddWithoutValidation(header.Key, (IEnumerable<string>)header.Value);
+						httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
 					else
-						httpRequest.Headers.Add(header.Key, (IEnumerable<string>)header.Value);
+						httpRequest.Headers.Add(header.Key, header.Value);
 				}
 			}
 

@@ -343,6 +343,9 @@ namespace FluentlyHttpClient
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+		/// <summary>
+		/// Converts to dictionary.
+		/// </summary>
 		public Dictionary<string, string[]> ToDictionary() => _data;
 	}
 
