@@ -39,9 +39,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.AddSingleton<IResponseCacheService, RemoteResponseCacheService>();
 
-			services.AddDbContextPool<FluentHttpClientDbContext>(options =>
-				   options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-				   .UseSqlServer(connectionStringBuilder.ToString(), builder)
+			services.AddDbContextPool<FluentHttpClientDbContext>(options
+				=> options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+					.UseSqlServer(connectionStringBuilder.ToString(), builder)
 			);
 			services.AddMemoryCache();
 

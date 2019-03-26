@@ -17,6 +17,11 @@ namespace FluentlyHttpClient.Middleware
 		/// </summary>
 		public bool ShouldIgnore { get; set; }
 		public Predicate<FluentHttpRequest> Matcher { get; set; }
+
+		/// <summary>
+		/// Don't attempt to read from the cache but write only. This is useful to start and populating data.
+		/// </summary>
+		public bool IsWriteOnly { get; set; }
 	}
 
 	/// <summary>
@@ -55,9 +60,11 @@ namespace FluentlyHttpClient.Middleware
 
 			if (options.ShouldIgnore || options.Matcher != null && !options.Matcher(request))
 				return await _next(context);
-
 			var hash = request.GetHash();
-			var response = await _service.Get(hash);
+			FluentHttpResponse response = null;
+
+			if (!options.IsWriteOnly)
+				response = await _service.Get(hash);
 			if (response != null)
 			{
 				_logger.LogInformation("Pre-request - Returning a cached response {hash}", hash);
@@ -121,6 +128,7 @@ namespace FluentlyHttpClient
 			if (defaultOptions == null)
 				return options;
 			options.Matcher = defaultOptions.Matcher;
+			options.IsWriteOnly = defaultOptions.IsWriteOnly;
 			return options;
 		}
 		#endregion
