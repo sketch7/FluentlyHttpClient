@@ -35,7 +35,7 @@ namespace FluentlyHttpClient.Caching
 			message.Version = response.Message.Version.ToString();
 			message.Headers = new FluentHttpHeaders(response.Headers);
 			message.RequestMessage = response.Message.RequestMessage;
-
+			message.RequestMessage.Content = null; // deserializing cause issues so clear it.. or else if we really need it we can separate to object and reconstruct it "manually"
 			return message;
 		}
 
