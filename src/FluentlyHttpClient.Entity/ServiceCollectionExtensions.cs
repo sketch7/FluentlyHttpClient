@@ -15,8 +15,6 @@ namespace Microsoft.Extensions.DependencyInjection
 			if (string.IsNullOrWhiteSpace(connectionString))
 				throw new ArgumentNullException(nameof(connectionString));
 
-			//connectionString = @"Data Source=.\SQLEXPRESS;Database=FluentHttpClient;Integrated Security=True";
-
 			var conn = new SqlConnectionStringBuilder(connectionString)
 			{
 				ConnectRetryCount = 5,
