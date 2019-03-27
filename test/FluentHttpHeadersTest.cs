@@ -116,7 +116,7 @@ namespace FluentlyHttpClient.Test
 		public void GetExists_ShouldReturn()
 		{
 			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, string[]>
+				.AddRange(new Dictionary<string, StringValues>
 				{
 					{HeaderTypes.Accept, new[] {"json", "msgpack"}}
 				});
@@ -193,10 +193,10 @@ namespace FluentlyHttpClient.Test
 		public void ShouldHashSimple()
 		{
 			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, string[]>
+				.AddRange(new Dictionary<string, StringValues>
 				{
-					{HeaderTypes.Authorization, new[] {"the-xx"}},
-					{HeaderTypes.ContentType,new[]{ "json"} }
+					{HeaderTypes.Authorization, "the-xx"},
+					{HeaderTypes.ContentType,"json" }
 				});
 			var hash = headers.ToHashString();
 
@@ -207,9 +207,9 @@ namespace FluentlyHttpClient.Test
 		public void ShouldHashWithEnumerable()
 		{
 			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, string[]>
+				.AddRange(new Dictionary<string, StringValues>
 				{
-					{HeaderTypes.Authorization, new[] {"the-xx"}},
+					{HeaderTypes.Authorization, "the-xx"},
 					{HeaderTypes.Accept, new[] {"json", "msgpack"}}
 				});
 			var hash = headers.ToHashString();
@@ -221,11 +221,11 @@ namespace FluentlyHttpClient.Test
 		public void ShouldFilterWithHashingFilter()
 		{
 			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, string[]>
+				.AddRange(new Dictionary<string, StringValues>
 				{
-					{HeaderTypes.Authorization, new[]{"the-xx"}},
+					{HeaderTypes.Authorization, "the-xx"},
 					{HeaderTypes.Accept, new[] {"json", "msgpack"}},
-					{HeaderTypes.XForwardedHost, new[] {"sketch7.com"}},
+					{HeaderTypes.XForwardedHost, "sketch7.com"},
 				}).WithOptions(opts => opts.WithHashingExclude(pair => pair.Key == HeaderTypes.Authorization));
 			var hash = headers.ToHashString();
 

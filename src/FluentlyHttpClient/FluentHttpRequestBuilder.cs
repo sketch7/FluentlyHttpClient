@@ -33,7 +33,14 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets the headers to be sent with this request.
 		/// </summary>
-		public FluentHttpHeaders Headers { get; private set; }
+		public FluentHttpHeaders Headers
+		{
+			get
+			{
+				_headers = _headers ?? new FluentHttpHeaders();
+				return _headers;
+			}
+		}
 
 		/// <summary>
 		/// Gets the default headers from the HTTP client.
@@ -57,6 +64,7 @@ namespace FluentlyHttpClient
 		private bool _hasSuccessStatusOrThrow;
 		private CancellationToken _cancellationToken;
 		private QueryStringOptions _queryStringOptions;
+		private FluentHttpHeaders _headers;
 
 		/// <summary>
 		/// Initializes a new instance.
@@ -79,17 +87,20 @@ namespace FluentlyHttpClient
 		/// <inheritdoc />
 		public FluentHttpRequestBuilder WithHeader(string key, string value)
 		{
-			if (Headers == null)
-				Headers = new FluentHttpHeaders();
 			Headers.Set(key, value);
+			return this;
+		}
+
+		/// <inheritdoc />
+		public FluentHttpRequestBuilder WithHeader(string key, StringValues values)
+		{
+			Headers.Set(key, values);
 			return this;
 		}
 
 		/// <inheritdoc />
 		public FluentHttpRequestBuilder WithHeaders(IDictionary<string, string> headers)
 		{
-			if (Headers == null)
-				Headers = new FluentHttpHeaders();
 			Headers.SetRange(headers);
 			return this;
 		}
@@ -97,8 +108,6 @@ namespace FluentlyHttpClient
 		/// <inheritdoc />
 		public FluentHttpRequestBuilder WithHeaders(IDictionary<string, StringValues> headers)
 		{
-			if (Headers == null)
-				Headers = new FluentHttpHeaders();
 			Headers.SetRange(headers);
 			return this;
 		}
@@ -106,8 +115,6 @@ namespace FluentlyHttpClient
 		/// <inheritdoc />
 		public FluentHttpRequestBuilder WithHeaders(FluentHttpHeaders headers)
 		{
-			if (Headers == null)
-				Headers = new FluentHttpHeaders();
 			Headers.SetRange(headers);
 			return this;
 		}
@@ -304,14 +311,14 @@ namespace FluentlyHttpClient
 			if (_httpBody != null)
 				httpRequest.Content = _httpBody;
 
-			if (Headers != null)
+			if (_headers != null)
 			{
-				foreach (var header in Headers)
+				foreach (var header in _headers)
 				{
 					if (header.Key == HeaderTypes.UserAgent)
-						httpRequest.Headers.TryAddWithoutValidation(header.Key, (IEnumerable<string>)header.Value);
+						httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
 					else
-						httpRequest.Headers.Add(header.Key, (IEnumerable<string>)header.Value);
+						httpRequest.Headers.Add(header.Key, header.Value);
 				}
 			}
 
