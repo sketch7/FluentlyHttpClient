@@ -2,6 +2,7 @@
 using FluentlyHttpClient.Caching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Sketch7.Core;
 
 namespace FluentlyHttpClient.Entity
 {

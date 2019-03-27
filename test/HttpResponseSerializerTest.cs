@@ -19,21 +19,14 @@ namespace FluentlyHttpClient.Test
 			var fluentHttpClientFactory = ServiceTestUtil.GetNewClientFactory();
 			fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("http://local.sketch7.io:5000")
-				//.WithMessageHandler(mockHttp)
 				.Register();
 
 			var httpClient = fluentHttpClientFactory.Get("sketch7");
-			var requestBuilder = httpClient.CreateRequest("/api/heroes/azmodan")
-				//.AsPost()
-				//.WithBody(new
-				//{
-				//	Title = "Lord of Sin"
-				//})
-				;
+			var requestBuilder = httpClient.CreateRequest("/api/heroes/azmodan");
 			var response = await requestBuilder.ReturnAsResponse();
 
 			var serializer = new HttpResponseSerializer();
-			var message = await serializer.Serialize<MessageItemStore>(response);
+			var message = await serializer.Serialize<HttpResponseStore>(response);
 
 			Assert.Equal("http://local.sketch7.io:5000/api/heroes/azmodan", message.Url);
 
