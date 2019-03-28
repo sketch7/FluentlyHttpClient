@@ -30,7 +30,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			this IServiceCollection services,
 			SqlConnectionStringBuilder connectionStringBuilder,
 			Action<SqlServerDbContextOptionsBuilder> builder = null
-			)
+		)
 		{
 			if (connectionStringBuilder == null)
 				throw new ArgumentNullException(nameof(SqlConnectionStringBuilder));

@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using FluentlyHttpClient.Caching;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Sketch7.Core;
 
@@ -8,16 +7,17 @@ namespace FluentlyHttpClient.Entity
 {
 	public class RemoteResponseCacheService : IResponseCacheService
 	{
-		private readonly FluentHttpClientDbContext _clientDb;
+		private readonly FluentHttpClientDbContext _dbContext;
 		private readonly IHttpResponseSerializer _serializer;
 		private readonly IMemoryCache _cache;
 
 		public RemoteResponseCacheService(
-			FluentHttpClientDbContext clientDb,
+			FluentHttpClientDbContext dbContext,
 			IHttpResponseSerializer serializer,
-			IMemoryCache cache)
+			IMemoryCache cache
+		)
 		{
-			_clientDb = clientDb;
+			_dbContext = dbContext;
 			_serializer = serializer;
 			_cache = cache;
 		}
@@ -27,7 +27,7 @@ namespace FluentlyHttpClient.Entity
 			var id = await hash.ComputeHash();
 			var result = await _cache.GetOrCreate(id, async _ =>
 			{
-				var item = await _clientDb.HttpResponses.FirstOrDefaultAsync(x => x.Id == id);
+				var item = await _dbContext.HttpResponses.FindAsync(id);
 
 				if (item == null) return null;
 
@@ -42,8 +42,8 @@ namespace FluentlyHttpClient.Entity
 			var item = await _serializer.Serialize<HttpResponseEntity>(response);
 			item.Id = await hash.ComputeHash();
 
-			await _clientDb.HttpResponses.AddAsync(item);
-			await _clientDb.Commit();
+			await _dbContext.HttpResponses.AddAsync(item);
+			await _dbContext.Commit();
 
 			await _cache.Set(item.Id, Task.FromResult(response));
 		}

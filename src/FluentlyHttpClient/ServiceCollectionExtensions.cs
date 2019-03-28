@@ -24,9 +24,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.TryAddSingleton<IHttpResponseSerializer, HttpResponseSerializer>();
 			services.TryAddSingleton<IFluentHttpClientFactory, FluentHttpClientFactory>();
 			services.TryAddTransient<FluentHttpMiddlewareBuilder>();
-			services.TryAddSingleton<IResponseCacheService, MemoryResponseCacheService>();
 			services.AddMemoryCache();
-			services.TryAddTransient<FluentHttpMiddlewareBuilder>();
+			services.TryAddSingleton<IResponseCacheService, MemoryResponseCacheService>();
 
 			services.AddHttpClient();
 
