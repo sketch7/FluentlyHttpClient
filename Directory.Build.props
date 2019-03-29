@@ -6,7 +6,7 @@
 
   <!-- Set common properties regarding assembly information and nuget packages -->
   <PropertyGroup>
-    <Authors>Stephen Lautier</Authors>
+    <Authors>stephen.lautier, clayton.lautier</Authors>
     <Company>Sketch7</Company>
     <Product>FluentlyHttpClient</Product>
     <Copyright>© sketch7. All rights reserved.</Copyright>
