@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentlyHttpClient;
+using FluentlyHttpClient.Caching;
 using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -20,8 +21,11 @@ namespace Microsoft.Extensions.DependencyInjection
 		{
 			if (services == null) throw new ArgumentNullException(nameof(services));
 
+			services.TryAddSingleton<IHttpResponseSerializer, HttpResponseSerializer>();
 			services.TryAddSingleton<IFluentHttpClientFactory, FluentHttpClientFactory>();
 			services.TryAddTransient<FluentHttpMiddlewareBuilder>();
+			services.AddMemoryCache();
+			services.TryAddSingleton<IResponseCacheService, MemoryResponseCacheService>();
 
 			services.AddHttpClient();
 

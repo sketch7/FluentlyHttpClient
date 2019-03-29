@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{D84074F3
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		.circleci\config.yml = .circleci\config.yml
+		Directory.Build.props = Directory.Build.props
 		NuGet.Config = NuGet.Config
 		tools\pack.sh = tools\pack.sh
 		package.json = package.json
@@ -30,6 +31,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmark", "benchmark", "{A7C9C617-4FD3-4C1E-BF8F-E0FBE767E85B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentlyHttpClient.Benchmarks", "benchmark\FluentlyHttpClient.Benchmarks.csproj", "{4D5EB4E3-1076-4AEA-A534-107F321E41C0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentlyHttpClient.Entity", "src\FluentlyHttpClient.Entity\FluentlyHttpClient.Entity.csproj", "{3CAD4F18-BF3A-42A1-A777-781EC9456C4C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentlyHttpClient.Sample.Api", "samples\FluentlyHttpClient.Sample.Api\FluentlyHttpClient.Sample.Api.csproj", "{679DC1D2-E1A9-47D6-B4CF-8B35820D99E3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{EF87A44F-A75B-4C2F-86CD-402EBB8D0F3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +56,14 @@ Global
 		{4D5EB4E3-1076-4AEA-A534-107F321E41C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D5EB4E3-1076-4AEA-A534-107F321E41C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D5EB4E3-1076-4AEA-A534-107F321E41C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CAD4F18-BF3A-42A1-A777-781EC9456C4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CAD4F18-BF3A-42A1-A777-781EC9456C4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CAD4F18-BF3A-42A1-A777-781EC9456C4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CAD4F18-BF3A-42A1-A777-781EC9456C4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{679DC1D2-E1A9-47D6-B4CF-8B35820D99E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{679DC1D2-E1A9-47D6-B4CF-8B35820D99E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{679DC1D2-E1A9-47D6-B4CF-8B35820D99E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{679DC1D2-E1A9-47D6-B4CF-8B35820D99E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +72,8 @@ Global
 		{D9E9FF13-D8A7-4BC4-8D7F-EE66FED9AA2A} = {9D4AF283-91A7-4EFF-A212-8242B0F9E680}
 		{945C6BDF-55A6-43E0-A9B6-1DFD4DCC18DF} = {43279F19-C7CE-4D7F-99CC-3B410C685F09}
 		{4D5EB4E3-1076-4AEA-A534-107F321E41C0} = {A7C9C617-4FD3-4C1E-BF8F-E0FBE767E85B}
+		{3CAD4F18-BF3A-42A1-A777-781EC9456C4C} = {9D4AF283-91A7-4EFF-A212-8242B0F9E680}
+		{679DC1D2-E1A9-47D6-B4CF-8B35820D99E3} = {EF87A44F-A75B-4C2F-86CD-402EBB8D0F3F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF414626-8BE4-4992-8E6F-AFAFF7644AE5}

@@ -1,0 +1,41 @@
+<Project>
+  <!-- Set the repository root into a variable -->
+  <PropertyGroup>
+    <SourceRoot>$(MSBuildThisFileDirectory)</SourceRoot>
+  </PropertyGroup>
+
+  <!-- Set common properties regarding assembly information and nuget packages -->
+  <PropertyGroup>
+    <Authors>stephen.lautier, clayton.lautier</Authors>
+    <Company>Sketch7</Company>
+    <Product>FluentlyHttpClient</Product>
+    <Copyright>© sketch7. All rights reserved.</Copyright>
+    <PackageProjectUrl>https://github.com/sketch7/FluentlyHttpClient</PackageProjectUrl>
+    <PackageIconUrl>https://avatars0.githubusercontent.com/u/16617196?v=3&amp;s=200</PackageIconUrl>
+    <PackageTags>httpclient fluentapi fluenthttp graphql graphqlclient</PackageTags>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/sketch7/FluentlyHttpClient.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <!-- Note: quite nice to have but since we dont really use, they will simply slow down CI
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>true</IncludeSource> -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!-- Common compile parameters -->
+  <PropertyGroup>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);1701;1702;1705;1591</NoWarn>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <!-- Shared Package Versions -->
+  <PropertyGroup>
+    <MicrosoftExtensionsVersion>2.1.*</MicrosoftExtensionsVersion>
+  </PropertyGroup>
+</Project>

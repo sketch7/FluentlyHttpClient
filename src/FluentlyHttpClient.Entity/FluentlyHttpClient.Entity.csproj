@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RepositoryUrl>https://github.com/sketch7/FluentlyHttpClient.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>httpclient fluentapi fluenthttp graphql graphqlclient</PackageTags>
+    <PackageIconUrl>https://avatars0.githubusercontent.com/u/16617196?v=3&amp;s=200</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/sketch7/FluentlyHttpClient</PackageProjectUrl>
+    <Company>Sketch7</Company>
+    <Authors>Clayton Lautier</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.3" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Sketch7.Core" Version="0.1.1" />
+    <PackageReference Include="System.Data.HashFunction.xxHash" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FluentlyHttpClient\FluentlyHttpClient.csproj" />
+  </ItemGroup>
+
+</Project>
