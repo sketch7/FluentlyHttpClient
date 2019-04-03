@@ -99,6 +99,8 @@ namespace Test
 			var subClientCountry = subClient.Headers.GetValues("country").FirstOrDefault();
 
 
+			Assert.Equal("sketch7", httpClient.Identifier);
+			Assert.Equal("subclient", subClient.Identifier);
 			Assert.Equal("en-GB", httpClientLocale);
 			Assert.Equal("de", subClientLocale);
 			Assert.Null(countryValues?.FirstOrDefault());
