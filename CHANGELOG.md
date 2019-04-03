@@ -16,6 +16,9 @@ so logs can be more fine controlled
 - **http request:** now exposes the request builder
 - **http request:** add request hash `FluentHttpRequest.GetHash`, `FluentHttpRequestBuilder.WithRequestHashOptions` which can be used to build an id hash for the request
 
+### Bug Fixes
+- **http client:** fix `identifier` for sub client when using `CreateClient` was being replaced by the parent's instead of the one specified
+
 ### BREAKING CHANGES
 - **middleware:** `FluentHttpRequestDelegate` has been removed in favor of `FluentHttpMiddlewareDelegate`
 - **middleware:** `IFluentHttpMiddlewareRunner` and `FluentHttpMiddlewareRunner` has been reworked

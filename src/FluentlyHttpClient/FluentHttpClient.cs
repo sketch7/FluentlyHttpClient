@@ -198,7 +198,8 @@ namespace FluentlyHttpClient
 		public FluentHttpClientBuilder CreateClient(string identifier)
 		{
 			return _clientFactory.CreateBuilder(identifier)
-				.FromOptions(_options);
+				.FromOptions(_options)
+				.WithIdentifier(identifier);
 		}
 
 		private HttpClient Configure(FluentHttpClientOptions options)
