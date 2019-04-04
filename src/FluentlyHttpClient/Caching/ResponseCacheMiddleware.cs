@@ -67,6 +67,9 @@ namespace FluentlyHttpClient.Middleware
 				response = await _service.Get(hash);
 			if (response != null)
 			{
+				foreach (var item in request.Items)
+					response.Items[item.Key] = item.Value;
+
 				_logger.LogInformation("Pre-request - Returning a cached response {hash}", hash);
 				return response;
 			}
