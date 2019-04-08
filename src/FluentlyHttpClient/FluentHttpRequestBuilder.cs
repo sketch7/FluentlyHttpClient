@@ -13,7 +13,7 @@ namespace FluentlyHttpClient
 	/// <summary>
 	/// Class to build <see cref="FluentHttpRequest"/> with a fluent API.
 	/// </summary>
-	public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpRequestBuilder>
+	public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpRequestBuilder>, IFluentHttpMessageItems
 	{
 		/// <summary>
 		/// Gets the HTTP Method for the Http Request.
@@ -52,10 +52,11 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public string BaseUrl => _fluentHttpClient.BaseUrl;
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Gets the key/value collection that can be used to share data within the scope of request/response or middleware.
 		/// </summary>
-		public Dictionary<object, object> Items { get; } = new Dictionary<object, object>();
+		public IDictionary<object, object> Items { get; } = new Dictionary<object, object>();
 
 		private readonly IFluentHttpClient _fluentHttpClient;
 		private HttpContent _httpBody;
