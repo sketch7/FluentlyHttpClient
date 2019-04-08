@@ -11,7 +11,8 @@ namespace FluentlyHttpClient
 	}
 
 	/// <summary>
-	/// Interface which <see cref="FluentHttpRequestBuilder"/>, <see cref="FluentHttpRequest"/> and <see cref="FluentHttpResponse"/>.
+	/// Interface which <see cref="FluentHttpRequestBuilder"/>, <see cref="FluentHttpRequest"/> and <see cref="FluentHttpResponse"/> implements. 
+	/// This can be useful for adding extension methods across all of them.
 	/// </summary>
 	public interface  IFluentHttpMessageItems
 	{
