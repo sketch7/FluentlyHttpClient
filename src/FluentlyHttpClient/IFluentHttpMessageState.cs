@@ -16,7 +16,7 @@ namespace FluentlyHttpClient
 	public interface  IFluentHttpMessageItems
 	{
 		/// <summary>
-		/// Gets or sets a key/value collection that can be used to share data within the scope of request/request/response or middleware.
+		/// Gets or sets a key/value collection that can be used to share data within the scope of request/response or middleware.
 		/// </summary>
 		IDictionary<object, object> Items { get; }
 	}
