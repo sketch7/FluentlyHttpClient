@@ -11,10 +11,11 @@ Middleware has been reworked, its now much more efficient as it creates instance
 - **middleware:** middleware has been reworked, and now are much more efficient
 - **middleware:** middleware now logs the identifier in source e.g. `FluentlyHttpClient.Middleware.sketch7.Timer`, given HttpClient identifier was `sketch7`,
 so logs can be more fine controlled
-- **headers:** add `FluentHttpHeaders` since `HttpHeaders` (and all implementations) cannot create instances of, and changed all implementations to use it instead of `Dictionary<string, string>`.
+- **headers:** add `FluentHttpHeaders` since `HttpHeaders` (and all implementations) cannot create instances of, and changed all implementations to use it instead of `Dictionary<string, string>`
 - **util:** add several extensions when working with `HttpHeaders`
 - **http request:** now exposes the request builder
 - **http request:** add request hash `FluentHttpRequest.GetHash`, `FluentHttpRequestBuilder.WithRequestHashOptions` which can be used to build an id hash for the request
+- **request builder:** add `IFluentHttpMessageItems` which `FluentHttpRequestBuilder`, `FluentHttpRequest` and `FluentHttpResponse` implements, so items extension methods can target all
 
 ### Bug Fixes
 - **http client:** fix `identifier` for sub client when using `CreateClient` was being replaced by the parent's instead of the one specified
