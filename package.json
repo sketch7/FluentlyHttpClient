@@ -1,7 +1,7 @@
 {
   "name": "@sketch7/fluently-http-client",
   "version": "3.1.0",
-  "versionSuffix": "dev12",
+  "versionSuffix": "dev13",
   "scripts": {
     "pack": "bash ./tools/pack.sh",
     "prepublish:dev": "npm run pack",
