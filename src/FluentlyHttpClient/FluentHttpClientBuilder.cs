@@ -51,13 +51,13 @@ namespace FluentlyHttpClient
 		/// <returns>Returns client builder for chaining.</returns>
 		public FluentHttpClientBuilder WithBaseUrl(string url, bool replace = true)
 		{
-			if (replace || string.IsNullOrEmpty(_baseUrl))
-			{
-				_baseUrl = url;
-				return this;
-			}
+			var trimmedUrl = url.Trim(' ', '/');
+			var interpolatedUrl = $"{trimmedUrl}/";
 
-			_baseUrl = $"{_baseUrl}/{url.TrimStart('/', ' ')}";
+			_baseUrl = replace || string.IsNullOrEmpty(_baseUrl)
+				? _baseUrl = interpolatedUrl
+				: $"{_baseUrl}{interpolatedUrl}";
+
 			return this;
 		}
 
