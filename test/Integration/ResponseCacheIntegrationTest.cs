@@ -19,7 +19,8 @@ namespace FluentlyHttpClient.Test.Integration
 				;
 		}
 
-		//[Fact]
+		[Fact]
+		[Trait("Category", "e2e")]
 		public async Task ShouldMakeRequest_Memory_Get()
 		{
 			var fluentHttpClientFactory = ServiceTestUtil.GetNewClientFactory(ConfigureContainer);
@@ -60,7 +61,8 @@ namespace FluentlyHttpClient.Test.Integration
 			//Assert.Equal(HttpStatusCode.OK, response.Headers.);
 		}
 
-		//[Fact]
+		[Fact]
+		[Trait("Category", "e2e")]
 		public async Task ShouldMakeRequest_Remote_Get()
 		{
 			var fluentHttpClientFactory = ServiceTestUtil.GetNewClientFactory(collection =>
@@ -107,7 +109,8 @@ namespace FluentlyHttpClient.Test.Integration
 			//Assert.Equal(HttpStatusCode.OK, response.Headers.);
 		}
 
-		// [Fact]
+		//[Fact]
+		//[Trait("Category", "e2e")]
 		//public async Task ShouldMakeRequest_Post()
 		//{
 		//	var fluentHttpClientFactory = ServiceTestUtil.GetNewClientFactory();
