@@ -47,10 +47,17 @@ namespace FluentlyHttpClient
 		/// Set base url for each request.
 		/// </summary>
 		/// <param name="url">Base url address to set. e.g. "https://api.sketch7.com"</param>
+		/// <param name="replace">Determines whether to replace the Url or appends a path to the current BaseUrl.</param>
 		/// <returns>Returns client builder for chaining.</returns>
-		public FluentHttpClientBuilder WithBaseUrl(string url)
+		public FluentHttpClientBuilder WithBaseUrl(string url, bool replace = true)
 		{
-			_baseUrl = url;
+			var trimmedUrl = url.Trim(' ', '/');
+			var interpolatedUrl = $"{trimmedUrl}/";
+
+			_baseUrl = replace || string.IsNullOrEmpty(_baseUrl)
+				? _baseUrl = interpolatedUrl
+				: $"{_baseUrl}{interpolatedUrl}";
+
 			return this;
 		}
 
