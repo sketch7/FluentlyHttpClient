@@ -10,7 +10,8 @@ namespace FluentlyHttpClient.Test.Integration
 	{
 		private readonly MessagePackMediaTypeFormatter _messagePackMediaTypeFormatter = new MessagePackMediaTypeFormatter(ContractlessStandardResolver.Instance);
 
-		// [Fact]
+		[Fact]
+		[Trait("Category", "e2e")]
 		public async void ShouldMakeRequest_Get()
 		{
 			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
@@ -31,7 +32,8 @@ namespace FluentlyHttpClient.Test.Integration
 			Assert.Equal("Lord of Sins", response.Data.Title);
 		}
 
-		// [Fact]
+		[Fact]
+		[Trait("Category", "e2e")]
 		public async void ShouldMakeRequest_Post()
 		{
 			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")

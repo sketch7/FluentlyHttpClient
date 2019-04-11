@@ -16,9 +16,11 @@ so logs can be more fine controlled
 - **http request:** now exposes the request builder
 - **http request:** add request hash `FluentHttpRequest.GetHash`, `FluentHttpRequestBuilder.WithRequestHashOptions` which can be used to build an id hash for the request
 - **request builder:** add `IFluentHttpMessageItems` which `FluentHttpRequestBuilder`, `FluentHttpRequest` and `FluentHttpResponse` implements, so items extension methods can target all
+- **http client builder:** `WithBaseUrl` now accepts optional bool `replace` which will append to the existing. Useful when creating sub client to inherit and continue adding to it
 
 ### Bug Fixes
 - **http client:** fix `identifier` for sub client when using `CreateClient` was being replaced by the parent's instead of the one specified
+- **http client builder:** fix an issue when base url doesn't contain a trailing `/` in certain cases it will trim last value e.g. http://myapi.com/v1 would result in http://myapi.com
 
 ### BREAKING CHANGES
 - **middleware:** `FluentHttpRequestDelegate` has been removed in favor of `FluentHttpMiddlewareDelegate`
