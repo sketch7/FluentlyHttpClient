@@ -120,10 +120,7 @@ namespace FluentlyHttpClient.Test
 		public void GetExists_ShouldReturn()
 		{
 			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, StringValues>
-				{
-					{HeaderTypes.Accept, new[] {"json", "msgpack"}}
-				});
+				.Add(HeaderTypes.Accept, new[] { "json", "msgpack" });
 			Assert.Equal("json,msgpack", headers.Accept);
 		}
 
@@ -200,12 +197,11 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void ShouldHashSimple()
 		{
-			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, StringValues>
+			var headers = new FluentHttpHeaders
 				{
 					{HeaderTypes.Authorization, "the-xx"},
 					{HeaderTypes.ContentType,"json" }
-				});
+				};
 			var hash = headers.ToHashString();
 
 			Assert.Equal("Authorization=the-xx&Content-Type=json", hash);
@@ -214,12 +210,11 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void ShouldHashWithEnumerable()
 		{
-			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, StringValues>
-				{
-					{HeaderTypes.Authorization, "the-xx"},
-					{HeaderTypes.Accept, new[] {"json", "msgpack"}}
-				});
+			var headers = new FluentHttpHeaders
+			{
+				{HeaderTypes.Authorization, "the-xx"},
+				{HeaderTypes.Accept, new[] {"json", "msgpack"}}
+			};
 			var hash = headers.ToHashString();
 
 			Assert.Equal("Authorization=the-xx&Accept=json,msgpack", hash);
@@ -228,13 +223,13 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void ShouldFilterWithHashingFilter()
 		{
-			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, StringValues>
+			var headers = new FluentHttpHeaders
 				{
 					{HeaderTypes.Authorization, "the-xx"},
 					{HeaderTypes.Accept, new[] {"json", "msgpack"}},
 					{HeaderTypes.XForwardedHost, "sketch7.com"},
-				}).WithOptions(opts => opts.WithHashingExclude(pair => pair.Key == HeaderTypes.Authorization));
+				}
+				.WithOptions(opts => opts.WithHashingExclude(pair => pair.Key == HeaderTypes.Authorization));
 			var hash = headers.ToHashString();
 
 			Assert.Equal("Accept=json,msgpack&X-Forwarded-Host=sketch7.com", hash);
