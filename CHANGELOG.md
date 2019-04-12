@@ -1,9 +1,9 @@
 # Fluently Http Changelog
 
-[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.1.0) (201X-X-X)
+[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.1.0) (2019-X-X)
 
 
-## [3.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.2.0...3.0.0) (2019-03-X)
+## [3.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.2.0...3.0.0) (2019-04-12)
 
 Middleware has been reworked, its now much more efficient as it creates instances per middleware per client, instead of every request.
 
@@ -17,12 +17,16 @@ so logs can be more fine controlled
 - **http request:** add request hash `FluentHttpRequest.GetHash`, `FluentHttpRequestBuilder.WithRequestHashOptions` which can be used to build an id hash for the request
 - **request builder:** add `IFluentHttpMessageItems` which `FluentHttpRequestBuilder`, `FluentHttpRequest` and `FluentHttpResponse` implements, so items extension methods can target all
 - **http client builder:** `WithBaseUrl` now accepts optional bool `replace` which will append to the existing. Useful when creating sub client to inherit and continue adding to it
+- **response caching middleware:** implemented response caching middleware `UseResponseCaching` which the intention is not for performance improvements but more to proxy/mocking, as it copies responses and serve them if they were already requested.
+We also implemented remote caching which stores in database using EntityFramework see [FluentlyHttpClient.Entity](./src/FluentlyHttpClient.Entity/README.md). It can also be extended to implement custom stores e.g. we have another which is for Microsoft Orleans (not published - yet)
 
 ### Bug Fixes
 - **http client:** fix `identifier` for sub client when using `CreateClient` was being replaced by the parent's instead of the one specified
 - **http client builder:** fix an issue when base url doesn't contain a trailing `/` in certain cases it will trim last value e.g. http://myapi.com/v1 would result in http://myapi.com
 
 ### BREAKING CHANGES
+Even though breaking changes are quite a lot, most of them are more internal
+
 - **middleware:** `FluentHttpRequestDelegate` has been removed in favor of `FluentHttpMiddlewareDelegate`
 - **middleware:** `IFluentHttpMiddlewareRunner` and `FluentHttpMiddlewareRunner` has been reworked
 - **middleware:** `IFluentHttpMiddleware` changed from `Invoke(FluentHttpRequest)` to `Invoke(FluentHttpMiddlewareContext)`
