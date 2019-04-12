@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json;
 using Xunit;
 
 // ReSharper disable InconsistentNaming
@@ -13,10 +13,10 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void ToDictionary_ShouldBeConverted()
 		{
-			var headers = new FluentHttpHeaders();
-			headers.SetRange(new Dictionary<string, StringValues>{
+			var headers = new FluentHttpHeaders
+			{
 				{HeaderTypes.Accept, new[] {"json", "msgpack"}}
-			});
+			};
 
 			var dictionary = headers.ToDictionary();
 
@@ -29,13 +29,12 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void ShouldBeSerializable()
 		{
-			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, string[]>
+			var headers = new FluentHttpHeaders
 				{
 					{HeaderTypes.Authorization, new[]{"the-xx"}},
 					{HeaderTypes.Accept, new[] {"json", "msgpack"}},
 					{HeaderTypes.XForwardedHost, new[] {"sketch7.com"}},
-				});
+				};
 
 			var headersJson = JsonConvert.SerializeObject(headers);
 			var headersCopied = JsonConvert.DeserializeObject<FluentHttpHeaders>(headersJson);
