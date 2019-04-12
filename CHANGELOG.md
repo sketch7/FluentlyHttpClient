@@ -3,6 +3,12 @@
 [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.1.0) (2019-X-X)
 
 
+## [3.0.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.0.1) (2019-04-12)
+
+### Bug Fixes
+- **headers:** `_data` was `public` now is set to `private` as intended
+
+
 ## [3.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.2.0...3.0.0) (2019-04-12)
 
 Middleware has been reworked, its now much more efficient as it creates instances per middleware per client, instead of every request.

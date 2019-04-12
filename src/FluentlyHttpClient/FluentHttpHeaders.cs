@@ -47,7 +47,7 @@ namespace FluentlyHttpClient
 	{
 		private static readonly FluentHttpHeadersOptions DefaultOptions = new FluentHttpHeadersOptions();
 		private FluentHttpHeadersOptions _options = DefaultOptions;
-		public readonly Dictionary<string, string[]> _data = new Dictionary<string, string[]>();
+		private readonly Dictionary<string, string[]> _data = new Dictionary<string, string[]>();
 
 		public string[] this[string key]
 		{

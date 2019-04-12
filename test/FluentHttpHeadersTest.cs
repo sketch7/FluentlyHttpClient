@@ -64,16 +64,20 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void ShouldAddSingle()
 		{
-			var headers = new FluentHttpHeaders();
-			headers.Add(HeaderTypes.Authorization, "the-xx");
+			var headers = new FluentHttpHeaders
+			{
+				{ HeaderTypes.Authorization, "the-xx" }
+			};
 			Assert.Equal("the-xx", headers.Authorization);
 		}
 
 		[Fact]
 		public void ShouldAddEnumerable()
 		{
-			var headers = new FluentHttpHeaders();
-			headers.Add(HeaderTypes.Accept, new[] { "json", "msgpack" });
+			var headers = new FluentHttpHeaders
+			{
+				{ HeaderTypes.Accept, new[] { "json", "msgpack" } }
+			};
 			Assert.Equal("json,msgpack", headers.Accept);
 		}
 
@@ -126,16 +130,20 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void SetNotExists_ShouldBeAdded()
 		{
-			var headers = new FluentHttpHeaders();
-			headers.Accept = new[] { "json", "msgpack" };
+			var headers = new FluentHttpHeaders
+			{
+				Accept = new[] { "json", "msgpack" }
+			};
 			Assert.Equal("json,msgpack", headers.Accept);
 		}
 
 		[Fact]
 		public void SetExists_ShouldBeUpdated()
 		{
-			var headers = new FluentHttpHeaders();
-			headers.Accept = new[] { "json", "msgpack" };
+			var headers = new FluentHttpHeaders
+			{
+				Accept = new[] { "json", "msgpack" }
+			};
 			headers.Accept = "json";
 			Assert.Equal("json", headers.Accept);
 		}
