@@ -12,6 +12,21 @@ using static FluentlyHttpClient.Test.ServiceTestUtil;
 // ReSharper disable InconsistentNaming
 namespace Test
 {
+	public class RequestBuilder_Build
+	{
+		[Fact]
+		public void WithoutUrl_ShouldBuildBaseUrl()
+		{
+			var request = GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("https://sketch7.com")
+				.Build()
+				.CreateRequest()
+				.Build();
+
+			Assert.Equal("https://sketch7.com", request.Uri.ToString());
+		}
+	}
+
 	public class RequestBuilder_WithUri
 	{
 		[Fact]
