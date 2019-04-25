@@ -306,6 +306,7 @@ namespace FluentlyHttpClient
 		public FluentHttpRequest Build()
 		{
 			ValidateRequest();
+
 			Uri = Uri ?? "/";
 			var uri = BuildUri(Uri, _queryParams, _queryStringOptions);
 			var httpRequest = new HttpRequestMessage(HttpMethod, uri);
@@ -340,9 +341,6 @@ namespace FluentlyHttpClient
 		{
 			if (HttpMethod == null)
 				throw RequestValidationException.FieldNotSpecified(nameof(HttpMethod));
-
-			//if (string.IsNullOrWhiteSpace(Uri))
-			//	throw RequestValidationException.FieldNotSpecified(nameof(Uri));
 
 			if (HttpMethod == HttpMethod.Get && _httpBody != null)
 				throw new RequestValidationException("A request with Method 'GET' cannot have a body assigned.");
