@@ -3,7 +3,7 @@
 [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.1.0) (2019-X-X)
 
 
-## [3.0.2](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.1...3.0.2) (2019-04-25)
+## [3.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.1.0...3.1.0) (2019-04-25)
 
 ### Features
 - **request builder:** now supports request without `Uri` to use only `BaseUri`
