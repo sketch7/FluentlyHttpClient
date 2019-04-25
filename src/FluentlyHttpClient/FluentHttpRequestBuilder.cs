@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -6,7 +7,6 @@ using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Primitives;
 
 namespace FluentlyHttpClient
 {
@@ -306,9 +306,10 @@ namespace FluentlyHttpClient
 		public FluentHttpRequest Build()
 		{
 			ValidateRequest();
-
+			Uri = Uri ?? "/";
 			var uri = BuildUri(Uri, _queryParams, _queryStringOptions);
 			var httpRequest = new HttpRequestMessage(HttpMethod, uri);
+			httpRequest.RequestUri = httpRequest.RequestUri ?? new Uri(uri);
 			if (_httpBody != null)
 				httpRequest.Content = _httpBody;
 
@@ -340,8 +341,8 @@ namespace FluentlyHttpClient
 			if (HttpMethod == null)
 				throw RequestValidationException.FieldNotSpecified(nameof(HttpMethod));
 
-			if (string.IsNullOrWhiteSpace(Uri))
-				throw RequestValidationException.FieldNotSpecified(nameof(Uri));
+			//if (string.IsNullOrWhiteSpace(Uri))
+			//	throw RequestValidationException.FieldNotSpecified(nameof(Uri));
 
 			if (HttpMethod == HttpMethod.Get && _httpBody != null)
 				throw new RequestValidationException("A request with Method 'GET' cannot have a body assigned.");
