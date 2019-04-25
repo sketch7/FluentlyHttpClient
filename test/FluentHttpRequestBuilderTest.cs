@@ -1,17 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using FluentlyHttpClient;
+﻿using FluentlyHttpClient;
 using FluentlyHttpClient.Test;
 using Microsoft.Extensions.Primitives;
 using RichardSzalay.MockHttp;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
 // ReSharper disable InconsistentNaming
 namespace Test
 {
+	public class RequestBuilder_Build
+	{
+		[Fact]
+		public void WithoutUrl_ShouldUseBaseUrl()
+		{
+			var request = GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("https://sketch7.com")
+				.Build()
+				.CreateRequest()
+				.Build();
+
+			Assert.Equal("/", request.Uri.ToString());
+		}
+
+		[Fact]
+		public void WithoutUrlAndWithQueryString_ShouldInterpolateQueryString()
+		{
+			var request = GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("https://sketch7.com")
+				.Build()
+				.CreateRequest()
+				.WithQueryParams(new { Language = "en" })
+				.Build();
+
+			Assert.Equal("/?language=en", request.Uri.ToString());
+		}
+	}
+
 	public class RequestBuilder_WithUri
 	{
 		[Fact]
@@ -160,13 +188,6 @@ namespace Test
 		{
 			var builder = GetNewRequestBuilder();
 			Assert.Throws<RequestValidationException>(() => builder.WithMethod(null).WithUri("/org").Build());
-		}
-
-		[Fact]
-		public void ThrowsErrorWhenUriNotSpecified()
-		{
-			var builder = GetNewRequestBuilder(uri: null);
-			Assert.Throws<RequestValidationException>(() => builder.Build());
 		}
 
 		[Fact]
@@ -590,6 +611,4 @@ namespace Test
 			}
 		}
 	}
-
-
 }
