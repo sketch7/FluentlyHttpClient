@@ -45,10 +45,8 @@ namespace FluentlyHttpClient
 				switch (item.Value)
 				{
 					case IEnumerable values:
-
 						qs = BuildCollectionQueryString(key, values, qs, options);
 						break;
-
 					default:
 						qs = AddQueryString(key, item.Value.ToString(), qs);
 						break;
