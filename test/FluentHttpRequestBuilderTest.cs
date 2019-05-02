@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -15,28 +16,46 @@ namespace Test
 	public class RequestBuilder_Build
 	{
 		[Fact]
-		public void WithoutUrl_ShouldUseBaseUrl()
+		public async Task WithoutUrl_ShouldUseBaseUrl()
 		{
-			var request = GetNewClientFactory().CreateBuilder("abc")
-				.WithBaseUrl("https://sketch7.com")
+			var response = await GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("https://sketch7.com/api/heroes")
+				.WithMessageHandler(new MockHttpMessageHandler())
 				.Build()
 				.CreateRequest()
-				.Build();
+				.ReturnAsResponse();
 
-			Assert.Equal("/", request.Uri.ToString());
+			Assert.Equal("https://sketch7.com/api/heroes/", response.Message.RequestMessage.RequestUri.ToString());
 		}
 
 		[Fact]
-		public void WithoutUrlAndWithQueryString_ShouldInterpolateQueryString()
+		public async Task SubClientWithoutUrl_ShouldUseBaseUrl()
 		{
-			var request = GetNewClientFactory().CreateBuilder("abc")
-				.WithBaseUrl("https://sketch7.com")
+			var response = await GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("https://sketch7.com/api/heroes")
+				.WithMessageHandler(new MockHttpMessageHandler())
+				.Build()
+				.CreateClient("sub")
+				.WithBaseUrl("v1", replace: false)
+				.Build()
+				.CreateRequest()
+				.ReturnAsResponse();
+
+			Assert.Equal("https://sketch7.com/api/heroes/v1/", response.Message.RequestMessage.RequestUri.ToString());
+		}
+
+		[Fact]
+		public async Task WithoutUrlAndWithQueryString_ShouldInterpolateQueryString()
+		{
+			var response = await GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("https://sketch7.com/api/heroes/")
+				.WithMessageHandler(new MockHttpMessageHandler())
 				.Build()
 				.CreateRequest()
 				.WithQueryParams(new { Language = "en" })
-				.Build();
+				.ReturnAsResponse();
 
-			Assert.Equal("/?language=en", request.Uri.ToString());
+			Assert.Equal("https://sketch7.com/api/heroes/?language=en", response.Message.RequestMessage.RequestUri.ToString());
 		}
 	}
 

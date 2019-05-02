@@ -307,10 +307,9 @@ namespace FluentlyHttpClient
 		{
 			ValidateRequest();
 
-			Uri = Uri ?? "/";
+			Uri = Uri ?? string.Empty;
 			var uri = BuildUri(Uri, _queryParams, _queryStringOptions);
 			var httpRequest = new HttpRequestMessage(HttpMethod, uri);
-			httpRequest.RequestUri = httpRequest.RequestUri ?? new Uri(uri);
 			if (_httpBody != null)
 				httpRequest.Content = _httpBody;
 

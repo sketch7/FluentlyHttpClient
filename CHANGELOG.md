@@ -3,6 +3,12 @@
 [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.1.0) (2019-X-X)
 
 
+## [3.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.1.0...3.1.1) (2019-05-02)
+
+### Bug Fixes
+- **request builder:** fix request without path to build full uri with base correctly
+
+
 ## [3.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.1.0...3.1.0) (2019-04-25)
 
 ### Features
