@@ -3,7 +3,10 @@
 [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.1.0) (2019-X-X)
 
 
-## [3.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.1.0...3.1.1) (2019-05-02)
+## [3.1.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.1.0...3.1.1) (2019-05-02)
+
+### Features
+- **http client:** client identifier inherits parent's e.g. `{parentId}.{id}` in the future this will be configurable
 
 ### Bug Fixes
 - **request builder:** fix request without path to build full uri with base correctly

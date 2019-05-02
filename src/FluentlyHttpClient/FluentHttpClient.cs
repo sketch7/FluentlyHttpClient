@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FluentlyHttpClient.Middleware;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -6,8 +8,6 @@ using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using FluentlyHttpClient.Middleware;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentlyHttpClient
 {
@@ -63,7 +63,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Creates a new client and inherit options from the current.
 		/// </summary>
-		/// <param name="identifier">New identifier name</param>
+		/// <param name="identifier">New identifier name (and apply sub-client id formatter) (defaults: '{parentId}.{id})'</param>
 		/// <returns>Returns a new client builder instance.</returns>
 		FluentHttpClientBuilder CreateClient(string identifier);
 
@@ -197,9 +197,11 @@ namespace FluentlyHttpClient
 		/// <inheritdoc />
 		public FluentHttpClientBuilder CreateClient(string identifier)
 		{
-			return _clientFactory.CreateBuilder(identifier)
+			// todo: make configurable
+			var id = DefaultSubClientIdentityFormatter(Identifier, identifier);
+			return _clientFactory.CreateBuilder(id)
 				.FromOptions(_options)
-				.WithIdentifier(identifier);
+				.WithIdentifier(id);
 		}
 
 		private HttpClient Configure(FluentHttpClientOptions options)
@@ -224,5 +226,8 @@ namespace FluentlyHttpClient
 
 		private static FluentHttpResponse ToFluentResponse(HttpResponseMessage response, IDictionary<object, object> items)
 			=> new FluentHttpResponse(response, items);
+
+		private static string DefaultSubClientIdentityFormatter(string parentId, string id)
+			=> $"{parentId}.{id}";
 	}
 }
