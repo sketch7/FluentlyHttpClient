@@ -215,7 +215,7 @@ namespace Test
 		}
 
 		[Fact]
-		public void WithQueryParamsOptions_MultipleCallsShouldKeepConfigure()
+		public void WithQueryParamsOptions_MultipleCallsShouldKeepConfiguring()
 		{
 			var builder = GetNewRequestBuilder();
 			var request = builder.WithUri("/org/sketch7/heroes")
