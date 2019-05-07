@@ -198,6 +198,38 @@ namespace Test
 
 			Assert.Equal("/org/sketch7/heroes?roles=warrior,assassin", request.Uri.ToString());
 		}
+
+		[Fact]
+		public void InheritOptions_AsDefaults()
+		{
+			var builder = GetNewRequestBuilder();
+			var request = builder.WithUri("/org/sketch7/heroes")
+				.WithQueryParamsOptions(opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated)
+				.WithQueryParams(new
+				{
+					Roles = new List<string> { "warrior", "assassin" },
+				}, opts => opts.KeyFormatter = s => s.ToUpper()
+				).Build();
+
+			Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin", request.Uri.ToString());
+		}
+
+
+		[Fact]
+		public void WithQueryParamsOptions_MultipleCallsShouldKeepConfigure()
+		{
+			var builder = GetNewRequestBuilder();
+			var request = builder.WithUri("/org/sketch7/heroes")
+				.WithQueryParamsOptions(opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated)
+				.WithQueryParamsOptions(opts => opts.KeyFormatter = s => s.ToUpper())
+				.WithQueryParams(new
+				{
+					Roles = new List<string> { "warrior", "assassin" },
+				}
+				).Build();
+
+			Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin", request.Uri.ToString());
+		}
 	}
 
 	public class RequestBuilder_BuildValidation
