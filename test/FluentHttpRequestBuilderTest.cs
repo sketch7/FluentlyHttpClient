@@ -214,7 +214,6 @@ namespace Test
 			Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin", request.Uri.ToString());
 		}
 
-
 		[Fact]
 		public void WithQueryParamsOptions_MultipleCallsShouldKeepConfigure()
 		{
