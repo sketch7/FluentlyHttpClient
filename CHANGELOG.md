@@ -3,6 +3,12 @@
 [*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.1.0) (2019-X-X)
 
 
+## [3.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.1.1...3.2.0) (2019-05-07)
+
+### Features
+- **request builder:** when using `WithQueryParams` and configure options or configure options with  `WithQueryParamsOptions` will inherit from the previous configured options instead of the defaults
+
+
 ## [3.1.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.1.0...3.1.1) (2019-05-02)
 
 ### Features

@@ -158,7 +158,7 @@ namespace FluentlyHttpClient
 		public FluentHttpRequestBuilder WithQueryParams(object queryParams, Action<QueryStringOptions> configure)
 		{
 			if (configure == null) throw new ArgumentNullException(nameof(configure));
-			var options = new QueryStringOptions();
+			var options = _queryStringOptions?.Clone() ?? new QueryStringOptions();
 			configure(options);
 			return WithQueryParams(queryParams, options);
 		}
@@ -182,7 +182,7 @@ namespace FluentlyHttpClient
 		public FluentHttpRequestBuilder WithQueryParamsOptions(Action<QueryStringOptions> configure)
 		{
 			if (configure == null) throw new ArgumentNullException(nameof(configure));
-			var options = new QueryStringOptions();
+			var options = _queryStringOptions ?? new QueryStringOptions();
 			configure(options);
 			return WithQueryParamsOptions(options);
 		}

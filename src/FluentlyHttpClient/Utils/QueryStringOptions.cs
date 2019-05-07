@@ -51,5 +51,17 @@ namespace FluentlyHttpClient
 		/// Gets or sets the function to format the key e.g. lowercase.
 		/// </summary>
 		public Func<string, string> KeyFormatter { get; set; } = DefaultKeyFormatter;
+
+		/// <summary>
+		/// Clones options into a new instance.
+		/// </summary>
+		/// <returns>Returns new instance with the copied options.</returns>
+		public QueryStringOptions Clone()
+			=> new QueryStringOptions
+			{
+				CollectionMode = CollectionMode,
+				CollectionItemFormatter = CollectionItemFormatter,
+				KeyFormatter = KeyFormatter
+			};
 	}
 }
