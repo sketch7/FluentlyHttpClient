@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -259,7 +259,7 @@ namespace FluentlyHttpClient
 			_middlewareBuilder.AddRange(options.MiddlewareBuilder.GetAll());
 			_requestBuilderDefaults = options.RequestBuilderDefaults;
 			_httpMessageHandler = options.HttpMessageHandler;
-			var formatters = _formatterOptions.Formatters.Union(options.Formatters, MediaTypeFormatterComparer.Instance).ToList();
+			var formatters = options.Formatters.Union(_formatterOptions.Formatters, MediaTypeFormatterComparer.Instance).ToList();
 			_formatterOptions.Formatters.Clear();
 			_formatterOptions.Formatters.AddRange(formatters);
 			_formatterOptions.Default = options.DefaultFormatter;
