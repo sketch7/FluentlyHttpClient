@@ -1,4 +1,4 @@
-# Fluently Http Changelog 
+# Fluently Http Changelog
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.1.0) (2019-X-X)
 
