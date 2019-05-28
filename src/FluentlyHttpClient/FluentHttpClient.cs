@@ -272,7 +272,7 @@ namespace FluentlyHttpClient
 				FluentlyExecutionContext context = null;
 				if (request.Properties.TryGetValue(RequestIdProperty, out var requestKey))
 				{
-					_requestTracker.TryPeek((string)requestKey, out var fluentlyExecutionContext);
+					_requestTracker.TryPeek(requestKey.ToString(), out var fluentlyExecutionContext);
 					context = fluentlyExecutionContext;
 				}
 
@@ -284,7 +284,7 @@ namespace FluentlyHttpClient
 					() => Task.FromResult(_toFluentResponse(response, fluentlyRequest.Items)));
 
 				if (context != null)
-					_requestTracker.Push((string)requestKey, fluentlyResponse);
+					_requestTracker.Push(requestKey.ToString(), fluentlyResponse);
 
 				return response;
 			}
