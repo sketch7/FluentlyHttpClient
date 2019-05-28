@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -6,7 +7,6 @@ using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Primitives;
 
 namespace FluentlyHttpClient
 {
@@ -158,7 +158,7 @@ namespace FluentlyHttpClient
 		public FluentHttpRequestBuilder WithQueryParams(object queryParams, Action<QueryStringOptions> configure)
 		{
 			if (configure == null) throw new ArgumentNullException(nameof(configure));
-			var options = new QueryStringOptions();
+			var options = _queryStringOptions?.Clone() ?? new QueryStringOptions();
 			configure(options);
 			return WithQueryParams(queryParams, options);
 		}
@@ -182,7 +182,7 @@ namespace FluentlyHttpClient
 		public FluentHttpRequestBuilder WithQueryParamsOptions(Action<QueryStringOptions> configure)
 		{
 			if (configure == null) throw new ArgumentNullException(nameof(configure));
-			var options = new QueryStringOptions();
+			var options = _queryStringOptions ?? new QueryStringOptions();
 			configure(options);
 			return WithQueryParamsOptions(options);
 		}
@@ -307,6 +307,7 @@ namespace FluentlyHttpClient
 		{
 			ValidateRequest();
 
+			Uri = Uri ?? string.Empty;
 			var uri = BuildUri(Uri, _queryParams, _queryStringOptions);
 			var httpRequest = new HttpRequestMessage(HttpMethod, uri);
 			if (_httpBody != null)
@@ -339,9 +340,6 @@ namespace FluentlyHttpClient
 		{
 			if (HttpMethod == null)
 				throw RequestValidationException.FieldNotSpecified(nameof(HttpMethod));
-
-			if (string.IsNullOrWhiteSpace(Uri))
-				throw RequestValidationException.FieldNotSpecified(nameof(Uri));
 
 			if (HttpMethod == HttpMethod.Get && _httpBody != null)
 				throw new RequestValidationException("A request with Method 'GET' cannot have a body assigned.");

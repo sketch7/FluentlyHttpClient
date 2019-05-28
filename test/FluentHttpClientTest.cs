@@ -1,11 +1,11 @@
-﻿using System.Linq;
-using System.Net.Http;
-using FluentlyHttpClient;
+﻿using FluentlyHttpClient;
 using FluentlyHttpClient.GraphQL;
 using FluentlyHttpClient.Test;
 using MessagePack.Resolvers;
 using RichardSzalay.MockHttp;
 using Sketch7.MessagePack.MediaTypeFormatter;
+using System.Linq;
+using System.Net.Http;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -100,7 +100,7 @@ namespace Test
 
 
 			Assert.Equal("sketch7", httpClient.Identifier);
-			Assert.Equal("subclient", subClient.Identifier);
+			Assert.Equal("sketch7.subclient", subClient.Identifier);
 			Assert.Equal("en-GB", httpClientLocale);
 			Assert.Equal("de", subClientLocale);
 			Assert.Null(countryValues?.FirstOrDefault());

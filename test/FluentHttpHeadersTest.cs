@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json;
 using Xunit;
 
 // ReSharper disable InconsistentNaming
@@ -13,10 +13,10 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void ToDictionary_ShouldBeConverted()
 		{
-			var headers = new FluentHttpHeaders();
-			headers.SetRange(new Dictionary<string, StringValues>{
+			var headers = new FluentHttpHeaders
+			{
 				{HeaderTypes.Accept, new[] {"json", "msgpack"}}
-			});
+			};
 
 			var dictionary = headers.ToDictionary();
 
@@ -29,13 +29,12 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void ShouldBeSerializable()
 		{
-			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, string[]>
+			var headers = new FluentHttpHeaders
 				{
 					{HeaderTypes.Authorization, new[]{"the-xx"}},
 					{HeaderTypes.Accept, new[] {"json", "msgpack"}},
 					{HeaderTypes.XForwardedHost, new[] {"sketch7.com"}},
-				});
+				};
 
 			var headersJson = JsonConvert.SerializeObject(headers);
 			var headersCopied = JsonConvert.DeserializeObject<FluentHttpHeaders>(headersJson);
@@ -64,16 +63,20 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void ShouldAddSingle()
 		{
-			var headers = new FluentHttpHeaders();
-			headers.Add(HeaderTypes.Authorization, "the-xx");
+			var headers = new FluentHttpHeaders
+			{
+				{ HeaderTypes.Authorization, "the-xx" }
+			};
 			Assert.Equal("the-xx", headers.Authorization);
 		}
 
 		[Fact]
 		public void ShouldAddEnumerable()
 		{
-			var headers = new FluentHttpHeaders();
-			headers.Add(HeaderTypes.Accept, new[] { "json", "msgpack" });
+			var headers = new FluentHttpHeaders
+			{
+				{ HeaderTypes.Accept, new[] { "json", "msgpack" } }
+			};
 			Assert.Equal("json,msgpack", headers.Accept);
 		}
 
@@ -116,26 +119,27 @@ namespace FluentlyHttpClient.Test
 		public void GetExists_ShouldReturn()
 		{
 			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, StringValues>
-				{
-					{HeaderTypes.Accept, new[] {"json", "msgpack"}}
-				});
+				.Add(HeaderTypes.Accept, new[] { "json", "msgpack" });
 			Assert.Equal("json,msgpack", headers.Accept);
 		}
 
 		[Fact]
 		public void SetNotExists_ShouldBeAdded()
 		{
-			var headers = new FluentHttpHeaders();
-			headers.Accept = new[] { "json", "msgpack" };
+			var headers = new FluentHttpHeaders
+			{
+				Accept = new[] { "json", "msgpack" }
+			};
 			Assert.Equal("json,msgpack", headers.Accept);
 		}
 
 		[Fact]
 		public void SetExists_ShouldBeUpdated()
 		{
-			var headers = new FluentHttpHeaders();
-			headers.Accept = new[] { "json", "msgpack" };
+			var headers = new FluentHttpHeaders
+			{
+				Accept = new[] { "json", "msgpack" }
+			};
 			headers.Accept = "json";
 			Assert.Equal("json", headers.Accept);
 		}
@@ -192,12 +196,11 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void ShouldHashSimple()
 		{
-			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, StringValues>
+			var headers = new FluentHttpHeaders
 				{
 					{HeaderTypes.Authorization, "the-xx"},
 					{HeaderTypes.ContentType,"json" }
-				});
+				};
 			var hash = headers.ToHashString();
 
 			Assert.Equal("Authorization=the-xx&Content-Type=json", hash);
@@ -206,12 +209,11 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void ShouldHashWithEnumerable()
 		{
-			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, StringValues>
-				{
-					{HeaderTypes.Authorization, "the-xx"},
-					{HeaderTypes.Accept, new[] {"json", "msgpack"}}
-				});
+			var headers = new FluentHttpHeaders
+			{
+				{HeaderTypes.Authorization, "the-xx"},
+				{HeaderTypes.Accept, new[] {"json", "msgpack"}}
+			};
 			var hash = headers.ToHashString();
 
 			Assert.Equal("Authorization=the-xx&Accept=json,msgpack", hash);
@@ -220,13 +222,13 @@ namespace FluentlyHttpClient.Test
 		[Fact]
 		public void ShouldFilterWithHashingFilter()
 		{
-			var headers = new FluentHttpHeaders()
-				.AddRange(new Dictionary<string, StringValues>
+			var headers = new FluentHttpHeaders
 				{
 					{HeaderTypes.Authorization, "the-xx"},
 					{HeaderTypes.Accept, new[] {"json", "msgpack"}},
 					{HeaderTypes.XForwardedHost, "sketch7.com"},
-				}).WithOptions(opts => opts.WithHashingExclude(pair => pair.Key == HeaderTypes.Authorization));
+				}
+				.WithOptions(opts => opts.WithHashingExclude(pair => pair.Key == HeaderTypes.Authorization));
 			var hash = headers.ToHashString();
 
 			Assert.Equal("Accept=json,msgpack&X-Forwarded-Host=sketch7.com", hash);

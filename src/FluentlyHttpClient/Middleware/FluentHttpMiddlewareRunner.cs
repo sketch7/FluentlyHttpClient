@@ -61,7 +61,7 @@ namespace FluentlyHttpClient.Middleware
 	public interface IFluentHttpMiddlewareRunner
 	{
 		/// <summary>
-		/// Run the middleware and lastely the specified action.
+		/// Run the middleware and lastly the specified action.
 		/// </summary>
 		/// <param name="request">HTTP request to send.</param>
 		/// <param name="action">Action to invoke after middleware are all executed.</param>

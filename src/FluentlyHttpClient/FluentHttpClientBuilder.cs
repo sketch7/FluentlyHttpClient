@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -47,10 +47,16 @@ namespace FluentlyHttpClient
 		/// Set base url for each request.
 		/// </summary>
 		/// <param name="url">Base url address to set. e.g. "https://api.sketch7.com"</param>
+		/// <param name="replace">Determines whether to replace the Url or appends a path to the current BaseUrl.</param>
 		/// <returns>Returns client builder for chaining.</returns>
-		public FluentHttpClientBuilder WithBaseUrl(string url)
+		public FluentHttpClientBuilder WithBaseUrl(string url, bool replace = true)
 		{
-			_baseUrl = url;
+			var trimmedUrl = $"{url.Trim(' ', '/')}/";
+
+			_baseUrl = replace || string.IsNullOrEmpty(_baseUrl)
+				? _baseUrl = trimmedUrl
+				: _baseUrl + trimmedUrl;
+
 			return this;
 		}
 
@@ -253,7 +259,7 @@ namespace FluentlyHttpClient
 			_middlewareBuilder.AddRange(options.MiddlewareBuilder.GetAll());
 			_requestBuilderDefaults = options.RequestBuilderDefaults;
 			_httpMessageHandler = options.HttpMessageHandler;
-			var formatters = _formatterOptions.Formatters.Union(options.Formatters, MediaTypeFormatterComparer.Instance).ToList();
+			var formatters = options.Formatters.Union(_formatterOptions.Formatters, MediaTypeFormatterComparer.Instance).ToList();
 			_formatterOptions.Formatters.Clear();
 			_formatterOptions.Formatters.AddRange(formatters);
 			_formatterOptions.Default = options.DefaultFormatter;

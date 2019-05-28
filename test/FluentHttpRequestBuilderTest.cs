@@ -1,17 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using FluentlyHttpClient;
+﻿using FluentlyHttpClient;
 using FluentlyHttpClient.Test;
 using Microsoft.Extensions.Primitives;
 using RichardSzalay.MockHttp;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
 // ReSharper disable InconsistentNaming
 namespace Test
 {
+	public class RequestBuilder_Build
+	{
+		[Fact]
+		public async Task WithoutUrl_ShouldUseBaseUrl()
+		{
+			var response = await GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("https://sketch7.com/api/heroes")
+				.WithMessageHandler(new MockHttpMessageHandler())
+				.Build()
+				.CreateRequest()
+				.ReturnAsResponse();
+
+			Assert.Equal("https://sketch7.com/api/heroes/", response.Message.RequestMessage.RequestUri.ToString());
+		}
+
+		[Fact]
+		public async Task SubClientWithoutUrl_ShouldUseBaseUrl()
+		{
+			var response = await GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("https://sketch7.com/api/heroes")
+				.WithMessageHandler(new MockHttpMessageHandler())
+				.Build()
+				.CreateClient("sub")
+				.WithBaseUrl("v1", replace: false)
+				.Build()
+				.CreateRequest()
+				.ReturnAsResponse();
+
+			Assert.Equal("https://sketch7.com/api/heroes/v1/", response.Message.RequestMessage.RequestUri.ToString());
+		}
+
+		[Fact]
+		public async Task WithoutUrlAndWithQueryString_ShouldInterpolateQueryString()
+		{
+			var response = await GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("https://sketch7.com/api/heroes/")
+				.WithMessageHandler(new MockHttpMessageHandler())
+				.Build()
+				.CreateRequest()
+				.WithQueryParams(new { Language = "en" })
+				.ReturnAsResponse();
+
+			Assert.Equal("https://sketch7.com/api/heroes/?language=en", response.Message.RequestMessage.RequestUri.ToString());
+		}
+	}
+
 	public class RequestBuilder_WithUri
 	{
 		[Fact]
@@ -151,6 +198,37 @@ namespace Test
 
 			Assert.Equal("/org/sketch7/heroes?roles=warrior,assassin", request.Uri.ToString());
 		}
+
+		[Fact]
+		public void InheritOptions_AsDefaults()
+		{
+			var builder = GetNewRequestBuilder();
+			var request = builder.WithUri("/org/sketch7/heroes")
+				.WithQueryParamsOptions(opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated)
+				.WithQueryParams(new
+				{
+					Roles = new List<string> { "warrior", "assassin" },
+				}, opts => opts.KeyFormatter = s => s.ToUpper()
+				).Build();
+
+			Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin", request.Uri.ToString());
+		}
+
+		[Fact]
+		public void WithQueryParamsOptions_MultipleCallsShouldKeepConfiguring()
+		{
+			var builder = GetNewRequestBuilder();
+			var request = builder.WithUri("/org/sketch7/heroes")
+				.WithQueryParamsOptions(opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated)
+				.WithQueryParamsOptions(opts => opts.KeyFormatter = s => s.ToUpper())
+				.WithQueryParams(new
+				{
+					Roles = new List<string> { "warrior", "assassin" },
+				}
+				).Build();
+
+			Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin", request.Uri.ToString());
+		}
 	}
 
 	public class RequestBuilder_BuildValidation
@@ -160,13 +238,6 @@ namespace Test
 		{
 			var builder = GetNewRequestBuilder();
 			Assert.Throws<RequestValidationException>(() => builder.WithMethod(null).WithUri("/org").Build());
-		}
-
-		[Fact]
-		public void ThrowsErrorWhenUriNotSpecified()
-		{
-			var builder = GetNewRequestBuilder(uri: null);
-			Assert.Throws<RequestValidationException>(() => builder.Build());
 		}
 
 		[Fact]
@@ -590,6 +661,4 @@ namespace Test
 			}
 		}
 	}
-
-
 }

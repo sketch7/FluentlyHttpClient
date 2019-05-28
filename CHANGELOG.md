@@ -1,26 +1,68 @@
 # Fluently Http Changelog
 
-[*vNext*](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.1.0) (201X-X-X)
+[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.1.0) (2019-X-X)
 
+## [3.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.2.0...3.2.1) (2019-05-21)
 
-## [3.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.2.0...3.0.0) (2019-03-X)
+### Bug Fixes
+
+- **http client builder:** fix formatters' merging when creating sub clients
+
+## [3.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.1.1...3.2.0) (2019-05-07)
+
+### Features
+
+- **request builder:** when using `WithQueryParams` and configure options or configure options with `WithQueryParamsOptions` will inherit from the previous configured options instead of the defaults
+
+## [3.1.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.1.0...3.1.1) (2019-05-02)
+
+### Features
+
+- **http client:** client identifier inherits parent's e.g. `{parentId}.{id}` in the future this will be configurable
+
+### Bug Fixes
+
+- **request builder:** fix request without path to build full uri with base correctly
+
+## [3.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.1.0...3.1.0) (2019-04-25)
+
+### Features
+
+- **request builder:** now supports request without `Uri` to use only `BaseUri`
+
+## [3.0.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.0.1) (2019-04-12)
+
+### Bug Fixes
+
+- **headers:** `_data` was `public` now is set to `private` as intended
+
+## [3.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.2.0...3.0.0) (2019-04-12)
 
 Middleware has been reworked, its now much more efficient as it creates instances per middleware per client, instead of every request.
 
 ### Features
+
 - **middleware:** middleware has been reworked, and now are much more efficient
 - **middleware:** middleware now logs the identifier in source e.g. `FluentlyHttpClient.Middleware.sketch7.Timer`, given HttpClient identifier was `sketch7`,
-so logs can be more fine controlled
+  so logs can be more fine controlled
 - **headers:** add `FluentHttpHeaders` since `HttpHeaders` (and all implementations) cannot create instances of, and changed all implementations to use it instead of `Dictionary<string, string>`
 - **util:** add several extensions when working with `HttpHeaders`
 - **http request:** now exposes the request builder
 - **http request:** add request hash `FluentHttpRequest.GetHash`, `FluentHttpRequestBuilder.WithRequestHashOptions` which can be used to build an id hash for the request
 - **request builder:** add `IFluentHttpMessageItems` which `FluentHttpRequestBuilder`, `FluentHttpRequest` and `FluentHttpResponse` implements, so items extension methods can target all
+- **http client builder:** `WithBaseUrl` now accepts optional bool `replace` which will append to the existing. Useful when creating sub client to inherit and continue adding to it
+- **response caching middleware:** implemented response caching middleware `UseResponseCaching` which the intention is not for performance improvements but more to proxy/mocking, as it copies responses and serve them if they were already requested.
+  We also implemented remote caching which stores in database using EntityFramework see [FluentlyHttpClient.Entity](./src/FluentlyHttpClient.Entity/README.md). It can also be extended to implement custom stores e.g. we have another which is for Microsoft Orleans (not published - yet)
 
 ### Bug Fixes
+
 - **http client:** fix `identifier` for sub client when using `CreateClient` was being replaced by the parent's instead of the one specified
+- **http client builder:** fix an issue when base url doesn't contain a trailing `/` in certain cases it will trim last value e.g. http://myapi.com/v1 would result in http://myapi.com
 
 ### BREAKING CHANGES
+
+Even though breaking changes are quite a lot, most of them are more internal
+
 - **middleware:** `FluentHttpRequestDelegate` has been removed in favor of `FluentHttpMiddlewareDelegate`
 - **middleware:** `IFluentHttpMiddlewareRunner` and `FluentHttpMiddlewareRunner` has been reworked
 - **middleware:** `IFluentHttpMiddleware` changed from `Invoke(FluentHttpRequest)` to `Invoke(FluentHttpMiddlewareContext)`
@@ -33,9 +75,8 @@ so logs can be more fine controlled
 - **request builder:** change headers from `Dictionary<string, string>` to `FluentHttpHeaders`
 - **http client builder:** change options headers from `Dictionary<string, string>` to `FluentHttpHeaders`
 
-See [these changes](https://github.com/sketch7/FluentlyHttpClient/pull/25/files#diff-efc205ab9587ec42db3de44d14c0ce86) 
+See [these changes](https://github.com/sketch7/FluentlyHttpClient/pull/25/files#diff-efc205ab9587ec42db3de44d14c0ce86)
 in order to help you update an existing middleware to the new version (fear not, changes are minimal :)).
-
 
 ## [2.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.2...2.2.0) (2019-03-03)
 
@@ -43,32 +84,33 @@ in order to help you update an existing middleware to the new version (fear not,
 - **http client builder:** add `FromOptions` which gets configured via `FluentHttpClientOptions`
 - **http client builder:** rename `Build` to `BuildOptions` and `Build` now returns the http client
 - **http client builder:** `WithRequestBuilderDefaults` now will combine previous defaults instead of replacing them.
-If you want to replace the previous defaults (as it was working), use `WithRequestBuilderDefaults(..., replace: true)`.
-This behavior is changed because its more expected that they are combined, especially when creating a sub-client and adding/changing request defaults would loose the previous defaults from the creator (parent).
+  If you want to replace the previous defaults (as it was working), use `WithRequestBuilderDefaults(..., replace: true)`.
+  This behavior is changed because its more expected that they are combined, especially when creating a sub-client and adding/changing request defaults would loose the previous defaults from the creator (parent).
 - **http client factory:** add overload `Add(IFluentHttpClient)`
 
 ### BREAKING CHANGES
 
 - **http client builder:** `Build` has been renamed to `BuildOptions` and add `Build` which now returns an Http Client.
-*Most probably it won't affect anyone since its more for internal use*
-
+  _Most probably it won't affect anyone since its more for internal use_
 
 ## [2.1.2](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.1...2.1.2) (2018-10-24)
 
 ### Chore
-- **build:** build correctly as `Release` mode
 
+- **build:** build correctly as `Release` mode
 
 ## [2.1.1](https://github.com/sketch7/FluentlyHttpClient/compare/2.1.0...2.1.1) (2018-10-13)
 
 ### Features
-- **util:** expose FluentlyHttpClient version via `FluentlyHttpClientMeta.Version`
 
+- **util:** expose FluentlyHttpClient version via `FluentlyHttpClientMeta.Version`
 
 ## [2.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/2.0.1...2.1.0) (2018-09-14)
 
 ### Features
+
 - **util:** implemented more powerful options to querystring
+
   - `CollectionMode` - this will allow to configure collection items in querystrings as below:
     - `KeyPerValue` e.g. `"filter=assassin&filter=fighter"`
     - `CommaSeparated` e.g. `"filter=assassin,fighter"`
@@ -93,78 +135,81 @@ clientBuilder.WithRequestBuilderDefaults(builder =>
 - **request builder:** `WithQueryParams(object queryParams, bool lowerCaseQueryKeys)` has been marked as obsolete, instead the newly `WithQueryParams(object queryParams, Action<QueryStringOptions> configure)`.
   e.g. `WithQueryParams(params, opts => opts.KeyFormatter = key => key.ToLower())`
 
-
 ## [2.0.1](https://github.com/sketch7/FluentlyHttpClient/compare/2.0.0...2.0.1) (2018-07-31)
 
 ### Bug Fixes
-- **querystring builder:** fix issue with query string when have multiple values.
 
+- **querystring builder:** fix issue with query string when have multiple values.
 
 ## [2.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.5...2.0.0) (2018-06-24)
 
 ### Features
+
 - **deps:** update to .net standard 2.0 + .net core 2.1.
 - **deps:** remove `WinInsider.System.Net.Http.Formatting` and replaced with `Microsoft.AspNet.WebApi.Client`.
 - **http client:** now using `IHttpClientFactory` inorder to create `HttpClient` (without message handler)
 - **services:** `AddFluentlyHttpClient` now uses `TryAddSingleton` and registers `AddHttpClient`
-- **request builder:** when building querystring now supports collections 
+- **request builder:** when building querystring now supports collections
 
   e.g. `Roles = new List<string> { "warrior", "assassin" }` => `roles=warrior&roles=assassin`
+
 - **timer middleware:** add `UseTimer(this FluentHttpClientBuilder builder, Action<TimerHttpMiddlewareOptions> configure = null)` overload.
 - **logger middleware:** add `WithLoggingOptions(this FluentHttpRequestBuilder builder, Action<LoggerHttpMiddlewareOptions> configure = null)` overload.
 - **logger middleware:** add `UseLogging(this FluentHttpClientBuilder builder, Action<LoggerHttpMiddlewareOptions> configure = null)` overload.
 
 ### Changes
+
 - **timer middleware:** increase warning threshold to `400`ms by default.
 
 ### BREAKING CHANGES
+
 - Removed deprecated code
   - `IDictionary.Set`, `FluentHttpClientBuilder.Withdentifier` (typo) and `FluentHttpClientBuilder.WithFormatters`
-
 
 ## [1.4.4](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.3...1.4.4) (2018-06-11)
 
 ### Bug Fixes
-- **request builder:** fix issue with query string `.WithQueryParams` when value is empty string.
 
+- **request builder:** fix issue with query string `.WithQueryParams` when value is empty string.
 
 ## [1.4.3](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.2...1.4.3) (2018-04-07)
 
 ### Bug Fixes
-- **request builder:** losen parsing for `userAgent` header, since errors are thrown when having user agent like the below which seems to be still valid.
- `Mozilla/5.0 (Linux; Android 6.0; vivo 1601 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/63.0.3239.111 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/153.0.0.53.88;]`
 
+- **request builder:** losen parsing for `userAgent` header, since errors are thrown when having user agent like the below which seems to be still valid.
+  `Mozilla/5.0 (Linux; Android 6.0; vivo 1601 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/63.0.3239.111 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/153.0.0.53.88;]`
 
 ## [1.4.2](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.1...1.4.2) (2018-03-18)
 
 ### Features
+
 - **timer middleware:** now logs even when an exception is thrown, which might be useful when a timeout has triggered.
 - **timer middleware:** `SetTimeTaken` now returns `FluentHttpResponse` instead of `void`.
-
 
 ## [1.4.1](https://github.com/sketch7/FluentlyHttpClient/compare/1.4.0...1.4.1) (2018-03-04)
 
 ### Bug Fixes
-- **request builder:** items within request/response e.g. time taken (from timer middleware) were updating the request builder items which 
- was causing susequent requests built by the same request builder to fail.
+
+- **request builder:** items within request/response e.g. time taken (from timer middleware) were updating the request builder items which
+  was causing susequent requests built by the same request builder to fail.
 - **http client builder:** `Withdentifier` has been renamed correctly to `WithIdentifier` previous one was marked as obsolete.
 
- ### Deprecated code
+### Deprecated code
 
 - **http client builder:** `Withdentifier` has been marked as obsolete, instead the newly `WithIdentifier`.
-
 
 ## [1.4.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.3.0...1.4.0) (2018-03-03)
 
 ### Features
+
 - **logger middleware:** add `LoggerHttpMiddlewareOptions` to configure `ShouldLogDetailedRequest` and `ShouldLogDetailedResponse`.
 - **logger middleware:** add `WithLoggingOptions` on request builder, to specify options per request.
 - **timer middleware:** add `WithTimerWarnThreshold` on request builder, to specify options per request.
 
-
 ## [1.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.2.1...1.3.0) (2018-02-24)
 
 ### Features
+
 - **http client builder:** add `ConfigureFormatters` which now able to configure `Default` formatter to be used.
 - **sample:** add sample for MessagePack formatter - see `MessagePackIntegrationTest` and `MessagePackMediaTypeFormatter`.
 
@@ -172,18 +217,17 @@ clientBuilder.WithRequestBuilderDefaults(builder =>
 
 - **http client builder:** `WithFormatters` has been marked as obsolete, instead the newly `ConfigureFormatters`.
 
-
 ## [1.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/1.2.0...1.2.1) (2018-02-16)
 
 ### Bug Fixes
- - **regex extensions:** `ReplaceTokens` now validates object instead of throwing null reference exception.
- This now will give better errors when using interpolations without value.
- - **request builder:** `WithQueryParams` now omits query param when value is null instead of null reference exception.
+
+- **regex extensions:** `ReplaceTokens` now validates object instead of throwing null reference exception.
+  This now will give better errors when using interpolations without value.
+- **request builder:** `WithQueryParams` now omits query param when value is null instead of null reference exception.
 
 ### Deprecated code
 
 - **collection extensions:** `Set` has been marked as obsolete, as it can be replaced by 1 liner.
-
 
 ## [1.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.1.0...1.2.0) (2018-01-12)
 
@@ -193,12 +237,12 @@ clientBuilder.WithRequestBuilderDefaults(builder =>
 - **consts:** add `XForwardedFor` in `HeaderTypes`.
 
 New apis such as:
+
 - `fluentHttpClient.CreateGqlRequest(query)` - Creates a new HTTP request and configure for GraphQL.
 - `requestBuilder.AsGql(query)` - Configures an existing HTTP request builder as a GraphQL request.
 - `requestBuilder.ReturnAsGqlResponse<T>()` - Sends request and unwrap GraphQL data to be available directly in the `.Data`.
 
 See documentation for an example on how it can be used.
-
 
 ## [1.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/1.0.0...1.1.0) (2017-07-02)
 
@@ -210,10 +254,10 @@ See documentation for an example on how it can be used.
 
 - **request:** add `Formatters` which can be useful for middleware.
 - **message state:** extract interface `IFluentHttpMessageState`, which both `FluentHttpRequest` and `FluentHttpResponse` implements.
-This will allow sharing implementations for extensions methods across `FluentHttpRequest` and `FluentHttpResponse` related to `Items`.
+  This will allow sharing implementations for extensions methods across `FluentHttpRequest` and `FluentHttpResponse` related to `Items`.
 
 - **header builder:** extract interface `IFluentHttpHeaderBuilder`, which both `FluentHttpClientBuilder` and `FluentHttpRequestBuilder` implements.
-This will allow sharing implementations for extensions methods across `FluentHttpClientBuilder` and `FluentHttpRequestBuilder` related to `Headers`.
+  This will allow sharing implementations for extensions methods across `FluentHttpClientBuilder` and `FluentHttpRequestBuilder` related to `Headers`.
 
 - **http client builder:** formatter JSON is now configured with camelcase property names by default.
 - **http client builder:** now shares request builder headers extensions such as `WithUserAgent` and `WithBearerAuthentication`.
@@ -222,7 +266,6 @@ This will allow sharing implementations for extensions methods across `FluentHtt
 - **logger middleware:** add extension method `UseLogging`.
 
 - **consts:** add constants for headers and auth schemes `HeaderTypes` and `AuthSchemeTypes`
-
 
 ## [1.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.3.0...1.0.0) (2017-06-30)
 
@@ -255,12 +298,12 @@ This will allow sharing implementations for extensions methods across `FluentHtt
 - **request:** rename `Url` to `Uri`.
 
 ### BREAKING CHANGES
- - `FluentHttpClientBuilder.AddMiddleware` has been renamed to `FluentHttpClientBuilder.UseMiddleware`.
- - `FluentHttpClientBuilder.UseMiddleware` is now constrained with `IFluentHttpMiddleware`.
- - `FluentHttpRequest.Url` has been renamed to `FluentHttpRequest.Uri`.
- - `FluentHttpRequest` rename `RawRequest` to `Message`
- - `FluentHttpResponse` rename `RawResponse` to `Message`
 
+- `FluentHttpClientBuilder.AddMiddleware` has been renamed to `FluentHttpClientBuilder.UseMiddleware`.
+- `FluentHttpClientBuilder.UseMiddleware` is now constrained with `IFluentHttpMiddleware`.
+- `FluentHttpRequest.Url` has been renamed to `FluentHttpRequest.Uri`.
+- `FluentHttpRequest` rename `RawRequest` to `Message`
+- `FluentHttpResponse` rename `RawResponse` to `Message`
 
 ## [0.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.1...0.3.0) (2017-06-28)
 
@@ -285,8 +328,9 @@ This will allow sharing implementations for extensions methods across `FluentHtt
 - **http client:** extract interface `IFluentHttpClient` from `FluentHttpClient`.
 
 ### BREAKING CHANGES
+
 - `IFluentHttpResponse` has been removed and added `FluentHttpResponse` instead. In addition, most of `FluentHttpResponse<T>` method has been changed with `FluentHttpResponse`.
-Most of the changes should only effect the internals, apart from middlewares.
+  Most of the changes should only effect the internals, apart from middlewares.
 - Now requests created by `FluentHttpRequestBuilder` won't throw unless specified when request is not succeeded.
 - `FluentHttpClientFactory.Add` now returns the new `FluentHttpClient` instance instead of `FluentHttpClientFactory`.
 - `FluentHttpClientBuilder` methods naming alignment
@@ -303,10 +347,10 @@ Most of the changes should only effect the internals, apart from middlewares.
 - `FluentHttpClientFactory` usages now is changed with `IFluentHttpClientFactory`
 - `FluentHttpClient` usages now is changed with `IFluentHttpClient`
 
-
 ## [0.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/0.2.0...0.2.1) (2017-06-25)
 
 ### Features
+
 - **request builder:** validate request on `Build`, in order to have better errors.
 - **request builder:** implement query string `WithQueryParams`.
 - **request builder:** implement headers `WithHeader`, `WithHeaders` and `WithBearerAuthentication`.

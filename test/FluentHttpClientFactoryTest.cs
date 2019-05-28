@@ -85,6 +85,25 @@ namespace Test
 
 			Assert.Equal("/api/heroes?ROLES=warrior,assassin", request.Uri.ToString());
 		}
+
+		[Fact]
+		public void ShouldAppendToParentsBaseUrl()
+		{
+			var httpClient = GetNewClientFactory()
+				.CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+				.Build()
+				;
+
+			var subHttpClient = httpClient
+				.CreateClient("sub")
+				.WithBaseUrl("/v1", replace: false)
+				.Build()
+				;
+
+			Assert.Equal("http://abc.com/v1/", subHttpClient.BaseUrl);
+			Assert.Equal("http://abc.com/", httpClient.BaseUrl);
+		}
 	}
 
 	public class ClientFactory_ConfigureFormatters
