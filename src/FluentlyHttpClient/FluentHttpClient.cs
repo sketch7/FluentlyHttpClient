@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FluentlyHttpClient
@@ -90,6 +91,8 @@ namespace FluentlyHttpClient
 	{
 		private string DebuggerDisplay => $"[{Identifier}] BaseUrl: '{BaseUrl}', MiddlewareCount: {_middlewareBuilder.Count}";
 
+		private const string RequestIdProperty = "request-id";
+
 		/// <inheritdoc />
 		public string Identifier { get; }
 
@@ -115,6 +118,7 @@ namespace FluentlyHttpClient
 		private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
 		private readonly FluentHttpMiddlewareBuilder _middlewareBuilder;
 		private readonly IHttpClientFactory _httpClientFactory;
+		private readonly RequestTracker _requestTracker;
 
 		/// <summary>
 		/// Initializes an instance of <see cref="FluentHttpClient"/>.
@@ -136,16 +140,15 @@ namespace FluentlyHttpClient
 			_httpClientFactory = httpClientFactory;
 			_requestBuilderDefaults = options.RequestBuilderDefaults;
 			_middlewareBuilder = options.MiddlewareBuilder;
+			_requestTracker = new RequestTracker();
+			_middlewareRunner = options.MiddlewareBuilder.Build(this);
 
 			Identifier = options.Identifier;
 			BaseUrl = options.BaseUrl;
 			Formatters = options.Formatters;
 			DefaultFormatter = options.DefaultFormatter;
-
 			RawHttpClient = Configure(options);
 			Headers = RawHttpClient.DefaultRequestHeaders;
-
-			_middlewareRunner = options.MiddlewareBuilder.Build(this);
 		}
 
 		/// <inheritdoc />
@@ -181,17 +184,17 @@ namespace FluentlyHttpClient
 		{
 			if (request == null) throw new ArgumentNullException(nameof(request));
 
-			var response = await _middlewareRunner.Run(request, async () =>
-			{
-				var result = await RawHttpClient.SendAsync(request.Message, request.CancellationToken)
-					.ConfigureAwait(false);
-				return ToFluentResponse(result, request.Items);
-			}).ConfigureAwait(false);
+			var requestId = Guid.NewGuid().ToString();
+			_requestTracker.Push(requestId, request);
+			request.Message.Properties.Add(RequestIdProperty, requestId);
 
+			await RawHttpClient.SendAsync(request.Message);
+
+			var executionContext = _requestTracker.Pop(requestId);
 			if (request.HasSuccessStatusOrThrow)
-				response.EnsureSuccessStatusCode();
+				executionContext.Response.EnsureSuccessStatusCode();
 
-			return response;
+			return executionContext.Response;
 		}
 
 		/// <inheritdoc />
@@ -206,10 +209,19 @@ namespace FluentlyHttpClient
 
 		private HttpClient Configure(FluentHttpClientOptions options)
 		{
-			var httpClient = options.HttpMessageHandler == null
-			 ? _httpClientFactory.CreateClient(options.Identifier)
-			 : new HttpClient(options.HttpMessageHandler);
-			httpClient.BaseAddress = new Uri(options.BaseUrl);
+			var httpHandler = new FluentlyHttpHandler(
+				_middlewareRunner,
+				ToFluentResponse,
+				this,
+				_requestTracker,
+				options.HttpMessageHandler
+			);
+
+			var httpClient = new HttpClient(httpHandler)
+			{
+				BaseAddress = new Uri(options.BaseUrl)
+			};
+
 			httpClient.DefaultRequestHeaders.Add(HeaderTypes.Accept, Formatters.SelectMany(x => x.SupportedMediaTypes).Select(x => x.MediaType));
 			httpClient.Timeout = options.Timeout;
 
@@ -220,14 +232,62 @@ namespace FluentlyHttpClient
 
 		/// <inheritdoc />
 		public void Dispose()
-		{
-			RawHttpClient?.Dispose();
-		}
+			=> RawHttpClient?.Dispose();
+
+		public static implicit operator HttpClient(FluentHttpClient client)
+			=> client.RawHttpClient;
 
 		private static FluentHttpResponse ToFluentResponse(HttpResponseMessage response, IDictionary<object, object> items)
 			=> new FluentHttpResponse(response, items);
 
 		private static string DefaultSubClientIdentityFormatter(string parentId, string id)
 			=> $"{parentId}.{id}";
+
+		private class FluentlyHttpHandler : DelegatingHandler
+		{
+			private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
+			private readonly Func<HttpResponseMessage, IDictionary<object, object>, FluentHttpResponse> _toFluentResponse;
+			private readonly FluentHttpClient _httpClient;
+			private readonly RequestTracker _requestTracker;
+
+			public FluentlyHttpHandler(
+				IFluentHttpMiddlewareRunner middlewareRunner,
+				Func<HttpResponseMessage, IDictionary<object, object>, FluentHttpResponse> toFluentResponse,
+				FluentHttpClient httpClient,
+				RequestTracker requestTracker,
+				HttpMessageHandler messageHandler = null
+			) : base(messageHandler ?? new HttpClientHandler())
+			{
+				_middlewareRunner = middlewareRunner;
+				_toFluentResponse = toFluentResponse;
+				_httpClient = httpClient;
+				_requestTracker = requestTracker;
+			}
+
+			protected override async Task<HttpResponseMessage> SendAsync(
+				HttpRequestMessage request,
+				CancellationToken cancellationToken
+			)
+			{
+				FluentlyExecutionContext context = null;
+				if (request.Properties.TryGetValue(RequestIdProperty, out var requestKey))
+				{
+					_requestTracker.TryPeek((string)requestKey, out var fluentlyExecutionContext);
+					context = fluentlyExecutionContext;
+				}
+
+				var fluentlyRequest = context?.Request ?? request.ToFluentlyHttpRequest(_httpClient);
+
+				var response = await base.SendAsync(request, cancellationToken);
+				var fluentlyResponse = await _middlewareRunner.Run(
+					fluentlyRequest,
+					() => Task.FromResult(_toFluentResponse(response, fluentlyRequest.Items)));
+
+				if (context != null)
+					_requestTracker.Push((string)requestKey, fluentlyResponse);
+
+				return response;
+			}
+		}
 	}
 }
