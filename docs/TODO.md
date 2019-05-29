@@ -1,7 +1,5 @@
 # To do
 - Interface across `IFluentHttpHeaderBuilder` and `FluentHttpHeaders`, so extension methods can be applied to both
-- Wrapper `Send` for raw `HttpRequestMessage`, so just in case unsupported features can be send with that instead
-  - e.g. Task<FluentHttpResponse> Send(HttpRequestMessage request)
 - `CreateClient` `SubClientIdentityFormatter` configuration
 - File Upload
   - Via Path e.g. read file + take data from it

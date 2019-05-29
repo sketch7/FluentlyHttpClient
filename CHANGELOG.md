@@ -2,6 +2,13 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.1.0) (2019-X-X)
 
+## [3.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.2.1...3.3.0) (2019-05-29)
+
+### Features
+
+- **http client:** implicit conversion between `FluentHttpClient` and `HttpClient`
+- **http client:** retain middleware logic when using `FluentHttpClient.RawHttpClient`
+
 ## [3.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.2.0...3.2.1) (2019-05-21)
 
 ### Bug Fixes
