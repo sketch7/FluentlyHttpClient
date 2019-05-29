@@ -1,7 +1,6 @@
 ﻿using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -80,6 +79,13 @@ namespace FluentlyHttpClient
 		/// <param name="request">HTTP fluent request to send.</param>
 		/// <returns>Returns HTTP response.</returns>
 		Task<FluentHttpResponse> Send(FluentHttpRequest request);
+
+		/// <summary>
+		/// Send HTTP request.
+		/// </summary>
+		/// <param name="request">HTTP request to send.</param>
+		/// <returns>Returns Fluent HTTP response.</returns>
+		Task<FluentHttpResponse> Send(HttpRequestMessage request);
 	}
 
 	/// <summary>
@@ -115,6 +121,7 @@ namespace FluentlyHttpClient
 		private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
 		private readonly FluentHttpMiddlewareBuilder _middlewareBuilder;
 		private readonly IHttpClientFactory _httpClientFactory;
+		private readonly RequestTracker _requestTracker;
 
 		/// <summary>
 		/// Initializes an instance of <see cref="FluentHttpClient"/>.
@@ -136,16 +143,15 @@ namespace FluentlyHttpClient
 			_httpClientFactory = httpClientFactory;
 			_requestBuilderDefaults = options.RequestBuilderDefaults;
 			_middlewareBuilder = options.MiddlewareBuilder;
+			_requestTracker = new RequestTracker();
+			_middlewareRunner = options.MiddlewareBuilder.Build(this);
 
 			Identifier = options.Identifier;
 			BaseUrl = options.BaseUrl;
 			Formatters = options.Formatters;
 			DefaultFormatter = options.DefaultFormatter;
-
 			RawHttpClient = Configure(options);
 			Headers = RawHttpClient.DefaultRequestHeaders;
-
-			_middlewareRunner = options.MiddlewareBuilder.Build(this);
 		}
 
 		/// <inheritdoc />
@@ -181,17 +187,24 @@ namespace FluentlyHttpClient
 		{
 			if (request == null) throw new ArgumentNullException(nameof(request));
 
-			var response = await _middlewareRunner.Run(request, async () =>
-			{
-				var result = await RawHttpClient.SendAsync(request.Message, request.CancellationToken)
-					.ConfigureAwait(false);
-				return ToFluentResponse(result, request.Items);
-			}).ConfigureAwait(false);
+			var requestId = request.Message.AddRequestId();
+
+			_requestTracker.Push(requestId, request);
+			await RawHttpClient.SendAsync(request.Message);
+			var executionContext = _requestTracker.Pop(requestId);
 
 			if (request.HasSuccessStatusOrThrow)
-				response.EnsureSuccessStatusCode();
+				executionContext.Response.EnsureSuccessStatusCode();
 
-			return response;
+			return executionContext.Response;
+		}
+
+		public async Task<FluentHttpResponse> Send(HttpRequestMessage request)
+		{
+			if (request == null) throw new ArgumentNullException(nameof(request));
+			var response = await RawHttpClient.SendAsync(request);
+
+			return response.ToFluentHttpResponse();
 		}
 
 		/// <inheritdoc />
@@ -206,10 +219,18 @@ namespace FluentlyHttpClient
 
 		private HttpClient Configure(FluentHttpClientOptions options)
 		{
-			var httpClient = options.HttpMessageHandler == null
-			 ? _httpClientFactory.CreateClient(options.Identifier)
-			 : new HttpClient(options.HttpMessageHandler);
-			httpClient.BaseAddress = new Uri(options.BaseUrl);
+			var httpHandler = new FluentMiddlewareHttpHandler(
+				_middlewareRunner,
+				this,
+				_requestTracker,
+				options.HttpMessageHandler
+			);
+
+			var httpClient = new HttpClient(httpHandler)
+			{
+				BaseAddress = new Uri(options.BaseUrl)
+			};
+
 			httpClient.DefaultRequestHeaders.Add(HeaderTypes.Accept, Formatters.SelectMany(x => x.SupportedMediaTypes).Select(x => x.MediaType));
 			httpClient.Timeout = options.Timeout;
 
@@ -220,12 +241,10 @@ namespace FluentlyHttpClient
 
 		/// <inheritdoc />
 		public void Dispose()
-		{
-			RawHttpClient?.Dispose();
-		}
+			=> RawHttpClient?.Dispose();
 
-		private static FluentHttpResponse ToFluentResponse(HttpResponseMessage response, IDictionary<object, object> items)
-			=> new FluentHttpResponse(response, items);
+		public static implicit operator HttpClient(FluentHttpClient client)
+			=> client.RawHttpClient;
 
 		private static string DefaultSubClientIdentityFormatter(string parentId, string id)
 			=> $"{parentId}.{id}";
