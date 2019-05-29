@@ -330,7 +330,6 @@ namespace FluentlyHttpClient
 			foreach (var header in headers)
 				headersHash += $"{header.Key}={string.Join(",", header.Value)}&";
 			headersHash = headersHash.TrimEnd('&');
-
 			return headersHash;
 		}
 
