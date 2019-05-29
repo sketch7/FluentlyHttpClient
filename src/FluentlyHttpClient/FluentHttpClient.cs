@@ -82,9 +82,10 @@ namespace FluentlyHttpClient
 
 		/// <summary>
 		/// Send HTTP request.
+		/// <para>NOTE: This is only for interoperability, ideally use the Fluently overloads.</para>
 		/// </summary>
 		/// <param name="request">HTTP request to send.</param>
-		/// <returns>Returns Fluent HTTP response.</returns>
+		/// <returns>Returns HTTP response.</returns>
 		Task<FluentHttpResponse> Send(HttpRequestMessage request);
 	}
 
