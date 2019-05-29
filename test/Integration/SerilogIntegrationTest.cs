@@ -1,9 +1,9 @@
-﻿using System;
-using System.Net.Http;
-using FluentlyHttpClient.Middleware;
+﻿using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
 using Serilog;
+using System;
+using System.Net.Http;
 using Xunit;
 
 namespace FluentlyHttpClient.Test.Integration

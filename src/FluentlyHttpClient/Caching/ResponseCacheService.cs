@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
+using System.Threading.Tasks;
 
 namespace FluentlyHttpClient.Caching
 {

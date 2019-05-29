@@ -1,8 +1,8 @@
-﻿using System;
+﻿using FluentlyHttpClient.Middleware;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using FluentlyHttpClient.Middleware;
-using Microsoft.Extensions.Logging;
 
 namespace FluentlyHttpClient.Middleware
 {

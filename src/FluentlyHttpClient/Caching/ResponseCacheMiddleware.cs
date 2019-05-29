@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using FluentlyHttpClient.Caching;
+﻿using FluentlyHttpClient.Caching;
 using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 // ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient.Middleware
