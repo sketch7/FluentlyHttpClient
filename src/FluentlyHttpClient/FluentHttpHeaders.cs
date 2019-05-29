@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Primitives;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
-using Microsoft.Extensions.Primitives;
 
 namespace FluentlyHttpClient
 {
@@ -43,7 +43,7 @@ namespace FluentlyHttpClient
 	/// <summary>
 	/// Collection of headers and their values.
 	/// </summary>
-	public partial class FluentHttpHeaders : IEnumerable<KeyValuePair<string, string[]>>
+	public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHeaders>, IEnumerable<KeyValuePair<string, string[]>>
 	{
 		private static readonly FluentHttpHeadersOptions DefaultOptions = new FluentHttpHeadersOptions();
 		private FluentHttpHeadersOptions _options = DefaultOptions;
@@ -313,7 +313,6 @@ namespace FluentlyHttpClient
 			if (_options == DefaultOptions)
 				_options = new FluentHttpHeadersOptions();
 			configure(_options);
-
 			return this;
 		}
 
@@ -331,6 +330,7 @@ namespace FluentlyHttpClient
 			foreach (var header in headers)
 				headersHash += $"{header.Key}={string.Join(",", header.Value)}&";
 			headersHash = headersHash.TrimEnd('&');
+
 			return headersHash;
 		}
 
@@ -347,6 +347,12 @@ namespace FluentlyHttpClient
 		/// Converts to dictionary.
 		/// </summary>
 		public Dictionary<string, string[]> ToDictionary() => _data;
+
+		FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeader(string key, string value) => Add(key, value);
+		FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeader(string key, StringValues values) => Add(key, values.ToArray());
+		FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeaders(IDictionary<string, string> headers) => SetRange(headers);
+		FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeaders(IDictionary<string, StringValues> headers) => SetRange(headers);
+		FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeaders(FluentHttpHeaders headers) => SetRange(headers);
 	}
 
 	// headers accessors
