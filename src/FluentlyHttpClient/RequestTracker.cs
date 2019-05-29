@@ -19,9 +19,9 @@ namespace FluentlyHttpClient
 
 		public void Push(string key, FluentHttpRequest request)
 		{
-			if (_contexts.ContainsKey(key))
+			if (_contexts.TryGetValue(key, out var context))
 			{
-				_contexts[key].Request = request;
+				context.Request = request;
 				return;
 			}
 
@@ -33,9 +33,9 @@ namespace FluentlyHttpClient
 
 		public void Push(string key, FluentHttpResponse response)
 		{
-			if (_contexts.ContainsKey(key))
+			if (_contexts.TryGetValue(key, out var context))
 			{
-				_contexts[key].Response = response;
+				context.Response = response;
 				return;
 			}
 

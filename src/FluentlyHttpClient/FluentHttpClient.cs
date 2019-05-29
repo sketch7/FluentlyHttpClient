@@ -1,13 +1,11 @@
 ﻿using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace FluentlyHttpClient
@@ -81,6 +79,13 @@ namespace FluentlyHttpClient
 		/// <param name="request">HTTP fluent request to send.</param>
 		/// <returns>Returns HTTP response.</returns>
 		Task<FluentHttpResponse> Send(FluentHttpRequest request);
+
+		/// <summary>
+		/// Send HTTP request.
+		/// </summary>
+		/// <param name="request">HTTP fluent request to send.</param>
+		/// <returns>Returns HTTP response.</returns>
+		Task<FluentHttpResponse> Send(HttpRequestMessage request);
 	}
 
 	/// <summary>
@@ -90,8 +95,6 @@ namespace FluentlyHttpClient
 	public class FluentHttpClient : IFluentHttpClient
 	{
 		private string DebuggerDisplay => $"[{Identifier}] BaseUrl: '{BaseUrl}', MiddlewareCount: {_middlewareBuilder.Count}";
-
-		private const string RequestIdProperty = "request-id";
 
 		/// <inheritdoc />
 		public string Identifier { get; }
@@ -184,17 +187,24 @@ namespace FluentlyHttpClient
 		{
 			if (request == null) throw new ArgumentNullException(nameof(request));
 
-			var requestId = Guid.NewGuid().ToString();
+			var requestId = request.Message.AddRequestId();
+
 			_requestTracker.Push(requestId, request);
-			request.Message.Properties.Add(RequestIdProperty, requestId);
-
 			await RawHttpClient.SendAsync(request.Message);
-
 			var executionContext = _requestTracker.Pop(requestId);
+
 			if (request.HasSuccessStatusOrThrow)
 				executionContext.Response.EnsureSuccessStatusCode();
 
 			return executionContext.Response;
+		}
+
+		public async Task<FluentHttpResponse> Send(HttpRequestMessage request)
+		{
+			if (request == null) throw new ArgumentNullException(nameof(request));
+			var response = await RawHttpClient.SendAsync(request);
+
+			return response.ToFluentHttpResponse();
 		}
 
 		/// <inheritdoc />
@@ -209,9 +219,8 @@ namespace FluentlyHttpClient
 
 		private HttpClient Configure(FluentHttpClientOptions options)
 		{
-			var httpHandler = new FluentlyHttpHandler(
+			var httpHandler = new FluentMiddlewareHttpHandler(
 				_middlewareRunner,
-				ToFluentResponse,
 				this,
 				_requestTracker,
 				options.HttpMessageHandler
@@ -237,57 +246,7 @@ namespace FluentlyHttpClient
 		public static implicit operator HttpClient(FluentHttpClient client)
 			=> client.RawHttpClient;
 
-		private static FluentHttpResponse ToFluentResponse(HttpResponseMessage response, IDictionary<object, object> items)
-			=> new FluentHttpResponse(response, items);
-
 		private static string DefaultSubClientIdentityFormatter(string parentId, string id)
 			=> $"{parentId}.{id}";
-
-		private class FluentlyHttpHandler : DelegatingHandler
-		{
-			private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
-			private readonly Func<HttpResponseMessage, IDictionary<object, object>, FluentHttpResponse> _toFluentResponse;
-			private readonly FluentHttpClient _httpClient;
-			private readonly RequestTracker _requestTracker;
-
-			public FluentlyHttpHandler(
-				IFluentHttpMiddlewareRunner middlewareRunner,
-				Func<HttpResponseMessage, IDictionary<object, object>, FluentHttpResponse> toFluentResponse,
-				FluentHttpClient httpClient,
-				RequestTracker requestTracker,
-				HttpMessageHandler messageHandler = null
-			) : base(messageHandler ?? new HttpClientHandler())
-			{
-				_middlewareRunner = middlewareRunner;
-				_toFluentResponse = toFluentResponse;
-				_httpClient = httpClient;
-				_requestTracker = requestTracker;
-			}
-
-			protected override async Task<HttpResponseMessage> SendAsync(
-				HttpRequestMessage request,
-				CancellationToken cancellationToken
-			)
-			{
-				FluentlyExecutionContext context = null;
-				if (request.Properties.TryGetValue(RequestIdProperty, out var requestKey))
-				{
-					_requestTracker.TryPeek(requestKey.ToString(), out var fluentlyExecutionContext);
-					context = fluentlyExecutionContext;
-				}
-
-				var fluentlyRequest = context?.Request ?? request.ToFluentlyHttpRequest(_httpClient);
-
-				var response = await base.SendAsync(request, cancellationToken);
-				var fluentlyResponse = await _middlewareRunner.Run(
-					fluentlyRequest,
-					() => Task.FromResult(_toFluentResponse(response, fluentlyRequest.Items)));
-
-				if (context != null)
-					_requestTracker.Push(requestKey.ToString(), fluentlyResponse);
-
-				return response;
-			}
-		}
 	}
 }
