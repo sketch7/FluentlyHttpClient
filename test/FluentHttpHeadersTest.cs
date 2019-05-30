@@ -56,6 +56,14 @@ namespace FluentlyHttpClient.Test
 				});
 			Assert.Equal("the-xx", headersCopied.Authorization);
 		}
+
+		[Fact]
+		public void HeaderBuilderExtMethod_ShouldBeAvailable()
+		{
+			var headers = new FluentHttpHeaders()
+				.WithUserAgent("leoric");
+			Assert.Equal("leoric", headers.UserAgent);
+		}
 	}
 
 	public class FluentHttpHeaders_Add

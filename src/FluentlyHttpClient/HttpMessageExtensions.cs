@@ -42,7 +42,6 @@ namespace FluentlyHttpClient
 		internal static FluentHttpResponse ToFluentHttpResponse(
 			this HttpResponseMessage response,
 			IDictionary<object, object> items = null
-		)
-			=> new FluentHttpResponse(response, items);
+		) => new FluentHttpResponse(response, items);
 	}
 }

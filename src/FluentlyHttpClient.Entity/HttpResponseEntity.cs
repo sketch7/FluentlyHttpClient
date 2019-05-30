@@ -1,5 +1,5 @@
-﻿using System.Net.Http;
-using FluentlyHttpClient.Caching;
+﻿using FluentlyHttpClient.Caching;
+using System.Net.Http;
 
 namespace FluentlyHttpClient.Entity
 {

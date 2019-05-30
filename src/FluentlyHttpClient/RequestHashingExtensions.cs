@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net.Http;
-using Newtonsoft.Json;
 
 namespace FluentlyHttpClient
 {

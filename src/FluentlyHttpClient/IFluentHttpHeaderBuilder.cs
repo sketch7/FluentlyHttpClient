@@ -1,6 +1,6 @@
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Primitives;
 
 namespace FluentlyHttpClient
 {

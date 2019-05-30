@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using FluentlyHttpClient.Middleware;
 using FluentlyHttpClient.Test;
 using MessagePack.Resolvers;
@@ -9,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
 using Serilog;
 using Sketch7.MessagePack.MediaTypeFormatter;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace FluentlyHttpClient.Benchmarks
 {

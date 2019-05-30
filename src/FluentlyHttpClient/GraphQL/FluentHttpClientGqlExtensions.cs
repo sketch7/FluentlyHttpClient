@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using FluentlyHttpClient.GraphQL;
+﻿using FluentlyHttpClient.GraphQL;
+using System.Threading.Tasks;
 
 // ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient

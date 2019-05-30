@@ -10,12 +10,7 @@ namespace FluentlyHttpClient
 
 	internal class RequestTracker
 	{
-		private readonly Dictionary<string, FluentlyExecutionContext> _contexts;
-
-		public RequestTracker()
-		{
-			_contexts = new Dictionary<string, FluentlyExecutionContext>();
-		}
+		private readonly Dictionary<string, FluentlyExecutionContext> _contexts = new Dictionary<string, FluentlyExecutionContext>();
 
 		public void Push(string key, FluentHttpRequest request)
 		{

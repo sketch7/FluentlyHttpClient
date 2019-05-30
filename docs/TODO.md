@@ -1,5 +1,4 @@
 # To do
-- Interface across `IFluentHttpHeaderBuilder` and `FluentHttpHeaders`, so extension methods can be applied to both
 - `CreateClient` `SubClientIdentityFormatter` configuration
 - File Upload
   - Via Path e.g. read file + take data from it

@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using FluentlyHttpClient.Caching;
+﻿using FluentlyHttpClient.Caching;
 using Microsoft.Extensions.Caching.Memory;
 using Sketch7.Core;
+using System.Threading.Tasks;
 
 namespace FluentlyHttpClient.Entity
 {
