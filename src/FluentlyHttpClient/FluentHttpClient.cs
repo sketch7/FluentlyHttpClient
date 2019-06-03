@@ -145,12 +145,13 @@ namespace FluentlyHttpClient
 			_requestBuilderDefaults = options.RequestBuilderDefaults;
 			_middlewareBuilder = options.MiddlewareBuilder;
 			_requestTracker = new RequestTracker();
-			_middlewareRunner = options.MiddlewareBuilder.Build(this);
 
 			Identifier = options.Identifier;
 			BaseUrl = options.BaseUrl;
 			Formatters = options.Formatters;
 			DefaultFormatter = options.DefaultFormatter;
+
+			_middlewareRunner = options.MiddlewareBuilder.Build(this);
 			RawHttpClient = Configure(options);
 			Headers = RawHttpClient.DefaultRequestHeaders;
 		}
