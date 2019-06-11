@@ -74,7 +74,7 @@ namespace FluentlyHttpClient.Middleware
 			var middleware = _middleware.ToList();
 			middleware.Add(new FluentHttpMiddlewareConfig(typeof(ActionExecuteMiddleware)));
 
-			var clientContext = new FluentHttpMiddlewareClientContext(httpClient.Identifier);
+			var clientContext = new FluentHttpMiddlewareClientContext(httpClient.Identifier, httpClient.Formatters);
 
 			IFluentHttpMiddleware previous = null;
 			for (int i = middleware.Count; i-- > 0;)
@@ -102,7 +102,7 @@ namespace FluentlyHttpClient.Middleware
 				var instance = (IFluentHttpMiddleware)ActivatorUtilities.CreateInstance(_serviceProvider, pipe.Type, ctor);
 
 				if (isFirst)
-					return new FluentHttpMiddlewareRunner(instance, httpClient.Formatters);
+					return new FluentHttpMiddlewareRunner(instance);
 				previous = instance;
 			}
 			throw new InvalidOperationException("Middleware wasn't build correctly.");

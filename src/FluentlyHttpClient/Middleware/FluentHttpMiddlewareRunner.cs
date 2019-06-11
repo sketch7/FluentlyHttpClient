@@ -25,10 +25,10 @@ namespace FluentlyHttpClient.Middleware
 		/// Initializes an instance.
 		/// </summary>
 		/// <param name="identifier"></param>
-		/// <param name="httpClientFormatters"></param>
-		public FluentHttpMiddlewareClientContext(string identifier, MediaTypeFormatterCollection httpClientFormatters)
+		/// <param name="formatters"></param>
+		public FluentHttpMiddlewareClientContext(string identifier, MediaTypeFormatterCollection formatters)
 		{
-			Formatters = httpClientFormatters;
+			Formatters = formatters;
 			Identifier = identifier;
 		}
 
