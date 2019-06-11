@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 
 namespace FluentlyHttpClient.Middleware
@@ -16,11 +17,18 @@ namespace FluentlyHttpClient.Middleware
 		protected string DebuggerDisplay => $"Identifier: '{Identifier}'";
 
 		/// <summary>
+		/// Formatters to be used for content negotiation for "Accept" and also sending formats. e.g. (JSON, XML)
+		/// </summary>
+		public MediaTypeFormatterCollection Formatters { get; }
+
+		/// <summary>
 		/// Initializes an instance.
 		/// </summary>
 		/// <param name="identifier"></param>
-		public FluentHttpMiddlewareClientContext(string identifier)
+		/// <param name="formatters"></param>
+		public FluentHttpMiddlewareClientContext(string identifier, MediaTypeFormatterCollection formatters)
 		{
+			Formatters = formatters;
 			Identifier = identifier;
 		}
 
@@ -45,6 +53,7 @@ namespace FluentlyHttpClient.Middleware
 		/// Gets the HTTP request.
 		/// </summary>
 		public FluentHttpRequest Request { get; set; }
+
 		internal Func<Task<FluentHttpResponse>> Func { get; set; }
 	}
 
@@ -87,9 +96,10 @@ namespace FluentlyHttpClient.Middleware
 
 		/// <inheritdoc />
 		public async Task<FluentHttpResponse> Run(FluentHttpRequest request, Func<Task<FluentHttpResponse>> action)
-		{
-			return await _middleware.Invoke(new FluentHttpMiddlewareContext { Func = action, Request = request })
-				.ConfigureAwait(false);
-		}
+			=> await _middleware.Invoke(new FluentHttpMiddlewareContext
+			{
+				Func = action,
+				Request = request
+			}).ConfigureAwait(false);
 	}
 }

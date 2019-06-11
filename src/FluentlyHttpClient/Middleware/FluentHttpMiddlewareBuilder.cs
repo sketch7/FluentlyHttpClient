@@ -74,7 +74,7 @@ namespace FluentlyHttpClient.Middleware
 			var middleware = _middleware.ToList();
 			middleware.Add(new FluentHttpMiddlewareConfig(typeof(ActionExecuteMiddleware)));
 
-			var clientContext = new FluentHttpMiddlewareClientContext(httpClient.Identifier);
+			var clientContext = new FluentHttpMiddlewareClientContext(httpClient.Identifier, httpClient.Formatters);
 
 			IFluentHttpMiddleware previous = null;
 			for (int i = middleware.Count; i-- > 0;)
