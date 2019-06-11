@@ -1,7 +1,7 @@
-﻿using System;
-using FluentlyHttpClient;
+﻿using FluentlyHttpClient;
 using FluentlyHttpClient.Test;
 using RichardSzalay.MockHttp;
+using System;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 

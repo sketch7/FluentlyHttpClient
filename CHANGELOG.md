@@ -1,6 +1,15 @@
 # Fluently Http Changelog
 
-[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.0.0...3.1.0) (2019-X-X)
+[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.0...3.4.0) (2019-X-X)
+
+## [3.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.2.1...3.3.0) (2019-05-29)
+
+### Features
+
+- **http client:** implicit conversion between `FluentHttpClient` and `HttpClient`
+- **http client:** retain middleware logic when using `FluentHttpClient.RawHttpClient`
+- **http client:** add overload `Send(HttpRequestMessage request)` for better interoperability with the native when already having `HttpRequestMessage`
+- **headers:** `FluentHttpHeaders` now implements `IFluentHttpHeaderBuilder`, any extension methods added to `IFluentHttpHeaderBuilder` will be available for `FluentHttpHeaders` also, along with `FluentHttpClientBuilder` and `FluentHttpRequestBuilder`
 
 ## [3.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.2.0...3.2.1) (2019-05-21)
 

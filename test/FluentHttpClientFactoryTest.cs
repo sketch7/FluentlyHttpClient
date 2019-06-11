@@ -1,10 +1,10 @@
-﻿using System;
+﻿using FluentlyHttpClient;
+using FluentlyHttpClient.Test;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
-using FluentlyHttpClient;
-using FluentlyHttpClient.Test;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 

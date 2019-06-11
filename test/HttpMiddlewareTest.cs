@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
-using FluentlyHttpClient.Middleware;
+﻿using FluentlyHttpClient.Middleware;
 using RichardSzalay.MockHttp;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -19,6 +20,23 @@ namespace FluentlyHttpClient.Test
 		{
 			context.Request.Items["request"] = "item";
 			var response = await _next(context);
+			return response;
+		}
+	}
+
+	public class TestRawHttpMiddleware : IFluentHttpMiddleware
+	{
+		private readonly FluentHttpMiddlewareDelegate _next;
+
+		public TestRawHttpMiddleware(FluentHttpMiddlewareDelegate next, FluentHttpMiddlewareClientContext _context)
+		{
+			_next = next;
+		}
+
+		public async Task<FluentHttpResponse> Invoke(FluentHttpMiddlewareContext context)
+		{
+			var response = await _next(context);
+			response.Headers.Add("X-Brand-Id", "snorlax");
 			return response;
 		}
 	}
@@ -46,6 +64,28 @@ namespace FluentlyHttpClient.Test
 			response.Items.TryGetValue("request", out var requestItem);
 
 			Assert.Equal("item", requestItem);
+		}
+
+		[Fact]
+		public async void RawClient_ShouldGoThroughMiddleware()
+		{
+			var mockHttp = new MockHttpMessageHandler();
+			mockHttp.When("https://sketch7.com/api/heroes/azmodan")
+				.Respond("application/json", "{ 'name': 'Azmodan' }");
+
+			var fluentHttpClientFactory = GetNewClientFactory();
+			fluentHttpClientFactory.CreateBuilder("sketch7")
+				.WithBaseUrl("https://sketch7.com")
+				.WithMessageHandler(mockHttp)
+				.UseMiddleware<TestHttpMiddleware>()
+				.UseMiddleware<TestRawHttpMiddleware>()
+				.Register();
+
+			var httpClient = fluentHttpClientFactory.Get("sketch7");
+			var response = await httpClient.RawHttpClient.GetAsync("/api/heroes/azmodan");
+			var brand = response.Headers.GetValues("X-Brand-Id");
+
+			Assert.Equal("snorlax", brand.First());
 		}
 	}
 }

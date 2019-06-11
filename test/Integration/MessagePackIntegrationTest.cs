@@ -1,6 +1,6 @@
-﻿using System.Net;
-using MessagePack.Resolvers;
+﻿using MessagePack.Resolvers;
 using Sketch7.MessagePack.MediaTypeFormatter;
+using System.Net;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 

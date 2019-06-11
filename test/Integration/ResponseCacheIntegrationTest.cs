@@ -1,7 +1,7 @@
-﻿using System.Net;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace FluentlyHttpClient.Test.Integration

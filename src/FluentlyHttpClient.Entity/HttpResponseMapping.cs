@@ -1,6 +1,6 @@
-﻿using System.Net.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Net.Http;
 
 namespace FluentlyHttpClient.Entity
 {

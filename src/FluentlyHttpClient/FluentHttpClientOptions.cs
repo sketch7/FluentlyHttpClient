@@ -1,9 +1,9 @@
+using FluentlyHttpClient.Middleware;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Formatting;
-using FluentlyHttpClient.Middleware;
-using Newtonsoft.Json.Serialization;
 
 namespace FluentlyHttpClient
 {

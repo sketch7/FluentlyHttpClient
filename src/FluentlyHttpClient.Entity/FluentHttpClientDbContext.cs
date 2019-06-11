@@ -1,6 +1,6 @@
-﻿using System.Reflection;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace FluentlyHttpClient.Entity
 {
