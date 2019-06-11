@@ -17,11 +17,18 @@ namespace FluentlyHttpClient.Middleware
 		protected string DebuggerDisplay => $"Identifier: '{Identifier}'";
 
 		/// <summary>
+		/// Formatters to be used for content negotiation for "Accept" and also sending formats. e.g. (JSON, XML)
+		/// </summary>
+		public MediaTypeFormatterCollection Formatters { get; }
+
+		/// <summary>
 		/// Initializes an instance.
 		/// </summary>
 		/// <param name="identifier"></param>
-		public FluentHttpMiddlewareClientContext(string identifier)
+		/// <param name="httpClientFormatters"></param>
+		public FluentHttpMiddlewareClientContext(string identifier, MediaTypeFormatterCollection httpClientFormatters)
 		{
+			Formatters = httpClientFormatters;
 			Identifier = identifier;
 		}
 
@@ -46,11 +53,6 @@ namespace FluentlyHttpClient.Middleware
 		/// Gets the HTTP request.
 		/// </summary>
 		public FluentHttpRequest Request { get; set; }
-
-		/// <summary>
-		/// Formatters to be used for content negotiation for "Accept" and also sending formats. e.g. (JSON, XML)
-		/// </summary>
-		public MediaTypeFormatterCollection Formatters { get; set; }
 
 		internal Func<Task<FluentHttpResponse>> Func { get; set; }
 	}
@@ -82,20 +84,14 @@ namespace FluentlyHttpClient.Middleware
 		: IFluentHttpMiddlewareRunner
 	{
 		private readonly IFluentHttpMiddleware _middleware;
-		private readonly MediaTypeFormatterCollection _formatters;
 
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
 		/// <param name="middleware">Middleware pipeline to execute.</param>
-		/// <param name="formatters"></param>
-		public FluentHttpMiddlewareRunner(
-			IFluentHttpMiddleware middleware,
-			MediaTypeFormatterCollection formatters
-		)
+		public FluentHttpMiddlewareRunner(IFluentHttpMiddleware middleware)
 		{
 			_middleware = middleware;
-			_formatters = formatters;
 		}
 
 		/// <inheritdoc />
@@ -103,8 +99,7 @@ namespace FluentlyHttpClient.Middleware
 			=> await _middleware.Invoke(new FluentHttpMiddlewareContext
 			{
 				Func = action,
-				Request = request,
-				Formatters = _formatters
+				Request = request
 			}).ConfigureAwait(false);
 	}
 }
