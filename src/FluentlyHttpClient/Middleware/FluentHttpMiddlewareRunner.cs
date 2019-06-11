@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 
 namespace FluentlyHttpClient.Middleware
@@ -45,6 +46,12 @@ namespace FluentlyHttpClient.Middleware
 		/// Gets the HTTP request.
 		/// </summary>
 		public FluentHttpRequest Request { get; set; }
+
+		/// <summary>
+		/// Formatters to be used for content negotiation for "Accept" and also sending formats. e.g. (JSON, XML)
+		/// </summary>
+		public MediaTypeFormatterCollection Formatters { get; set; }
+
 		internal Func<Task<FluentHttpResponse>> Func { get; set; }
 	}
 
@@ -75,21 +82,29 @@ namespace FluentlyHttpClient.Middleware
 		: IFluentHttpMiddlewareRunner
 	{
 		private readonly IFluentHttpMiddleware _middleware;
+		private readonly MediaTypeFormatterCollection _formatters;
 
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
 		/// <param name="middleware">Middleware pipeline to execute.</param>
-		public FluentHttpMiddlewareRunner(IFluentHttpMiddleware middleware)
+		/// <param name="formatters"></param>
+		public FluentHttpMiddlewareRunner(
+			IFluentHttpMiddleware middleware,
+			MediaTypeFormatterCollection formatters
+		)
 		{
 			_middleware = middleware;
+			_formatters = formatters;
 		}
 
 		/// <inheritdoc />
 		public async Task<FluentHttpResponse> Run(FluentHttpRequest request, Func<Task<FluentHttpResponse>> action)
-		{
-			return await _middleware.Invoke(new FluentHttpMiddlewareContext { Func = action, Request = request })
-				.ConfigureAwait(false);
-		}
+			=> await _middleware.Invoke(new FluentHttpMiddlewareContext
+			{
+				Func = action,
+				Request = request,
+				Formatters = _formatters
+			}).ConfigureAwait(false);
 	}
 }

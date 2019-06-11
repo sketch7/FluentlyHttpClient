@@ -102,7 +102,7 @@ namespace FluentlyHttpClient.Middleware
 				var instance = (IFluentHttpMiddleware)ActivatorUtilities.CreateInstance(_serviceProvider, pipe.Type, ctor);
 
 				if (isFirst)
-					return new FluentHttpMiddlewareRunner(instance);
+					return new FluentHttpMiddlewareRunner(instance, httpClient.Formatters);
 				previous = instance;
 			}
 			throw new InvalidOperationException("Middleware wasn't build correctly.");
