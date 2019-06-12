@@ -12,6 +12,10 @@
 - **headers:** `FluentHttpHeaders` now implements `IFluentHttpHeaderBuilder`, any extension methods added to `IFluentHttpHeaderBuilder` will be available for `FluentHttpHeaders` also, along with `FluentHttpClientBuilder` and `FluentHttpRequestBuilder`
 - **middleware context:** `FluentHttpMiddlewareClientContext` now includes formatters
 
+### Deprecated code
+
+- **request:** `FluentHttpRequest.Formatters` is now deprecated, this was added to be passed down to middleware. Now instead use the `FluentHttpMiddlewareClientContext.Formatters`
+
 ## [3.2.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.2.0...3.2.1) (2019-05-21)
 
 ### Bug Fixes
