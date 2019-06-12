@@ -2,6 +2,12 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.0...3.4.0) (2019-X-X)
 
+## [3.3.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.0...3.3.1) (2019-06-12)
+
+### Bug Fixes
+
+- **http request:** add `Items` from `FluentHttpRequestBuilder` which where missing when executing reqests using `FluentHttpClient.RawHttpClient`
+
 ## [3.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.2.1...3.3.0) (2019-05-29)
 
 ### Features

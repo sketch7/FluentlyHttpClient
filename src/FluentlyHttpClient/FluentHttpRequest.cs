@@ -71,13 +71,13 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
-		public FluentHttpRequest(FluentHttpRequestBuilder builder, HttpRequestMessage message, IDictionary<object, object> items = null)
+		public FluentHttpRequest(FluentHttpRequestBuilder builder, HttpRequestMessage message, IDictionary<object, object> items = null) // todo: is items really needed?
 		{
 			Message = message;
 			Builder = builder;
-			Items = items == null
-				? new Dictionary<object, object>()
-				: new Dictionary<object, object>(items);
+			Items = new Dictionary<object, object>(
+				items ?? builder.Items ?? new Dictionary<object, object>()
+			);
 		}
 
 		/// <summary>
