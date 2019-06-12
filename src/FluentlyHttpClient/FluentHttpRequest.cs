@@ -74,9 +74,9 @@ namespace FluentlyHttpClient
 		{
 			Message = message;
 			Builder = builder;
-			Items = items == null
-				? new Dictionary<object, object>()
-				: new Dictionary<object, object>(items);
+			Items = new Dictionary<object, object>(
+				items ?? builder.Items ?? new Dictionary<object, object>()
+			);
 		}
 
 		/// <summary>
