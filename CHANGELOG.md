@@ -6,7 +6,7 @@
 
 ### Bug Fixes
 
-- **http request:** add `Items` from `FluentHttpRequestBuilder` which where missing when executing reqests using `FluentHttpClient.RawHttpClient`
+- **http request:** add `Items` from `FluentHttpRequestBuilder` which where missing when executing requests using `FluentHttpClient.RawHttpClient`
 
 ## [3.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.2.1...3.3.0) (2019-05-29)
 
