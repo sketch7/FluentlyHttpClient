@@ -6,8 +6,8 @@
 
 ### Bug Fixes
 
-- **http request:** `HttpRequestMessage.Properties` where not being flown to `FluentHttpRequest` when using RawClient with interop
-- **http client:** fix issue when using `Send(HttpRequestMessage request)` (Raw send) was creating `FluentHttpResponse` twice and the second which is returned was loosing the `.Items`
+- **http request:** `HttpRequestMessage.Properties` were not being flown to `FluentHttpRequest` when using raw client
+- **http client:** fix issue when using `Send(HttpRequestMessage request)` (raw send) was creating `FluentHttpResponse` twice and the second which is returned was not including the `.Items`
 
 ## [3.3.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.0...3.3.1) (2019-06-12)
 
