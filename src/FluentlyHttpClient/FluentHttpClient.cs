@@ -121,7 +121,6 @@ namespace FluentlyHttpClient
 		private readonly IServiceProvider _serviceProvider;
 		private readonly IFluentHttpMiddlewareRunner _middlewareRunner;
 		private readonly FluentHttpMiddlewareBuilder _middlewareBuilder;
-		private readonly IHttpClientFactory _httpClientFactory;
 		private readonly RequestTracker _requestTracker;
 
 		/// <summary>
@@ -130,18 +129,15 @@ namespace FluentlyHttpClient
 		/// <param name="options"></param>
 		/// <param name="clientFactory"></param>
 		/// <param name="serviceProvider"></param>
-		/// <param name="httpClientFactory"></param>
 		public FluentHttpClient(
 			FluentHttpClientOptions options,
 			IFluentHttpClientFactory clientFactory,
-			IServiceProvider serviceProvider,
-			IHttpClientFactory httpClientFactory
+			IServiceProvider serviceProvider
 		)
 		{
 			_options = options;
 			_clientFactory = clientFactory;
 			_serviceProvider = serviceProvider;
-			_httpClientFactory = httpClientFactory;
 			_requestBuilderDefaults = options.RequestBuilderDefaults;
 			_middlewareBuilder = options.MiddlewareBuilder;
 			_requestTracker = new RequestTracker();
@@ -204,9 +200,12 @@ namespace FluentlyHttpClient
 		public async Task<FluentHttpResponse> Send(HttpRequestMessage request)
 		{
 			if (request == null) throw new ArgumentNullException(nameof(request));
-			var response = await RawHttpClient.SendAsync(request);
 
-			return response.ToFluentHttpResponse();
+			var requestId = request.AddRequestId();
+			await RawHttpClient.SendAsync(request);
+
+			var executionContext = _requestTracker.Pop(requestId);
+			return executionContext.Response;
 		}
 
 		/// <inheritdoc />

@@ -2,6 +2,13 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.0...3.4.0) (2019-X-X)
 
+## [3.3.2](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.1...3.3.2) (2019-08-20)
+
+### Bug Fixes
+
+- **http request:** `HttpRequestMessage.Properties` were not being flown to `FluentHttpRequest` when using raw client
+- **http client:** fix issue when using `Send(HttpRequestMessage request)` (raw send) was creating `FluentHttpResponse` twice and the second which is returned was not including the `.Items`
+
 ## [3.3.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.0...3.3.1) (2019-06-12)
 
 ### Bug Fixes
