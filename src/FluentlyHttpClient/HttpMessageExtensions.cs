@@ -20,6 +20,9 @@ namespace FluentlyHttpClient
 				.WithBodyContent(request.Content)
 			;
 
+			foreach (var prop in request.Properties)
+				builder.WithItem(prop.Key, prop.Value);
+
 			return new FluentHttpRequest(builder, request);
 		}
 

@@ -79,6 +79,33 @@ namespace FluentlyHttpClient.Test
 		}
 
 		[Fact]
+		public async void ShouldHaveRequestItem_WhenRawRequestProps()
+		{
+			var mockHttp = new MockHttpMessageHandler();
+			mockHttp.When("https://sketch7.com/api/heroes/azmodan")
+				.Respond("application/json", "{ 'name': 'Azmodan' }");
+
+			var fluentHttpClientFactory = GetNewClientFactory();
+			fluentHttpClientFactory.CreateBuilder("sketch7")
+				.WithBaseUrl("https://sketch7.com")
+				.WithMessageHandler(mockHttp)
+				.UseMiddleware<TestHttpMiddleware>()
+				.Register();
+
+			var httpClient = fluentHttpClientFactory.Get("sketch7");
+			var request = httpClient.CreateRequest("/api/heroes/azmodan").Build().Message;
+			request.Properties["monster"] = "orsachiottolo";
+
+			var response = await httpClient.Send(request);
+
+			response.Items.TryGetValue("request", out var requestItem);
+			response.Items.TryGetValue("monster", out var monsterItem);
+
+			Assert.Equal("item", requestItem);
+			Assert.Equal("orsachiottolo", monsterItem);
+		}
+
+		[Fact]
 		public async void RawClient_ShouldGoThroughMiddleware()
 		{
 			var mockHttp = new MockHttpMessageHandler();

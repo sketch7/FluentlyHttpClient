@@ -29,8 +29,8 @@ namespace FluentlyHttpClient.Middleware
 		{
 			FluentlyExecutionContext context = null;
 			var requestId = request.GetRequestId();
-			if (requestId != null)
-				_requestTracker.TryPeek(requestId, out context);
+			if (requestId != null && !_requestTracker.TryPeek(requestId, out context))
+				context = new FluentlyExecutionContext();
 
 			var fluentlyRequest = context?.Request ?? request.ToFluentHttpRequest(_httpClient);
 
