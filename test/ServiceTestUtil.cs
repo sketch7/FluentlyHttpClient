@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using RichardSzalay.MockHttp;
 using System;
 
 namespace FluentlyHttpClient.Test
@@ -36,15 +35,6 @@ namespace FluentlyHttpClient.Test
 
 			var httpClient = fluentHttpClientFactory.Add(clientBuilder);
 			return httpClient.CreateRequest(uri);
-		}
-	}
-
-	public static class FluentlyTestExtensions
-	{
-		public static FluentHttpClientBuilder WithMockMessageHandler(this FluentHttpClientBuilder builder, MockHttpMessageHandler handler = null)
-		{
-			handler = handler ?? new MockHttpMessageHandler();
-			return builder.WithMessageHandler(handler);
 		}
 	}
 }
