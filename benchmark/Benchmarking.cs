@@ -54,7 +54,8 @@ namespace FluentlyHttpClient.Benchmarks
 					//ShouldLogDetailedResponse = true
 				})
 				.UseTimer()
-				.WithMessageHandler(mockHttp);
+				.WithMessageHandler(mockHttp)
+				;
 
 			_jsonHttpClient = fluentHttpClientFactory.Add(clientBuilder);
 

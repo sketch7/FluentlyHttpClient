@@ -1,6 +1,12 @@
 # Fluently Http Changelog
 
-[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.0...3.4.0) (2019-X-X)
+[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.4.0...3.5.0) (2019-X-X)
+
+## [3.4.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.2...3.4.0) (2019-08-26)
+
+### Features
+
+- **http client builder:** add `WithBaseUrlTrailingSlash` to control whether to include trailing slashes or not in base url
 
 ## [3.3.2](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.1...3.3.2) (2019-08-20)
 
