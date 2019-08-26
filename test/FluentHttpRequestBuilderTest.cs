@@ -20,7 +20,7 @@ namespace Test
 		{
 			var response = await GetNewClientFactory().CreateBuilder("abc")
 				.WithBaseUrl("https://sketch7.com/api/heroes")
-				.WithMessageHandler(new MockHttpMessageHandler())
+				.WithMockMessageHandler()
 				.Build()
 				.CreateRequest()
 				.ReturnAsResponse();
@@ -29,11 +29,25 @@ namespace Test
 		}
 
 		[Fact]
+		public async Task WithBaseUrlTrailingSlash_ShouldNotIncludeTrailingSlash()
+		{
+			var response = await GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("https://sketch7.com/oauth/token")
+				.WithMockMessageHandler()
+				.WithBaseUrlTrailingSlash(useTrailingSlash: false)
+				.Build()
+				.CreateRequest()
+				.ReturnAsResponse();
+
+			Assert.Equal("https://sketch7.com/oauth/token", response.Message.RequestMessage.RequestUri.ToString());
+		}
+
+		[Fact]
 		public async Task SubClientWithoutUrl_ShouldUseBaseUrl()
 		{
 			var response = await GetNewClientFactory().CreateBuilder("abc")
 				.WithBaseUrl("https://sketch7.com/api/heroes")
-				.WithMessageHandler(new MockHttpMessageHandler())
+				.WithMockMessageHandler()
 				.Build()
 				.CreateClient("sub")
 				.WithBaseUrl("v1", replace: false)
@@ -49,7 +63,7 @@ namespace Test
 		{
 			var response = await GetNewClientFactory().CreateBuilder("abc")
 				.WithBaseUrl("https://sketch7.com/api/heroes/")
-				.WithMessageHandler(new MockHttpMessageHandler())
+				.WithMockMessageHandler()
 				.Build()
 				.CreateRequest()
 				.WithQueryParams(new { Language = "en" })

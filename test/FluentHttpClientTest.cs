@@ -25,10 +25,30 @@ namespace Test
 
 			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.WithMessageHandler(mockHttp)
+				.WithMockMessageHandler(mockHttp)
 				.Build();
 
 			var hero = await httpClient.Get<Hero>("/api/heroes/azmodan");
+
+			Assert.NotNull(hero);
+			Assert.Equal("Azmodan", hero.Name);
+		}
+
+		[Fact]
+		public async void Get_ShouldReturnContent2()
+		{
+			var mockHttp = new MockHttpMessageHandler();
+			mockHttp.When("https://sketch7.com/oauth/token")
+				.Respond("application/json", "{ 'name': 'Azmodan' }");
+
+			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
+				.WithBaseUrl("https://sketch7.com/oauth/token")
+				.WithMockMessageHandler(mockHttp)
+				.WithBaseUrlTrailingSlash(useTrailingSlash: false)
+				.Build();
+
+			var hero = await httpClient.CreateRequest()
+				.Return<Hero>();
 
 			Assert.NotNull(hero);
 			Assert.Equal("Azmodan", hero.Name);
@@ -50,7 +70,7 @@ namespace Test
 
 			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.WithMessageHandler(mockHttp)
+				.WithMockMessageHandler(mockHttp)
 				.Build();
 
 			var hero = await httpClient.Post<Hero>("/api/heroes/azmodan", new
@@ -132,7 +152,7 @@ namespace Test
 			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.WithRequestBuilderDefaults(requestBuilder => requestBuilder.WithUri("api/graphql"))
-				.WithMessageHandler(mockHttp)
+				.WithMockMessageHandler(mockHttp)
 				.Build();
 
 			var response = await httpClient.CreateGqlRequest(query)
