@@ -12,6 +12,7 @@
   - `Remove(string)`
   - `Contains(string)`
 - **util:** querystring options `WithValueFormatter` now sets also `WithCollectionItemFormatter`
+- **util:** querystrings now ignore `private`, `protected` and properties marked with `IgnoreDataMemberAttribute` when using `.WithQueryParams` or so
 
 ### Deprecated code
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 // ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient
@@ -29,8 +30,8 @@ namespace FluentlyHttpClient
 			}
 			// object
 			return arguments.GetType()
-				.GetRuntimeProperties()
-				.Where(p => p.CanRead)
+				.GetProperties()
+				.Where(p => p.CanRead && p.GetCustomAttribute<IgnoreDataMemberAttribute>() == null)
 				.ToDictionary(p => p.Name, p => p.GetValue(arguments));
 		}
 	}
