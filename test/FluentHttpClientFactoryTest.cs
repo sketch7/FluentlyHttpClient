@@ -71,7 +71,7 @@ namespace Test
 					builder.WithQueryParamsOptions(opts =>
 					{
 						opts.CollectionMode = QueryStringCollectionMode.CommaSeparated;
-						opts.KeyFormatter = key => key.ToUpper();
+						opts.WithKeyFormatter(key => key.ToUpper());
 					})
 				)
 				.Build();

@@ -1,6 +1,16 @@
 # Fluently Http Changelog
 
-[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.4.0...3.5.0) (2019-X-X)
+[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.5.0...3.6.0) (2019-X-X)
+
+## [3.5.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.4.0...3.5.0) (2019-09-03)
+
+### Features
+
+- **util:** add querystring option `WithValueFormatter` similar to `WithCollectionItemFormatter` to format each value e.g. enum formatter
+
+### Deprecated code
+
+- **util:** query options deprecate `CollectionItemFormatter` and `KeyFormatter` with `WithCollectionItemFormatter`, `WithKeyFormatter` instead of exposing func directly
 
 ## [3.4.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.2...3.4.0) (2019-08-26)
 

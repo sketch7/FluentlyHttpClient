@@ -80,21 +80,43 @@ namespace FluentlyHttpClient.Test.Utils
 			var queryCollection = new Dictionary<string, object>
 			{
 				{"heroName", "yasuo"},
-				{"filter", new List<HeroRole>{ HeroRole.Assassin, HeroRole.Fighter }}
+				{"filter", new List<HeroRole>{ HeroRole.Assassin, HeroRole.Fighter }},
+				{"heroType", HeroRole.Assassin},
 			};
 
 			var result = queryCollection.ToQueryString(opts =>
 			{
 				opts.CollectionMode = QueryStringCollectionMode.CommaSeparated;
-				opts.CollectionItemFormatter = valueObj =>
+				opts.WithCollectionItemFormatter(valueObj =>
 				{
 					if (valueObj is Enum @enum)
 						return @enum.GetEnumDescription();
 					return valueObj.ToString();
-				};
+				});
 			});
 
-			Assert.Equal("heroName=yasuo&filter=assassin,fighter", result);
+			Assert.Equal("heroName=yasuo&filter=assassin,fighter&heroType=Assassin", result);
+		}
+
+		[Fact]
+		public void ShouldFormatValueWithFormatter()
+		{
+			var queryCollection = new Dictionary<string, object>
+			{
+				{"heroType", HeroRole.Assassin},
+			};
+
+			var result = queryCollection.ToQueryString(opts =>
+			{
+				opts.WithValueFormatter(valueObj =>
+				{
+					if (valueObj is Enum @enum)
+						return @enum.GetEnumDescription();
+					return valueObj.ToString();
+				});
+			});
+
+			Assert.Equal("heroType=assassin", result);
 		}
 
 		[Fact]
@@ -106,7 +128,7 @@ namespace FluentlyHttpClient.Test.Utils
 				{"Level", 100}
 			};
 
-			var result = queryCollection.ToQueryString(opts => opts.KeyFormatter = key => key.ToLower());
+			var result = queryCollection.ToQueryString(opts => opts.WithKeyFormatter(key => key.ToLower()));
 
 			Assert.Equal("heroname=yasuo&level=100", result);
 		}
