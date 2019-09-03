@@ -75,7 +75,7 @@ namespace FluentlyHttpClient.Test.Utils
 		}
 
 		[Fact]
-		public void ShouldFormatCollectionsWithFormatter()
+		public void ShouldFormatCollectionsWithFormatter() // deprecated: remove
 		{
 			var queryCollection = new Dictionary<string, object>
 			{
@@ -87,7 +87,9 @@ namespace FluentlyHttpClient.Test.Utils
 			var result = queryCollection.ToQueryString(opts =>
 			{
 				opts.CollectionMode = QueryStringCollectionMode.CommaSeparated;
+#pragma warning disable 618
 				opts.WithCollectionItemFormatter(valueObj =>
+#pragma warning restore 618
 				{
 					if (valueObj is Enum @enum)
 						return @enum.GetEnumDescription();
