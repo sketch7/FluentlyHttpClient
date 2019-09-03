@@ -140,6 +140,7 @@ namespace FluentlyHttpClient
 			_data.Add(header, value);
 			return this;
 		}
+
 		/// <summary>
 		/// Add single header.
 		/// </summary>

@@ -218,7 +218,6 @@ namespace Test
 				.Build();
 
 			Assert.Equal("/org/sketch7?role=assassin&class=rogue", request.Uri.ToString());
-
 		}
 
 		[Fact]
