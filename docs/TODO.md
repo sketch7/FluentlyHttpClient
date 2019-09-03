@@ -12,3 +12,7 @@
 - `FluentRequestHeaders`
   - ctor From `Dictionary<string, StringValues>`
   - `.Remove`
+- Utils
+  - Querystring options `WithCollectionItemFormatter` deprecate and use only `WithValueFormatter` for both
+  - Querystring `.ToQueryString` ignore with attribute e.g. `[IgnoreMember]`
+  - 
