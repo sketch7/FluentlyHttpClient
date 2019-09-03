@@ -9,6 +9,3 @@
     - ASPNET https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-2.1
 - Consider `FluentlyHttpRequestBuilder` instead `FluentlyHttpRequest` in middleware (breaking)
 - .WithItems? (from `Dictionary<string, object>`)
-- Utils
-  - Querystring `.ToQueryString` ignore with attribute e.g. `[IgnoreMember]`
-  - 
