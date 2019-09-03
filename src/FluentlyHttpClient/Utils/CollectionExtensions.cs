@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Web;
+#pragma warning disable 618 // todo: remove after removing deprecate attr
 
 // ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient
@@ -38,7 +39,7 @@ namespace FluentlyHttpClient
 
 				if (item.Value is string)
 				{
-					qs = AddQueryString(key, item.Value.ToString(), qs);
+					qs = AddQueryString(key, FormatValue(item.Value), qs);
 					continue;
 				}
 
@@ -48,12 +49,15 @@ namespace FluentlyHttpClient
 						qs = BuildCollectionQueryString(key, values, qs, options);
 						break;
 					default:
-						qs = AddQueryString(key, item.Value.ToString(), qs);
+						qs = AddQueryString(key, FormatValue(item.Value), qs);
 						break;
 				}
 			}
 
 			return qs;
+
+			string FormatValue(object value)
+				=> options.ValueFormatter == null ? value.ToString() : options.ValueFormatter(value);
 		}
 
 		/// <summary>

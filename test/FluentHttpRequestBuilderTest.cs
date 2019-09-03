@@ -124,7 +124,7 @@ namespace Test
 				{
 					Page = 1,
 					Filter = "all"
-				}, c => c.KeyFormatter = null).Build();
+				}, c => c.WithKeyFormatter(null)).Build();
 
 			Assert.Equal("/org/sketch7?Page=1&Filter=all", request.Uri.ToString());
 		}
@@ -222,7 +222,7 @@ namespace Test
 				.WithQueryParams(new
 				{
 					Roles = new List<string> { "warrior", "assassin" },
-				}, opts => opts.KeyFormatter = s => s.ToUpper()
+				}, opts => opts.WithKeyFormatter(s => s.ToUpper())
 				).Build();
 
 			Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin", request.Uri.ToString());
@@ -234,7 +234,7 @@ namespace Test
 			var builder = GetNewRequestBuilder();
 			var request = builder.WithUri("/org/sketch7/heroes")
 				.WithQueryParamsOptions(opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated)
-				.WithQueryParamsOptions(opts => opts.KeyFormatter = s => s.ToUpper())
+				.WithQueryParamsOptions(opts => opts.WithKeyFormatter(s => s.ToUpper()))
 				.WithQueryParams(new
 				{
 					Roles = new List<string> { "warrior", "assassin" },
