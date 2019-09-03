@@ -16,7 +16,7 @@
 
 ### Deprecated code
 
-- **util:** `WithCollectionItemFormatter` deprecated with `WithValueFormatter` as it will work for both collection items and props
+- **util:** `WithCollectionItemFormatter` deprecated in favor of `WithValueFormatter` as it will work for all query string values - collection items and props
 
 ## [3.5.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.4.0...3.5.0) (2019-09-03)
 
