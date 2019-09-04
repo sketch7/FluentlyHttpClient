@@ -4,8 +4,10 @@ using Microsoft.Extensions.Primitives;
 using RichardSzalay.MockHttp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
@@ -13,6 +15,21 @@ using static FluentlyHttpClient.Test.ServiceTestUtil;
 // ReSharper disable InconsistentNaming
 namespace Test
 {
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
+	public class QueryStringTestParams
+	{
+		private string DebuggerDisplay => $"Role: '{Role}', Class: '{Class}', Secret: '{Secret}'";
+
+		public string Role { get; set; }
+
+		[IgnoreDataMember]
+		public string Secret { get; set; }
+
+		protected string ProtectedStuff { get; set; } = "nobody";
+
+		public string Class { get; set; }
+	}
+
 	public class RequestBuilder_Build
 	{
 		[Fact]
@@ -183,6 +200,24 @@ namespace Test
 				.Build();
 
 			Assert.Equal("/org/sketch7", request.Uri.ToString());
+		}
+
+		[Fact]
+		public void IgnoredAndInaccessibleProps_ShouldBeStripped()
+		{
+			var builder = GetNewRequestBuilder();
+
+			var qsParams = new QueryStringTestParams
+			{
+				Role = "assassin",
+				Secret = "trustme",
+				Class = "rogue",
+			};
+			var request = builder.WithUri("/org/sketch7")
+				.WithQueryParams(qsParams)
+				.Build();
+
+			Assert.Equal("/org/sketch7?role=assassin&class=rogue", request.Uri.ToString());
 		}
 
 		[Fact]

@@ -1,6 +1,22 @@
 # Fluently Http Changelog
 
-[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.5.0...3.6.0) (2019-X-X)
+[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.6.0...3.7.0) (2019-X-X)
+
+## [3.6.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.5.0...3.6.0) (2019-09-04)
+
+### Features
+
+- **headers:** add several utility methods 
+  - `ctor IDictionary<string, StringValues>`
+  - `Add(string, StringValues)`
+  - `Remove(string)`
+  - `Contains(string)`
+- **util:** querystring options `WithValueFormatter` now sets also `WithCollectionItemFormatter`
+- **util:** querystrings now ignore `private`, `protected` and properties marked with `IgnoreDataMemberAttribute` when using `.WithQueryParams` or so
+
+### Deprecated code
+
+- **util:** `WithCollectionItemFormatter` deprecated in favor of `WithValueFormatter` as it will work for all query string values - collection items and props
 
 ## [3.5.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.4.0...3.5.0) (2019-09-03)
 

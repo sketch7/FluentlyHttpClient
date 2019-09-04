@@ -46,13 +46,13 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets or sets the function to format a collection item. This will allow you to manipulate the value.
 		/// </summary>
-		[Obsolete("Use WithCollectionItemFormatter instead.")] // todo make internal
+		[Obsolete("Use WithValueFormatter instead.")] // deprecated: remove
 		public Func<object, string> CollectionItemFormatter { get; set; }
 
 		/// <summary>
 		/// Gets or sets the function to format the key e.g. lowercase.
 		/// </summary>
-		[Obsolete("Use WithKeyFormatter instead.")] // todo make internal
+		[Obsolete("Use WithKeyFormatter instead.")] // deprecated: make internal
 		public Func<string, string> KeyFormatter { get; set; } = DefaultKeyFormatter;
 
 		internal Func<object, string> ValueFormatter { get; set; }
@@ -60,6 +60,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets or sets the function to format a collection item. This will allow you to manipulate the value.
 		/// </summary>
+		[Obsolete("Use WithValueFormatter instead. ValueFormatter will configure collection items and even props.")] // deprecated: remove
 		public QueryStringOptions WithCollectionItemFormatter(Func<object, string> configure)
 		{
 			CollectionItemFormatter = configure;
@@ -81,6 +82,7 @@ namespace FluentlyHttpClient
 		public QueryStringOptions WithValueFormatter(Func<object, string> configure)
 		{
 			ValueFormatter = configure;
+			CollectionItemFormatter = configure;
 			return this;
 		}
 

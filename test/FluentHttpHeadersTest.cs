@@ -69,13 +69,22 @@ namespace FluentlyHttpClient.Test
 	public class FluentHttpHeaders_Add
 	{
 		[Fact]
-		public void ShouldAddSingle()
+		public void ShouldAdd()
 		{
-			var headers = new FluentHttpHeaders
-			{
-				{ HeaderTypes.Authorization, "the-xx" }
-			};
+			var headers = new FluentHttpHeaders();
+
+			headers.Add(HeaderTypes.Authorization, "the-xx");
 			Assert.Equal("the-xx", headers.Authorization);
+		}
+
+		[Fact]
+		public void ShouldAddWithStringValues()
+		{
+			var headers = new FluentHttpHeaders();
+
+			StringValues str = new[] { "the-xx", "supersecret" };
+			headers.Add(HeaderTypes.Authorization, str);
+			Assert.Equal("the-xx,supersecret", headers.Authorization);
 		}
 
 		[Fact]
@@ -111,6 +120,28 @@ namespace FluentlyHttpClient.Test
 				{HeaderTypes.Accept, "xml"}
 			});
 			Assert.Equal("xml", headers.Accept);
+		}
+	}
+
+	public class FluentHttpHeaders_Remove
+	{
+		[Fact]
+		public void ShouldRemoveExisting()
+		{
+			var headers = new FluentHttpHeaders
+			{
+				{ HeaderTypes.Authorization, "the-xx" }
+			};
+			headers.Remove(HeaderTypes.Authorization);
+			Assert.Null(headers.Authorization);
+		}
+
+		[Fact]
+		public void ShouldNotThrowWhenRemovingNonExisting()
+		{
+			var headers = new FluentHttpHeaders();
+			headers.Remove(HeaderTypes.Authorization);
+			Assert.Null(headers.Authorization);
 		}
 	}
 
@@ -156,7 +187,7 @@ namespace FluentlyHttpClient.Test
 	public class FluentHttpHeaders_Initialize
 	{
 		[Fact]
-		public void ShouldInitializeFromDictionary()
+		public void ShouldInitializeFromDictionaryOfString()
 		{
 			var headersMap = new Dictionary<string, string>
 			{
@@ -171,7 +202,22 @@ namespace FluentlyHttpClient.Test
 		}
 
 		[Fact]
-		public void ShouldInitializeFromDictionaryEnumerableValue()
+		public void ShouldInitializeFromDictionaryOfStringValues()
+		{
+			var headersMap = new Dictionary<string, StringValues>
+			{
+				{HeaderTypes.Authorization, "the-xx"},
+				{HeaderTypes.ContentType, "json" }
+			};
+
+			var headers = new FluentHttpHeaders(headersMap);
+			Assert.Equal("the-xx", headers.Authorization);
+			Assert.Equal("json", headers.ContentType);
+			Assert.Equal(headersMap.Count, headers.Count);
+		}
+
+		[Fact]
+		public void ShouldInitializeFromDictionaryOfEnumerableString()
 		{
 			var headersMap = new Dictionary<string, IEnumerable<string>>
 			{

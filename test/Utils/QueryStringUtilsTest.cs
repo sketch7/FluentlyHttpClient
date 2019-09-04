@@ -4,7 +4,7 @@ using Xunit;
 
 namespace FluentlyHttpClient.Test.Utils
 {
-	public class CollectionExt_ToQueryString
+	public class QueryStringUtils_ToQueryString
 	{
 		[Fact]
 		public void ShouldGenerateBasicQueryString()
@@ -75,7 +75,7 @@ namespace FluentlyHttpClient.Test.Utils
 		}
 
 		[Fact]
-		public void ShouldFormatCollectionsWithFormatter()
+		public void ShouldFormatCollectionsWithFormatter() // deprecated: remove
 		{
 			var queryCollection = new Dictionary<string, object>
 			{
@@ -87,7 +87,9 @@ namespace FluentlyHttpClient.Test.Utils
 			var result = queryCollection.ToQueryString(opts =>
 			{
 				opts.CollectionMode = QueryStringCollectionMode.CommaSeparated;
+#pragma warning disable 618
 				opts.WithCollectionItemFormatter(valueObj =>
+#pragma warning restore 618
 				{
 					if (valueObj is Enum @enum)
 						return @enum.GetEnumDescription();
@@ -103,11 +105,14 @@ namespace FluentlyHttpClient.Test.Utils
 		{
 			var queryCollection = new Dictionary<string, object>
 			{
+				{"heroName", "yasuo"},
+				{"filter", new List<HeroRole>{ HeroRole.Assassin, HeroRole.Fighter }},
 				{"heroType", HeroRole.Assassin},
 			};
 
 			var result = queryCollection.ToQueryString(opts =>
 			{
+				opts.CollectionMode = QueryStringCollectionMode.CommaSeparated;
 				opts.WithValueFormatter(valueObj =>
 				{
 					if (valueObj is Enum @enum)
@@ -116,7 +121,7 @@ namespace FluentlyHttpClient.Test.Utils
 				});
 			});
 
-			Assert.Equal("heroType=assassin", result);
+			Assert.Equal("heroName=yasuo&filter=assassin,fighter&heroType=assassin", result);
 		}
 
 		[Fact]

@@ -10,7 +10,7 @@ namespace FluentlyHttpClient
 	/// <summary>
 	/// Extensions for collections.
 	/// </summary>
-	public static class CollectionExtensions // todo: rename QueryStringUtils or so
+	public static class QueryStringUtils
 	{
 		private static readonly QueryStringOptions DefaultQueryStringOptions = new QueryStringOptions();
 
