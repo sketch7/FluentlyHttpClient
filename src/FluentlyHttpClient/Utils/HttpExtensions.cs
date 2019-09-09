@@ -56,14 +56,14 @@ namespace FluentlyHttpClient
 		/// Stringify header list.
 		/// </summary>
 		/// <param name="headers"></param>
-		public static string Stringify(this IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers)
+		public static string ToPrettyString(this IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers)
 			=> headers.StringifyHeaderList();
 
 		/// <summary>
 		/// Stringify header list.
 		/// </summary>
 		/// <param name="headers"></param>
-		public static string Stringify(this IEnumerable<KeyValuePair<string, string[]>> headers)
+		public static string ToPrettyString(this IEnumerable<KeyValuePair<string, string[]>> headers)
 			=> headers.StringifyHeaderList();
 
 		private static string StringifyHeaderList<T>(this IEnumerable<KeyValuePair<string, T>> headers)
