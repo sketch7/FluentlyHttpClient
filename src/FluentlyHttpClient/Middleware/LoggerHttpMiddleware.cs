@@ -60,7 +60,12 @@ namespace FluentlyHttpClient.Middleware
 			else
 			{
 				var requestContent = await request.Message.Content.ReadAsStringAsync();
-				_logger.LogInformation("Pre-request... {request}\nContent: {requestContent}", request, requestContent);
+				_logger.LogInformation(
+					"Pre-request... {request}\nContent: {requestContent}\nHeaders: {headers}",
+					request,
+					requestContent,
+					request.Headers.Stringify()
+				);
 			}
 
 			var response = await _next(context);
