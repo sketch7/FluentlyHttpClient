@@ -51,30 +51,5 @@ namespace FluentlyHttpClient
 
 			return builder;
 		}
-
-		/// <summary>
-		/// Stringify header list.
-		/// </summary>
-		/// <param name="headers"></param>
-		public static string ToPrettyString(this IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers)
-			=> headers.StringifyHeaderList();
-
-		/// <summary>
-		/// Stringify header list.
-		/// </summary>
-		/// <param name="headers"></param>
-		public static string ToPrettyString(this IEnumerable<KeyValuePair<string, string[]>> headers)
-			=> headers.StringifyHeaderList();
-
-		private static string StringifyHeaderList<T>(this IEnumerable<KeyValuePair<string, T>> headers)
-			where T : IEnumerable<string>
-		{
-			var concatHeaders = "";
-			foreach (var header in headers)
-				concatHeaders += $"{header.Key}={string.Join(",", header.Value)}&";
-
-			concatHeaders = concatHeaders.TrimEnd('&');
-			return concatHeaders;
-		}
 	}
 }

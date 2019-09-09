@@ -64,7 +64,7 @@ namespace FluentlyHttpClient.Middleware
 					"Pre-request... {request}\nContent: {requestContent}\nHeaders: {headers}",
 					request,
 					requestContent,
-					request.Headers.Stringify()
+					request.Headers.ToPrettyString()
 				);
 			}
 
