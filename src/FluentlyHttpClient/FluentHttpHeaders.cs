@@ -363,11 +363,7 @@ namespace FluentlyHttpClient
 			if (_options.HashingExclude != null)
 				headers = headers.Where(x => !_options.HashingExclude(x));
 
-			var headersHash = "";
-			foreach (var header in headers)
-				headersHash += $"{header.Key}={string.Join(",", header.Value)}&";
-			headersHash = headersHash.TrimEnd('&');
-			return headersHash;
+			return headers.ToPrettyString();
 		}
 
 		public IEnumerator<KeyValuePair<string, string[]>> GetEnumerator() => _data.GetEnumerator();

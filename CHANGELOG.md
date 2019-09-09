@@ -2,6 +2,12 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.6.0...3.7.0) (2019-X-X)
 
+## [3.7.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.6.0...3.7.0) (2019-09-09)
+
+### Features
+
+- **logging:** add headers to log message in `LoggerHttpMiddleware`
+
 ## [3.6.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.5.0...3.6.0) (2019-09-04)
 
 ### Features
