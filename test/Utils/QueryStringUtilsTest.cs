@@ -4,7 +4,7 @@ using Xunit;
 
 namespace FluentlyHttpClient.Test.Utils
 {
-	public class CollectionExt_ToQueryString
+	public class QueryStringUtils_ToQueryString
 	{
 		[Fact]
 		public void ShouldGenerateBasicQueryString()
@@ -75,26 +75,53 @@ namespace FluentlyHttpClient.Test.Utils
 		}
 
 		[Fact]
-		public void ShouldFormatCollectionsWithFormatter()
+		public void ShouldFormatCollectionsWithFormatter() // deprecated: remove
 		{
 			var queryCollection = new Dictionary<string, object>
 			{
 				{"heroName", "yasuo"},
-				{"filter", new List<HeroRole>{ HeroRole.Assassin, HeroRole.Fighter }}
+				{"filter", new List<HeroRole>{ HeroRole.Assassin, HeroRole.Fighter }},
+				{"heroType", HeroRole.Assassin},
 			};
 
 			var result = queryCollection.ToQueryString(opts =>
 			{
 				opts.CollectionMode = QueryStringCollectionMode.CommaSeparated;
-				opts.CollectionItemFormatter = valueObj =>
+#pragma warning disable 618
+				opts.WithCollectionItemFormatter(valueObj =>
+#pragma warning restore 618
 				{
 					if (valueObj is Enum @enum)
 						return @enum.GetEnumDescription();
 					return valueObj.ToString();
-				};
+				});
 			});
 
-			Assert.Equal("heroName=yasuo&filter=assassin,fighter", result);
+			Assert.Equal("heroName=yasuo&filter=assassin,fighter&heroType=Assassin", result);
+		}
+
+		[Fact]
+		public void ShouldFormatValueWithFormatter()
+		{
+			var queryCollection = new Dictionary<string, object>
+			{
+				{"heroName", "yasuo"},
+				{"filter", new List<HeroRole>{ HeroRole.Assassin, HeroRole.Fighter }},
+				{"heroType", HeroRole.Assassin},
+			};
+
+			var result = queryCollection.ToQueryString(opts =>
+			{
+				opts.CollectionMode = QueryStringCollectionMode.CommaSeparated;
+				opts.WithValueFormatter(valueObj =>
+				{
+					if (valueObj is Enum @enum)
+						return @enum.GetEnumDescription();
+					return valueObj.ToString();
+				});
+			});
+
+			Assert.Equal("heroName=yasuo&filter=assassin,fighter&heroType=assassin", result);
 		}
 
 		[Fact]
@@ -106,7 +133,7 @@ namespace FluentlyHttpClient.Test.Utils
 				{"Level", 100}
 			};
 
-			var result = queryCollection.ToQueryString(opts => opts.KeyFormatter = key => key.ToLower());
+			var result = queryCollection.ToQueryString(opts => opts.WithKeyFormatter(key => key.ToLower()));
 
 			Assert.Equal("heroname=yasuo&level=100", result);
 		}

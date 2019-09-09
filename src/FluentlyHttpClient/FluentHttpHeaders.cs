@@ -94,6 +94,14 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
+		/// Initializes a new instance.
+		/// </summary>
+		public FluentHttpHeaders(IDictionary<string, StringValues> headers)
+		{
+			AddRange(headers);
+		}
+
+		/// <summary>
 		/// Initializes a new instance with specified headers.
 		/// </summary>
 		/// <param name="headers">Headers to initialize with.</param>
@@ -114,25 +122,37 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Add single header.
 		/// </summary>
-		/// <param name="key">Header to add.</param>
+		/// <param name="header">Header to add.</param>
 		/// <param name="value">Header value to add.</param>
-		public FluentHttpHeaders Add(string key, string value)
+		public FluentHttpHeaders Add(string header, string value)
 		{
-			_data.Add(key, new[] { value });
+			_data.Add(header, new[] { value });
 			return this;
 		}
 
 		/// <summary>
 		/// Add single header.
 		/// </summary>
-		/// <param name="key">Header to add.</param>
+		/// <param name="header">Header to add.</param>
 		/// <param name="value">Header value to add.</param>
-		public FluentHttpHeaders Add(string key, string[] value)
+		public FluentHttpHeaders Add(string header, string[] value)
 		{
-			_data.Add(key, value);
+			_data.Add(header, value);
 			return this;
 		}
 
+		/// <summary>
+		/// Add single header.
+		/// </summary>
+		/// <param name="header">Header to add.</param>
+		/// <param name="value">Header value to add.</param>
+		public FluentHttpHeaders Add(string header, StringValues value)
+		{
+			_data.Add(header, value);
+			return this;
+		}
+
+		#region AddRange
 		/// <summary>
 		/// Add range and throws if already exists.
 		/// </summary>
@@ -198,6 +218,7 @@ namespace FluentlyHttpClient
 				_data.Add(header.Key, header.Value.ToArray());
 			return this;
 		}
+		#endregion
 
 		/// <summary>
 		/// Get header by key or return null.
@@ -219,22 +240,22 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Set single header add/update if exists instead of throwing.
 		/// </summary>
-		/// <param name="key">Header to add.</param>
+		/// <param name="header">Header to add.</param>
 		/// <param name="value">Header value to add.</param>
-		public FluentHttpHeaders Set(string key, string value)
+		public FluentHttpHeaders Set(string header, string value)
 		{
-			this[key] = new[] { value };
+			this[header] = new[] { value };
 			return this;
 		}
 
 		/// <summary>
 		/// Set single header add/update if exists instead of throwing.
 		/// </summary>
-		/// <param name="key">Header to add.</param>
+		/// <param name="header">Header to add.</param>
 		/// <param name="values">Header values to add.</param>
-		public FluentHttpHeaders Set(string key, StringValues values)
+		public FluentHttpHeaders Set(string header, StringValues values)
 		{
-			this[key] = values;
+			this[header] = values;
 			return this;
 		}
 
@@ -294,6 +315,22 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
+		/// Remove the specified header.
+		/// </summary>
+		/// <param name="header">Header to remove.</param>
+		public FluentHttpHeaders Remove(string header)
+		{
+			_data.Remove(header);
+			return this;
+		}
+
+		/// <summary>
+		/// Determines whether the specified header exists.
+		/// </summary>
+		/// <param name="header">Header to remove.</param>
+		public bool Contains(string header) => _data.ContainsKey(header);
+
+		/// <summary>
 		/// Set range add/update if exists instead of throwing.
 		/// </summary>
 		/// <param name="headers">Headers to set from.</param>
@@ -348,7 +385,7 @@ namespace FluentlyHttpClient
 		public Dictionary<string, string[]> ToDictionary() => _data;
 
 		FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeader(string key, string value) => Add(key, value);
-		FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeader(string key, StringValues values) => Add(key, values.ToArray());
+		FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeader(string key, StringValues values) => Add(key, values);
 		FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeaders(IDictionary<string, string> headers) => SetRange(headers);
 		FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeaders(IDictionary<string, StringValues> headers) => SetRange(headers);
 		FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeaders(FluentHttpHeaders headers) => SetRange(headers);

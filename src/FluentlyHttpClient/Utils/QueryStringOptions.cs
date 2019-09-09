@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+#pragma warning disable 618 // todo: remove after removing deprecated code
 
 // ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient
@@ -45,12 +46,45 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets or sets the function to format a collection item. This will allow you to manipulate the value.
 		/// </summary>
+		[Obsolete("Use WithValueFormatter instead.")] // deprecated: remove
 		public Func<object, string> CollectionItemFormatter { get; set; }
 
 		/// <summary>
 		/// Gets or sets the function to format the key e.g. lowercase.
 		/// </summary>
+		[Obsolete("Use WithKeyFormatter instead.")] // deprecated: make internal
 		public Func<string, string> KeyFormatter { get; set; } = DefaultKeyFormatter;
+
+		internal Func<object, string> ValueFormatter { get; set; }
+
+		/// <summary>
+		/// Gets or sets the function to format a collection item. This will allow you to manipulate the value.
+		/// </summary>
+		[Obsolete("Use WithValueFormatter instead. ValueFormatter will configure collection items and even props.")] // deprecated: remove
+		public QueryStringOptions WithCollectionItemFormatter(Func<object, string> configure)
+		{
+			CollectionItemFormatter = configure;
+			return this;
+		}
+
+		/// <summary>
+		/// Gets or sets the function to format the key e.g. lowercase.
+		/// </summary>
+		public QueryStringOptions WithKeyFormatter(Func<string, string> configure)
+		{
+			KeyFormatter = configure;
+			return this;
+		}
+
+		/// <summary>
+		/// Gets or sets the function to format a value. This will allow you to manipulate the value e.g. use enums attribute instead of value.
+		/// </summary>
+		public QueryStringOptions WithValueFormatter(Func<object, string> configure)
+		{
+			ValueFormatter = configure;
+			CollectionItemFormatter = configure;
+			return this;
+		}
 
 		/// <summary>
 		/// Clones options into a new instance.
@@ -61,7 +95,8 @@ namespace FluentlyHttpClient
 			{
 				CollectionMode = CollectionMode,
 				CollectionItemFormatter = CollectionItemFormatter,
-				KeyFormatter = KeyFormatter
+				KeyFormatter = KeyFormatter,
+				ValueFormatter = ValueFormatter,
 			};
 	}
 }

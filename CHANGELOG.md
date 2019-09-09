@@ -1,6 +1,51 @@
 # Fluently Http Changelog
 
-[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.0...3.4.0) (2019-X-X)
+[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.6.0...3.7.0) (2019-X-X)
+
+## [3.6.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.5.0...3.6.0) (2019-09-04)
+
+### Features
+
+- **headers:** add several utility methods 
+  - `ctor IDictionary<string, StringValues>`
+  - `Add(string, StringValues)`
+  - `Remove(string)`
+  - `Contains(string)`
+- **util:** querystring options `WithValueFormatter` now sets also `WithCollectionItemFormatter`
+- **util:** querystrings now ignore `private`, `protected` and properties marked with `IgnoreDataMemberAttribute` when using `.WithQueryParams` or so
+
+### Deprecated code
+
+- **util:** `WithCollectionItemFormatter` deprecated in favor of `WithValueFormatter` as it will work for all query string values - collection items and props
+
+## [3.5.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.4.0...3.5.0) (2019-09-03)
+
+### Features
+
+- **util:** add querystring option `WithValueFormatter` similar to `WithCollectionItemFormatter` to format each value e.g. enum formatter
+
+### Deprecated code
+
+- **util:** query options deprecate `CollectionItemFormatter` and `KeyFormatter` with `WithCollectionItemFormatter`, `WithKeyFormatter` instead of exposing func directly
+
+## [3.4.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.2...3.4.0) (2019-08-26)
+
+### Features
+
+- **http client builder:** add `WithBaseUrlTrailingSlash` to control whether to include trailing slashes or not in base url
+
+## [3.3.2](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.1...3.3.2) (2019-08-20)
+
+### Bug Fixes
+
+- **http request:** `HttpRequestMessage.Properties` were not being flown to `FluentHttpRequest` when using raw client
+- **http client:** fix issue when using `Send(HttpRequestMessage request)` (raw send) was creating `FluentHttpResponse` twice and the second which is returned was not including the `.Items`
+
+## [3.3.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.3.0...3.3.1) (2019-06-12)
+
+### Bug Fixes
+
+- **http request:** add `Items` from `FluentHttpRequestBuilder` which where missing when executing requests using `FluentHttpClient.RawHttpClient`
 
 ## [3.3.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.2.1...3.3.0) (2019-05-29)
 

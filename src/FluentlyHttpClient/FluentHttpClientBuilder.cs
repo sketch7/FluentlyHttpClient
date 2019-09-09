@@ -28,6 +28,7 @@ namespace FluentlyHttpClient
 		private Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
 		private HttpMessageHandler _httpMessageHandler;
 		private readonly FormatterOptions _formatterOptions = new FormatterOptions();
+		private bool _useBaseUrlTrailingSlash = true;
 
 		/// <summary>
 		/// Initializes a new instance.
@@ -51,11 +52,11 @@ namespace FluentlyHttpClient
 		/// <returns>Returns client builder for chaining.</returns>
 		public FluentHttpClientBuilder WithBaseUrl(string url, bool replace = true)
 		{
-			var trimmedUrl = $"{url.Trim(' ', '/')}/";
+			var trimmedUrl = url.Trim(' ', '/');
 
 			_baseUrl = replace || string.IsNullOrEmpty(_baseUrl)
 				? _baseUrl = trimmedUrl
-				: _baseUrl + trimmedUrl;
+				: $"{_baseUrl.TrimEnd('/')}/{trimmedUrl}";
 
 			return this;
 		}
@@ -149,6 +150,17 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
+		/// Set whether to use trailing slash or not for the base url.
+		/// </summary>
+		/// <param name="useTrailingSlash">Determine </param>
+		/// <returns>Returns client builder for chaining.</returns>
+		public FluentHttpClientBuilder WithBaseUrlTrailingSlash(bool useTrailingSlash = true)
+		{
+			_useBaseUrlTrailingSlash = useTrailingSlash;
+			return this;
+		}
+
+		/// <summary>
 		/// Set HTTP handler stack to use for sending requests.
 		/// </summary>
 		/// <param name="handler">HTTP handler to use.</param>
@@ -195,10 +207,19 @@ namespace FluentlyHttpClient
 		public FluentHttpClientOptions BuildOptions()
 		{
 			_formatterOptions.Resort();
+
+			string baseUrl = null;
+			if (_baseUrl != null)
+			{
+				baseUrl = _baseUrl.TrimEnd('/');
+				if (_useBaseUrlTrailingSlash)
+					baseUrl += "/";
+			}
+
 			return new FluentHttpClientOptions
 			{
 				Timeout = _timeout,
-				BaseUrl = _baseUrl,
+				BaseUrl = baseUrl,
 				Identifier = Identifier,
 				Headers = _headers,
 				MiddlewareBuilder = _middlewareBuilder,
@@ -270,7 +291,7 @@ namespace FluentlyHttpClient
 
 	internal class MediaTypeFormatterComparer : IEqualityComparer<MediaTypeFormatter>
 	{
-		public static MediaTypeFormatterComparer Instance = new MediaTypeFormatterComparer();
+		public static readonly MediaTypeFormatterComparer Instance = new MediaTypeFormatterComparer();
 
 		public bool Equals(MediaTypeFormatter x, MediaTypeFormatter y) => x?.GetType() == y?.GetType();
 

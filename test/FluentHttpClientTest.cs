@@ -25,7 +25,7 @@ namespace Test
 
 			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.WithMessageHandler(mockHttp)
+				.WithMockMessageHandler(mockHttp)
 				.Build();
 
 			var hero = await httpClient.Get<Hero>("/api/heroes/azmodan");
@@ -50,7 +50,7 @@ namespace Test
 
 			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
-				.WithMessageHandler(mockHttp)
+				.WithMockMessageHandler(mockHttp)
 				.Build();
 
 			var hero = await httpClient.Post<Hero>("/api/heroes/azmodan", new
@@ -132,7 +132,7 @@ namespace Test
 			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.WithRequestBuilderDefaults(requestBuilder => requestBuilder.WithUri("api/graphql"))
-				.WithMessageHandler(mockHttp)
+				.WithMockMessageHandler(mockHttp)
 				.Build();
 
 			var response = await httpClient.CreateGqlRequest(query)

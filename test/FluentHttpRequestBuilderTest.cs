@@ -4,8 +4,10 @@ using Microsoft.Extensions.Primitives;
 using RichardSzalay.MockHttp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
@@ -13,6 +15,21 @@ using static FluentlyHttpClient.Test.ServiceTestUtil;
 // ReSharper disable InconsistentNaming
 namespace Test
 {
+	[DebuggerDisplay("{DebuggerDisplay,nq}")]
+	public class QueryStringTestParams
+	{
+		private string DebuggerDisplay => $"Role: '{Role}', Class: '{Class}', Secret: '{Secret}'";
+
+		public string Role { get; set; }
+
+		[IgnoreDataMember]
+		public string Secret { get; set; }
+
+		protected string ProtectedStuff { get; set; } = "nobody";
+
+		public string Class { get; set; }
+	}
+
 	public class RequestBuilder_Build
 	{
 		[Fact]
@@ -20,7 +37,7 @@ namespace Test
 		{
 			var response = await GetNewClientFactory().CreateBuilder("abc")
 				.WithBaseUrl("https://sketch7.com/api/heroes")
-				.WithMessageHandler(new MockHttpMessageHandler())
+				.WithMockMessageHandler()
 				.Build()
 				.CreateRequest()
 				.ReturnAsResponse();
@@ -29,11 +46,25 @@ namespace Test
 		}
 
 		[Fact]
+		public async Task WithBaseUrlTrailingSlash_ShouldNotIncludeTrailingSlash()
+		{
+			var response = await GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("https://sketch7.com/oauth/token")
+				.WithMockMessageHandler()
+				.WithBaseUrlTrailingSlash(useTrailingSlash: false)
+				.Build()
+				.CreateRequest()
+				.ReturnAsResponse();
+
+			Assert.Equal("https://sketch7.com/oauth/token", response.Message.RequestMessage.RequestUri.ToString());
+		}
+
+		[Fact]
 		public async Task SubClientWithoutUrl_ShouldUseBaseUrl()
 		{
 			var response = await GetNewClientFactory().CreateBuilder("abc")
 				.WithBaseUrl("https://sketch7.com/api/heroes")
-				.WithMessageHandler(new MockHttpMessageHandler())
+				.WithMockMessageHandler()
 				.Build()
 				.CreateClient("sub")
 				.WithBaseUrl("v1", replace: false)
@@ -49,7 +80,7 @@ namespace Test
 		{
 			var response = await GetNewClientFactory().CreateBuilder("abc")
 				.WithBaseUrl("https://sketch7.com/api/heroes/")
-				.WithMessageHandler(new MockHttpMessageHandler())
+				.WithMockMessageHandler()
 				.Build()
 				.CreateRequest()
 				.WithQueryParams(new { Language = "en" })
@@ -110,7 +141,7 @@ namespace Test
 				{
 					Page = 1,
 					Filter = "all"
-				}, c => c.KeyFormatter = null).Build();
+				}, c => c.WithKeyFormatter(null)).Build();
 
 			Assert.Equal("/org/sketch7?Page=1&Filter=all", request.Uri.ToString());
 		}
@@ -172,6 +203,24 @@ namespace Test
 		}
 
 		[Fact]
+		public void IgnoredAndInaccessibleProps_ShouldBeStripped()
+		{
+			var builder = GetNewRequestBuilder();
+
+			var qsParams = new QueryStringTestParams
+			{
+				Role = "assassin",
+				Secret = "trustme",
+				Class = "rogue",
+			};
+			var request = builder.WithUri("/org/sketch7")
+				.WithQueryParams(qsParams)
+				.Build();
+
+			Assert.Equal("/org/sketch7?role=assassin&class=rogue", request.Uri.ToString());
+		}
+
+		[Fact]
 		public void CollectionQueryString()
 		{
 			var builder = GetNewRequestBuilder();
@@ -208,7 +257,7 @@ namespace Test
 				.WithQueryParams(new
 				{
 					Roles = new List<string> { "warrior", "assassin" },
-				}, opts => opts.KeyFormatter = s => s.ToUpper()
+				}, opts => opts.WithKeyFormatter(s => s.ToUpper())
 				).Build();
 
 			Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin", request.Uri.ToString());
@@ -220,7 +269,7 @@ namespace Test
 			var builder = GetNewRequestBuilder();
 			var request = builder.WithUri("/org/sketch7/heroes")
 				.WithQueryParamsOptions(opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated)
-				.WithQueryParamsOptions(opts => opts.KeyFormatter = s => s.ToUpper())
+				.WithQueryParamsOptions(opts => opts.WithKeyFormatter(s => s.ToUpper()))
 				.WithQueryParams(new
 				{
 					Roles = new List<string> { "warrior", "assassin" },
