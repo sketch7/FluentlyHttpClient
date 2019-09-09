@@ -61,10 +61,10 @@ namespace FluentlyHttpClient.Middleware
 			{
 				var requestContent = await request.Message.Content.ReadAsStringAsync();
 				_logger.LogInformation(
-					"Pre-request... {request}\nContent: {requestContent}\nHeaders: {headers}",
+					"Pre-request... {request}\nHeaders: {headers}\nContent: {requestContent}",
 					request,
-					requestContent,
-					request.Headers.ToPrettyString()
+					request.Headers.ToFormattedString(),
+					requestContent
 				);
 			}
 
@@ -77,7 +77,11 @@ namespace FluentlyHttpClient.Middleware
 			}
 
 			var responseContent = await response.Content.ReadAsStringAsync();
-			_logger.LogInformation("Post-request... {response}\nContent: {responseContent}", response, responseContent);
+			_logger.LogInformation("Post-request... {response}\nHeaders: {headers}\nContent: {responseContent}",
+				response,
+				response.Headers.ToFormattedString(),
+				responseContent
+			);
 			return response;
 		}
 	}

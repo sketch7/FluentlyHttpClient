@@ -36,20 +36,20 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Stringify header list.
+		/// Get the collection as a formatted string e.g. 'User-Agent=google&amp;Locale=en,es'.
 		/// </summary>
-		/// <param name="headers"></param>
-		public static string ToPrettyString(this IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers)
-			=> headers.StringifyHeaderList();
+		/// <param name="collection">Collection to format to string.</param>
+		public static string ToFormattedString(this IEnumerable<KeyValuePair<string, IEnumerable<string>>> collection)
+			=> collection.StringifyCollection();
 
 		/// <summary>
-		/// Stringify header list.
+		/// Get the collection as a formatted string e.g. 'User-Agent=google&amp;Locale=en,es'.
 		/// </summary>
-		/// <param name="headers"></param>
-		public static string ToPrettyString(this IEnumerable<KeyValuePair<string, string[]>> headers)
-			=> headers.StringifyHeaderList();
+		/// <param name="collection">Collection to format to string.</param>
+		public static string ToFormattedString(this IEnumerable<KeyValuePair<string, string[]>> collection)
+			=> collection.StringifyCollection();
 
-		private static string StringifyHeaderList<T>(this IEnumerable<KeyValuePair<string, T>> headers)
+		private static string StringifyCollection<T>(this IEnumerable<KeyValuePair<string, T>> headers)
 			where T : IEnumerable<string>
 		{
 			var concatHeaders = "";

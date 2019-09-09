@@ -363,7 +363,7 @@ namespace FluentlyHttpClient
 			if (_options.HashingExclude != null)
 				headers = headers.Where(x => !_options.HashingExclude(x));
 
-			return headers.ToPrettyString();
+			return headers.ToFormattedString();
 		}
 
 		public IEnumerator<KeyValuePair<string, string[]>> GetEnumerator() => _data.GetEnumerator();

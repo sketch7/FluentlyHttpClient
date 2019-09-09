@@ -34,6 +34,8 @@ namespace FluentlyHttpClient.Test.Integration
 
 			var httpClient = fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
+				.WithHeader("X-SSV-VERSION", "1.0.0")
+				.WithHeader("locale", new[] { "en", "fr" })
 				.UseLogging(new LoggerHttpMiddlewareOptions
 				{
 					ShouldLogDetailedResponse = false,
@@ -52,7 +54,7 @@ namespace FluentlyHttpClient.Test.Integration
 				})
 				.WithLoggingOptions(new LoggerHttpMiddlewareOptions
 				{
-					ShouldLogDetailedRequest = false,
+					ShouldLogDetailedRequest = true,
 					ShouldLogDetailedResponse = true
 				})
 				.Return<Hero>();
