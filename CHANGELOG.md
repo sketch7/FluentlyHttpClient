@@ -2,6 +2,12 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.6.0...3.7.0) (2019-X-X)
 
+## [3.7.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.7.0...3.7.1) (2019-10-07)
+
+### Bug Fixes
+
+- **http client:** attempt to fix issue `RequestTracker.push` internal Dictionary throws error on TryGet in certain scenarios (possibly concurrency)
+
 ## [3.7.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.6.0...3.7.0) (2019-09-09)
 
 ### Features
