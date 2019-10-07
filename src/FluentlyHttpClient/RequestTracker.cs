@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 
 namespace FluentlyHttpClient
 {
@@ -10,42 +10,23 @@ namespace FluentlyHttpClient
 
 	internal class RequestTracker
 	{
-		private readonly Dictionary<string, FluentlyExecutionContext> _contexts = new Dictionary<string, FluentlyExecutionContext>();
+		private readonly ConcurrentDictionary<string, FluentlyExecutionContext> _contexts = new ConcurrentDictionary<string, FluentlyExecutionContext>();
 
 		public void Push(string key, FluentHttpRequest request)
 		{
-			if (_contexts.TryGetValue(key, out var context))
-			{
-				context.Request = request;
-				return;
-			}
-
-			_contexts.Add(key, new FluentlyExecutionContext
-			{
-				Request = request
-			});
+			var context = _contexts.GetOrAdd(key, _ => new FluentlyExecutionContext());
+			context.Request = request;
 		}
 
 		public void Push(string key, FluentHttpResponse response)
 		{
-			if (_contexts.TryGetValue(key, out var context))
-			{
-				context.Response = response;
-				return;
-			}
-
-			_contexts.Add(key, new FluentlyExecutionContext
-			{
-				Response = response
-			});
+			var context = _contexts.GetOrAdd(key, _ => new FluentlyExecutionContext());
+			context.Response = response;
 		}
 
 		public FluentlyExecutionContext Pop(string key)
 		{
-			if (!_contexts.TryGetValue(key, out var context))
-				return null;
-
-			_contexts.Remove(key);
+			_contexts.TryRemove(key, out var context);
 			return context;
 		}
 
