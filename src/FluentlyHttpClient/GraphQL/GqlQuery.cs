@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Request object for GraphQL requests.
 	/// </summary>
-	public class GqlQuery
+	public class GqlQuery // deprecated: rename to GqlRequest or GqlRequestPayload?
 	{
 		/// <summary>
 		/// Gets or sets GraphQL query.

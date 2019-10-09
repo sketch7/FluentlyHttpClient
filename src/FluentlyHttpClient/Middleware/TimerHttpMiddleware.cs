@@ -62,8 +62,8 @@ namespace FluentlyHttpClient.Middleware
 
 				if (_logger.IsEnabled(LogLevel.Warning) && watch.Elapsed > threshold)
 					_logger.LogWarning(TimeTakenMessage, request, watch.ElapsedMilliseconds);
-				else if (_logger.IsEnabled(LogLevel.Information))
-					_logger.LogInformation(TimeTakenMessage, request, watch.ElapsedMilliseconds);
+				else if (_logger.IsEnabled(LogLevel.Debug))
+					_logger.LogDebug(TimeTakenMessage, request, watch.ElapsedMilliseconds);
 			}
 
 			return response.SetTimeTaken(watch.Elapsed);
