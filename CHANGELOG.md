@@ -2,6 +2,12 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.6.0...3.7.0) (2019-X-X)
 
+## [3.7.2](https://github.com/sketch7/FluentlyHttpClient/compare/3.7.1...3.7.2) (2019-10-08)
+
+### Bug Fixes
+
+- **timer middleware:** change non warning timing log to `Debug` instead of `Info` (as it was too spammy especially when used with `LoggerMiddleware`)
+
 ## [3.7.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.7.0...3.7.1) (2019-10-07)
 
 ### Bug Fixes
