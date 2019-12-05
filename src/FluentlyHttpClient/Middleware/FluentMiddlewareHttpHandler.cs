@@ -14,7 +14,7 @@ namespace FluentlyHttpClient.Middleware
 			IFluentHttpMiddlewareRunner middlewareRunner,
 			FluentHttpClient httpClient,
 			RequestTracker requestTracker,
-			HttpMessageHandler messageHandler = null
+			HttpMessageHandler? messageHandler = null
 		) : base(messageHandler ?? new HttpClientHandler())
 		{
 			_middlewareRunner = middlewareRunner;
@@ -27,7 +27,7 @@ namespace FluentlyHttpClient.Middleware
 			CancellationToken cancellationToken
 		)
 		{
-			FluentlyExecutionContext context = null;
+			FluentlyExecutionContext? context = null;
 			var requestId = request.GetRequestId();
 			if (requestId != null && !_requestTracker.TryPeek(requestId, out context))
 				context = new FluentlyExecutionContext();

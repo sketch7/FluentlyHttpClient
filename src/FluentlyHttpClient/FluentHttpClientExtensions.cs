@@ -15,7 +15,7 @@ namespace FluentlyHttpClient
 		/// <param name="client">HTTP client instance.</param>
 		/// <param name="uri">Request resource uri to send.</param>
 		/// <returns>Returns task with the result data.</returns>
-		public static Task<T> Get<T>(this IFluentHttpClient client, string uri) => client.CreateRequest(uri)
+		public static Task<T> Get<T>(this IFluentHttpClient client, string? uri) => client.CreateRequest(uri)
 			.AsGet()
 			.WithSuccessStatus()
 			.Return<T>();
@@ -29,7 +29,7 @@ namespace FluentlyHttpClient
 		/// <param name="data">Payload data content to send.</param>
 		/// <param name="contentType">(Optional) content type to use when sending data.</param>
 		/// <returns>Returns task with the result data.</returns>
-		public static Task<T> Post<T>(this IFluentHttpClient client, string uri, object data, MediaTypeHeaderValue contentType = null)
+		public static Task<T> Post<T>(this IFluentHttpClient client, string? uri, object data, MediaTypeHeaderValue? contentType = null)
 			=> client.CreateRequest(uri)
 			.AsPost()
 			.WithSuccessStatus()
@@ -45,7 +45,7 @@ namespace FluentlyHttpClient
 		/// <param name="data">Payload data content to send.</param>
 		/// <param name="contentType">(Optional) content type to use when sending data.</param>
 		/// <returns>Returns task with the result data.</returns>
-		public static Task<T> Put<T>(this IFluentHttpClient client, string uri, object data, MediaTypeHeaderValue contentType = null)
+		public static Task<T> Put<T>(this IFluentHttpClient client, string? uri, object data, MediaTypeHeaderValue? contentType = null)
 			=> client.CreateRequest(uri)
 			.AsPut()
 			.WithSuccessStatus()
@@ -61,7 +61,7 @@ namespace FluentlyHttpClient
 		/// <param name="data">Payload data content to send.</param>
 		/// <param name="contentType">(Optional) content type to use when sending data.</param>
 		/// <returns>Returns task with the result data.</returns>
-		public static Task<T> Patch<T>(this IFluentHttpClient client, string uri, object data, MediaTypeHeaderValue contentType = null)
+		public static Task<T> Patch<T>(this IFluentHttpClient client, string? uri, object data, MediaTypeHeaderValue? contentType = null)
 			=> client.CreateRequest(uri)
 			.AsPatch()
 			.WithSuccessStatus()
@@ -77,7 +77,7 @@ namespace FluentlyHttpClient
 		/// <param name="data">Payload data content to send.</param>
 		/// <param name="contentType">(Optional) content type to use when sending data.</param>
 		/// <returns>Returns task with the result data.</returns>
-		public static Task<T> Delete<T>(this IFluentHttpClient client, string uri, object data, MediaTypeHeaderValue contentType = null)
+		public static Task<T> Delete<T>(this IFluentHttpClient client, string? uri, object data, MediaTypeHeaderValue? contentType = null)
 			=> client.CreateRequest(uri)
 			.AsDelete()
 			.WithSuccessStatus()

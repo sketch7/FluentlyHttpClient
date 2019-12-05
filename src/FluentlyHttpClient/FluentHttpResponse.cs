@@ -103,7 +103,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="message"></param>
 		/// <param name="items"></param>
-		public FluentHttpResponse(HttpResponseMessage message, IDictionary<object, object> items = null)
+		public FluentHttpResponse(HttpResponseMessage message, IDictionary<object, object>? items = null)
 		{
 			Message = message;
 			Items = items ?? new Dictionary<object, object>();

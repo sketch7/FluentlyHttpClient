@@ -49,7 +49,7 @@ namespace FluentlyHttpClient
 		/// <summary>Get the formatter for an HTTP content type.</summary>
 		/// <param name="contentType">The HTTP content type (or <c>null</c> to automatically select one).</param>
 		/// <exception cref="InvalidOperationException">No MediaTypeFormatters are available on the API client for this content type.</exception>
-		MediaTypeFormatter GetFormatter(MediaTypeHeaderValue contentType = null);
+		MediaTypeFormatter GetFormatter(MediaTypeHeaderValue? contentType = null);
 
 		/// <summary>
 		/// Create a new request builder which can be configured fluently.
@@ -57,7 +57,7 @@ namespace FluentlyHttpClient
 		/// <param name="uriTemplate">Uri resource template e.g. <c>"/org/{id}"</c></param>
 		/// <param name="interpolationData">Data to interpolate within the Uri template place holders e.g. <c>{id}</c>. Can be either dictionary or object.</param>
 		/// <returns>Returns a new request builder.</returns>
-		FluentHttpRequestBuilder CreateRequest(string uriTemplate = null, object interpolationData = null);
+		FluentHttpRequestBuilder CreateRequest(string? uriTemplate = null, object? interpolationData = null);
 
 		/// <summary>
 		/// Creates a new client and inherit options from the current.
@@ -153,7 +153,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <inheritdoc />
-		public MediaTypeFormatter GetFormatter(MediaTypeHeaderValue contentType = null)
+		public MediaTypeFormatter GetFormatter(MediaTypeHeaderValue? contentType = null)
 		{
 			if (!Formatters.Any())
 				throw new InvalidOperationException("No media type formatters available.");
@@ -168,7 +168,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <inheritdoc />
-		public FluentHttpRequestBuilder CreateRequest(string uriTemplate = null, object interpolationData = null)
+		public FluentHttpRequestBuilder CreateRequest(string? uriTemplate = null, object? interpolationData = null)
 		{
 			var builder = ActivatorUtilities.CreateInstance<FluentHttpRequestBuilder>(_serviceProvider, this);
 			_requestBuilderDefaults?.Invoke(builder);

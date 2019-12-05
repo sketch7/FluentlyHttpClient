@@ -26,7 +26,7 @@ namespace FluentlyHttpClient
 			return new FluentHttpRequest(builder, request);
 		}
 
-		internal static string GetRequestId(this HttpRequestMessage request)
+		internal static string? GetRequestId(this HttpRequestMessage request)
 		{
 			if (request.Properties.TryGetValue(RequestIdProperty, out var requestKey))
 				return (string)requestKey;
@@ -34,7 +34,7 @@ namespace FluentlyHttpClient
 			return null;
 		}
 
-		internal static string AddRequestId(this HttpRequestMessage request, string id = null)
+		internal static string AddRequestId(this HttpRequestMessage request, string? id = null)
 		{
 			var requestId = id ?? Guid.NewGuid().ToString();
 			request.Properties.Add(RequestIdProperty, requestId);
@@ -44,7 +44,7 @@ namespace FluentlyHttpClient
 
 		internal static FluentHttpResponse ToFluentHttpResponse(
 			this HttpResponseMessage response,
-			IDictionary<object, object> items = null
+			IDictionary<object, object>? items = null
 		) => new FluentHttpResponse(response, items);
 	}
 }

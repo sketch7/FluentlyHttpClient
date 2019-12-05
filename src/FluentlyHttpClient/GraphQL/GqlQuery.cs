@@ -13,6 +13,6 @@
 		/// <summary>
 		/// Gets or sets GraphQL query variables.
 		/// </summary>
-		public object Variables { get; set; }
+		public object? Variables { get; set; }
 	}
 }

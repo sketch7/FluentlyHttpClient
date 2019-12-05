@@ -2,6 +2,12 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.6.0...3.7.0) (2019-X-X)
 
+## [3.8.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.7.2...3.8.0) (2019-12-05)
+
+### Features
+
+- **csharp:** initial nullability support
+
 ## [3.7.2](https://github.com/sketch7/FluentlyHttpClient/compare/3.7.1...3.7.2) (2019-10-08)
 
 ### Bug Fixes

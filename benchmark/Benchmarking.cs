@@ -17,8 +17,8 @@ namespace FluentlyHttpClient.Benchmarks
 	[MemoryDiagnoser]
 	public class Benchmarking
 	{
-		private IFluentHttpClient _jsonHttpClient;
-		private IFluentHttpClient _messagePackHttpClient;
+		private IFluentHttpClient? _jsonHttpClient;
+		private IFluentHttpClient? _messagePackHttpClient;
 
 		private IServiceProvider BuildContainer()
 		{

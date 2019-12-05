@@ -4,8 +4,8 @@ namespace FluentlyHttpClient
 {
 	internal class FluentlyExecutionContext
 	{
-		public FluentHttpRequest Request { get; set; }
-		public FluentHttpResponse Response { get; set; }
+		public FluentHttpRequest? Request { get; set; }
+		public FluentHttpResponse Response { get; set; } = null!;
 	}
 
 	internal class RequestTracker
