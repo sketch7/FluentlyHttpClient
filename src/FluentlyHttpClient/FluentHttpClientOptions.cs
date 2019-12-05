@@ -35,7 +35,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets or sets the middleware builder.
 		/// </summary>
-		public FluentHttpMiddlewareBuilder? MiddlewareBuilder { get; set; }
+		public FluentHttpMiddlewareBuilder MiddlewareBuilder { get; set; }
 
 		/// <summary>
 		/// Gets or sets handler to customize request on creation. In order to specify defaults as desired, or so.
