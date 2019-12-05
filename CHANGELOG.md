@@ -24,7 +24,7 @@
 
 ### Features
 
-- **headers:** add several utility methods 
+- **headers:** add several utility methods
   - `ctor IDictionary<string, StringValues>`
   - `Add(string, StringValues)`
   - `Remove(string)`
