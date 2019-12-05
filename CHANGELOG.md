@@ -2,7 +2,7 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.6.0...3.7.0) (2019-X-X)
 
-## [3.8.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.7.2...3.8.0) (2019-12-05)
+## [3.8.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.7.2...3.8.0) (2019-12-x)
 
 ### Features
 
