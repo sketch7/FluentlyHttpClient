@@ -42,7 +42,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="response">Response to get hash from.</param>
 		/// <returns>Returns hash string for the request.</returns>
-		public static string GetRequestHash(this FluentHttpResponse response)
+		public static string? GetRequestHash(this FluentHttpResponse response)
 		{
 			if (response.Items.TryGetValue(HashKey, out var value))
 				return (string)value;
@@ -85,7 +85,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="requestBuilder">Request builder instance.</param>
 		/// <param name="configure">Action to configure options.</param>
-		public static FluentHttpRequestBuilder WithRequestHashOptions(this FluentHttpRequestBuilder requestBuilder, Action<RequestHashOptions> configure)
+		public static FluentHttpRequestBuilder WithRequestHashOptions(this FluentHttpRequestBuilder requestBuilder, Action<RequestHashOptions>? configure)
 		{
 			RequestHashOptions options;
 			if (requestBuilder.Items.TryGetValue(HashOptionsKey, out var result))
@@ -114,19 +114,19 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets headers exclude function from being hashed in <see cref="FluentHttpHeaders.ToHashString"/>.
 		/// </summary>
-		public Predicate<KeyValuePair<string, string[]>> HeadersExclude { get; private set; }
+		public Predicate<KeyValuePair<string, string[]>>? HeadersExclude { get; private set; }
 
 		/// <summary>
 		/// Gets the uri manipulation function to be hashed.
 		/// </summary>
-		public Func<Uri, string> UriManipulation { get; private set; }
+		public Func<Uri, string>? UriManipulation { get; private set; }
 
 		/// <summary>
 		/// Gets the function to hash body object.
 		/// </summary>
-		public Func<object, string> HashBody { get; private set; }
+		public Func<object, string>? HashBody { get; private set; }
 
-		private static readonly Func<object, string> InvariantContent = c => string.Empty;
+		private static readonly Func<object, string> InvariantContent = _ => string.Empty;
 
 		/// <summary>
 		/// Add headers exclude filtering (it will be combined).
@@ -183,14 +183,12 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="manipulate">Function to manipulate uri query string.</param>
 		public RequestHashOptions WithUriQueryString(Action<NameValueCollection> manipulate)
-		{
-			return WithUri(uri =>
-			{
-				var ub = new UriBuilder(uri)
-					.ManipulateQueryString(manipulate);
-				return ub.Uri.ToString();
-			});
-		}
+			=> WithUri(uri =>
+			  {
+				  var ub = new UriBuilder(uri)
+					  .ManipulateQueryString(manipulate);
+				  return ub.Uri.ToString();
+			  });
 
 		/// <summary>
 		/// Hash body object content.

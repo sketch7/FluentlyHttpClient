@@ -22,7 +22,7 @@ namespace FluentlyHttpClient.Middleware
 		/// <summary>
 		/// Gets or sets the arguments for the middleware.
 		/// </summary>
-		public object[] Args { get; set; }
+		public object[]? Args { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance.
@@ -34,7 +34,7 @@ namespace FluentlyHttpClient.Middleware
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
-		public FluentHttpMiddlewareConfig(Type type, object[] args = null)
+		public FluentHttpMiddlewareConfig(Type type, object[]? args = null)
 		{
 			Type = type;
 			Args = args;

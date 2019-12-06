@@ -67,7 +67,7 @@ namespace FluentlyHttpClient
 	{
 		private readonly IServiceProvider _serviceProvider;
 		private readonly Dictionary<string, IFluentHttpClient> _clientsMap = new Dictionary<string, IFluentHttpClient>();
-		private Action<FluentHttpClientBuilder> _configure;
+		private Action<FluentHttpClientBuilder>? _configure;
 
 		/// <summary>
 		/// Initializes a new instance of <see cref="FluentHttpClientFactory"/>.

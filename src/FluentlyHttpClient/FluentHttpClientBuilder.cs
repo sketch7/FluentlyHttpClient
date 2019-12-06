@@ -17,16 +17,16 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets the identifier specified.
 		/// </summary>
-		public string Identifier { get; private set; }
+		public string? Identifier { get; private set; }
 
 		private readonly IServiceProvider _serviceProvider;
 		private readonly IFluentHttpClientFactory _fluentHttpClientFactory;
 		private readonly FluentHttpMiddlewareBuilder _middlewareBuilder;
-		private string _baseUrl;
+		private string? _baseUrl;
 		private TimeSpan _timeout;
 		private readonly FluentHttpHeaders _headers = new FluentHttpHeaders();
-		private Action<FluentHttpRequestBuilder> _requestBuilderDefaults;
-		private HttpMessageHandler _httpMessageHandler;
+		private Action<FluentHttpRequestBuilder>? _requestBuilderDefaults;
+		private HttpMessageHandler? _httpMessageHandler;
 		private readonly FormatterOptions _formatterOptions = new FormatterOptions();
 		private bool _useBaseUrlTrailingSlash = true;
 
@@ -56,7 +56,7 @@ namespace FluentlyHttpClient
 
 			_baseUrl = replace || string.IsNullOrEmpty(_baseUrl)
 				? _baseUrl = trimmedUrl
-				: $"{_baseUrl.TrimEnd('/')}/{trimmedUrl}";
+				: $"{_baseUrl!.TrimEnd('/')}/{trimmedUrl}";
 
 			return this;
 		}
@@ -208,7 +208,7 @@ namespace FluentlyHttpClient
 		{
 			_formatterOptions.Resort();
 
-			string baseUrl = null;
+			string? baseUrl = null;
 			if (_baseUrl != null)
 			{
 				baseUrl = _baseUrl.TrimEnd('/');
@@ -234,7 +234,7 @@ namespace FluentlyHttpClient
 		/// Builds a new HTTP client (with default <see cref="FluentHttpClient"/> implementation).
 		/// </summary>
 		/// <param name="options"></param>
-		public IFluentHttpClient Build(FluentHttpClientOptions options = null)
+		public IFluentHttpClient Build(FluentHttpClientOptions? options = null)
 			=> Build<FluentHttpClient>(options);
 
 		/// <summary>
@@ -242,7 +242,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <typeparam name="THttpClient">HttpClient type</typeparam>
 		/// <param name="options"></param>
-		public IFluentHttpClient Build<THttpClient>(FluentHttpClientOptions options = null)
+		public IFluentHttpClient Build<THttpClient>(FluentHttpClientOptions? options = null)
 			where THttpClient : IFluentHttpClient
 		{
 			if (options == null)

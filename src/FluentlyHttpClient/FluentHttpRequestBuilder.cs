@@ -23,12 +23,12 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets the Uri used for the HTTP request.
 		/// </summary>
-		public string Uri { get; private set; }
+		public string? Uri { get; private set; }
 
 		/// <summary>
 		/// Gets the Uri template for the HTTP request (without interpolation).
 		/// </summary>
-		public string UriTemplate { get; private set; }
+		public string? UriTemplate { get; private set; }
 
 		/// <summary>
 		/// Gets the headers to be sent with this request.
@@ -37,7 +37,7 @@ namespace FluentlyHttpClient
 		{
 			get
 			{
-				_headers = _headers ?? new FluentHttpHeaders();
+				_headers ??= new FluentHttpHeaders();
 				return _headers;
 			}
 		}
@@ -59,13 +59,13 @@ namespace FluentlyHttpClient
 		public IDictionary<object, object> Items { get; } = new Dictionary<object, object>();
 
 		private readonly IFluentHttpClient _fluentHttpClient;
-		private HttpContent _httpBody;
+		private HttpContent? _httpBody;
 		private static readonly Regex InterpolationRegex = new Regex(@"\{(\w+)\}", RegexOptions.Compiled);
-		private object _queryParams;
+		private object? _queryParams;
 		private bool _hasSuccessStatusOrThrow;
 		private CancellationToken _cancellationToken;
-		private QueryStringOptions _queryStringOptions;
-		private FluentHttpHeaders _headers;
+		private QueryStringOptions? _queryStringOptions;
+		private FluentHttpHeaders? _headers;
 
 		/// <summary>
 		/// Initializes a new instance.
@@ -126,7 +126,7 @@ namespace FluentlyHttpClient
 		/// <param name="uriTemplate">Uri resource template e.g. <c>"/org/{id}"</c></param>
 		/// <param name="interpolationData">Data to interpolate within the Uri template place holders e.g. <c>{id}</c>. Can be either dictionary or object.</param>
 		/// <returns>Returns request builder for chaining.</returns>
-		public FluentHttpRequestBuilder WithUri(string uriTemplate, object interpolationData = null)
+		public FluentHttpRequestBuilder WithUri(string uriTemplate, object? interpolationData = null)
 		{
 			UriTemplate = uriTemplate;
 			Uri = interpolationData != null
@@ -141,9 +141,9 @@ namespace FluentlyHttpClient
 		/// <param name="queryParams">Query data to add/append. Can be either dictionary or object.</param>
 		/// <param name="options">Query string options to use.</param>
 		/// <returns>Returns request builder for chaining.</returns>
-		public FluentHttpRequestBuilder WithQueryParams(object queryParams, QueryStringOptions options = null)
+		public FluentHttpRequestBuilder WithQueryParams(object queryParams, QueryStringOptions? options = null)
 		{
-			options = options ?? _queryStringOptions;
+			options ??= _queryStringOptions;
 
 			_queryParams = queryParams;
 			return WithQueryParamsOptions(options);
@@ -168,7 +168,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="options">Query string options to use.</param>
 		/// <returns>Returns request builder for chaining.</returns>
-		public FluentHttpRequestBuilder WithQueryParamsOptions(QueryStringOptions options)
+		public FluentHttpRequestBuilder WithQueryParamsOptions(QueryStringOptions? options)
 		{
 			_queryStringOptions = options;
 			return this;
@@ -192,10 +192,10 @@ namespace FluentlyHttpClient
 		/// <param name="contentType">Request body format (or <c>null</c> to use the first supported Content-Type in the <see cref="IFluentHttpClient.Formatters"/>).</param>
 		/// <returns>Returns the request builder for chaining.</returns>
 		/// <exception cref="InvalidOperationException">No MediaTypeFormatters are available on the API client for this content type.</exception>
-		public FluentHttpRequestBuilder WithBody<T>(T body, MediaTypeHeaderValue contentType = null)
+		public FluentHttpRequestBuilder WithBody<T>(T body, MediaTypeHeaderValue? contentType = null)
 		{
 			var formatter = _fluentHttpClient.GetFormatter(contentType);
-			string mediaType = contentType?.MediaType;
+			var mediaType = contentType?.MediaType;
 			return WithBody(body, formatter, mediaType);
 		}
 
@@ -204,10 +204,10 @@ namespace FluentlyHttpClient
 		/// <param name="contentType">Request body format (or <c>null</c> to use the first supported Content-Type in the <see cref="IFluentHttpClient.Formatters"/>).</param>
 		/// <exception cref="InvalidOperationException">No MediaTypeFormatters are available on the API client for this content type.</exception>
 		/// <returns>Returns the request builder for chaining.</returns>
-		public FluentHttpRequestBuilder WithBody(object body, MediaTypeHeaderValue contentType = null)
+		public FluentHttpRequestBuilder WithBody(object body, MediaTypeHeaderValue? contentType = null)
 		{
 			var formatter = _fluentHttpClient.GetFormatter(contentType);
-			string mediaType = contentType?.MediaType;
+			var mediaType = contentType?.MediaType;
 			return WithBody(body, formatter, mediaType);
 		}
 
@@ -216,17 +216,15 @@ namespace FluentlyHttpClient
 		/// <param name="formatter">Media type formatter with which to format the request body format.</param>
 		/// <param name="mediaType">HTTP media type (or <c>null</c> for the <paramref name="formatter"/>'s default).</param>
 		/// <returns>Returns the request builder for chaining.</returns>
-		public FluentHttpRequestBuilder WithBody(object body, MediaTypeFormatter formatter, string mediaType = null)
-		{
-			return WithBodyContent(new ObjectContent(body.GetType(), body, formatter, mediaType));
-		}
+		public FluentHttpRequestBuilder WithBody(object body, MediaTypeFormatter formatter, string? mediaType = null)
+			=> WithBodyContent(new ObjectContent(body.GetType(), body, formatter, mediaType));
 
 		/// <summary>Set the body content of the HTTP request.</summary>
 		/// <param name="body">Value to serialize into the HTTP body content.</param>
 		/// <param name="formatter">Media type formatter with which to format the request body format.</param>
 		/// <param name="mediaType">HTTP media type (or <c>null</c> for the <paramref name="formatter"/>'s default).</param>
 		/// <returns>Returns the request builder for chaining.</returns>
-		public FluentHttpRequestBuilder WithBody<T>(T body, MediaTypeFormatter formatter, string mediaType = null)
+		public FluentHttpRequestBuilder WithBody<T>(T body, MediaTypeFormatter formatter, string? mediaType = null)
 			=> WithBodyContent(new ObjectContent<T>(body, formatter, mediaType));
 
 		/// <summary>Set the body content of the HTTP request.</summary>
@@ -307,7 +305,7 @@ namespace FluentlyHttpClient
 		{
 			ValidateRequest();
 
-			Uri = Uri ?? string.Empty;
+			Uri ??= string.Empty;
 			var uri = BuildUri(Uri, _queryParams, _queryStringOptions);
 			var httpRequest = new HttpRequestMessage(HttpMethod, uri);
 			if (_httpBody != null)
@@ -345,7 +343,7 @@ namespace FluentlyHttpClient
 				throw new RequestValidationException("A request with Method 'GET' cannot have a body assigned.");
 		}
 
-		private static string BuildQueryString(object queryParams, QueryStringOptions options)
+		private static string BuildQueryString(object? queryParams, QueryStringOptions? options)
 		{
 			if (queryParams == null)
 				return string.Empty;
@@ -361,7 +359,7 @@ namespace FluentlyHttpClient
 			return queryCollection.ToQueryString(options);
 		}
 
-		private static string BuildUri(string uri, object queryParams, QueryStringOptions options)
+		private static string BuildUri(string uri, object? queryParams, QueryStringOptions? options)
 		{
 			var queryString = BuildQueryString(queryParams, options);
 			if (string.IsNullOrEmpty(queryString))

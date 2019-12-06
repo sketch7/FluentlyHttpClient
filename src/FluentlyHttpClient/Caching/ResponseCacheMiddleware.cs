@@ -16,7 +16,7 @@ namespace FluentlyHttpClient.Middleware
 		/// Ignore the request from being cached.
 		/// </summary>
 		public bool ShouldIgnore { get; set; }
-		public Predicate<FluentHttpRequest> Matcher { get; set; }
+		public Predicate<FluentHttpRequest>? Matcher { get; set; }
 
 		/// <summary>
 		/// Don't attempt to read from the cache but write only. This is useful to start and populating data.
@@ -61,7 +61,7 @@ namespace FluentlyHttpClient.Middleware
 			if (options.ShouldIgnore || options.Matcher != null && !options.Matcher(request))
 				return await _next(context);
 			var hash = request.GetHash();
-			FluentHttpResponse response = null;
+			FluentHttpResponse? response = null;
 
 			if (!options.IsWriteOnly)
 				response = await _service.Get(hash);
@@ -111,7 +111,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="requestBuilder">Request builder instance.</param>
 		/// <param name="configure">Action to configure options.</param>
-		public static FluentHttpRequestBuilder WithResponseCachingOptions(this FluentHttpRequestBuilder requestBuilder, Action<ResponseCacheHttpMiddlewareOptions> configure)
+		public static FluentHttpRequestBuilder WithResponseCachingOptions(this FluentHttpRequestBuilder requestBuilder, Action<ResponseCacheHttpMiddlewareOptions>? configure)
 		{
 			var options = new ResponseCacheHttpMiddlewareOptions();
 			configure?.Invoke(options);
@@ -124,7 +124,7 @@ namespace FluentlyHttpClient
 		/// <param name="request">Request to get options from.</param>
 		/// <param name="defaultOptions"></param>
 		/// <returns>Returns merged logging options.</returns>
-		public static ResponseCacheHttpMiddlewareOptions GetResponseCachingOptions(this FluentHttpRequest request, ResponseCacheHttpMiddlewareOptions defaultOptions = null)
+		public static ResponseCacheHttpMiddlewareOptions? GetResponseCachingOptions(this FluentHttpRequest request, ResponseCacheHttpMiddlewareOptions? defaultOptions = null)
 		{
 			if (!request.Items.TryGetValue(OptionsKey, out var result)) return defaultOptions;
 			var options = (ResponseCacheHttpMiddlewareOptions)result;
@@ -141,7 +141,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="builder">Builder instance</param>
 		/// <param name="options"></param>
-		public static FluentHttpClientBuilder UseResponseCaching(this FluentHttpClientBuilder builder, ResponseCacheHttpMiddlewareOptions options = null)
+		public static FluentHttpClientBuilder UseResponseCaching(this FluentHttpClientBuilder builder, ResponseCacheHttpMiddlewareOptions? options = null)
 			=> builder.UseMiddleware<ResponseCacheHttpMiddleware>(options ?? new ResponseCacheHttpMiddlewareOptions());
 
 		/// <summary>
@@ -149,7 +149,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="builder">Builder instance</param>
 		/// <param name="configure">Action to configure caching options.</param>
-		public static FluentHttpClientBuilder UseResponseCaching(this FluentHttpClientBuilder builder, Action<ResponseCacheHttpMiddlewareOptions> configure)
+		public static FluentHttpClientBuilder UseResponseCaching(this FluentHttpClientBuilder builder, Action<ResponseCacheHttpMiddlewareOptions>? configure)
 		{
 			var options = new ResponseCacheHttpMiddlewareOptions();
 			configure?.Invoke(options);

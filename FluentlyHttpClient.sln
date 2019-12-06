@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{1D373993-0345-466C-B421-6B8336E3D40E}"
 	ProjectSection(SolutionItems) = preProject
@@ -37,6 +37,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentlyHttpClient.Sample.Api", "samples\FluentlyHttpClient.Sample.Api\FluentlyHttpClient.Sample.Api.csproj", "{679DC1D2-E1A9-47D6-B4CF-8B35820D99E3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{EF87A44F-A75B-4C2F-86CD-402EBB8D0F3F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AC26155F-CB0B-4794-857A-5AE9BFEE04C3}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

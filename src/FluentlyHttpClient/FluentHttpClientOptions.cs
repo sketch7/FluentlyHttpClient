@@ -15,7 +15,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets or sets the base uri address for each request.
 		/// </summary>
-		public string BaseUrl { get; set; }
+		public string? BaseUrl { get; set; }
 
 		/// <summary>
 		/// Gets or sets the timespan to wait before the request times out.
@@ -25,12 +25,12 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets or sets the identifier (key) for the HTTP client.
 		/// </summary>
-		public string Identifier { get; set; }
+		public string? Identifier { get; set; }
 
 		/// <summary>
 		/// Gets or sets the headers which should be sent with each request.
 		/// </summary>
-		public FluentHttpHeaders Headers { get; set; }
+		public FluentHttpHeaders? Headers { get; set; }
 
 		/// <summary>
 		/// Gets or sets the middleware builder.
@@ -40,22 +40,22 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Gets or sets handler to customize request on creation. In order to specify defaults as desired, or so.
 		/// </summary>
-		public Action<FluentHttpRequestBuilder> RequestBuilderDefaults { get; set; }
+		public Action<FluentHttpRequestBuilder>? RequestBuilderDefaults { get; set; }
 
 		/// <summary>
 		/// Gets or sets HTTP handler stack to use for sending requests.
 		/// </summary>
-		public HttpMessageHandler HttpMessageHandler { get; set; }
+		public HttpMessageHandler? HttpMessageHandler { get; set; }
 
 		/// <summary>
 		/// Gets or sets formatters to be used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
 		/// </summary>
-		public MediaTypeFormatterCollection Formatters { get; set; }
+		public MediaTypeFormatterCollection? Formatters { get; set; }
 
 		/// <summary>
 		/// Gets or sets the default formatter to be used for content negotiation body format. e.g. JSON, XML, etc...
 		/// </summary>
-		public MediaTypeFormatter DefaultFormatter { get; set; }
+		public MediaTypeFormatter? DefaultFormatter { get; set; }
 	}
 
 	/// <summary>
@@ -79,7 +79,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Set default formatter to be used when serializing body content and the preferred "Accept".
 		/// </summary>
-		public MediaTypeFormatter Default { get; set; }
+		public MediaTypeFormatter? Default { get; set; }
 
 		/// <summary>
 		/// Resort formatters from the provided options.

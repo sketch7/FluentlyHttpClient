@@ -22,14 +22,13 @@ namespace Microsoft.Extensions.DependencyInjection
 				MaxPoolSize = 600,
 				MinPoolSize = 5
 			};
-
 			return services.AddFluentlyHttpClientEntity(conn, builder => builder.EnableRetryOnFailure());
 		}
 
 		public static IServiceCollection AddFluentlyHttpClientEntity(
 			this IServiceCollection services,
 			SqlConnectionStringBuilder connectionStringBuilder,
-			Action<SqlServerDbContextOptionsBuilder> builder = null
+			Action<SqlServerDbContextOptionsBuilder>? builder = null
 		)
 		{
 			if (connectionStringBuilder == null)

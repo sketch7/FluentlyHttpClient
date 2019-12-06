@@ -20,14 +20,14 @@ namespace Test
 	{
 		private string DebuggerDisplay => $"Role: '{Role}', Class: '{Class}', Secret: '{Secret}'";
 
-		public string Role { get; set; }
+		public string? Role { get; set; }
 
 		[IgnoreDataMember]
-		public string Secret { get; set; }
+		public string? Secret { get; set; }
 
 		protected string ProtectedStuff { get; set; } = "nobody";
 
-		public string Class { get; set; }
+		public string? Class { get; set; }
 	}
 
 	public class RequestBuilder_Build

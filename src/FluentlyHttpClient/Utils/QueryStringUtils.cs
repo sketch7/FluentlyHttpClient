@@ -20,9 +20,9 @@ namespace FluentlyHttpClient
 		/// <param name="dict">Dictionary</param>
 		/// <param name="options">Formatting options.</param>
 		/// <returns>Returns querystring.</returns>
-		public static string ToQueryString<TKey, TValue>(this IDictionary<TKey, TValue> dict, QueryStringOptions options = null)
+		public static string ToQueryString<TKey, TValue>(this IDictionary<TKey, TValue> dict, QueryStringOptions? options = null)
 		{
-			options = options ?? DefaultQueryStringOptions;
+			options ??= DefaultQueryStringOptions;
 
 			if (dict == null || dict.Count == 0)
 				return string.Empty;

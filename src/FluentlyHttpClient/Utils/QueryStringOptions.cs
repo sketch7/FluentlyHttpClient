@@ -47,7 +47,7 @@ namespace FluentlyHttpClient
 		/// Gets or sets the function to format a collection item. This will allow you to manipulate the value.
 		/// </summary>
 		[Obsolete("Use WithValueFormatter instead.")] // deprecated: remove
-		public Func<object, string> CollectionItemFormatter { get; set; }
+		public Func<object, string>? CollectionItemFormatter { get; set; }
 
 		/// <summary>
 		/// Gets or sets the function to format the key e.g. lowercase.
@@ -55,7 +55,7 @@ namespace FluentlyHttpClient
 		[Obsolete("Use WithKeyFormatter instead.")] // deprecated: make internal
 		public Func<string, string> KeyFormatter { get; set; } = DefaultKeyFormatter;
 
-		internal Func<object, string> ValueFormatter { get; set; }
+		internal Func<object, string>? ValueFormatter { get; set; }
 
 		/// <summary>
 		/// Gets or sets the function to format a collection item. This will allow you to manipulate the value.

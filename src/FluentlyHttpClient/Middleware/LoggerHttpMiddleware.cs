@@ -113,7 +113,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="requestBuilder">Request builder instance.</param>
 		/// <param name="configure">Action to configure logging options.</param>
-		public static FluentHttpRequestBuilder WithLoggingOptions(this FluentHttpRequestBuilder requestBuilder, Action<LoggerHttpMiddlewareOptions> configure)
+		public static FluentHttpRequestBuilder WithLoggingOptions(this FluentHttpRequestBuilder requestBuilder, Action<LoggerHttpMiddlewareOptions>? configure)
 		{
 			var options = new LoggerHttpMiddlewareOptions();
 			configure?.Invoke(options);
@@ -126,14 +126,14 @@ namespace FluentlyHttpClient
 		/// <param name="request">Request to get options from.</param>
 		/// <param name="defaultOptions"></param>
 		/// <returns>Returns merged logging options.</returns>
-		public static LoggerHttpMiddlewareOptions GetLoggingOptions(this FluentHttpRequest request, LoggerHttpMiddlewareOptions defaultOptions = null)
+		public static LoggerHttpMiddlewareOptions? GetLoggingOptions(this FluentHttpRequest request, LoggerHttpMiddlewareOptions? defaultOptions = null)
 		{
 			if (!request.Items.TryGetValue(LoggingOptionsKey, out var result)) return defaultOptions;
 			var options = (LoggerHttpMiddlewareOptions)result;
 			if (defaultOptions == null)
 				return options;
-			options.ShouldLogDetailedRequest = options.ShouldLogDetailedRequest ?? defaultOptions.ShouldLogDetailedRequest;
-			options.ShouldLogDetailedResponse = options.ShouldLogDetailedResponse ?? defaultOptions.ShouldLogDetailedResponse;
+			options.ShouldLogDetailedRequest ??= defaultOptions.ShouldLogDetailedRequest;
+			options.ShouldLogDetailedResponse ??= defaultOptions.ShouldLogDetailedResponse;
 			return options;
 		}
 		#endregion
@@ -143,7 +143,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="builder">Builder instance</param>
 		/// <param name="options"></param>
-		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, LoggerHttpMiddlewareOptions options = null)
+		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, LoggerHttpMiddlewareOptions? options = null)
 			=> builder.UseMiddleware<LoggerHttpMiddleware>(options ?? new LoggerHttpMiddlewareOptions());
 
 		/// <summary>
@@ -151,7 +151,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="builder">Builder instance</param>
 		/// <param name="configure">Action to configure logging options.</param>
-		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, Action<LoggerHttpMiddlewareOptions> configure)
+		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, Action<LoggerHttpMiddlewareOptions>? configure)
 		{
 			var options = new LoggerHttpMiddlewareOptions();
 			configure?.Invoke(options);
