@@ -1,4 +1,5 @@
-﻿using FluentlyHttpClient.Middleware;
+﻿using FluentlyHttpClient.Internal;
+using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -21,6 +22,11 @@ namespace FluentlyHttpClient.Middleware
 		/// as it will reduce performance.
 		/// </summary>
 		public bool? ShouldLogDetailedResponse { get; set; }
+
+		/// <summary>
+		/// Gets or sets whether the logs are consolidated in one for the request and response.
+		/// </summary>
+		public bool? IsCondensed { get; set; } = true;
 	}
 
 	/// <summary>
@@ -55,6 +61,22 @@ namespace FluentlyHttpClient.Middleware
 				return await _next(context);
 
 			var options = request.GetLoggingOptions(_options);
+			var watch = ValueStopwatch.StartNew();
+			FluentHttpResponse response;
+			if (options.IsCondensed.GetValueOrDefault(false)
+				&& !options.ShouldLogDetailedRequest.GetValueOrDefault(false)
+				&& !options.ShouldLogDetailedResponse.GetValueOrDefault(false))
+			{
+				response = await _next(context);
+				_logger.LogInformation("HTTP request [{method}] {requestUrl} responded {statusCode:D} in {elapsed:n0}ms",
+					request.Method,
+					request.Uri,
+					response.StatusCode,
+					watch.GetElapsedTime().TotalMilliseconds
+				);
+				return response;
+			}
+
 			if (request.Message.Content == null || !(options.ShouldLogDetailedRequest ?? false))
 				_logger.LogInformation("Pre-request... {request}", request);
 			else
@@ -68,19 +90,20 @@ namespace FluentlyHttpClient.Middleware
 				);
 			}
 
-			var response = await _next(context);
-
+			response = await _next(context);
+			var stopwatchElapsed = watch.GetElapsedTime();
 			if (response.Content == null || !(options.ShouldLogDetailedResponse ?? false))
 			{
-				_logger.LogInformation("Post-request... {response}", response);
+				_logger.LogInformation("Post-request... {response} in {elapsed:n0}ms", response, stopwatchElapsed.TotalMilliseconds);
 				return response;
 			}
 
 			var responseContent = await response.Content.ReadAsStringAsync();
-			_logger.LogInformation("Post-request... {response}\nHeaders: {headers}\nContent: {responseContent}",
+			_logger.LogInformation("Post-request... {response}\nHeaders: {headers}\nContent: {responseContent} in {elapsed:n0}ms",
 				response,
 				response.Headers.ToFormattedString(),
-				responseContent
+				responseContent,
+				stopwatchElapsed.TotalMilliseconds
 			);
 			return response;
 		}
@@ -126,7 +149,7 @@ namespace FluentlyHttpClient
 		/// <param name="request">Request to get options from.</param>
 		/// <param name="defaultOptions"></param>
 		/// <returns>Returns merged logging options.</returns>
-		public static LoggerHttpMiddlewareOptions? GetLoggingOptions(this FluentHttpRequest request, LoggerHttpMiddlewareOptions? defaultOptions = null)
+		public static LoggerHttpMiddlewareOptions GetLoggingOptions(this FluentHttpRequest request, LoggerHttpMiddlewareOptions defaultOptions = null)
 		{
 			if (!request.Items.TryGetValue(LoggingOptionsKey, out var result)) return defaultOptions;
 			var options = (LoggerHttpMiddlewareOptions)result;
