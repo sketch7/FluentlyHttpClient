@@ -6,6 +6,7 @@
 
 ### Features
 
+- **logger middleware:** add condense mode which reduces clutter logs, add timings in responses
 - **csharp:** initial nullability support
 
 ## [3.7.2](https://github.com/sketch7/FluentlyHttpClient/compare/3.7.1...3.7.2) (2019-10-08)
