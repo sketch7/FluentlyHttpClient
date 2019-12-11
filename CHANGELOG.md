@@ -7,7 +7,13 @@
 ### Features
 
 - **logger middleware:** add condense mode which reduces clutter logs, add timings in responses. This might make a bit Timer logger a bit redundant, however log level thershold is not implemented. Unless its really needed removing `TimerMiddleware` from the pipeline it is suggested.
+- **graphql:** add `OperationName`
+- **graphql:** rename `GqlQuery` to `GqlRequest`
 - **csharp:** initial nullability support
+
+### Deprecated code
+
+- **graphql:** rename `GqlQuery`
 
 ## [3.7.2](https://github.com/sketch7/FluentlyHttpClient/compare/3.7.1...3.7.2) (2019-10-08)
 
