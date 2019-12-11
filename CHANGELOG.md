@@ -1,6 +1,23 @@
 # Fluently Http Changelog
 
-[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.6.0...3.7.0) (2019-X-X)
+[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.0...3.9.0) (2019-X-X)
+
+## [3.8.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.7.2...3.8.0) (2019-12-11)
+
+### Features
+
+- **logger middleware:** add condense mode which reduces clutter logs, add timings in responses. This might make a bit Timer logger a bit redundant, however log level thershold is not implemented. Unless its really needed removing `TimerMiddleware` from the pipeline it is suggested.
+- **graphql:** add `OperationName`
+- **graphql:** rename `GqlQuery` to `GqlRequest`
+- **csharp:** initial nullability support
+
+### Bug Fixes
+
+- **logger middleware:** when `ShouldLogDetailedRequest` is specified and had content null was not logging headers
+
+### Deprecated code
+
+- **graphql:** rename `GqlQuery`
 
 ## [3.8.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.7.2...3.8.0) (2019-12-x)
 
