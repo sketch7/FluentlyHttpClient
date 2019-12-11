@@ -15,7 +15,7 @@ namespace FluentlyHttpClient
 		/// <summary>
 		/// Predicate function to exclude headers from being hashed in <see cref="FluentHttpHeaders.ToHashString"/>.
 		/// </summary>
-		public Predicate<KeyValuePair<string, string[]>> HashingExclude { get; private set; }
+		public Predicate<KeyValuePair<string, string[]>>? HashingExclude { get; private set; }
 
 		/// <summary>
 		/// Add headers exclude filtering (it will be combined).
@@ -234,7 +234,7 @@ namespace FluentlyHttpClient
 		/// Get header as string by key or return null.
 		/// </summary>
 		/// <param name="header">Header to try get.</param>
-		public string GetValue(string header)
+		public string? GetValue(string header)
 			=> _data.TryGetValue(header, out var value) ? value[0] : null;
 
 		/// <summary>

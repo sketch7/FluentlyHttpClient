@@ -118,14 +118,17 @@ namespace Test
 		public async void GraphQL_ShouldReturnContent()
 		{
 			const string query = "{hero {name,title}}";
+			const string operationName = "heroGet";
 
 			var mockHttp = new MockHttpMessageHandler();
 			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/graphql")
 				.With(request =>
 				{
-					var contentTask = request.Content.ReadAsAsync<GqlQuery>();
+					var contentTask = request.Content.ReadAsAsync<GqlRequest>();
 					contentTask.Wait();
-					return contentTask.Result.Query == query;
+					var result = contentTask.Result;
+					return result.Query == query
+						   && result.OperationName == operationName;
 				})
 				.Respond("application/json", "{ 'data': {'name': 'Azmodan', 'title': 'Lord of Sin' }}");
 
@@ -135,7 +138,7 @@ namespace Test
 				.WithMockMessageHandler(mockHttp)
 				.Build();
 
-			var response = await httpClient.CreateGqlRequest(query)
+			var response = await httpClient.CreateGqlRequest(query, operationName)
 				.ReturnAsGqlResponse<Hero>();
 
 			Assert.True(response.IsSuccessStatusCode);

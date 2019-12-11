@@ -5,7 +5,7 @@ namespace FluentlyHttpClient.Caching
 {
 	public interface IResponseCacheService
 	{
-		Task<FluentHttpResponse> Get(string hash);
+		Task<FluentHttpResponse?> Get(string hash);
 		Task Set(string hash, FluentHttpResponse response);
 	}
 
@@ -18,10 +18,10 @@ namespace FluentlyHttpClient.Caching
 			_cache = cache;
 		}
 
-		public Task<FluentHttpResponse> Get(string hash)
+		public Task<FluentHttpResponse?> Get(string hash)
 		{
 			var result = _cache.Get<FluentHttpResponse>(hash);
-			return result?.Clone() ?? Task.FromResult<FluentHttpResponse>(null);
+			return result?.Clone() ?? Task.FromResult<FluentHttpResponse?>(null);
 		}
 
 		public Task Set(string hash, FluentHttpResponse response)

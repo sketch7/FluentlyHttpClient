@@ -13,7 +13,7 @@ namespace FluentlyHttpClient.Test
 		/// <summary>
 		/// Create a new container and return IFluentHttpClientFactory.
 		/// </summary>
-		public static IFluentHttpClientFactory GetNewClientFactory(Action<IServiceCollection> configureContainer = null)
+		public static IFluentHttpClientFactory GetNewClientFactory(Action<IServiceCollection>? configureContainer = null)
 		{
 			var container = CreateContainer();
 			configureContainer?.Invoke(container);
@@ -24,7 +24,7 @@ namespace FluentlyHttpClient.Test
 		/// <summary>
 		/// Create a new container, configure http client and create new request.
 		/// </summary>
-		public static FluentHttpRequestBuilder GetNewRequestBuilder(string uri = "/api", Action<FluentHttpClientBuilder> configureClient = null)
+		public static FluentHttpRequestBuilder GetNewRequestBuilder(string uri = "/api", Action<FluentHttpClientBuilder>? configureClient = null)
 		{
 			var fluentHttpClientFactory = GetNewClientFactory();
 			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")

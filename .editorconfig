@@ -74,7 +74,7 @@ dotnet_code_quality_unused_parameters = all:suggestion
 
 # var preferences
 csharp_style_var_elsewhere = true:suggestion
-csharp_style_var_for_built_in_types = false:suggestion
+csharp_style_var_for_built_in_types = true:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion
 
 # Expression-bodied members
@@ -173,6 +173,14 @@ dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.types_should_be_pascal_case.symbols = types
 dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
 
+dotnet_naming_rule.static_fieldprop_pascal_case.severity = suggestion
+dotnet_naming_rule.static_fieldprop_pascal_case.symbols = static_fieldprop
+dotnet_naming_rule.static_fieldprop_pascal_case.style = pascal_case
+
+dotnet_naming_rule.const_fieldprop.severity = suggestion
+dotnet_naming_rule.const_fieldprop.symbols = const_fieldprop
+dotnet_naming_rule.const_fieldprop.style = pascal_case
+
 dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
 dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
@@ -186,6 +194,14 @@ dotnet_naming_rule.private_or_internal_static_field_should_be_starts_with__.styl
 dotnet_naming_symbols.interface.applicable_kinds = interface
 dotnet_naming_symbols.interface.applicable_accessibilities = public, internal, private, protected, protected_internal
 dotnet_naming_symbols.interface.required_modifiers = 
+
+dotnet_naming_symbols.static_fieldprop.applicable_kinds = field, property
+dotnet_naming_symbols.static_fieldprop.applicable_accessibilities = private, public, internal
+dotnet_naming_symbols.static_fieldprop.required_modifiers = static, readonly
+
+dotnet_naming_symbols.const_fieldprop.applicable_kinds = field, property
+dotnet_naming_symbols.const_fieldprop.applicable_accessibilities = private, public, internal
+dotnet_naming_symbols.const_fieldprop.required_modifiers = const
 
 dotnet_naming_symbols.private_or_internal_static_field.applicable_kinds = field
 dotnet_naming_symbols.private_or_internal_static_field.applicable_accessibilities = internal, private

@@ -52,9 +52,9 @@ namespace FluentlyHttpClient.Middleware
 		/// <summary>
 		/// Gets the HTTP request.
 		/// </summary>
-		public FluentHttpRequest Request { get; set; }
+		public FluentHttpRequest Request { get; set; } = null!;
 
-		internal Func<Task<FluentHttpResponse>> Func { get; set; }
+		internal Func<Task<FluentHttpResponse>> Func { get; set; } = null!;
 	}
 
 	/// <summary>

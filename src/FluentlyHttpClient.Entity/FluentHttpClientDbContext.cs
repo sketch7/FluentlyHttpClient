@@ -10,7 +10,7 @@ namespace FluentlyHttpClient.Entity
 			: base(options)
 		{ }
 
-		public DbSet<HttpResponseEntity> HttpResponses { get; set; }
+		public DbSet<HttpResponseEntity> HttpResponses { get; set; } = null!;
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -19,14 +19,8 @@ namespace FluentlyHttpClient.Entity
 			modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 		}
 
-		public Task Initialize()
-		{
-			return Database.MigrateAsync();
-		}
+		public Task Initialize() => Database.MigrateAsync();
 
-		public Task Commit()
-		{
-			return SaveChangesAsync();
-		}
+		public Task Commit() => SaveChangesAsync();
 	}
 }

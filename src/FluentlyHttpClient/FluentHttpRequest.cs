@@ -66,12 +66,12 @@ namespace FluentlyHttpClient
 		/// Formatters to be used for content negotiation for "Accept" and also sending formats. e.g. (JSON, XML)
 		/// </summary>
 		[Obsolete("This was added to be passed down to the middleware. Instead in middleware use FluentHttpMiddlewareClientContext.Formatters.")]
-		public MediaTypeFormatterCollection Formatters { get; set; } // deprecated: remove
+		public MediaTypeFormatterCollection? Formatters { get; set; } // deprecated: remove
 
 		/// <summary>
 		/// Initializes a new instance.
 		/// </summary>
-		public FluentHttpRequest(FluentHttpRequestBuilder builder, HttpRequestMessage message, IDictionary<object, object> items = null) // todo: is items really needed?
+		public FluentHttpRequest(FluentHttpRequestBuilder builder, HttpRequestMessage message, IDictionary<object, object>? items = null) // todo: is items really needed?
 		{
 			Message = message;
 			Builder = builder;

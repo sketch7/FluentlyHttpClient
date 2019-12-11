@@ -1,4 +1,5 @@
-﻿using FluentlyHttpClient.Middleware;
+﻿using FluentlyHttpClient.Internal;
+using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -21,6 +22,11 @@ namespace FluentlyHttpClient.Middleware
 		/// as it will reduce performance.
 		/// </summary>
 		public bool? ShouldLogDetailedResponse { get; set; }
+
+		/// <summary>
+		/// Gets or sets whether the logs are consolidated in one for the request and response.
+		/// </summary>
+		public bool? IsCondensed { get; set; } = true;
 	}
 
 	/// <summary>
@@ -55,11 +61,29 @@ namespace FluentlyHttpClient.Middleware
 				return await _next(context);
 
 			var options = request.GetLoggingOptions(_options);
-			if (request.Message.Content == null || !(options.ShouldLogDetailedRequest ?? false))
+			var watch = ValueStopwatch.StartNew();
+			FluentHttpResponse response;
+			if (options.IsCondensed.GetValueOrDefault(false)
+				&& !options.ShouldLogDetailedRequest.GetValueOrDefault(false)
+				&& !options.ShouldLogDetailedResponse.GetValueOrDefault(false))
+			{
+				response = await _next(context);
+				_logger.LogInformation("HTTP request [{method}] {requestUrl} responded {statusCode:D} in {elapsed:n0}ms",
+					request.Method,
+					request.Uri,
+					response.StatusCode,
+					watch.GetElapsedTime().TotalMilliseconds
+				);
+				return response;
+			}
+
+			if (!(options.ShouldLogDetailedRequest ?? false))
 				_logger.LogInformation("Pre-request... {request}", request);
 			else
 			{
-				var requestContent = await request.Message.Content.ReadAsStringAsync();
+				string? requestContent = null;
+				if (request.Message.Content != null)
+					requestContent = await request.Message.Content.ReadAsStringAsync();
 				_logger.LogInformation(
 					"Pre-request... {request}\nHeaders: {headers}\nContent: {requestContent}",
 					request,
@@ -68,19 +92,20 @@ namespace FluentlyHttpClient.Middleware
 				);
 			}
 
-			var response = await _next(context);
-
+			response = await _next(context);
+			var stopwatchElapsed = watch.GetElapsedTime();
 			if (response.Content == null || !(options.ShouldLogDetailedResponse ?? false))
 			{
-				_logger.LogInformation("Post-request... {response}", response);
+				_logger.LogInformation("Post-request... {response} in {elapsed:n0}ms", response, stopwatchElapsed.TotalMilliseconds);
 				return response;
 			}
 
 			var responseContent = await response.Content.ReadAsStringAsync();
-			_logger.LogInformation("Post-request... {response}\nHeaders: {headers}\nContent: {responseContent}",
+			_logger.LogInformation("Post-request... {response}\nHeaders: {headers}\nContent: {responseContent} in {elapsed:n0}ms",
 				response,
 				response.Headers.ToFormattedString(),
-				responseContent
+				responseContent,
+				stopwatchElapsed.TotalMilliseconds
 			);
 			return response;
 		}
@@ -113,7 +138,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="requestBuilder">Request builder instance.</param>
 		/// <param name="configure">Action to configure logging options.</param>
-		public static FluentHttpRequestBuilder WithLoggingOptions(this FluentHttpRequestBuilder requestBuilder, Action<LoggerHttpMiddlewareOptions> configure)
+		public static FluentHttpRequestBuilder WithLoggingOptions(this FluentHttpRequestBuilder requestBuilder, Action<LoggerHttpMiddlewareOptions>? configure)
 		{
 			var options = new LoggerHttpMiddlewareOptions();
 			configure?.Invoke(options);
@@ -132,8 +157,8 @@ namespace FluentlyHttpClient
 			var options = (LoggerHttpMiddlewareOptions)result;
 			if (defaultOptions == null)
 				return options;
-			options.ShouldLogDetailedRequest = options.ShouldLogDetailedRequest ?? defaultOptions.ShouldLogDetailedRequest;
-			options.ShouldLogDetailedResponse = options.ShouldLogDetailedResponse ?? defaultOptions.ShouldLogDetailedResponse;
+			options.ShouldLogDetailedRequest ??= defaultOptions.ShouldLogDetailedRequest;
+			options.ShouldLogDetailedResponse ??= defaultOptions.ShouldLogDetailedResponse;
 			return options;
 		}
 		#endregion
@@ -143,7 +168,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="builder">Builder instance</param>
 		/// <param name="options"></param>
-		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, LoggerHttpMiddlewareOptions options = null)
+		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, LoggerHttpMiddlewareOptions? options = null)
 			=> builder.UseMiddleware<LoggerHttpMiddleware>(options ?? new LoggerHttpMiddlewareOptions());
 
 		/// <summary>
@@ -151,7 +176,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="builder">Builder instance</param>
 		/// <param name="configure">Action to configure logging options.</param>
-		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, Action<LoggerHttpMiddlewareOptions> configure)
+		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, Action<LoggerHttpMiddlewareOptions>? configure)
 		{
 			var options = new LoggerHttpMiddlewareOptions();
 			configure?.Invoke(options);

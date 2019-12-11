@@ -1,7 +1,7 @@
-﻿using FluentlyHttpClient.Middleware;
+﻿using FluentlyHttpClient.Internal;
+using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace FluentlyHttpClient.Middleware
@@ -22,7 +22,7 @@ namespace FluentlyHttpClient.Middleware
 	/// </summary>
 	public class TimerHttpMiddleware : IFluentHttpMiddleware
 	{
-		private const string TimeTakenMessage = "Executed request {request} in {timeTakenMillis:n0}ms";
+		private const string TimeTakenMessage = "Executed request {request} in {elapsed:n0}ms";
 		private readonly FluentHttpMiddlewareDelegate _next;
 		private readonly TimerHttpMiddlewareOptions _options;
 		private readonly ILogger _logger;
@@ -49,24 +49,25 @@ namespace FluentlyHttpClient.Middleware
 		public async Task<FluentHttpResponse> Invoke(FluentHttpMiddlewareContext context)
 		{
 			var request = context.Request;
-			var watch = Stopwatch.StartNew();
+			TimeSpan stopwatchElapsed;
 
 			FluentHttpResponse response;
 			try
 			{
+				var watch = ValueStopwatch.StartNew();
 				response = await _next(context);
+				stopwatchElapsed = watch.GetElapsedTime();
 			}
 			finally
 			{
 				var threshold = request.GetTimerWarnThreshold() ?? _options.WarnThreshold;
-
-				if (_logger.IsEnabled(LogLevel.Warning) && watch.Elapsed > threshold)
-					_logger.LogWarning(TimeTakenMessage, request, watch.ElapsedMilliseconds);
+				if (_logger.IsEnabled(LogLevel.Warning) && stopwatchElapsed > threshold)
+					_logger.LogWarning(TimeTakenMessage, request, stopwatchElapsed.TotalMilliseconds);
 				else if (_logger.IsEnabled(LogLevel.Debug))
-					_logger.LogDebug(TimeTakenMessage, request, watch.ElapsedMilliseconds);
+					_logger.LogDebug(TimeTakenMessage, request, stopwatchElapsed.TotalMilliseconds);
 			}
 
-			return response.SetTimeTaken(watch.Elapsed);
+			return response.SetTimeTaken(stopwatchElapsed);
 		}
 	}
 }
@@ -132,7 +133,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="builder">Builder instance</param>
 		/// <param name="options">Options to specify for the timer options.</param>
-		public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, TimerHttpMiddlewareOptions options = null)
+		public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, TimerHttpMiddlewareOptions? options = null)
 			=> builder.UseMiddleware<TimerHttpMiddleware>(options ?? new TimerHttpMiddlewareOptions());
 
 		/// <summary>
@@ -140,7 +141,7 @@ namespace FluentlyHttpClient
 		/// </summary>
 		/// <param name="builder">Builder instance</param>
 		/// <param name="configure">Action to configure timer options.</param>
-		public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, Action<TimerHttpMiddlewareOptions> configure)
+		public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, Action<TimerHttpMiddlewareOptions>? configure)
 		{
 			var options = new TimerHttpMiddlewareOptions();
 			configure?.Invoke(options);

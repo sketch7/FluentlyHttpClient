@@ -22,7 +22,7 @@ namespace FluentlyHttpClient.Entity
 			_cache = cache;
 		}
 
-		public async Task<FluentHttpResponse> Get(string hash)
+		public async Task<FluentHttpResponse?> Get(string hash)
 		{
 			var id = await hash.ComputeHash();
 			var result = await _cache.GetOrCreate(id, async _ =>
