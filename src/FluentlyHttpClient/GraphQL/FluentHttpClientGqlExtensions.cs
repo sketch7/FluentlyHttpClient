@@ -13,27 +13,27 @@ namespace FluentlyHttpClient
 		/// Set request as a GraphQL.
 		/// </summary>
 		/// <returns></returns>
-		public static FluentHttpRequestBuilder AsGql(this FluentHttpRequestBuilder builder, string query) => builder.AsPost().WithBody(new { query });
+		public static FluentHttpRequestBuilder AsGql(this FluentHttpRequestBuilder builder, string query, string? operationName = null) => builder.AsPost().WithBody(new { query, operationName });
 
 		/// <summary>
 		/// Set request as GraphQL.
 		/// </summary>
 		///<returns>Returns request builder for chaining.</returns>
-		public static FluentHttpRequestBuilder AsGql(this FluentHttpRequestBuilder builder, GqlQuery query) => builder.AsPost().WithBody(query);
+		public static FluentHttpRequestBuilder AsGql(this FluentHttpRequestBuilder builder, GqlRequest request) => builder.AsPost().WithBody(request);
 
 		/// <summary>
 		/// Creates a request for GraphQL.
 		/// </summary>
 		/// <returns>Returns request builder for chaining.</returns>
-		public static FluentHttpRequestBuilder CreateGqlRequest(this IFluentHttpClient fluentHttpClient, string query)
-			=> fluentHttpClient.CreateRequest().AsGql(query);
+		public static FluentHttpRequestBuilder CreateGqlRequest(this IFluentHttpClient fluentHttpClient, string query, string? operationName = null)
+			=> fluentHttpClient.CreateRequest().AsGql(query, operationName);
 
 		/// <summary>
 		/// Creates a request for GraphQL.
 		/// </summary>
 		/// <returns></returns>
-		public static FluentHttpRequestBuilder CreateGqlRequest(this IFluentHttpClient fluentHttpClient, GqlQuery query)
-			=> fluentHttpClient.CreateRequest().AsGql(query);
+		public static FluentHttpRequestBuilder CreateGqlRequest(this IFluentHttpClient fluentHttpClient, GqlRequest request)
+			=> fluentHttpClient.CreateRequest().AsGql(request);
 
 		/// <summary>
 		/// Sends request and unwrap GraphQL data to be available directly in the `.Data`.
