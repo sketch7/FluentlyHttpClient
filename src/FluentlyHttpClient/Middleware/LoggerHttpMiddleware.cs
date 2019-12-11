@@ -77,11 +77,13 @@ namespace FluentlyHttpClient.Middleware
 				return response;
 			}
 
-			if (request.Message.Content == null || !(options.ShouldLogDetailedRequest ?? false))
+			if (!(options.ShouldLogDetailedRequest ?? false))
 				_logger.LogInformation("Pre-request... {request}", request);
 			else
 			{
-				var requestContent = await request.Message.Content.ReadAsStringAsync();
+				string? requestContent = null;
+				if (request.Message.Content != null)
+					requestContent = await request.Message.Content.ReadAsStringAsync();
 				_logger.LogInformation(
 					"Pre-request... {request}\nHeaders: {headers}\nContent: {requestContent}",
 					request,

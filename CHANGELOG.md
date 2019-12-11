@@ -11,6 +11,11 @@
 - **graphql:** rename `GqlQuery` to `GqlRequest`
 - **csharp:** initial nullability support
 
+### Bug Fixes
+
+- **logger middleware:** when `ShouldLogDetailedRequest` is specified and had content null was not logging headers
+
+
 ### Deprecated code
 
 - **graphql:** rename `GqlQuery`
