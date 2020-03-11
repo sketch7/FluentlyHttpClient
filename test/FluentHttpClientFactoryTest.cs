@@ -11,6 +11,18 @@ using static FluentlyHttpClient.Test.ServiceTestUtil;
 // ReSharper disable once CheckNamespace
 namespace Test
 {
+	public class ClientFactoryTest_Build
+	{
+		[Fact]
+		public void ShouldAllowEmptyBaseUrl()
+		{
+			var httpClient = GetNewClientFactory().CreateBuilder("abc")
+				.Build();
+
+			Assert.Null(httpClient.BaseUrl);
+		}
+	}
+
 	public class ClientFactory_WithRequestBuilderDefaults
 	{
 		[Fact]
@@ -196,15 +208,7 @@ namespace Test
 		[Fact]
 		public void ThrowsErrorWhenIdentifierNotSpecified()
 		{
-			var clientBuilder = GetNewClientFactory().CreateBuilder(null);
-			Assert.Throws<ClientBuilderValidationException>(() => clientBuilder.Register());
-		}
-
-		[Fact]
-		public void ThrowsErrorWhenUriNotSpecified()
-		{
-			var clientBuilder = GetNewClientFactory().CreateBuilder("abc");
-
+			var clientBuilder = GetNewClientFactory().CreateBuilder(null!);
 			Assert.Throws<ClientBuilderValidationException>(() => clientBuilder.Register());
 		}
 
