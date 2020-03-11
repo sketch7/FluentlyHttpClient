@@ -227,10 +227,9 @@ namespace FluentlyHttpClient
 				options.HttpMessageHandler
 			);
 
-			var httpClient = new HttpClient(httpHandler)
-			{
-				BaseAddress = new Uri(options.BaseUrl)
-			};
+			var httpClient = new HttpClient(httpHandler);
+			if (!string.IsNullOrEmpty(options.BaseUrl))
+				httpClient.BaseAddress = new Uri(options.BaseUrl);
 
 			httpClient.DefaultRequestHeaders.Add(HeaderTypes.Accept, Formatters.SelectMany(x => x.SupportedMediaTypes).Select(x => x.MediaType));
 			httpClient.Timeout = options.Timeout;

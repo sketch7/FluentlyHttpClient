@@ -209,7 +209,7 @@ namespace FluentlyHttpClient
 			_formatterOptions.Resort();
 
 			string? baseUrl = null;
-			if (_baseUrl != null)
+			if (!string.IsNullOrEmpty(_baseUrl))
 			{
 				baseUrl = _baseUrl.TrimEnd('/');
 				if (_useBaseUrlTrailingSlash)
@@ -250,9 +250,6 @@ namespace FluentlyHttpClient
 
 			if (string.IsNullOrEmpty(options.Identifier))
 				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.Identifier));
-
-			if (string.IsNullOrEmpty(options.BaseUrl))
-				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.BaseUrl));
 
 			return ActivatorUtilities.CreateInstance<THttpClient>(_serviceProvider, options, _fluentHttpClientFactory);
 		}

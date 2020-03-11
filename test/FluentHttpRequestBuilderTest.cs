@@ -46,6 +46,15 @@ namespace Test
 		}
 
 		[Fact]
+		public void WithBaseUrlEmpty_ShouldBeValid()
+		{
+			var request = GetNewRequestBuilder(configureClient: c => c.WithBaseUrl(string.Empty))
+				.Build();
+
+			Assert.Equal("/api", request.Uri.ToString());
+		}
+
+		[Fact]
 		public async Task WithBaseUrlTrailingSlash_ShouldNotIncludeTrailingSlash()
 		{
 			var response = await GetNewClientFactory().CreateBuilder("abc")
