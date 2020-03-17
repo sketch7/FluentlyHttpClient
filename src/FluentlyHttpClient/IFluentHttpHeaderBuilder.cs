@@ -55,6 +55,41 @@ namespace FluentlyHttpClient
 	public static class FluentHttpHeaderBuilderExtensions
 	{
 		/// <summary>
+		/// Set basic authentication header.
+		/// </summary>
+		/// <param name="builder">builder instance.</param>
+		/// <param name="token">Auth token to add.</param>
+		/// <returns>Returns request builder for chaining.</returns>
+		public static T WithBasicAuthentication<T>(this IFluentHttpHeaderBuilder<T> builder, string token)
+		{
+			if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
+			builder.WithHeader(HeaderTypes.Authorization, $"{AuthSchemeTypes.Basic} {token}");
+			return (T)builder;
+		}
+
+		/// <summary>
+		/// Set basic authentication header with username/password encoded to base64 (username:password).
+		/// </summary>
+		/// <param name="builder">builder instance.</param>
+		/// <param name="username">Username to use for auth.</param>
+		/// <param name="password">Password to use for auth.</param>
+		/// <returns>Returns request builder for chaining.</returns>
+		public static T WithBasicAuthentication<T>(this IFluentHttpHeaderBuilder<T> builder, string username, string password)
+		{
+			if (string.IsNullOrEmpty(username)) throw new ArgumentNullException(nameof(username));
+			if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
+
+			var token = Base64Encode($"{username}:{password}");
+			return builder.WithBasicAuthentication(token);
+
+			static string Base64Encode(string plainText)
+			{
+				var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+				return Convert.ToBase64String(plainTextBytes);
+			}
+		}
+
+		/// <summary>
 		/// Set bearer authentication header.
 		/// </summary>
 		/// <param name="builder">builder instance.</param>

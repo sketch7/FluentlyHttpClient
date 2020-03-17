@@ -7,6 +7,7 @@
 ### Features
 
 - **http client:** allow empty baseUrl and not mandatory anymore
+- **header builder:** add `WithBasicAuthentication` and `WithBasicAuthentication(username, password)` (`username:password` base64 encoded)
 
 ## [3.8.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.7.2...3.8.0) (2019-12-11)
 
