@@ -1,16 +1,31 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace FluentlyHttpClient.Sample.Api.Controllers
 {
+	public class UploadInput
+	{
+		[Required]
+		public string Hero { get; set; }
+
+		[Required]
+		public IFormFile File { get; set; }
+
+	}
+
+
 	[Route("api/[controller]")]
 	[ApiController]
-	public class ValuesController : ControllerBase
+	public class SampleController : ControllerBase
 	{
 		//private readonly FluentHttpClientDbContext _dbContext;
 
-		public ValuesController(
+		public SampleController(
 		//FluentHttpClientDbContext dbContext
 		)
 		{
@@ -33,9 +48,30 @@ namespace FluentlyHttpClient.Sample.Api.Controllers
 		}
 
 		// POST api/values
-		[HttpPost]
-		public void Post([FromBody] string value)
+		[HttpPost("upload")]
+		public IActionResult Upload([FromForm] UploadInput input)
 		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+
+			var file = input.File;
+			if (file.Length > 0)
+			{
+				using (var fileStream = new FileStream(file.FileName, FileMode.Create))
+				{
+					file.CopyTo(fileStream);
+				}
+			}
+
+			return Ok(new
+			{
+				file.FileName,
+				file.ContentType,
+				Size = file.Length.Bytes().Kilobytes
+			});
+
 		}
 
 		// PUT api/values/5
