@@ -1,5 +1,4 @@
-﻿using FluentlyHttpClient.Entity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,18 +8,20 @@ namespace FluentlyHttpClient.Sample.Api.Controllers
 	[ApiController]
 	public class ValuesController : ControllerBase
 	{
-		private readonly FluentHttpClientDbContext _dbContext;
+		//private readonly FluentHttpClientDbContext _dbContext;
 
-		public ValuesController(FluentHttpClientDbContext dbContext)
+		public ValuesController(
+		//FluentHttpClientDbContext dbContext
+		)
 		{
-			_dbContext = dbContext;
+			//_dbContext = dbContext;
 		}
 
 		// GET api/values
 		[HttpGet]
 		public async Task<IEnumerable<string>> Get()
 		{
-			await _dbContext.Initialize();
+			//await _dbContext.Initialize();
 			return new string[] { "value1", "value2" };
 		}
 

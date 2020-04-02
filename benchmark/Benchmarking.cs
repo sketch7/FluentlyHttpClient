@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using FluentlyHttpClient.Middleware;
 using FluentlyHttpClient.Test;
 using MessagePack.Resolvers;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FluentlyHttpClient.Benchmarks
 {
-	[ClrJob(baseline: true), CoreJob, MonoJob]
+	[SimpleJob(RuntimeMoniker.NetCoreApp30)]
 	[RPlotExporter, RankColumn]
 	[MemoryDiagnoser]
 	public class Benchmarking
