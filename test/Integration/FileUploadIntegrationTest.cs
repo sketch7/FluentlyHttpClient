@@ -1,9 +1,6 @@
-﻿using HeyRed.Mime;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -32,17 +29,11 @@ namespace FluentlyHttpClient.Test.Integration
 
 			var filePath = "./animal-mustache.jpg";
 
-			var fileName = Path.GetFileName(filePath);
-			var fileBytes = await File.ReadAllBytesAsync(filePath);
-			var fileMimeType = MimeTypesMap.GetMimeType(fileName);
-
-			var multiForm = new MultipartFormDataContent();
-			var fileArrayContent = new ByteArrayContent(fileBytes);
-			//new StreamContent()
-			fileArrayContent.Headers.ContentType = new MediaTypeHeaderValue(fileMimeType);
-			//fileArrayContent.Headers.ContentType .MediaType = "image/jpeg";
-			multiForm.Add(new StringContent("Jaina"), "hero");
-			multiForm.Add(fileArrayContent, "file", fileName);
+			var multiForm = new MultipartFormDataContent
+			{
+				{ "hero", "Jaina" }
+			};
+			await multiForm.AddFileAsync("file", filePath);
 
 			//var r = await httpClient.RawHttpClient.PostAsync("/api/sample/upload", multiForm);
 
