@@ -1,7 +1,6 @@
 ﻿using FluentlyHttpClient;
 using FluentlyHttpClient.GraphQL;
 using FluentlyHttpClient.Test;
-using MessagePack.Resolvers;
 using RichardSzalay.MockHttp;
 using Sketch7.MessagePack.MediaTypeFormatter;
 using System.Linq;
@@ -14,7 +13,7 @@ namespace Test
 {
 	public class HttpClient
 	{
-		private readonly MessagePackMediaTypeFormatter _messagePackMediaTypeFormatter = new MessagePackMediaTypeFormatter(ContractlessStandardResolver.Instance);
+		private readonly MessagePackMediaTypeFormatter _messagePackMediaTypeFormatter = new MessagePackMediaTypeFormatter();
 
 		[Fact]
 		public async void Get_ShouldReturnContent()
