@@ -1,5 +1,4 @@
-﻿using MessagePack.Resolvers;
-using Sketch7.MessagePack.MediaTypeFormatter;
+﻿using Sketch7.MessagePack.MediaTypeFormatter;
 using System.Net;
 using Xunit;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
@@ -8,7 +7,7 @@ namespace FluentlyHttpClient.Test.Integration
 {
 	public class MessagePackIntegrationTest
 	{
-		private readonly MessagePackMediaTypeFormatter _messagePackMediaTypeFormatter = new MessagePackMediaTypeFormatter(ContractlessStandardResolver.Instance);
+		private readonly MessagePackMediaTypeFormatter _messagePackMediaTypeFormatter = new MessagePackMediaTypeFormatter();
 
 		[Fact]
 		[Trait("Category", "e2e")]

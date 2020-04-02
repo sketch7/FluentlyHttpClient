@@ -2,7 +2,6 @@
 using BenchmarkDotNet.Jobs;
 using FluentlyHttpClient.Middleware;
 using FluentlyHttpClient.Test;
-using MessagePack.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
 using Serilog;
@@ -69,7 +68,7 @@ namespace FluentlyHttpClient.Benchmarks
 				})
 				.UseTimer()
 				.WithMessageHandler(mockHttp)
-				.ConfigureFormatters(x => x.Default = new MessagePackMediaTypeFormatter(ContractlessStandardResolver.Instance))
+				.ConfigureFormatters(x => x.Default = new MessagePackMediaTypeFormatter())
 				;
 			_messagePackHttpClient = fluentHttpClientFactory.Add(clientBuilder);
 		}
