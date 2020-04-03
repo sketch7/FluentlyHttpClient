@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using Xunit;
@@ -20,7 +21,7 @@ namespace FluentlyHttpClient.Test.Integration
 	{
 		[Fact]
 		[Trait("Category", "e2e")]
-		public async void Multipart_WithBodyContent()
+		public async void MultipartForm_AddFile_Path()
 		{
 			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
 				.WithBaseUrl("http://localhost:5500")
@@ -36,6 +37,36 @@ namespace FluentlyHttpClient.Test.Integration
 			await multiForm.AddFileAsync("file", filePath);
 
 			//var r = await httpClient.RawHttpClient.PostAsync("/api/sample/upload", multiForm);
+
+			var response = await httpClient.CreateRequest("/api/sample/upload")
+				.AsPost()
+				.WithBodyContent(multiForm)
+				.ReturnAsResponse<UploadResult>();
+
+			Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+			Assert.Equal("animal-mustache.jpg", response.Data.FileName);
+			Assert.Equal("image/jpeg", response.Data.ContentType);
+			Assert.Equal(3.96875, response.Data.Size);
+		}
+
+		[Fact]
+		[Trait("Category", "e2e")]
+		public async void MultipartForm_AddFile_FileStream()
+		{
+			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
+				.WithBaseUrl("http://localhost:5500")
+				.UseLogging(x => x.IsCondensed = true)
+				.Build();
+
+			var filePath = "./animal-mustache.jpg";
+			var stream = File.OpenRead(filePath);
+
+			var multiForm = new MultipartFormDataContent
+			{
+				{ "hero", "Jaina" }
+			};
+
+			multiForm.AddFile("file", stream);
 
 			var response = await httpClient.CreateRequest("/api/sample/upload")
 				.AsPost()
