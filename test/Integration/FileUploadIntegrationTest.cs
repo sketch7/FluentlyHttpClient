@@ -37,8 +37,6 @@ namespace FluentlyHttpClient.Test.Integration
 			};
 			multiForm.AddFile("file", filePath);
 
-			//var r = await httpClient.RawHttpClient.PostAsync("/api/sample/upload", multiForm);
-
 			var response = await httpClient.CreateRequest("/api/sample/upload")
 				.AsPost()
 				.WithBodyContent(multiForm)
