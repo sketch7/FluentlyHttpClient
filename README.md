@@ -21,7 +21,7 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
   - Logger and Timer middleware out of the box
 - Multiple HttpClient support with a Fluent API for Client builder
 - Customizable Formatters (JSON, XML out of the box)
-- Url interpolation and query params e.g. person/{id} / person?id=1
+- Url interpolation and query params e.g. `person/{id}` / `person?id=1`
 - GraphQL support
 - File upload support
 
@@ -74,6 +74,7 @@ PM> Install-Package FluentlyHttpClient
     - [Extending Request/Response items](#extending-requestresponse-items)
   - [Recipes](#recipes)
     - [File upload](#file-upload)
+    - [Simple Single file HttpClient](#simple-single-file-httpclient)
   - [Testing/Mocking](#testingmocking)
     - [Test example with RichardSzalay.MockHttp](#test-example-with-richardszalaymockhttp)
 - [Contributing](#contributing)
@@ -497,6 +498,29 @@ var response = await httpClient.CreateRequest("/api/sample/upload")
   .ReturnAsResponse<MyResult>();
 ```
 
+#### Simple Single file HttpClient
+Even though in general we do not suggest (unless for small HttpClients) at times its useful to create a simple quick way http client.
+
+```cs
+public class SelfInfoHttpClient
+{
+  private readonly IFluentHttpClient _httpClient;
+
+  public SelfInfoHttpClient(
+    IFluentHttpClientFactory httpClientFactory
+  )
+  {
+    _httpClient = httpClientFactory.CreateBuilder("localhost")
+      .WithBaseUrl($"http://localhost:5500}")
+      .Build();
+  }
+
+  public Task<FluentHttpResponse> GetInfo()
+    => _httpClient.CreateRequest("info")
+      .AsGet()
+      .ReturnAsResponse();
+}
+```
 
 ### Testing/Mocking
 In order to test HTTP requests, the library itself doesn't offer anything out of the box.
