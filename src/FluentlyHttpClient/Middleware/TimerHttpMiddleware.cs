@@ -49,7 +49,7 @@ namespace FluentlyHttpClient.Middleware
 		public async Task<FluentHttpResponse> Invoke(FluentHttpMiddlewareContext context)
 		{
 			var request = context.Request;
-			TimeSpan stopwatchElapsed = default;
+			var stopwatchElapsed = TimeSpan.Zero;
 
 			FluentHttpResponse response;
 			try

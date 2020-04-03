@@ -1,5 +1,4 @@
-﻿using HeyRed.Mime;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -90,14 +89,13 @@ namespace FluentlyHttpClient.Test.Integration
 			var filePath = "./animal-mustache.jpg";
 			var fileBytes = File.ReadAllBytes(filePath);
 			var fileName = Path.GetFileName(filePath);
-			var mimeType = MimeTypesMap.GetMimeType(fileName);
 
 			var multiForm = new MultipartFormDataContent
 			{
 				{ "hero", "Jaina" }
 			};
 
-			multiForm.AddFile("file", fileBytes, fileName, mimeType);
+			multiForm.AddFile("file", fileBytes, fileName);
 
 			var response = await httpClient.CreateRequest("/api/sample/upload")
 				.AsPost()

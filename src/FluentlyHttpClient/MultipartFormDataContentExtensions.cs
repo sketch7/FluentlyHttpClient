@@ -9,7 +9,7 @@ namespace FluentlyHttpClient
 	public static class MultipartFormDataContentExtensions
 	{
 		/// <summary>
-		/// Add file as from path as StreamContent.
+		/// Add file as from path as <see cref="StreamContent"/>.
 		/// </summary>
 		/// <param name="multipartForm"></param>
 		/// <param name="name">Name to use for the http form parameter.</param>
@@ -24,7 +24,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Add file from file stream.
+		/// Add file from file stream as <see cref="StreamContent"/>.
 		/// </summary>
 		/// <param name="multipartForm"></param>
 		/// <param name="name">Name to use for the http form parameter.</param>
@@ -40,7 +40,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Add file from bytes.
+		/// Add file from bytes as <see cref="StreamContent"/>.
 		/// </summary>
 		/// <param name="multipartForm"></param>
 		/// <param name="name">Name to use for the http form parameter.</param>
@@ -56,7 +56,7 @@ namespace FluentlyHttpClient
 		}
 
 		/// <summary>
-		/// Add file from stream.
+		/// Add file from stream as <see cref="StreamContent"/>.
 		/// </summary>
 		/// <param name="multipartForm"></param>
 		/// <param name="name">Name to use for the http form parameter.</param>
@@ -80,9 +80,8 @@ namespace FluentlyHttpClient
 			multipartForm.Add(fileStreamContent, name, fileName);
 		}
 
-
 		/// <summary>
-		/// Add string content.
+		/// Add string as <see cref="StringContent"/>.
 		/// </summary>
 		/// <param name="multipartForm"></param>
 		/// <param name="name">Name to use for the http form parameter.</param>
