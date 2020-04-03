@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using HeyRed.Mime;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -34,7 +35,7 @@ namespace FluentlyHttpClient.Test.Integration
 			{
 				{ "hero", "Jaina" }
 			};
-			await multiForm.AddFileAsync("file", filePath);
+			multiForm.AddFile("file", filePath);
 
 			//var r = await httpClient.RawHttpClient.PostAsync("/api/sample/upload", multiForm);
 
@@ -67,6 +68,38 @@ namespace FluentlyHttpClient.Test.Integration
 			};
 
 			multiForm.AddFile("file", stream);
+
+			var response = await httpClient.CreateRequest("/api/sample/upload")
+				.AsPost()
+				.WithBodyContent(multiForm)
+				.ReturnAsResponse<UploadResult>();
+
+			Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+			Assert.Equal("animal-mustache.jpg", response.Data.FileName);
+			Assert.Equal("image/jpeg", response.Data.ContentType);
+			Assert.Equal(3.96875, response.Data.Size);
+		}
+
+		[Fact]
+		[Trait("Category", "e2e")]
+		public async void MultipartForm_AddFile_Bytes()
+		{
+			var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
+				.WithBaseUrl("http://localhost:5500")
+				.UseLogging(x => x.IsCondensed = true)
+				.Build();
+
+			var filePath = "./animal-mustache.jpg";
+			var fileBytes = File.ReadAllBytes(filePath);
+			var fileName = Path.GetFileName(filePath);
+			var mimeType = MimeTypesMap.GetMimeType(fileName);
+
+			var multiForm = new MultipartFormDataContent
+			{
+				{ "hero", "Jaina" }
+			};
+
+			multiForm.AddFile("file", fileBytes, fileName, mimeType);
 
 			var response = await httpClient.CreateRequest("/api/sample/upload")
 				.AsPost()
