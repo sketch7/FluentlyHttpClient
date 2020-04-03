@@ -47,7 +47,7 @@ namespace FluentlyHttpClient
 		/// <param name="fileBytes"></param>
 		/// <param name="fileName"></param>
 		/// <param name="mimeType"></param>
-		public static void AddFile(this MultipartFormDataContent multipartForm, string name, byte[] fileBytes, string fileName, string mimeType)
+		public static void AddFile(this MultipartFormDataContent multipartForm, string name, byte[] fileBytes, string fileName, string? mimeType = null)
 		{
 			if (name == null) throw new ArgumentNullException(nameof(name));
 
@@ -63,11 +63,17 @@ namespace FluentlyHttpClient
 		/// <param name="stream"></param>
 		/// <param name="fileName"></param>
 		/// <param name="mimeType"></param>
-		public static void AddFile(this MultipartFormDataContent multipartForm, string name, Stream stream, string fileName, string mimeType)
+		public static void AddFile(this MultipartFormDataContent multipartForm, string name, Stream stream, string fileName, string? mimeType = null)
 		{
 			if (name == null) throw new ArgumentNullException(nameof(name));
+			if (mimeType == null)
+			{
+				var fileExt = Path.GetExtension(fileName);
+				if (string.IsNullOrEmpty(fileExt))
+					throw new ArgumentException($"'{nameof(mimeType)}' needs to be specified or '{nameof(fileName)}' must contains extension.");
+				mimeType = MimeTypesMap.GetMimeType(fileName);
+			}
 
-			//var fileMimeType = MimeTypesMap.GetMimeType(mimeType);
 			var fileStreamContent = new StreamContent(stream);
 			fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue(mimeType);
 
