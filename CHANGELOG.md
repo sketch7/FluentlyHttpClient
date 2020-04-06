@@ -2,11 +2,23 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.1...3.9.0) (2020-X-X)
 
-## [3.8.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.0...3.8.1) (2020-03-11)
+## [3.9.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.0...3.9.0) (2020-04-03)
 
 ### Features
 
 - **http client:** allow empty baseUrl and not mandatory anymore
+- **http client:** `HttpRequestMessage` are being disposed after sending
+- **http client:** add better support for file uploads (from: path, stream, bytes) e.g.
+```cs
+var multiForm = new MultipartFormDataContent
+{
+  { "hero", "Jaina" }
+};
+multiForm.AddFile("file", "./animal-mustache.jpg");
+httpClient.CreateRequest("/api/sample/upload")
+  .AsPost()
+  .WithBodyContent(multiForm)
+```
 - **header builder:** add `WithBasicAuthentication` and `WithBasicAuthentication(username, password)` (`username:password` base64 encoded)
 
 ## [3.8.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.7.2...3.8.0) (2019-12-11)

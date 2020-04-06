@@ -2,7 +2,7 @@
 [projectGit]: https://github.com/sketch7/FluentlyHttpClient.git
 [changeLog]: ./CHANGELOG.md
 
-# Fluently Http Client
+# Fluently Http Client <!-- omit in toc -->
 [![CircleCI](https://circleci.com/gh/sketch7/FluentlyHttpClient.svg?style=shield)](https://circleci.com/gh/sketch7/FluentlyHttpClient)
 [![NuGet version](https://badge.fury.io/nu/fluentlyhttpclient.svg)](https://badge.fury.io/nu/fluentlyhttpclient)
 
@@ -13,16 +13,17 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
 [Change logs][changeLog] | [Project Repository][projectUri]
 
 ## Features
- - Fluent APIs
- - Highly extensible
- - Middleware Support
-   - Custom Classes with DI enabled
-   - Access to both Request/Response within same scope (similar to ASPNET middleware)
-   - Logger and Timer middleware out of the box
- - Multiple HttpClient support with a Fluent API for Client builder
- - Customizable Formatters (JSON, XML out of the box)
- - Url interpolation and query params e.g. person/{id} / person?id=1
- - GraphQL support
+- Fluent APIs
+- Highly extensible
+- Middleware Support
+  - Custom Classes with DI enabled
+  - Access to both Request/Response within same scope (similar to ASPNET middleware)
+  - Logger and Timer middleware out of the box
+- Multiple HttpClient support with a Fluent API for Client builder
+- Customizable Formatters (JSON, XML out of the box)
+- Url interpolation and query params e.g. `person/{id}` / `person?id=1`
+- GraphQL support
+- File upload support
 
 ## Installation
 Available for [.NET Standard 2.0+](https://docs.microsoft.com/en-gb/dotnet/standard/net-standard)
@@ -39,6 +40,46 @@ PM> Install-Package FluentlyHttpClient
 ```xml
 <PackageReference Include="FluentlyHttpClient" Version="*" />
 ```
+
+## Table of Contents <!-- omit in toc -->
+- [Features](#features)
+- [Installation](#installation)
+  - [NuGet](#nuget)
+  - [csproj](#csproj)
+- [Usage](#usage)
+  - [Configure](#configure)
+  - [Basic usage](#basic-usage)
+    - [Simple API](#simple-api)
+    - [Fluent Request API](#fluent-request-api)
+  - [Fluent Http Client Builder](#fluent-http-client-builder)
+    - [Register to Factory](#register-to-factory)
+    - [Register multiple + share](#register-multiple--share)
+    - [Create Http Client from Client](#create-http-client-from-client)
+    - [Configure defaults for Http Clients](#configure-defaults-for-http-clients)
+    - [Http Client Builder extra goodies](#http-client-builder-extra-goodies)
+    - [Re-using Http Client from Factory](#re-using-http-client-from-factory)
+  - [Request Builder](#request-builder)
+    - [Usage](#usage-1)
+    - [Query params](#query-params)
+    - [Interpolate Url](#interpolate-url)
+    - [ReturnAsReponse, ReturnAsResponse`<T>` and Return`<T>`](#returnasreponse-returnasresponset-and-returnt)
+  - [GraphQL](#graphql)
+  - [Middleware](#middleware)
+    - [Middleware options](#middleware-options)
+    - [Use a middleware](#use-a-middleware)
+    - [Request/Response items](#requestresponse-items)
+  - [Extending](#extending)
+    - [Extending Request Builder](#extending-request-builder)
+    - [Extending Request Builder/Client Builder headers](#extending-request-builderclient-builder-headers)
+    - [Extending Request/Response items](#extending-requestresponse-items)
+  - [Recipes](#recipes)
+    - [File upload](#file-upload)
+    - [Simple Single file HttpClient](#simple-single-file-httpclient)
+  - [Testing/Mocking](#testingmocking)
+    - [Test example with RichardSzalay.MockHttp](#test-example-with-richardszalaymockhttp)
+- [Contributing](#contributing)
+  - [Setup Machine for Development](#setup-machine-for-development)
+  - [Commands](#commands)
 
 ## Usage
 
@@ -437,6 +478,47 @@ public static IDictionary<string, string> GetErrorCodeMappings(this IFluentHttpM
   if (message.Items.TryGetValue(ErrorCodeMappingKey, out var value))
     return (IDictionary<string, string>)value;
   return null;
+}
+```
+
+### Recipes
+
+#### File upload
+
+```cs
+var multiForm = new MultipartFormDataContent
+{
+  { "hero", "Jaina" }
+};
+multiForm.AddFile("file", "./animal-mustache.jpg");
+
+var response = await httpClient.CreateRequest("/api/sample/upload")
+  .AsPost()
+  .WithBodyContent(multiForm)
+  .ReturnAsResponse<MyResult>();
+```
+
+#### Simple Single file HttpClient
+Even though in general we do not suggest (unless for small HttpClients) at times its useful to create a simple quick way http client.
+
+```cs
+public class SelfInfoHttpClient
+{
+  private readonly IFluentHttpClient _httpClient;
+
+  public SelfInfoHttpClient(
+    IFluentHttpClientFactory httpClientFactory
+  )
+  {
+    _httpClient = httpClientFactory.CreateBuilder("localhost")
+      .WithBaseUrl($"http://localhost:5500}")
+      .Build();
+  }
+
+  public Task<FluentHttpResponse> GetInfo()
+    => _httpClient.CreateRequest("info")
+      .AsGet()
+      .ReturnAsResponse();
 }
 ```
 

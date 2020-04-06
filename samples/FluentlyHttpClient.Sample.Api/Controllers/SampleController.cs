@@ -67,6 +67,7 @@ namespace FluentlyHttpClient.Sample.Api.Controllers
 
 			return Ok(new
 			{
+				input.Hero,
 				file.FileName,
 				file.ContentType,
 				Size = file.Length.Bytes().Kilobytes

@@ -191,6 +191,8 @@ namespace FluentlyHttpClient
 			await RawHttpClient.SendAsync(request.Message);
 			var executionContext = _requestTracker.Pop(requestId);
 
+			request.Message?.Dispose();
+
 			if (request.HasSuccessStatusOrThrow)
 				executionContext.Response.EnsureSuccessStatusCode();
 
@@ -203,7 +205,7 @@ namespace FluentlyHttpClient
 
 			var requestId = request.AddRequestId();
 			await RawHttpClient.SendAsync(request);
-
+			request.Dispose(); // todo: since consumer is passing request message leave it up to him or not? or make global config ShouldDisposeMessageOnSend or so
 			var executionContext = _requestTracker.Pop(requestId);
 			return executionContext.Response;
 		}
