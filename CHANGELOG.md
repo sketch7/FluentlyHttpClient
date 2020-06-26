@@ -1,8 +1,8 @@
 # Fluently Http Changelog
 
-[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.1...3.9.0) (2020-X-X)
+[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.0...3.10.0) (2020-X-X)
 
-## [3.9.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.0...3.9.0) (2020-04-03)
+## [3.9.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.0...3.9.0) (2020-06-26)
 
 ### Features
 
