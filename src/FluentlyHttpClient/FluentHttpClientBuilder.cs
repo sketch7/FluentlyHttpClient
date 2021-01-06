@@ -226,7 +226,8 @@ namespace FluentlyHttpClient
 				RequestBuilderDefaults = _requestBuilderDefaults,
 				HttpMessageHandler = _httpMessageHandler,
 				Formatters = _formatterOptions.Formatters,
-				DefaultFormatter = _formatterOptions.Default
+				DefaultFormatter = _formatterOptions.Default,
+				UseBaseUrlTrailingSlash = _useBaseUrlTrailingSlash,
 			};
 		}
 
@@ -271,7 +272,9 @@ namespace FluentlyHttpClient
 		{
 			_timeout = options.Timeout;
 			_baseUrl = options.BaseUrl;
-			_useBaseUrlTrailingSlash = options.UseBaseUrlTrailingSlash;
+
+			if (options.UseBaseUrlTrailingSlash.HasValue)
+				_useBaseUrlTrailingSlash = options.UseBaseUrlTrailingSlash.Value;
 			Identifier = options.Identifier;
 			WithHeaders(options.Headers);
 			_middlewareBuilder.AddRange(options.MiddlewareBuilder.GetAll());
