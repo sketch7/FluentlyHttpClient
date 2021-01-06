@@ -69,6 +69,22 @@ namespace Test
 		}
 
 		[Fact]
+		public async Task WithBaseUrlTrailingSlash_SubClient_ShouldNotIncludeTrailingSlash()
+		{
+			var response = await GetNewClientFactory().CreateBuilder("abc")
+				.WithBaseUrl("https://sketch7.com/oauth/token")
+				.WithMockMessageHandler()
+				.WithBaseUrlTrailingSlash(useTrailingSlash: false)
+				.Build()
+				.CreateClient("x2")
+				.Build()
+				.CreateRequest()
+				.ReturnAsResponse();
+
+			Assert.Equal("https://sketch7.com/oauth/token", response.Message.RequestMessage.RequestUri.ToString());
+		}
+
+		[Fact]
 		public async Task SubClientWithoutUrl_ShouldUseBaseUrl()
 		{
 			var response = await GetNewClientFactory().CreateBuilder("abc")

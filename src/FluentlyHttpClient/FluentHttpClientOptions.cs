@@ -18,6 +18,11 @@ namespace FluentlyHttpClient
 		public string? BaseUrl { get; set; }
 
 		/// <summary>
+		/// Gets or sets whether to use trailing slash or not for the base url.
+		/// </summary>
+		public bool UseBaseUrlTrailingSlash { get; set; }
+
+		/// <summary>
 		/// Gets or sets the timespan to wait before the request times out.
 		/// </summary>
 		public TimeSpan Timeout { get; set; }

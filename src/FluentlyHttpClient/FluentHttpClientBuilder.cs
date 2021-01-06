@@ -245,8 +245,7 @@ namespace FluentlyHttpClient
 		public IFluentHttpClient Build<THttpClient>(FluentHttpClientOptions? options = null)
 			where THttpClient : IFluentHttpClient
 		{
-			if (options == null)
-				options = BuildOptions();
+			options ??= BuildOptions();
 
 			if (string.IsNullOrEmpty(options.Identifier))
 				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.Identifier));
@@ -272,6 +271,7 @@ namespace FluentlyHttpClient
 		{
 			_timeout = options.Timeout;
 			_baseUrl = options.BaseUrl;
+			_useBaseUrlTrailingSlash = options.UseBaseUrlTrailingSlash;
 			Identifier = options.Identifier;
 			WithHeaders(options.Headers);
 			_middlewareBuilder.AddRange(options.MiddlewareBuilder.GetAll());

@@ -2,6 +2,12 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.1...3.9.0) (2020-X-X)
 
+## [3.9.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.0...3.9.1) (2021-01-06)
+
+### Bug Fixes
+
+- **http client builder:** inherit `WithBaseUrlTrailingSlash` for sub clients
+
 ## [3.9.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.0...3.9.0) (2020-04-03)
 
 ### Features
