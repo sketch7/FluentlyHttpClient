@@ -76,7 +76,7 @@ namespace Test
 				.WithMockMessageHandler()
 				.WithBaseUrlTrailingSlash(useTrailingSlash: false)
 				.Build()
-				.CreateClient("x2")
+				.CreateClient("abc-sub")
 				.Build()
 				.CreateRequest()
 				.ReturnAsResponse();
