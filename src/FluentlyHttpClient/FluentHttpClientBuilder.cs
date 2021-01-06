@@ -226,7 +226,8 @@ namespace FluentlyHttpClient
 				RequestBuilderDefaults = _requestBuilderDefaults,
 				HttpMessageHandler = _httpMessageHandler,
 				Formatters = _formatterOptions.Formatters,
-				DefaultFormatter = _formatterOptions.Default
+				DefaultFormatter = _formatterOptions.Default,
+				UseBaseUrlTrailingSlash = _useBaseUrlTrailingSlash,
 			};
 		}
 
@@ -245,8 +246,7 @@ namespace FluentlyHttpClient
 		public IFluentHttpClient Build<THttpClient>(FluentHttpClientOptions? options = null)
 			where THttpClient : IFluentHttpClient
 		{
-			if (options == null)
-				options = BuildOptions();
+			options ??= BuildOptions();
 
 			if (string.IsNullOrEmpty(options.Identifier))
 				throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.Identifier));
@@ -272,6 +272,9 @@ namespace FluentlyHttpClient
 		{
 			_timeout = options.Timeout;
 			_baseUrl = options.BaseUrl;
+
+			if (options.UseBaseUrlTrailingSlash.HasValue)
+				_useBaseUrlTrailingSlash = options.UseBaseUrlTrailingSlash.Value;
 			Identifier = options.Identifier;
 			WithHeaders(options.Headers);
 			_middlewareBuilder.AddRange(options.MiddlewareBuilder.GetAll());
