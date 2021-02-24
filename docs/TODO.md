@@ -1,4 +1,5 @@
 # To do
+- Request url parts e.g. `CreateRequest(`[resource]/{id}`)` and `.WithUrlNamedPart("resource", "user-roles")`
 - `CreateClient` `SubClientIdentityFormatter` configuration
 - `DisposeOnSend` config?
 - Consider `FluentlyHttpRequestBuilder` instead `FluentlyHttpRequest` in middleware (breaking)
