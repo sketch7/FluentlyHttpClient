@@ -2,6 +2,12 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.1...3.9.0) (2020-X-X)
 
+## [3.9.2](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.1...3.9.2) (2022-09-26)
+
+### Bug Fixes
+
+- **util:** fix adding querystring when collection is empty and is not first value to be added
+
 ## [3.9.1](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.0...3.9.1) (2021-01-06)
 
 ### Bug Fixes

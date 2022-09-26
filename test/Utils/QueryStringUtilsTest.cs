@@ -34,6 +34,19 @@ namespace FluentlyHttpClient.Test.Utils
 			Assert.Equal("heroName=yasuo&filter=assassin&filter=fighter", result);
 		}
 
+		[Fact]
+		public void ShouldGenerateComplexQueryStringWithoutCollection()
+		{
+			var queryCollection = new Dictionary<string, object>
+				{
+					{"heroName", "yasuo"},
+					{"filter", new List<string>{ "" }},
+				};
+
+			var result = queryCollection.ToQueryString();
+
+			Assert.Equal("heroName=yasuo", result);
+		}
 
 		[Fact]
 		public void ShouldOmitEmptyOrNulls()
