@@ -112,7 +112,7 @@ namespace FluentlyHttpClient
 
 		private static string AddQueryString(string key, string value, string uri)
 		{
-			if (string.IsNullOrEmpty(value)) return value;
+			if (string.IsNullOrEmpty(value)) return uri;
 
 			if (uri.Length > 0) uri = $"{uri}&";
 
