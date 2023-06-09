@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Web;
 #pragma warning disable 618 // todo: remove after removing deprecate attr
 
@@ -18,7 +18,7 @@ public static class QueryStringUtils
 	/// <param name="dict">Dictionary</param>
 	/// <param name="options">Formatting options.</param>
 	/// <returns>Returns querystring.</returns>
-	public static string ToQueryString<TKey, TValue>(this IDictionary<TKey, TValue> dict, QueryStringOptions? options = null)
+	public static string ToQueryString<TKey, TValue>(this IDictionary<TKey, TValue>? dict, QueryStringOptions? options = null)
 	{
 		options ??= DefaultQueryStringOptions;
 
@@ -32,8 +32,8 @@ public static class QueryStringUtils
 				continue;
 
 			var key = options.KeyFormatter != null
-				? options.KeyFormatter(item.Key.ToString())
-				: item.Key.ToString();
+				? options.KeyFormatter(item.Key!.ToString())
+				: item.Key!.ToString();
 
 			if (item.Value is string)
 			{
