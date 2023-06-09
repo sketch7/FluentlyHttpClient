@@ -1,17 +1,15 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace FluentlyHttpClient
+namespace FluentlyHttpClient;
+
+/// <summary>
+/// Get the meta information about the library.
+/// </summary>
+public static class FluentlyHttpClientMeta
 {
 	/// <summary>
-	/// Get the meta information about the library.
+	/// Gets the version of the FluentlyHttpClient library.
 	/// </summary>
-	public static class FluentlyHttpClientMeta
-	{
-		/// <summary>
-		/// Gets the version of the FluentlyHttpClient library.
-		/// </summary>
-		public static Version Version = typeof(FluentlyHttpClientMeta).GetTypeInfo()
-			.Assembly.GetName().Version;
-	}
+	public static Version Version = typeof(FluentlyHttpClientMeta).GetTypeInfo()
+		.Assembly.GetName().Version;
 }

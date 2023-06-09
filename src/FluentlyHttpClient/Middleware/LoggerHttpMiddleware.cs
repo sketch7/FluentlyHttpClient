@@ -1,8 +1,6 @@
-﻿using FluentlyHttpClient.Internal;
+using FluentlyHttpClient.Internal;
 using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
 
 namespace FluentlyHttpClient.Middleware
 {
@@ -60,7 +58,7 @@ namespace FluentlyHttpClient.Middleware
 			if (!_logger.IsEnabled(LogLevel.Information))
 				return await _next(context);
 
-			var options = request.GetLoggingOptions(_options);
+			var options = request.GetLoggingOptions(_options) ?? _options;
 			var watch = ValueStopwatch.StartNew();
 			FluentHttpResponse response;
 			if (options.IsCondensed.GetValueOrDefault(false)
@@ -151,7 +149,7 @@ namespace FluentlyHttpClient
 		/// <param name="request">Request to get options from.</param>
 		/// <param name="defaultOptions"></param>
 		/// <returns>Returns merged logging options.</returns>
-		public static LoggerHttpMiddlewareOptions GetLoggingOptions(this FluentHttpRequest request, LoggerHttpMiddlewareOptions defaultOptions = null)
+		public static LoggerHttpMiddlewareOptions? GetLoggingOptions(this FluentHttpRequest request, LoggerHttpMiddlewareOptions? defaultOptions = null)
 		{
 			if (!request.Items.TryGetValue(LoggingOptionsKey, out var result)) return defaultOptions;
 			var options = (LoggerHttpMiddlewareOptions)result;

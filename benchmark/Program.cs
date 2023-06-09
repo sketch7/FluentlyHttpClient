@@ -1,18 +1,17 @@
 ﻿using BenchmarkDotNet.Running;
 
-namespace FluentlyHttpClient.Benchmarks
+namespace FluentlyHttpClient.Benchmarks;
+
+static class Program
 {
-	static class Program
+	static void Main(string[] args)
 	{
-		static void Main(string[] args)
-		{
-			//var benchmarking = new Benchmarking();
-			//benchmarking.Setup();
+		//var benchmarking = new Benchmarking();
+		//benchmarking.Setup();
 
-			//benchmarking.PostAsMessagePack().Wait();
-			//benchmarking.PostAsJson().Wait();
-			var summary = BenchmarkRunner.Run<Benchmarking>();
+		//benchmarking.PostAsMessagePack().Wait();
+		//benchmarking.PostAsJson().Wait();
+		var summary = BenchmarkRunner.Run<Benchmarking>();
 
-		}
 	}
 }
