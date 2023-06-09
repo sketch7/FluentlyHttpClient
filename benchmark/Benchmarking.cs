@@ -6,47 +6,44 @@ using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
 using Serilog;
 using Sketch7.MessagePack.MediaTypeFormatter;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
-namespace FluentlyHttpClient.Benchmarks
+namespace FluentlyHttpClient.Benchmarks;
+
+[SimpleJob(RuntimeMoniker.NetCoreApp30)]
+[RPlotExporter, RankColumn]
+[MemoryDiagnoser]
+public class Benchmarking
 {
-	[SimpleJob(RuntimeMoniker.NetCoreApp30)]
-	[RPlotExporter, RankColumn]
-	[MemoryDiagnoser]
-	public class Benchmarking
-	{
-		private IFluentHttpClient? _jsonHttpClient;
-		private IFluentHttpClient? _messagePackHttpClient;
+	private IFluentHttpClient? _jsonHttpClient;
+	private IFluentHttpClient? _messagePackHttpClient;
 
-		private IServiceProvider BuildContainer()
-		{
-			Log.Logger = new LoggerConfiguration()
+	private IServiceProvider BuildContainer()
+	{
+		Log.Logger = new LoggerConfiguration()
 			//.WriteTo.Console()
 			//.WriteTo.Debug()
 			.CreateLogger();
-			var container = new ServiceCollection()
+		var container = new ServiceCollection()
 			.AddFluentlyHttpClient()
 			.AddLogging(x => x.AddSerilog());
-			return container.BuildServiceProvider();
-		}
+		return container.BuildServiceProvider();
+	}
 
-		[GlobalSetup]
-		public void Setup()
-		{
-			var mockHttp = new MockHttpMessageHandler();
-			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/json")
-				.Respond("application/json", request => request.Content.ReadAsStreamAsync().Result);
+	[GlobalSetup]
+	public void Setup()
+	{
+		var mockHttp = new MockHttpMessageHandler();
+		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/json")
+			.Respond("application/json", request => request.Content.ReadAsStreamAsync().Result);
 
-			mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/msgpack")
-				//.Respond("application/x-msgpack", "��Key�valeera�Name�Valeera�Title�Shadow of the Uncrowned")
-				.Respond("application/x-msgpack", request => request.Content.ReadAsStreamAsync().Result);
+		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/msgpack")
+			//.Respond("application/x-msgpack", "��Key�valeera�Name�Valeera�Title�Shadow of the Uncrowned")
+			.Respond("application/x-msgpack", request => request.Content.ReadAsStreamAsync().Result);
 
-			var fluentHttpClientFactory = BuildContainer()
-				.GetRequiredService<IFluentHttpClientFactory>();
+		var fluentHttpClientFactory = BuildContainer()
+			.GetRequiredService<IFluentHttpClientFactory>();
 
-			var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+		var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.UseLogging(new LoggerHttpMiddlewareOptions
 				{
@@ -55,11 +52,11 @@ namespace FluentlyHttpClient.Benchmarks
 				})
 				.UseTimer()
 				.WithMessageHandler(mockHttp)
-				;
+			;
 
-			_jsonHttpClient = fluentHttpClientFactory.Add(clientBuilder);
+		_jsonHttpClient = fluentHttpClientFactory.Add(clientBuilder);
 
-			clientBuilder = fluentHttpClientFactory.CreateBuilder("msgpacks")
+		clientBuilder = fluentHttpClientFactory.CreateBuilder("msgpacks")
 				.WithBaseUrl("https://sketch7.com")
 				.UseLogging(new LoggerHttpMiddlewareOptions
 				{
@@ -69,38 +66,37 @@ namespace FluentlyHttpClient.Benchmarks
 				.UseTimer()
 				.WithMessageHandler(mockHttp)
 				.ConfigureFormatters(x => x.Default = new MessagePackMediaTypeFormatter())
-				;
-			_messagePackHttpClient = fluentHttpClientFactory.Add(clientBuilder);
-		}
-
-		[Benchmark]
-		public Task<Hero> PostAsJson()
-		{
-			return _jsonHttpClient.CreateRequest("/api/json")
-				.AsPost()
-				.WithBody(new Hero
-				{
-					Key = "valeera",
-					Name = "Valeera",
-					Title = "Shadow of the Uncrowned"
-				})
-				.Return<Hero>();
-		}
-
-		[Benchmark]
-		public Task<Hero> PostAsMessagePack()
-		{
-			return _messagePackHttpClient.CreateRequest("/api/msgpack")
-				.AsPost()
-				.WithBody(new Hero
-				{
-					Key = "valeera",
-					Name = "Valeera",
-					Title = "Shadow of the Uncrowned"
-				})
-				.Return<Hero>();
-		}
-
-
+			;
+		_messagePackHttpClient = fluentHttpClientFactory.Add(clientBuilder);
 	}
+
+	[Benchmark]
+	public Task<Hero> PostAsJson()
+	{
+		return _jsonHttpClient.CreateRequest("/api/json")
+			.AsPost()
+			.WithBody(new Hero
+			{
+				Key = "valeera",
+				Name = "Valeera",
+				Title = "Shadow of the Uncrowned"
+			})
+			.Return<Hero>();
+	}
+
+	[Benchmark]
+	public Task<Hero> PostAsMessagePack()
+	{
+		return _messagePackHttpClient.CreateRequest("/api/msgpack")
+			.AsPost()
+			.WithBody(new Hero
+			{
+				Key = "valeera",
+				Name = "Valeera",
+				Title = "Shadow of the Uncrowned"
+			})
+			.Return<Hero>();
+	}
+
+
 }

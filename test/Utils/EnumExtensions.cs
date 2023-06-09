@@ -1,20 +1,18 @@
-﻿using System;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace FluentlyHttpClient.Test.Utils
+namespace FluentlyHttpClient.Test.Utils;
+
+public static class EnumExtensions
 {
-	public static class EnumExtensions
+	public static string GetEnumDescription(this Enum value)
 	{
-		public static string GetEnumDescription(this Enum value)
-		{
-			var fi = value.GetType().GetField(value.ToString());
+		var fi = value.GetType().GetField(value.ToString());
 
-			var attributes = fi.GetCustomAttribute<DescriptionAttribute>(false);
+		var attributes = fi?.GetCustomAttribute<DescriptionAttribute>(false);
 
-			if (attributes != null)
-				return attributes.Description;
-			return value.ToString();
-		}
+		if (attributes != null)
+			return attributes.Description;
+		return value.ToString();
 	}
 }

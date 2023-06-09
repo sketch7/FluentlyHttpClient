@@ -1,26 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using System.Threading.Tasks;
 
-namespace FluentlyHttpClient.Entity
+namespace FluentlyHttpClient.Entity;
+
+public class FluentHttpClientDbContext : DbContext
 {
-	public class FluentHttpClientDbContext : DbContext
+	public FluentHttpClientDbContext(DbContextOptions options)
+		: base(options)
+	{ }
+
+	public DbSet<HttpResponseEntity> HttpResponses { get; set; } = null!;
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		public FluentHttpClientDbContext(DbContextOptions options)
-			: base(options)
-		{ }
+		base.OnModelCreating(modelBuilder);
 
-		public DbSet<HttpResponseEntity> HttpResponses { get; set; } = null!;
-
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
-		{
-			base.OnModelCreating(modelBuilder);
-
-			modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-		}
-
-		public Task Initialize() => Database.MigrateAsync();
-
-		public Task Commit() => SaveChangesAsync();
+		modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 	}
+
+	public Task Initialize() => Database.MigrateAsync();
+
+	public Task Commit() => SaveChangesAsync();
 }
