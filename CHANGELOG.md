@@ -2,6 +2,13 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.1...3.9.0) (2020-X-X)
 
+## [3.9.3](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.2...3.9.3) (2023-06-09)
+
+### Chore
+
+- **ci:** migrate ci to github actions
+- **all:** refactor global namespaces, global usings, filescoped namespaces etc...
+
 ## [3.9.2](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.1...3.9.2) (2022-09-26)
 
 ### Bug Fixes
