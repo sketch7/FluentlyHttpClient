@@ -91,6 +91,5 @@ namespace FluentlyHttpClient
 			if (name == null) throw new ArgumentNullException(nameof(name));
 			multipartForm.Add(new StringContent(value), name);
 		}
-
 	}
 }

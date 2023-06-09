@@ -29,7 +29,5 @@ namespace FluentlyHttpClient.Caching
 			_cache.Set(hash, response);
 			return Task.CompletedTask;
 		}
-
 	}
-
 }

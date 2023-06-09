@@ -61,6 +61,5 @@ namespace FluentlyHttpClient.Caching
 
 			return Task.FromResult(cloned);
 		}
-
 	}
 }

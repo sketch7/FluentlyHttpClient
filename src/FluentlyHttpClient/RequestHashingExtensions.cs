@@ -205,6 +205,5 @@ namespace FluentlyHttpClient
 		/// </summary>
 		public RequestHashOptions WithBodyInvariant()
 			=> WithBody(InvariantContent);
-
 	}
 }
