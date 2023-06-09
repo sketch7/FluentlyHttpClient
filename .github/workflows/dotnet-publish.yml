@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - '*.x'
+      # - feature/*
+    paths-ignore:
+      - '**.md'
+
+  pull_request:
+    branches:
+      - master
+      - '*.x'
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  package:
+    name: Package
+    uses: sketch7/.github/.github/workflows/dotnet-package.yml@master
+    with:
+      dotnet-version: 7.0.x
+      publishable: ${{ contains(fromJSON('["develop", "master", "workflow", "feature/workflow"]'), github.ref_name) || endsWith(github.ref_name, '.x')  }}
+    secrets:
+      nuget-auth-token: ${{ secrets.NUGET_KEY }}

@@ -3,7 +3,7 @@
 [changeLog]: ./CHANGELOG.md
 
 # Fluently Http Client <!-- omit in toc -->
-[![CircleCI](https://circleci.com/gh/sketch7/FluentlyHttpClient.svg?style=shield)](https://circleci.com/gh/sketch7/FluentlyHttpClient)
+[![CI](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/dotnet-publish.yml/badge.svg)](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/dotnet-publish.yml)
 [![NuGet version](https://badge.fury.io/nu/fluentlyhttpclient.svg)](https://badge.fury.io/nu/fluentlyhttpclient)
 
 Http Client for .NET Standard with fluent APIs which are intuitive, easy to use and also highly extensible.
@@ -315,7 +315,7 @@ ASP.NET Core middleware.
 These are provided out of the box:
 
 | Middleware | Description                                   |
-|------------|-----------------------------------------------|
+| ---------- | --------------------------------------------- |
 | Timer      | Determine how long (timespan) requests takes. |
 | Logger     | Log request/response.                         |
 

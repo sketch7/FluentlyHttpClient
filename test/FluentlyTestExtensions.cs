@@ -1,13 +1,10 @@
-﻿using RichardSzalay.MockHttp;
+﻿namespace FluentlyHttpClient.Test;
 
-namespace FluentlyHttpClient.Test
+public static class FluentlyTestExtensions
 {
-	public static class FluentlyTestExtensions
+	public static FluentHttpClientBuilder WithMockMessageHandler(this FluentHttpClientBuilder builder, MockHttpMessageHandler? handler = null)
 	{
-		public static FluentHttpClientBuilder WithMockMessageHandler(this FluentHttpClientBuilder builder, MockHttpMessageHandler? handler = null)
-		{
-			handler ??= new MockHttpMessageHandler();
-			return builder.WithMessageHandler(handler);
-		}
+		handler ??= new();
+		return builder.WithMessageHandler(handler);
 	}
 }

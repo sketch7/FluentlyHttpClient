@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <None Include="$(SourceRoot)assets/logo188x188.png" Pack="true" Visible="false" PackagePath="/" />
+    <None Include="$(SourceRoot)assets/logo188x188.png" Pack="true" Visible="false" PackagePath="/" />
   </ItemGroup>
 
   <!-- Common compile parameters -->
@@ -31,8 +31,10 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);1701;1702;1705;1591</NoWarn>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>11.0</LangVersion>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
   </PropertyGroup>
 
   <PropertyGroup>
