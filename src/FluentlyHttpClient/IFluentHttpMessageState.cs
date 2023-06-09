@@ -11,10 +11,10 @@ namespace FluentlyHttpClient
 	}
 
 	/// <summary>
-	/// Interface which <see cref="FluentHttpRequestBuilder"/>, <see cref="FluentHttpRequest"/> and <see cref="FluentHttpResponse"/> implements. 
+	/// Interface which <see cref="FluentHttpRequestBuilder"/>, <see cref="FluentHttpRequest"/> and <see cref="FluentHttpResponse"/> implements.
 	/// This can be useful for adding extension methods across all of them.
 	/// </summary>
-	public interface  IFluentHttpMessageItems
+	public interface IFluentHttpMessageItems
 	{
 		/// <summary>
 		/// Gets or sets a key/value collection that can be used to share data within the scope of request/response or middleware.

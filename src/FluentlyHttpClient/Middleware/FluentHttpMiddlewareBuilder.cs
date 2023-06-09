@@ -109,7 +109,6 @@ namespace FluentlyHttpClient.Middleware
 		}
 	}
 
-
 	/// <summary>
 	/// Action invoker pipe, which actually triggers the users defined function. Generally invoked as the last pipe.
 	/// </summary>
@@ -117,5 +116,4 @@ namespace FluentlyHttpClient.Middleware
 	{
 		public async Task<FluentHttpResponse> Invoke(FluentHttpMiddlewareContext context) => await context.Func();
 	}
-
 }
