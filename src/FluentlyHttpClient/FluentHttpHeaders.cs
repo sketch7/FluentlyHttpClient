@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Primitives;
+using Microsoft.Extensions.Primitives;
 using System.Collections;
 
 namespace FluentlyHttpClient;
@@ -43,7 +43,7 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 {
 	private static readonly FluentHttpHeadersOptions DefaultOptions = new();
 	private FluentHttpHeadersOptions _options = DefaultOptions;
-	private readonly Dictionary<string, string[]> _data = new();
+	private readonly Dictionary<string, string[]> _data = new(StringComparer.OrdinalIgnoreCase);
 
 	public string[] this[string key]
 	{

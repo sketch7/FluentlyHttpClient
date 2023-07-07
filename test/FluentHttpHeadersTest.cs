@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Primitives;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 
 // ReSharper disable InconsistentNaming
@@ -138,6 +138,22 @@ public class FluentHttpHeaders_Remove
 		var headers = new FluentHttpHeaders();
 		headers.Remove(HeaderTypes.Authorization);
 		Assert.Null(headers.Authorization);
+	}
+}
+
+public class FluentHttpHeaders_GetValue
+{
+	[Fact]
+	public void ShouldBeCaseInsensitive()
+	{
+		var headers = new FluentHttpHeaders
+		{
+			{ "X-Custom", "the-xx" }
+		};
+		var value = headers.GetValue("X-Custom");
+		var value2 = headers.GetValue("x-custom");
+		Assert.Equal("the-xx", value);
+		Assert.Equal("the-xx", value2);
 	}
 }
 

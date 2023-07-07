@@ -2,6 +2,12 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.1...3.9.0) (2020-X-X)
 
+## [3.9.4](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.3...3.9.4) (2023-07-07)
+
+### Bug Fixes
+
+- **headers:** changed case insensitive for getting value
+
 ## [3.9.3](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.2...3.9.3) (2023-06-09)
 
 ### Chore
