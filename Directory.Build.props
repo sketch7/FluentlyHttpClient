@@ -44,5 +44,7 @@
   <!-- Shared Package Versions -->
   <PropertyGroup>
     <MicrosoftExtensionsVersion>2.1.*</MicrosoftExtensionsVersion>
+    <MicrosoftTestSdkVersion>17.6.3</MicrosoftTestSdkVersion>
+    <XunitVersion>2.5.0</XunitVersion>
   </PropertyGroup>
 </Project>
