@@ -22,8 +22,8 @@
     <PackageVersion Include="MessagePack" Version="2.5.108" />
     <PackageVersion Include="MimeTypesMap" Version="1.0.8" />
     <PackageVersion Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageVersion Include="Sketch7.Core" Version="0.1.1" />
     <PackageVersion Include="Humanizer.Core" Version="2.7.9" />
+    <PackageVersion Include="Sketch7.Core" Version="0.1.1" />
     <!-- testing -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageVersion Include="xunit" Version="2.6.6" />
