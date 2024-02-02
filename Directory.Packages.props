@@ -33,6 +33,6 @@
     <PackageVersion Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="5.0.1" />
     <PackageVersion Include="Serilog.Sinks.Debug" Version="2.0.0" />
-    <PackageVersion Include="Sketch7.MessagePack.MediaTypeFormatter" Version="2.0.1" />
+    <PackageVersion Include="Sketch7.MessagePack.MediaTypeFormatter" Version="3.0.0-dev20" />
   </ItemGroup>
 </Project>
