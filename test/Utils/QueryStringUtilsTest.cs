@@ -147,4 +147,33 @@ public class QueryStringUtils_ToQueryString
 		Assert.Equal("heroname=yasuo&level=100", result);
 	}
 
+
+	[Fact]
+	public void ShouldNotHttpEncodeValue()
+	{
+		var queryCollection = new Dictionary<string, object>
+		{
+			{"HeroName", "yas,uo"},
+			{"Level", 100}
+		};
+
+		var result = queryCollection.ToQueryString(opts => opts.WithValueEncoder(value => value));
+
+		Assert.Equal("heroName=yas,uo&level=100", result);
+	}
+
+	[Fact]
+	public void ShouldHttpEncodeValue()
+	{
+		var queryCollection = new Dictionary<string, object>
+		{
+			{"HeroName", "yas,uo"},
+			{"Level", 100}
+		};
+
+		var result = queryCollection.ToQueryString();
+
+		Assert.Equal("heroName=yas%2cuo&level=100", result);
+	}
+
 }

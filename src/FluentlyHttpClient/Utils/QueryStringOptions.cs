@@ -55,6 +55,8 @@ public class QueryStringOptions
 
 	internal Func<object, string>? ValueFormatter { get; set; }
 
+	internal Func<string, string>? ValueEncoder { get; set; }
+
 	/// <summary>
 	/// Gets or sets the function to format a collection item. This will allow you to manipulate the value.
 	/// </summary>
@@ -81,6 +83,15 @@ public class QueryStringOptions
 	{
 		ValueFormatter = configure;
 		CollectionItemFormatter = configure;
+		return this;
+	}
+
+	/// <summary>
+	/// Gets or sets the function to encode a value. This will allow you to encode the value. e.g. UrlEncode.
+	/// </summary>
+	public QueryStringOptions WithValueEncoder(Func<string, string> configure)
+	{
+		ValueEncoder = configure;
 		return this;
 	}
 
