@@ -108,14 +108,11 @@ public static class QueryStringUtils
 		return qs;
 	}
 
-	private static string AddQueryString(string key, string value, string uri, Func<string, string>? valueEncoder)
+	private static string AddQueryString(string key, string value, string uri, Func<string, string> valueEncoder)
 	{
 		if (string.IsNullOrEmpty(value)) return uri;
 
 		if (uri.Length > 0) uri = $"{uri}&";
-
-		if (valueEncoder == null)
-			return $"{uri}{key}={HttpUtility.UrlEncode(value)}";
 
 		return $"{uri}{key}={valueEncoder(value)}";
 	}

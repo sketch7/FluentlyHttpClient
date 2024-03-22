@@ -1,4 +1,7 @@
-﻿#pragma warning disable 618 // todo: remove after removing deprecated code
+﻿using System.Net;
+using System.Web;
+
+#pragma warning disable 618 // todo: remove after removing deprecated code
 
 // ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient;
@@ -31,6 +34,13 @@ public class QueryStringOptions
 	/// </summary>
 	public static readonly Func<string, string> DefaultKeyFormatter = CamelCaseString;
 
+	private static readonly Func<string, string> HttpEncode = HttpUtility.UrlEncode;
+
+	/// <summary>
+	/// Default ValueEncoder.
+	/// </summary>
+	public static readonly Func<string, string> DefaultValueEncoder = HttpEncode;
+
 	/// <summary>
 	/// Debugger display.
 	/// </summary>
@@ -55,7 +65,7 @@ public class QueryStringOptions
 
 	internal Func<object, string>? ValueFormatter { get; set; }
 
-	internal Func<string, string>? ValueEncoder { get; set; }
+	internal Func<string, string>? ValueEncoder { get; set; } = DefaultValueEncoder;
 
 	/// <summary>
 	/// Gets or sets the function to format a collection item. This will allow you to manipulate the value.
