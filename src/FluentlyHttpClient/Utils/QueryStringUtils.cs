@@ -37,7 +37,7 @@ public static class QueryStringUtils
 
 			if (item.Value is string)
 			{
-				qs = AddQueryString(key, FormatValue(item.Value), qs);
+				qs = AddQueryString(key, FormatValue(item.Value), qs, options.ValueEncoder);
 				continue;
 			}
 
@@ -47,7 +47,7 @@ public static class QueryStringUtils
 					qs = BuildCollectionQueryString(key, values, qs, options);
 					break;
 				default:
-					qs = AddQueryString(key, FormatValue(item.Value), qs);
+					qs = AddQueryString(key, FormatValue(item.Value), qs, options.ValueEncoder);
 					break;
 			}
 		}
@@ -82,7 +82,7 @@ public static class QueryStringUtils
 					var valueStr = options.CollectionItemFormatter != null
 						? options.CollectionItemFormatter(value)
 						: value.ToString();
-					qs = AddQueryString(key, valueStr, qs);
+					qs = AddQueryString(key, valueStr, qs, options.ValueEncoder);
 				}
 				break;
 			case QueryStringCollectionMode.CommaSeparated:
@@ -93,7 +93,7 @@ public static class QueryStringUtils
 						? options.CollectionItemFormatter(value)
 						: value.ToString();
 					if (index == 0)
-						qs = AddQueryString(key, valueStr, qs);
+						qs = AddQueryString(key, valueStr, qs, options.ValueEncoder);
 					else
 						qs += $",{HttpUtility.UrlEncode(valueStr)}";
 
@@ -108,12 +108,12 @@ public static class QueryStringUtils
 		return qs;
 	}
 
-	private static string AddQueryString(string key, string value, string uri)
+	private static string AddQueryString(string key, string value, string uri, Func<string, string> valueEncoder)
 	{
 		if (string.IsNullOrEmpty(value)) return uri;
 
 		if (uri.Length > 0) uri = $"{uri}&";
 
-		return $"{uri}{key}={HttpUtility.UrlEncode(value)}";
+		return $"{uri}{key}={valueEncoder(value)}";
 	}
 }
