@@ -1,4 +1,3 @@
-﻿using System.Net;
 using System.Web;
 
 #pragma warning disable 618 // todo: remove after removing deprecated code
@@ -41,9 +40,6 @@ public class QueryStringOptions
 	/// </summary>
 	public static readonly Func<string, string> DefaultValueEncoder = HttpEncode;
 
-	/// <summary>
-	/// Debugger display.
-	/// </summary>
 	protected string DebuggerDisplay => $"CollectionMode: '{CollectionMode}'";
 
 	/// <summary>
@@ -65,7 +61,9 @@ public class QueryStringOptions
 
 	internal Func<object, string>? ValueFormatter { get; set; }
 
-	internal Func<string, string>? ValueEncoder { get; set; } = DefaultValueEncoder;
+	internal Func<string, string> ValueEncoder { get; set; } = DefaultValueEncoder;
+
+	internal Func<string, string>? CollectionKeyFormatter { get; set; }
 
 	/// <summary>
 	/// Gets or sets the function to format a collection item. This will allow you to manipulate the value.
@@ -83,6 +81,16 @@ public class QueryStringOptions
 	public QueryStringOptions WithKeyFormatter(Func<string, string> configure)
 	{
 		KeyFormatter = configure;
+		return this;
+	}
+
+	/// <summary>
+	/// Gets or sets the function to format the key to be used only for collections. Useful to make php like keys e.g. append '[]' 'filter[]'.
+	/// NOTE: <see cref="WithKeyFormatter"/> will still be used.
+	/// </summary>
+	public QueryStringOptions WithCollectionKeyFormatter(Func<string, string> configure)
+	{
+		CollectionKeyFormatter = configure;
 		return this;
 	}
 

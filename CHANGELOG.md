@@ -2,6 +2,12 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.1...3.9.0) (2020-X-X)
 
+## [3.9.6](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.5...3.9.6) (2024-06-11)
+
+### Features
+
+- **util:** add `QueryStringOptions.WithCollectionKeyFormatter` to be able to format keys only e.g. convert php like by appending `[]` to the key
+
 ## [3.9.5](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.4...3.9.5) (2024-03-22)
 
 ### Features
