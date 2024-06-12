@@ -7,6 +7,7 @@
 ### Features
 
 - **util:** add `QueryStringOptions.WithCollectionKeyFormatter` to be able to format keys only e.g. convert php like by appending `[]` to the key
+- **deps:** update `Newtonsoft.Json` and `Microsoft.AspNet.WebApi.Client` fixing vulnerability warnings
 
 ## [3.9.5](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.4...3.9.5) (2024-03-22)
 
