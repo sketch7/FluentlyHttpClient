@@ -47,7 +47,7 @@ public class QueryStringUtils_ToQueryString
 	[Fact]
 	public void ShouldOmitEmptyOrNulls()
 	{
-		var queryCollection = new Dictionary<string, object>
+		var queryCollection = new Dictionary<string, object?>
 		{
 			{"heroName", ""},
 			{"cap", null},
@@ -147,6 +147,24 @@ public class QueryStringUtils_ToQueryString
 		Assert.Equal("heroname=yasuo&level=100", result);
 	}
 
+	[Fact]
+	public void ShouldFormatCollectionKey()
+	{
+		var queryCollection = new Dictionary<string, object>
+		{
+			{"HeroName", "yasuo"},
+			{"filter", new List<string>{ "assassin", "fighter" }}
+		};
+
+		var result = queryCollection.ToQueryString(opts =>
+			{
+				opts.CollectionMode = QueryStringCollectionMode.KeyPerValue;
+				opts.WithCollectionKeyFormatter(key => $"{key}[]");
+			}
+		);
+
+		Assert.Equal("heroName=yasuo&filter[]=assassin&filter[]=fighter", result);
+	}
 
 	[Fact]
 	public void ShouldNotHttpEncodeValue()

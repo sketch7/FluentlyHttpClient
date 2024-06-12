@@ -74,6 +74,10 @@ public static class QueryStringUtils
 
 	private static string BuildCollectionQueryString(string key, IEnumerable values, string qs, QueryStringOptions options)
 	{
+		key = options.CollectionKeyFormatter == null
+			? key
+			: options.CollectionKeyFormatter(key);
+
 		switch (options.CollectionMode)
 		{
 			case QueryStringCollectionMode.KeyPerValue:
