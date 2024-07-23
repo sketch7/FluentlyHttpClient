@@ -6,10 +6,10 @@
     <!-- system -->
     <PackageVersion Include="System.Data.HashFunction.xxHash" Version="2.0.0" />
     <!-- microsoft packages -->
-    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
 
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />

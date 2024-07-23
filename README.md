@@ -30,6 +30,15 @@ Available for [.NET Standard 2.0+](https://docs.microsoft.com/en-gb/dotnet/stand
 
 NOTE: 1.x depends on .NET Standard 1.4+, use that if you need older .NET standard.
 
+## dotnet support
+
+| Version | .NET               | Status                                                                                                                                                                                               |
+| ------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.x     | .NET Standard 1.4+ |                                                                                                                                                                                                      |
+| 2.x     | .NET Standard 2    |                                                                                                                                                                                                      |
+| 3.x     | .NET Standard 2    | [![CI](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/dotnet-publish.yml/badge.svg?branch=3.x)](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/dotnet-publish.yml) |
+| 4.x     | net8               | [![CI](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/dotnet-publish.yml/badge.svg?branch=4.x)](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/dotnet-publish.yml) |
+
 ### NuGet
 ```
 PM> Install-Package FluentlyHttpClient
@@ -135,7 +144,7 @@ Fluent request API (request builder) allows to create more complex requests and 
 var httpClient = fluentHttpClientFactory.Get(identifier: "platform");
 
 // HTTP GET + return response and deserialize result (fluent API)
-FluentHttpResponse<Hero> response = 
+FluentHttpResponse<Hero> response =
   await httpClient.CreateRequest("/api/heroes/azmodan")
     .ReturnAsResponse<Hero>(); // return with response
 
@@ -410,7 +419,7 @@ fluentHttpClientFactory.CreateBuilder("platform")
           WarnThreshold = TimeSpan.Zero
       }) // register a middleware using extension method
 ```
-As a best practice, it's best to provide an extension method for usage such as `UseTimer` 
+As a best practice, it's best to provide an extension method for usage such as `UseTimer`
 especially when it has any arguments (options), as it won't be convenient to use.
 
 
@@ -455,7 +464,7 @@ public static class FluentHttpRequestBuilderExtensions
 ```
 
 #### Extending Request Builder/Client Builder headers
-In order to extend headers for both `FluentHttpClientBuilder` and `FluentHttpRequestBuilder`, the best approach would be to extend on 
+In order to extend headers for both `FluentHttpClientBuilder` and `FluentHttpRequestBuilder`, the best approach would be to extend on
 `IFluentHttpHeaderBuilder<T>`, this way it will be available for both. See example below.
 
 ```cs

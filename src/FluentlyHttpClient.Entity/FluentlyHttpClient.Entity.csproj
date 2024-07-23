@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <!-- <TargetFramework>netstandard2.0</TargetFramework> -->
     <Description>Fluent Http Client with a fluent APIs which are intuitive, easy to use and also highly extensible.</Description>
     <PackageTags>$(PackageTags) ef entityframework</PackageTags>
   </PropertyGroup>
