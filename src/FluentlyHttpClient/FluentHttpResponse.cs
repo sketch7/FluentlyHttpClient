@@ -45,6 +45,15 @@ public class FluentHttpResponse : IFluentHttpMessageState
 	public HttpResponseMessage Message { get; }
 
 	/// <summary>
+	/// Gets or sets the version of the HTTP response.
+	/// </summary>
+	public Version Version
+	{
+		get => Message.Version;
+		set => Message.Version = value;
+	}
+
+	/// <summary>
 	/// Gets or sets the status code of the HTTP response.
 	/// </summary>
 	public HttpStatusCode StatusCode

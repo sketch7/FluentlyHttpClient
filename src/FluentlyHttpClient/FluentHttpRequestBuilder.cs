@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Primitives;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace FluentlyHttpClient;
@@ -8,6 +9,18 @@ namespace FluentlyHttpClient;
 /// </summary>
 public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpRequestBuilder>, IFluentHttpMessageItems
 {
+	internal static Version _defaultVersion = HttpVersion.Version20;
+
+	/// <summary>
+	/// Gets the HTTP Version for the Http Request.
+	/// </summary>
+	public Version Version { get; private set; } = _defaultVersion;
+
+	/// <summary>
+	/// Gets the HTTP Version for the Http Request.
+	/// </summary>
+	public HttpVersionPolicy? VersionPolicy { get; private set; }
+
 	/// <summary>
 	/// Gets the HTTP Method for the Http Request.
 	/// </summary>
@@ -75,6 +88,26 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 	public FluentHttpRequestBuilder WithMethod(HttpMethod method)
 	{
 		HttpMethod = method;
+		return this;
+	}
+
+	/// <summary>
+	/// Set request HTTP version with specified version.
+	/// </summary>
+	/// <returns>Returns request builder for chaining.</returns>
+	public FluentHttpRequestBuilder WithVersion(Version version)
+	{
+		Version = version;
+		return this;
+	}
+
+	/// <summary>
+	/// Set request HTTP version policy with specified policy.
+	/// </summary>
+	/// <returns>Returns request builder for chaining.</returns>
+	public FluentHttpRequestBuilder WithVersionPolicy(HttpVersionPolicy policy)
+	{
+		VersionPolicy = policy;
 		return this;
 	}
 
@@ -300,7 +333,13 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 
 		Uri ??= string.Empty;
 		var uri = BuildUri(Uri, _queryParams, _queryStringOptions);
-		var httpRequest = new HttpRequestMessage(HttpMethod, uri);
+		var httpRequest = new HttpRequestMessage(HttpMethod, uri)
+		{
+			Version = Version,
+		};
+		if (VersionPolicy.HasValue)
+			httpRequest.VersionPolicy = VersionPolicy.Value;
+
 		if (_httpBody != null)
 			httpRequest.Content = _httpBody;
 
@@ -358,7 +397,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 		if (string.IsNullOrEmpty(queryString))
 			return uri;
 
-		if (uri.Contains("?"))
+		if (uri.Contains('?'))
 			uri += $"&{queryString}";
 		else
 			uri += $"?{queryString}";

@@ -2,6 +2,16 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.1...3.9.0) (2020-X-X)
 
+## [4.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.6...4.0.0) (2024-07-23)
+
+### Features
+- **http client builder:** configurable http version/policy via `WithVersion`, `WithVersionPolicy`
+- **http client builder:** defaults to http version http2.0
+
+### BREAKING CHANGES
+
+- **deps:** now target .net8
+
 ## [3.9.6](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.5...3.9.6) (2024-06-11)
 
 ### Features
