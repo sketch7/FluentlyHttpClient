@@ -1,4 +1,5 @@
-﻿using Sketch7.MessagePack.MediaTypeFormatter;
+using MessagePack.Resolvers;
+using Sketch7.MessagePack.MediaTypeFormatter;
 using System.Net;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -6,14 +7,14 @@ namespace FluentlyHttpClient.Test.Integration;
 
 public class MessagePackIntegrationTest
 {
-	private readonly MessagePackMediaTypeFormatter _messagePackMediaTypeFormatter = new();
+	private readonly MessagePackMediaTypeFormatter _messagePackMediaTypeFormatter = new(ContractlessStandardResolver.Options);
 
 	[Fact]
 	[Trait("Category", "e2e")]
 	public async void ShouldMakeRequest_Get()
 	{
 		var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
-			.WithBaseUrl("http://localhost:5001")
+			.WithBaseUrl("http://localhost:5500")
 			.UseTimer()
 			.ConfigureFormatters(opts =>
 			{
@@ -27,7 +28,7 @@ public class MessagePackIntegrationTest
 		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 		Assert.Equal("azmodan", response.Data.Key);
 		Assert.Equal("Azmodan", response.Data.Name);
-		Assert.Equal("Lord of Sins", response.Data.Title);
+		Assert.Equal("Lord of Sin", response.Data.Title);
 	}
 
 	[Fact]
@@ -35,7 +36,7 @@ public class MessagePackIntegrationTest
 	public async void ShouldMakeRequest_Post()
 	{
 		var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
-			.WithBaseUrl("http://localhost:5001")
+			.WithBaseUrl("http://localhost:5500")
 			.ConfigureFormatters(opts =>
 			{
 				opts.Default = _messagePackMediaTypeFormatter;

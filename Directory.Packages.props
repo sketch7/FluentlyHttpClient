@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- system -->
+    <PackageVersion Include="MessagePack.AspNetCoreMvcFormatter" Version="3.0.111-alpha" />
     <PackageVersion Include="System.Data.HashFunction.xxHash" Version="2.0.0" />
     <!-- microsoft packages -->
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
