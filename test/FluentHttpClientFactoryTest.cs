@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Formatting;
+using System.Net.Http.Formatting;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
 // ReSharper disable once CheckNamespace

@@ -1,3 +1,7 @@
+using FluentlyHttpClient.Sample.Api.Heroes;
+using MessagePack.AspNetCoreMvcFormatter;
+using MessagePack.Resolvers;
+
 namespace FluentlyHttpClient.Sample.Api;
 
 public class Startup
@@ -13,9 +17,15 @@ public class Startup
 	public void ConfigureServices(IServiceCollection services)
 	{
 		services
+			.AddSingleton<IHeroService, HeroService>()
 			.AddFluentlyHttpClient()
 			//.AddFluentlyHttpClientEntity(Configuration.GetConnectionString("FluentlyDatabase"))
-			.AddControllers()
+			.AddControllers(opts =>
+				{
+					opts.OutputFormatters.Add(new MessagePackOutputFormatter(ContractlessStandardResolver.Options));
+					opts.InputFormatters.Add(new MessagePackInputFormatter(ContractlessStandardResolver.Options));
+				}
+			)
 			;
 	}
 
