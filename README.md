@@ -230,6 +230,8 @@ httpClientBuilder.ConfigureFormatters(opts =>
       opts.Default = new MessagePackMediaTypeFormatter();
       opts.Formatters.Add(new CustomFormatter());
     });
+
+httpClientBuilder.WithVersion(HttpVersion.Version30) // specify to use http3 (defaults: http2)
 ```
 
 #### Re-using Http Client from Factory
