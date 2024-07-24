@@ -15,6 +15,7 @@
 
 - **deps:** now target .net8
 - **http request:** remove deprecated `FluentHttpRequest.Formatters`
+- **models:** change several options/context models to `record`'s
 
 ## [3.9.6](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.5...3.9.6) (2024-06-11)
 
