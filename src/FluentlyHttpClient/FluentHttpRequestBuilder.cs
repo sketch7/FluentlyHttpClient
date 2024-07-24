@@ -8,7 +8,7 @@ namespace FluentlyHttpClient;
 /// <summary>
 /// Class to build <see cref="FluentHttpRequest"/> with a fluent API.
 /// </summary>
-public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpRequestBuilder>, IFluentHttpMessageItems
+public partial class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpRequestBuilder>, IFluentHttpMessageItems
 {
 	internal static Version _defaultVersion = HttpVersion.Version20;
 
@@ -67,7 +67,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 
 	private readonly IFluentHttpClient _fluentHttpClient;
 	private HttpContent? _httpBody;
-	private static readonly Regex InterpolationRegex = new(@"\{(\w+)\}", RegexOptions.Compiled);
+	private static readonly Regex InterpolationRegex = InterpolationUriRegex();
 	private object? _queryParams;
 	private bool _hasSuccessStatusOrThrow;
 	private CancellationToken _cancellationToken;
@@ -404,4 +404,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 			uri += $"?{queryString}";
 		return uri;
 	}
+
+	[GeneratedRegex(@"\{(\w+)\}", RegexOptions.Compiled)]
+	private static partial Regex InterpolationUriRegex();
 }
