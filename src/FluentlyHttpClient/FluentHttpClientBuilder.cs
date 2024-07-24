@@ -11,14 +11,14 @@ public class FluentHttpClientBuilder : IFluentHttpHeaderBuilder<FluentHttpClient
 	/// <summary>
 	/// Gets the identifier specified.
 	/// </summary>
-	public string? Identifier { get; private set; }
+	public string Identifier { get; private set; } = null!;
 
 	private readonly IServiceProvider _serviceProvider;
 	private readonly IFluentHttpClientFactory _fluentHttpClientFactory;
 	private readonly FluentHttpMiddlewareBuilder _middlewareBuilder;
 	private string? _baseUrl;
 	private TimeSpan _timeout;
-	private readonly FluentHttpHeaders _headers = new();
+	private readonly FluentHttpHeaders _headers = [];
 	private Action<FluentHttpRequestBuilder>? _requestBuilderDefaults;
 	private HttpMessageHandler? _httpMessageHandler;
 	private readonly FormatterOptions _formatterOptions = new();
@@ -73,42 +73,36 @@ public class FluentHttpClientBuilder : IFluentHttpHeaderBuilder<FluentHttpClient
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpClientBuilder WithHeader(string key, string value)
 	{
 		_headers.Set(key, value);
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpClientBuilder WithHeader(string key, StringValues values)
 	{
 		_headers.Set(key, values);
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpClientBuilder WithHeaders(IDictionary<string, string> headers)
 	{
 		_headers.SetRange(headers);
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpClientBuilder WithHeaders(IDictionary<string, string[]> headers)
 	{
 		_headers.SetRange(headers);
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpClientBuilder WithHeaders(IDictionary<string, StringValues> headers)
 	{
 		_headers.SetRange(headers);
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpClientBuilder WithHeaders(FluentHttpHeaders headers)
 	{
 		_headers.SetRange(headers);
@@ -287,7 +281,7 @@ internal class MediaTypeFormatterComparer : IEqualityComparer<MediaTypeFormatter
 {
 	public static readonly MediaTypeFormatterComparer Instance = new();
 
-	public bool Equals(MediaTypeFormatter x, MediaTypeFormatter y) => x?.GetType() == y?.GetType();
+	public bool Equals(MediaTypeFormatter? x, MediaTypeFormatter? y) => x?.GetType() == y?.GetType();
 
 	public int GetHashCode(MediaTypeFormatter obj) => obj.GetType().GetHashCode();
 }

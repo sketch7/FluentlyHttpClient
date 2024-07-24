@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 
 namespace FluentlyHttpClient;
 
@@ -14,12 +14,12 @@ public static class FluentHttpMessageExtensions
 	public static async Task<FluentHttpResponse> Clone(this FluentHttpResponse response)
 	{
 		var contentString = await response.Content.ReadAsStringAsync();
-		var contentType = response.Content.Headers.ContentType;
+		var contentType = response.Content.Headers.ContentType!;
 		var encoding = string.IsNullOrEmpty(contentType.CharSet) ? Encoding.UTF8 : Encoding.GetEncoding(contentType.CharSet);
 
 		var cloned = new FluentHttpResponse(new(response.StatusCode)
 		{
-			Content = new StringContent(contentString, encoding, contentType.MediaType),
+			Content = new StringContent(contentString, encoding, contentType.MediaType!),
 			ReasonPhrase = response.ReasonPhrase,
 			Version = response.Message.Version,
 			RequestMessage = response.Message.RequestMessage,

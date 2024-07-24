@@ -36,7 +36,7 @@ public interface IFluentHttpClient : IDisposable
 	/// <summary>
 	/// Gets the default formatter to be used when serializing body content. e.g. JSON, XML, etc...
 	/// </summary>
-	MediaTypeFormatter DefaultFormatter { get; }
+	MediaTypeFormatter? DefaultFormatter { get; }
 
 	/// <summary>Get the formatter for an HTTP content type.</summary>
 	/// <param name="contentType">The HTTP content type (or <c>null</c> to automatically select one).</param>
@@ -102,7 +102,7 @@ public class FluentHttpClient : IFluentHttpClient
 	public MediaTypeFormatterCollection Formatters { get; }
 
 	/// <inheritdoc />
-	public MediaTypeFormatter DefaultFormatter { get; }
+	public MediaTypeFormatter? DefaultFormatter { get; }
 
 	/// <inheritdoc />
 	public HttpRequestHeaders Headers { get; }
@@ -175,7 +175,7 @@ public class FluentHttpClient : IFluentHttpClient
 	/// <inheritdoc />
 	public async Task<FluentHttpResponse> Send(FluentHttpRequest request)
 	{
-		if (request == null) throw new ArgumentNullException(nameof(request));
+		ArgumentNullException.ThrowIfNull(request, nameof(request));
 
 		var requestId = request.Message.AddRequestId();
 
@@ -193,7 +193,7 @@ public class FluentHttpClient : IFluentHttpClient
 
 	public async Task<FluentHttpResponse> Send(HttpRequestMessage request)
 	{
-		if (request == null) throw new ArgumentNullException(nameof(request));
+		ArgumentNullException.ThrowIfNull(request, nameof(request));
 
 		var requestId = request.AddRequestId();
 		await RawHttpClient.SendAsync(request);

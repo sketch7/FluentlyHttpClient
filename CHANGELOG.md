@@ -2,15 +2,21 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.1...3.9.0) (2020-X-X)
 
-## [4.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.6...4.0.0) (2024-07-23)
+## [4.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.6...4.0.0) (2024-07-24)
 
 ### Features
 - **http client builder:** configurable http version/policy via `WithVersion`, `WithVersionPolicy`
 - **http client builder:** defaults to http version http2.0
 
+### Performance
+- **logging:** middleware loggings changed to compile-time logging
+- **request builder:** uri interpolation regex compile-time
+
 ### BREAKING CHANGES
 
 - **deps:** now target .net8
+- **http request:** remove deprecated `FluentHttpRequest.Formatters`
+- **models:** change several options/context models to `record`'s
 
 ## [3.9.6](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.5...3.9.6) (2024-06-11)
 

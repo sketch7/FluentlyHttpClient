@@ -26,7 +26,7 @@ public class HttpResponseSerializer : IHttpResponseSerializer
 			Hash = response.GetRequestHash(),
 			ReasonPhrase = response.ReasonPhrase,
 			StatusCode = (int)response.StatusCode,
-			Url = response.Message.RequestMessage.RequestUri.ToString(),
+			Url = response.Message.RequestMessage!.RequestUri!.ToString(),
 			Version = response.Message.Version.ToString(),
 			Headers = new(response.Headers),
 			RequestMessage = response.Message.RequestMessage
@@ -43,18 +43,18 @@ public class HttpResponseSerializer : IHttpResponseSerializer
 	/// <returns></returns>
 	public Task<FluentHttpResponse> Deserialize(IHttpResponseStore item)
 	{
-		var contentType = new ContentType(item.ContentHeaders.ContentType);
+		var contentType = new ContentType(item.ContentHeaders!.ContentType!);
 		var encoding = string.IsNullOrEmpty(contentType.CharSet) ? Encoding.UTF8 : Encoding.GetEncoding(contentType.CharSet);
 
 		var cloned = new FluentHttpResponse(new((HttpStatusCode)item.StatusCode)
 		{
-			Content = new StringContent(item.Content, encoding, contentType.MediaType),
+			Content = new StringContent(item.Content!, encoding, contentType.MediaType),
 			ReasonPhrase = item.ReasonPhrase,
-			Version = new(item.Version),
+			Version = new(item.Version!),
 			RequestMessage = item.RequestMessage,
 		}); // todo: add items?
 
-		cloned.Headers.AddRange(item.Headers);
+		cloned.Headers.AddRange(item.Headers!);
 
 		return Task.FromResult(cloned);
 	}

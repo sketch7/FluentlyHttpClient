@@ -26,17 +26,17 @@ public class FluentHttpClientOptions
 	/// <summary>
 	/// Gets or sets the identifier (key) for the HTTP client.
 	/// </summary>
-	public string? Identifier { get; set; }
+	public string Identifier { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the headers which should be sent with each request.
 	/// </summary>
-	public FluentHttpHeaders? Headers { get; set; }
+	public FluentHttpHeaders Headers { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the middleware builder.
 	/// </summary>
-	public FluentHttpMiddlewareBuilder MiddlewareBuilder { get; set; }
+	public FluentHttpMiddlewareBuilder MiddlewareBuilder { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets handler to customize request on creation. In order to specify defaults as desired, or so.
@@ -51,7 +51,7 @@ public class FluentHttpClientOptions
 	/// <summary>
 	/// Gets or sets formatters to be used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
 	/// </summary>
-	public MediaTypeFormatterCollection? Formatters { get; set; }
+	public MediaTypeFormatterCollection Formatters { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the default formatter to be used for content negotiation body format. e.g. JSON, XML, etc...
@@ -75,7 +75,7 @@ public class FormatterOptions
 	/// <summary>
 	/// Configure formatters to be used.
 	/// </summary>
-	public MediaTypeFormatterCollection Formatters { get; } = new();
+	public MediaTypeFormatterCollection Formatters { get; } = [];
 
 	/// <summary>
 	/// Set default formatter to be used when serializing body content and the preferred "Accept".

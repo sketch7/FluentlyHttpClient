@@ -1,4 +1,4 @@
-﻿namespace FluentlyHttpClient;
+namespace FluentlyHttpClient;
 
 /// <summary>
 /// Fluent HTTP request, which wraps the <see cref="HttpRequestMessage"/> and add additional features.
@@ -30,7 +30,7 @@ public class FluentHttpRequest : IFluentHttpMessageState
 	/// <summary>
 	/// Gets or sets the <see cref="System.Uri"/> for the HTTP request.
 	/// </summary>
-	public Uri Uri
+	public Uri? Uri
 	{
 		get => Message.RequestUri;
 		set => Message.RequestUri = value;
@@ -42,7 +42,7 @@ public class FluentHttpRequest : IFluentHttpMessageState
 	public HttpRequestHeaders Headers => Message.Headers;
 
 	/// <summary>
-	/// Determine whether has success status otherwise it will throw or not.
+	/// Determine whether it has success status otherwise it will throw or not.
 	/// </summary>
 	public bool HasSuccessStatusOrThrow { get; set; }
 
@@ -53,12 +53,6 @@ public class FluentHttpRequest : IFluentHttpMessageState
 
 	/// <inheritdoc />
 	public IDictionary<object, object> Items { get; protected set; }
-
-	/// <summary>
-	/// Formatters to be used for content negotiation for "Accept" and also sending formats. e.g. (JSON, XML)
-	/// </summary>
-	[Obsolete("This was added to be passed down to the middleware. Instead in middleware use FluentHttpMiddlewareClientContext.Formatters.")]
-	public MediaTypeFormatterCollection? Formatters { get; set; } // deprecated: remove
 
 	/// <summary>
 	/// Initializes a new instance.
