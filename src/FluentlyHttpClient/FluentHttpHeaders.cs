@@ -6,7 +6,7 @@ namespace FluentlyHttpClient;
 /// <summary>
 /// <see cref="FluentHttpHeaders"/> options.
 /// </summary>
-public class FluentHttpHeadersOptions
+public record FluentHttpHeadersOptions
 {
 	/// <summary>
 	/// Predicate function to exclude headers from being hashed in <see cref="FluentHttpHeaders.ToHashString"/>.
@@ -43,9 +43,9 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 {
 	private static readonly FluentHttpHeadersOptions DefaultOptions = new();
 	private FluentHttpHeadersOptions _options = DefaultOptions;
-	private readonly Dictionary<string, string[]> _data = new(StringComparer.OrdinalIgnoreCase);
+	private readonly Dictionary<string, string[]?> _data = new(StringComparer.OrdinalIgnoreCase);
 
-	public string[] this[string key]
+	public string[]? this[string key]
 	{
 		get => _data[key];
 		set => _data[key] = value;
@@ -122,7 +122,7 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 	/// <param name="value">Header value to add.</param>
 	public FluentHttpHeaders Add(string header, string value)
 	{
-		_data.Add(header, new[] { value });
+		_data.Add(header, [value]);
 		return this;
 	}
 
@@ -189,7 +189,7 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 	public FluentHttpHeaders AddRange(IDictionary<string, string> headers)
 	{
 		foreach (var header in headers)
-			_data.Add(header.Key, new[] { header.Value });
+			_data.Add(header.Key, [header.Value]);
 		return this;
 	}
 
@@ -240,7 +240,7 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 	/// <param name="value">Header value to add.</param>
 	public FluentHttpHeaders Set(string header, string value)
 	{
-		this[header] = new[] { value };
+		this[header] = [value];
 		return this;
 	}
 
@@ -374,11 +374,12 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 	/// <summary>
 	/// Converts to dictionary.
 	/// </summary>
-	public Dictionary<string, string[]> ToDictionary() => _data;
+	public Dictionary<string, string[]?> ToDictionary() => _data;
 
 	FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeader(string key, string value) => Add(key, value);
 	FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeader(string key, StringValues values) => Add(key, values);
 	FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeaders(IDictionary<string, string> headers) => SetRange(headers);
+	FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeaders(IDictionary<string, string[]> headers) => SetRange(headers);
 	FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeaders(IDictionary<string, StringValues> headers) => SetRange(headers);
 	FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeaders(FluentHttpHeaders headers) => SetRange(headers);
 }
@@ -407,43 +408,43 @@ public partial class FluentHttpHeaders
 	/// <summary>
 	/// Gets or sets the Authorization header.
 	/// </summary>
-	public string Authorization
+	public string? Authorization
 	{
 		get => Get(HeaderTypes.Authorization);
-		set => this[HeaderTypes.Authorization] = new[] { value };
+		set => this[HeaderTypes.Authorization] = [value];
 	}
 
 	/// <summary>
 	/// Gets or sets the Cache-Control header.
 	/// </summary>
-	public string CacheControl
+	public string? CacheControl
 	{
 		get => Get(HeaderTypes.CacheControl);
-		set => this[HeaderTypes.CacheControl] = new[] { value };
+		set => this[HeaderTypes.CacheControl] = [value];
 	}
 
 	/// <summary>
 	/// Gets or sets the Content-Type header.
 	/// </summary>
-	public string ContentType
+	public string? ContentType
 	{
 		get => Get(HeaderTypes.ContentType);
-		set => this[HeaderTypes.ContentType] = new[] { value };
+		set => this[HeaderTypes.ContentType] = [value];
 	}
 
 	/// <summary>
 	/// Gets or sets the User-Agent header.
 	/// </summary>
-	public string UserAgent
+	public string? UserAgent
 	{
 		get => Get(HeaderTypes.UserAgent);
-		set => this[HeaderTypes.UserAgent] = new[] { value };
+		set => this[HeaderTypes.UserAgent] = [value];
 	}
 
 	/// <summary>
 	/// Gets or sets the X-Forwarded-For header.
 	/// </summary>
-	public StringValues XForwardedFor
+	public StringValues? XForwardedFor
 	{
 		get => Get(HeaderTypes.XForwardedFor);
 		set => this[HeaderTypes.XForwardedFor] = value;
@@ -452,9 +453,9 @@ public partial class FluentHttpHeaders
 	/// <summary>
 	/// Gets or sets the X-Forwarded-Host header.
 	/// </summary>
-	public string XForwardedHost
+	public string? XForwardedHost
 	{
 		get => Get(HeaderTypes.XForwardedHost);
-		set => this[HeaderTypes.XForwardedHost] = new[] { value };
+		set => this[HeaderTypes.XForwardedHost] = [value];
 	}
 }

@@ -26,9 +26,6 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
 - File upload support
 
 ## Installation
-Available for [.NET Standard 2.0+](https://docs.microsoft.com/en-gb/dotnet/standard/net-standard)
-
-NOTE: 1.x depends on .NET Standard 1.4+, use that if you need older .NET standard.
 
 ## dotnet support
 
@@ -53,6 +50,7 @@ PM> Install-Package FluentlyHttpClient
 ## Table of Contents <!-- omit in toc -->
 - [Features](#features)
 - [Installation](#installation)
+- [dotnet support](#dotnet-support)
   - [NuGet](#nuget)
   - [csproj](#csproj)
 - [Usage](#usage)
@@ -232,6 +230,8 @@ httpClientBuilder.ConfigureFormatters(opts =>
       opts.Default = new MessagePackMediaTypeFormatter();
       opts.Formatters.Add(new CustomFormatter());
     });
+
+httpClientBuilder.WithVersion(HttpVersion.Version30) // specify to use http3 (defaults: http2)
 ```
 
 #### Re-using Http Client from Factory

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -7,7 +8,7 @@ namespace FluentlyHttpClient;
 /// <summary>
 /// Class to build <see cref="FluentHttpRequest"/> with a fluent API.
 /// </summary>
-public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpRequestBuilder>, IFluentHttpMessageItems
+public partial class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpRequestBuilder>, IFluentHttpMessageItems
 {
 	internal static Version _defaultVersion = HttpVersion.Version20;
 
@@ -43,7 +44,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 	{
 		get
 		{
-			_headers ??= new();
+			_headers ??= [];
 			return _headers;
 		}
 	}
@@ -66,7 +67,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 
 	private readonly IFluentHttpClient _fluentHttpClient;
 	private HttpContent? _httpBody;
-	private static readonly Regex InterpolationRegex = new(@"\{(\w+)\}", RegexOptions.Compiled);
+	private static readonly Regex InterpolationRegex = InterpolationUriRegex();
 	private object? _queryParams;
 	private bool _hasSuccessStatusOrThrow;
 	private CancellationToken _cancellationToken;
@@ -111,35 +112,36 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpRequestBuilder WithHeader(string key, string value)
 	{
 		Headers.Set(key, value);
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpRequestBuilder WithHeader(string key, StringValues values)
 	{
 		Headers.Set(key, values);
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpRequestBuilder WithHeaders(IDictionary<string, string> headers)
 	{
 		Headers.SetRange(headers);
 		return this;
 	}
 
-	/// <inheritdoc />
+	public FluentHttpRequestBuilder WithHeaders(IDictionary<string, string[]> headers)
+	{
+		Headers.SetRange(headers);
+		return this;
+	}
+
 	public FluentHttpRequestBuilder WithHeaders(IDictionary<string, StringValues> headers)
 	{
 		Headers.SetRange(headers);
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpRequestBuilder WithHeaders(FluentHttpHeaders headers)
 	{
 		Headers.SetRange(headers);
@@ -152,7 +154,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 	/// <param name="uriTemplate">Uri resource template e.g. <c>"/org/{id}"</c></param>
 	/// <param name="interpolationData">Data to interpolate within the Uri template place holders e.g. <c>{id}</c>. Can be either dictionary or object.</param>
 	/// <returns>Returns request builder for chaining.</returns>
-	public FluentHttpRequestBuilder WithUri(string uriTemplate, object? interpolationData = null)
+	public FluentHttpRequestBuilder WithUri([StringSyntax(StringSyntaxAttribute.Uri)] string uriTemplate, object? interpolationData = null)
 	{
 		UriTemplate = uriTemplate;
 		Uri = interpolationData != null
@@ -183,8 +185,8 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 	/// <returns>Returns request builder for chaining.</returns>
 	public FluentHttpRequestBuilder WithQueryParams(object queryParams, Action<QueryStringOptions> configure)
 	{
-		if (configure == null) throw new ArgumentNullException(nameof(configure));
-		var options = _queryStringOptions?.Clone() ?? new QueryStringOptions();
+		ArgumentNullException.ThrowIfNull(configure, nameof(configure));
+		var options = _queryStringOptions == null ? new() : _queryStringOptions with { };
 		configure(options);
 		return WithQueryParams(queryParams, options);
 	}
@@ -207,7 +209,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 	/// <returns>Returns request builder for chaining.</returns>
 	public FluentHttpRequestBuilder WithQueryParamsOptions(Action<QueryStringOptions> configure)
 	{
-		if (configure == null) throw new ArgumentNullException(nameof(configure));
+		ArgumentNullException.ThrowIfNull(configure, nameof(configure));
 		var options = _queryStringOptions ?? new QueryStringOptions();
 		configure(options);
 		return WithQueryParamsOptions(options);
@@ -357,8 +359,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 		return new(this, httpRequest, Items)
 		{
 			HasSuccessStatusOrThrow = _hasSuccessStatusOrThrow,
-			CancellationToken = _cancellationToken,
-			Formatters = _fluentHttpClient.Formatters
+			CancellationToken = _cancellationToken
 		};
 	}
 
@@ -403,4 +404,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 			uri += $"?{queryString}";
 		return uri;
 	}
+
+	[GeneratedRegex(@"\{(\w+)\}", RegexOptions.Compiled)]
+	private static partial Regex InterpolationUriRegex();
 }

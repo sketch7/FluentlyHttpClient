@@ -1,4 +1,4 @@
-﻿namespace FluentlyHttpClient;
+namespace FluentlyHttpClient;
 
 internal static class HttpMessageExtensions
 {
