@@ -1,10 +1,10 @@
-﻿namespace FluentlyHttpClient.Middleware;
+namespace FluentlyHttpClient.Middleware;
 
 /// <summary>
 /// Fluent HTTP middleware client context (per client).
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public class FluentHttpMiddlewareClientContext
+public record FluentHttpMiddlewareClientContext
 {
 	/// <summary>
 	/// Debugger display.
@@ -37,7 +37,7 @@ public class FluentHttpMiddlewareClientContext
 /// Fluent HTTP middleware execution invoke context (per invoke).
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public class FluentHttpMiddlewareContext
+public record FluentHttpMiddlewareContext
 {
 	/// <summary>
 	/// Debugger display.
