@@ -1,13 +1,15 @@
+using FluentlyHttpClient;
 using FluentlyHttpClient.Internal;
 using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace FluentlyHttpClient.Middleware
 {
 	/// <summary>
 	/// Logger HTTP middleware options.
 	/// </summary>
-	public class LoggerHttpMiddlewareOptions
+	public record LoggerHttpMiddlewareOptions
 	{
 		/// <summary>
 		/// Gets or sets whether the request log should be detailed e.g. include body. Note: This should only be enabled for development or as needed,
@@ -66,45 +68,30 @@ namespace FluentlyHttpClient.Middleware
 				&& !options.ShouldLogDetailedResponse.GetValueOrDefault(false))
 			{
 				response = await _next(context);
-				_logger.LogInformation("HTTP request [{method}] {requestUrl} responded {statusCode:D} in {elapsed:n0}ms",
-					request.Method,
-					request.Uri,
-					response.StatusCode,
-					watch.GetElapsedTime().TotalMilliseconds
-				);
+				_logger.LoggerHttp_CondensedRequest(request.Method, request.Uri, response.StatusCode, watch.GetElapsedTime().TotalMilliseconds);
 				return response;
 			}
 
 			if (!(options.ShouldLogDetailedRequest ?? false))
-				_logger.LogInformation("Pre-request... {request}", request);
+				_logger.LoggerHttp_Request(request);
 			else
 			{
 				string? requestContent = null;
 				if (request.Message.Content != null)
 					requestContent = await request.Message.Content.ReadAsStringAsync();
-				_logger.LogInformation(
-					"Pre-request... {request}\nHeaders: {headers}\nContent: {requestContent}",
-					request,
-					request.Headers.ToFormattedString(),
-					requestContent
-				);
+				_logger.LoggerHttp_RequestDetailed(request, request.Headers.ToFormattedString(), requestContent);
 			}
 
 			response = await _next(context);
 			var stopwatchElapsed = watch.GetElapsedTime();
 			if (response.Content == null || !(options.ShouldLogDetailedResponse ?? false))
 			{
-				_logger.LogInformation("Post-request... {response} in {elapsed:n0}ms", response, stopwatchElapsed.TotalMilliseconds);
+				_logger.LoggerHttp_Response(response, stopwatchElapsed.TotalMilliseconds);
 				return response;
 			}
 
 			var responseContent = await response.Content.ReadAsStringAsync();
-			_logger.LogInformation("Post-request... {response}\nHeaders: {headers}\nContent: {responseContent} in {elapsed:n0}ms",
-				response,
-				response.Headers.ToFormattedString(),
-				responseContent,
-				stopwatchElapsed.TotalMilliseconds
-			);
+			_logger.LoggerHttp_ResponseDetailed(response, response.Headers.ToFormattedString(), responseContent, stopwatchElapsed.TotalMilliseconds);
 			return response;
 		}
 	}
@@ -131,11 +118,7 @@ namespace FluentlyHttpClient
 			return requestBuilder;
 		}
 
-		/// <summary>
-		/// Set logging options for the request.
-		/// </summary>
-		/// <param name="requestBuilder">Request builder instance.</param>
-		/// <param name="configure">Action to configure logging options.</param>
+		/// <inheritdoc cref="WithLoggingOptions(FluentHttpRequestBuilder,LoggerHttpMiddlewareOptions)"/>
 		public static FluentHttpRequestBuilder WithLoggingOptions(this FluentHttpRequestBuilder requestBuilder, Action<LoggerHttpMiddlewareOptions>? configure)
 		{
 			var options = new LoggerHttpMiddlewareOptions();
@@ -169,9 +152,7 @@ namespace FluentlyHttpClient
 		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, LoggerHttpMiddlewareOptions? options = null)
 			=> builder.UseMiddleware<LoggerHttpMiddleware>(options ?? new LoggerHttpMiddlewareOptions());
 
-		/// <summary>
-		/// Use logger middleware which logs out going requests and incoming responses.
-		/// </summary>
+		/// <inheritdoc cref="UseLogging(FluentHttpClientBuilder,LoggerHttpMiddlewareOptions?)"/>
 		/// <param name="builder">Builder instance</param>
 		/// <param name="configure">Action to configure logging options.</param>
 		public static FluentHttpClientBuilder UseLogging(this FluentHttpClientBuilder builder, Action<LoggerHttpMiddlewareOptions>? configure)
@@ -181,4 +162,22 @@ namespace FluentlyHttpClient
 			return builder.UseLogging(options);
 		}
 	}
+}
+
+internal static partial class LogExtensions
+{
+	[LoggerMessage(LogLevel.Information, "HTTP request [{method}] {requestUrl} responded {statusCode:D} in {elapsed:n0}ms")]
+	internal static partial void LoggerHttp_CondensedRequest(this ILogger logger, HttpMethod method, Uri requestUrl, HttpStatusCode statusCode, double elapsed);
+
+	[LoggerMessage(LogLevel.Information, "Pre - request... {request}")]
+	internal static partial void LoggerHttp_Request(this ILogger logger, FluentHttpRequest request);
+
+	[LoggerMessage(LogLevel.Information, "Pre-request... {request}\nHeaders: {headers}\nContent: {requestContent}")]
+	internal static partial void LoggerHttp_RequestDetailed(this ILogger logger, FluentHttpRequest request, string headers, string? requestContent);
+
+	[LoggerMessage(LogLevel.Information, "Post-request... {response} in {elapsed:n0}ms")]
+	internal static partial void LoggerHttp_Response(this ILogger logger, FluentHttpResponse response, double elapsed);
+
+	[LoggerMessage(LogLevel.Information, "Post-request... {response}\nHeaders: {headers}\nContent: {responseContent} in {elapsed:n0}ms")]
+	internal static partial void LoggerHttp_ResponseDetailed(this ILogger logger, FluentHttpResponse response, string headers, string? responseContent, double elapsed);
 }

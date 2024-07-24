@@ -75,7 +75,7 @@ public class FormatterOptions
 	/// <summary>
 	/// Configure formatters to be used.
 	/// </summary>
-	public MediaTypeFormatterCollection Formatters { get; } = new();
+	public MediaTypeFormatterCollection Formatters { get; } = [];
 
 	/// <summary>
 	/// Set default formatter to be used when serializing body content and the preferred "Accept".

@@ -1,4 +1,5 @@
-﻿using FluentlyHttpClient.Internal;
+using FluentlyHttpClient;
+using FluentlyHttpClient.Internal;
 using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.Logging;
 
@@ -7,7 +8,7 @@ namespace FluentlyHttpClient.Middleware
 	/// <summary>
 	/// Timer HTTP middleware options.
 	/// </summary>
-	public class TimerHttpMiddlewareOptions
+	public record TimerHttpMiddlewareOptions
 	{
 		/// <summary>
 		/// Gets or sets the threshold warning timespan in order to log as warning.
@@ -20,14 +21,10 @@ namespace FluentlyHttpClient.Middleware
 	/// </summary>
 	public class TimerHttpMiddleware : IFluentHttpMiddleware
 	{
-		private const string TimeTakenMessage = "Executed request {request} in {elapsed:n0}ms";
 		private readonly FluentHttpMiddlewareDelegate _next;
 		private readonly TimerHttpMiddlewareOptions _options;
 		private readonly ILogger _logger;
 
-		/// <summary>
-		/// Initializes a new instance.
-		/// </summary>
 		public TimerHttpMiddleware(
 			FluentHttpMiddlewareDelegate next,
 			FluentHttpMiddlewareClientContext context,
@@ -60,9 +57,9 @@ namespace FluentlyHttpClient.Middleware
 			{
 				var threshold = request.GetTimerWarnThreshold() ?? _options.WarnThreshold;
 				if (_logger.IsEnabled(LogLevel.Warning) && stopwatchElapsed > threshold)
-					_logger.LogWarning(TimeTakenMessage, request, stopwatchElapsed.TotalMilliseconds);
+					_logger.TimerHttp_TimeTaken(LogLevel.Warning, request, stopwatchElapsed.TotalMilliseconds);
 				else if (_logger.IsEnabled(LogLevel.Debug))
-					_logger.LogDebug(TimeTakenMessage, request, stopwatchElapsed.TotalMilliseconds);
+					_logger.TimerHttp_TimeTaken(LogLevel.Debug, request, stopwatchElapsed.TotalMilliseconds);
 			}
 
 			return response.SetTimeTaken(stopwatchElapsed);
@@ -134,9 +131,7 @@ namespace FluentlyHttpClient
 		public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, TimerHttpMiddlewareOptions? options = null)
 			=> builder.UseMiddleware<TimerHttpMiddleware>(options ?? new TimerHttpMiddlewareOptions());
 
-		/// <summary>
-		/// Use timer middleware which measures how long the request takes.
-		/// </summary>
+		/// <inheritdoc cref="UseTimer(FluentHttpClientBuilder,TimerHttpMiddlewareOptions?)"/>
 		/// <param name="builder">Builder instance</param>
 		/// <param name="configure">Action to configure timer options.</param>
 		public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, Action<TimerHttpMiddlewareOptions>? configure)
@@ -146,4 +141,10 @@ namespace FluentlyHttpClient
 			return builder.UseTimer(options);
 		}
 	}
+}
+
+internal static partial class LogExtensions
+{
+	[LoggerMessage("Executed request {request} in {elapsed:n0}ms")]
+	internal static partial void TimerHttp_TimeTaken(this ILogger logger, LogLevel level, FluentHttpRequest request, double elapsed);
 }
