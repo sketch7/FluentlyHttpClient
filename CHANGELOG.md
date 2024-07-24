@@ -2,7 +2,7 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.1...3.9.0) (2020-X-X)
 
-## [4.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.6...4.0.0) (2024-07-23)
+## [4.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.6...4.0.0) (2024-07-24)
 
 ### Features
 - **http client builder:** configurable http version/policy via `WithVersion`, `WithVersionPolicy`
