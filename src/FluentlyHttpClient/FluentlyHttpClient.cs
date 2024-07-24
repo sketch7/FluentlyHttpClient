@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 
 namespace FluentlyHttpClient;
 
@@ -11,5 +11,5 @@ public static class FluentlyHttpClientMeta
 	/// Gets the version of the FluentlyHttpClient library.
 	/// </summary>
 	public static Version Version = typeof(FluentlyHttpClientMeta).GetTypeInfo()
-		.Assembly.GetName().Version;
+		.Assembly.GetName().Version!;
 }

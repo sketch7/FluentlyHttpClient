@@ -32,18 +32,13 @@ public interface IFluentHttpHeaderBuilder<out T>
 	/// <returns>Returns client builder for chaining.</returns>
 	T WithHeaders(IDictionary<string, string> headers);
 
-	/// <summary>
-	/// Add the specified headers and their value for each request.
-	/// </summary>
-	/// <param name="headers">Headers to add.</param>
-	/// <returns>Returns client builder for chaining.</returns>
+	/// <inheritdoc cref="WithHeaders(IDictionary{string,string})"/>
+	T WithHeaders(IDictionary<string, string[]> headers);
+
+	/// <inheritdoc cref="WithHeaders(IDictionary{string,string})"/>
 	T WithHeaders(IDictionary<string, StringValues> headers);
 
-	/// <summary>
-	/// Add the specified headers and their value for each request.
-	/// </summary>
-	/// <param name="headers">Headers to add.</param>
-	/// <returns>Returns client builder for chaining.</returns>
+	/// <inheritdoc cref="WithHeaders(IDictionary{string,string})"/>
 	T WithHeaders(FluentHttpHeaders headers);
 }
 

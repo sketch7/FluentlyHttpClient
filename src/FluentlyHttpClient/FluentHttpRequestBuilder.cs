@@ -43,7 +43,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 	{
 		get
 		{
-			_headers ??= new();
+			_headers ??= [];
 			return _headers;
 		}
 	}
@@ -111,35 +111,36 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpRequestBuilder WithHeader(string key, string value)
 	{
 		Headers.Set(key, value);
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpRequestBuilder WithHeader(string key, StringValues values)
 	{
 		Headers.Set(key, values);
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpRequestBuilder WithHeaders(IDictionary<string, string> headers)
 	{
 		Headers.SetRange(headers);
 		return this;
 	}
 
-	/// <inheritdoc />
+	public FluentHttpRequestBuilder WithHeaders(IDictionary<string, string[]> headers)
+	{
+		Headers.SetRange(headers);
+		return this;
+	}
+
 	public FluentHttpRequestBuilder WithHeaders(IDictionary<string, StringValues> headers)
 	{
 		Headers.SetRange(headers);
 		return this;
 	}
 
-	/// <inheritdoc />
 	public FluentHttpRequestBuilder WithHeaders(FluentHttpHeaders headers)
 	{
 		Headers.SetRange(headers);

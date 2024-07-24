@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System.Collections.Specialized;
 
 namespace FluentlyHttpClient;
@@ -99,7 +99,7 @@ public static class RequestHashingExtensions
 	/// Get response caching options for the request.
 	/// </summary>
 	/// <param name="request">Request to get options from.</param>
-	public static RequestHashOptions GetRequestHashOptions(this FluentHttpRequest request)
+	public static RequestHashOptions? GetRequestHashOptions(this FluentHttpRequest request)
 	{
 		request.Items.TryGetValue(HashOptionsKey, out var result);
 		return (RequestHashOptions)result;

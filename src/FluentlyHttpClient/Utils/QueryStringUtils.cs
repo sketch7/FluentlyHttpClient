@@ -32,8 +32,8 @@ public static class QueryStringUtils
 				continue;
 
 			var key = options.KeyFormatter != null
-				? options.KeyFormatter(item.Key!.ToString())
-				: item.Key!.ToString();
+				? options.KeyFormatter(item.Key!.ToString()!)
+				: item.Key!.ToString()!;
 
 			if (item.Value is string)
 			{
@@ -55,7 +55,7 @@ public static class QueryStringUtils
 		return qs;
 
 		string FormatValue(object value)
-			=> options.ValueFormatter == null ? value.ToString() : options.ValueFormatter(value);
+			=> options.ValueFormatter == null ? value.ToString()! : options.ValueFormatter(value);
 	}
 
 	/// <summary>
@@ -66,7 +66,7 @@ public static class QueryStringUtils
 	/// <returns>Returns querystring.</returns>
 	public static string ToQueryString<TKey, TValue>(this IDictionary<TKey, TValue> dict, Action<QueryStringOptions> configure)
 	{
-		if (configure == null) throw new ArgumentNullException(nameof(configure));
+		ArgumentNullException.ThrowIfNull(configure, nameof(configure));
 		var opts = new QueryStringOptions();
 		configure(opts);
 		return dict.ToQueryString(opts);
@@ -112,7 +112,7 @@ public static class QueryStringUtils
 		return qs;
 	}
 
-	private static string AddQueryString(string key, string value, string uri, Func<string, string> valueEncoder)
+	private static string AddQueryString(string key, string? value, string uri, Func<string, string> valueEncoder)
 	{
 		if (string.IsNullOrEmpty(value)) return uri;
 

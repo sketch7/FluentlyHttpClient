@@ -65,7 +65,7 @@ public class FluentHttpResponse : IFluentHttpMessageState
 	/// <summary>
 	/// Gets or sets the reason phrase which typically is sent by the server together with the status code.
 	/// </summary>
-	public string ReasonPhrase
+	public string? ReasonPhrase
 	{
 		get => Message.ReasonPhrase;
 		set => Message.ReasonPhrase = value;
