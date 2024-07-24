@@ -60,3 +60,16 @@ public class SystemTextJsonMediaTypeFormatter : MediaTypeFormatter
 		TransportContext transportContext)
 		=> await JsonSerializer.SerializeAsync(writeStream, value, type, _options);
 }
+
+public static partial class MediaTypeFormattingExtensions
+{
+	/// <summary>
+	/// Create new System.Text.Json media type formatter.
+	/// </summary>
+	/// <param name="formatters"></param>
+	/// <param name="options">Json serialization options.</param>
+	public static SystemTextJsonMediaTypeFormatter SystemTextJsonFormatter(
+		this MediaTypeFormatterCollection formatters,
+		JsonSerializerOptions? options = null
+	) => new(options);
+}
