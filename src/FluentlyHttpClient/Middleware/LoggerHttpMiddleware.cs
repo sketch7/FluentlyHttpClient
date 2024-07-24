@@ -68,7 +68,7 @@ namespace FluentlyHttpClient.Middleware
 				&& !options.ShouldLogDetailedResponse.GetValueOrDefault(false))
 			{
 				response = await _next(context);
-				_logger.LoggerHttp_CondensedRequest(request.Method, request.Uri, response.StatusCode, watch.GetElapsedTime().TotalMilliseconds);
+				_logger.LoggerHttp_CondensedRequest(request.Method, request.Uri!, response.StatusCode, watch.GetElapsedTime().TotalMilliseconds);
 				return response;
 			}
 

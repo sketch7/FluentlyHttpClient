@@ -8,9 +8,13 @@
 - **http client builder:** configurable http version/policy via `WithVersion`, `WithVersionPolicy`
 - **http client builder:** defaults to http version http2.0
 
+### Performance
+- **logging:** middleware loggings changed to compile-time logging
+
 ### BREAKING CHANGES
 
 - **deps:** now target .net8
+- **http request:** remove deprecated `FluentHttpRequest.Formatters`
 
 ## [3.9.6](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.5...3.9.6) (2024-06-11)
 

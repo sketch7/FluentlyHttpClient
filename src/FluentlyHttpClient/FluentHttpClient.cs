@@ -175,7 +175,7 @@ public class FluentHttpClient : IFluentHttpClient
 	/// <inheritdoc />
 	public async Task<FluentHttpResponse> Send(FluentHttpRequest request)
 	{
-		ArgumentNullException.ThrowIfNull(request);
+		ArgumentNullException.ThrowIfNull(request, nameof(request));
 
 		var requestId = request.Message.AddRequestId();
 
@@ -193,7 +193,7 @@ public class FluentHttpClient : IFluentHttpClient
 
 	public async Task<FluentHttpResponse> Send(HttpRequestMessage request)
 	{
-		ArgumentNullException.ThrowIfNull(request);
+		ArgumentNullException.ThrowIfNull(request, nameof(request));
 
 		var requestId = request.AddRequestId();
 		await RawHttpClient.SendAsync(request);

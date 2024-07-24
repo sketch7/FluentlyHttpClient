@@ -6,7 +6,7 @@ namespace FluentlyHttpClient.Middleware;
 public class FluentHttpMiddlewareBuilder
 {
 	private readonly IServiceProvider _serviceProvider;
-	private readonly List<FluentHttpMiddlewareConfig> _middleware = new();
+	private readonly List<FluentHttpMiddlewareConfig> _middleware = [];
 
 	/// <summary>
 	/// Gets the middleware count.
@@ -82,7 +82,7 @@ public class FluentHttpMiddlewareBuilder
 			{
 				FluentHttpMiddlewareDelegate next = previous!.Invoke;
 				if (pipe.Args == null)
-					ctor = new object[] { next, clientContext };
+					ctor = [next, clientContext];
 				else
 				{
 					const int additionalCtorArgs = 2;

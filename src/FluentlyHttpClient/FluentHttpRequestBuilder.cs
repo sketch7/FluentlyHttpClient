@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -153,7 +154,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 	/// <param name="uriTemplate">Uri resource template e.g. <c>"/org/{id}"</c></param>
 	/// <param name="interpolationData">Data to interpolate within the Uri template place holders e.g. <c>{id}</c>. Can be either dictionary or object.</param>
 	/// <returns>Returns request builder for chaining.</returns>
-	public FluentHttpRequestBuilder WithUri(string uriTemplate, object? interpolationData = null)
+	public FluentHttpRequestBuilder WithUri([StringSyntax(StringSyntaxAttribute.Uri)] string uriTemplate, object? interpolationData = null)
 	{
 		UriTemplate = uriTemplate;
 		Uri = interpolationData != null
@@ -184,7 +185,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 	/// <returns>Returns request builder for chaining.</returns>
 	public FluentHttpRequestBuilder WithQueryParams(object queryParams, Action<QueryStringOptions> configure)
 	{
-		if (configure == null) throw new ArgumentNullException(nameof(configure));
+		ArgumentNullException.ThrowIfNull(configure, nameof(configure));
 		var options = _queryStringOptions?.Clone() ?? new QueryStringOptions();
 		configure(options);
 		return WithQueryParams(queryParams, options);
@@ -208,7 +209,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 	/// <returns>Returns request builder for chaining.</returns>
 	public FluentHttpRequestBuilder WithQueryParamsOptions(Action<QueryStringOptions> configure)
 	{
-		if (configure == null) throw new ArgumentNullException(nameof(configure));
+		ArgumentNullException.ThrowIfNull(configure, nameof(configure));
 		var options = _queryStringOptions ?? new QueryStringOptions();
 		configure(options);
 		return WithQueryParamsOptions(options);
@@ -358,8 +359,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 		return new(this, httpRequest, Items)
 		{
 			HasSuccessStatusOrThrow = _hasSuccessStatusOrThrow,
-			CancellationToken = _cancellationToken,
-			Formatters = _fluentHttpClient.Formatters
+			CancellationToken = _cancellationToken
 		};
 	}
 
