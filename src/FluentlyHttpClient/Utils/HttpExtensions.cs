@@ -1,7 +1,6 @@
-﻿using System.Collections.Specialized;
+using System.Collections.Specialized;
 using System.Web;
 
-// ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient;
 
 /// <summary>

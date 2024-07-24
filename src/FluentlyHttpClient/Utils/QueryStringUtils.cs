@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Web;
-#pragma warning disable 618 // todo: remove after removing deprecate attr
 
-// ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient;
 
 /// <summary>

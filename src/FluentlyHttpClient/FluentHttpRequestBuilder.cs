@@ -186,7 +186,7 @@ public class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentHttpReque
 	public FluentHttpRequestBuilder WithQueryParams(object queryParams, Action<QueryStringOptions> configure)
 	{
 		ArgumentNullException.ThrowIfNull(configure, nameof(configure));
-		var options = _queryStringOptions?.Clone() ?? new QueryStringOptions();
+		var options = _queryStringOptions == null ? new() : _queryStringOptions with { };
 		configure(options);
 		return WithQueryParams(queryParams, options);
 	}

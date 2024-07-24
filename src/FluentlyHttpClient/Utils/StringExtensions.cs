@@ -1,4 +1,3 @@
-﻿// ReSharper disable once CheckNamespace
 namespace FluentlyHttpClient;
 
 internal static class InternalStringExtensions
