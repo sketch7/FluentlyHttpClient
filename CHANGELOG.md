@@ -10,6 +10,7 @@
 
 ### Performance
 - **logging:** middleware loggings changed to compile-time logging
+- **request builder:** uri interpolation regex compile-time
 
 ### BREAKING CHANGES
 
