@@ -74,7 +74,7 @@ public class Benchmarking
 			;
 
 		_systemTextJsonHttpClient = clientBuilder.WithIdentifier("system.text.json")
-				.ConfigureFormatters(x => x.Default = new SystemTextJsonMediaTypeFormatter())
+				.ConfigureFormatters(x => x.Default = x.Formatters.SystemTextJsonFormatter())
 				.Build()
 			;
 
