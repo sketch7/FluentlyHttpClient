@@ -227,7 +227,8 @@ httpClientBuilder.WithRequestBuilderDefaults(builder => builder.AsPut());
 // formatters - used for content negotiation, for "Accept" and body media formats. e.g. JSON, XML, etc...
 httpClientBuilder.ConfigureFormatters(opts =>
     {
-      opts.Default = new MessagePackMediaTypeFormatter();
+      opts.Default = new MessagePackMediaTypeFormatter(); // use messagepack
+      opts.Default = opts.Formatters.SystemTextJsonFormatter(); // use system.text.json
       opts.Formatters.Add(new CustomFormatter());
     });
 
