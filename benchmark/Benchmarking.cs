@@ -1,5 +1,6 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
+using FluentlyHttpClient.MediaFormatters;
 using FluentlyHttpClient.Middleware;
 using FluentlyHttpClient.Test;
 using MessagePack.Resolvers;
@@ -16,7 +17,15 @@ namespace FluentlyHttpClient.Benchmarks;
 public class Benchmarking
 {
 	private IFluentHttpClient? _jsonHttpClient;
+	private IFluentHttpClient? _systemTextJsonHttpClient;
 	private IFluentHttpClient? _messagePackHttpClient;
+
+	private readonly Hero _request = new()
+	{
+		Key = "valeera",
+		Name = "Valeera",
+		Title = "Shadow of the Uncrowned"
+	};
 
 	private IServiceProvider BuildContainer()
 	{
@@ -44,7 +53,7 @@ public class Benchmarking
 		var fluentHttpClientFactory = BuildContainer()
 			.GetRequiredService<IFluentHttpClientFactory>();
 
-		var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
+		var clientBuilder = fluentHttpClientFactory.CreateBuilder("newtonsoft")
 				.WithBaseUrl("https://sketch7.com")
 				.UseLogging(new LoggerHttpMiddlewareOptions
 				{
@@ -55,20 +64,24 @@ public class Benchmarking
 				.WithMessageHandler(mockHttp)
 			;
 
-		_jsonHttpClient = fluentHttpClientFactory.Add(clientBuilder);
+		_jsonHttpClient = clientBuilder
+			.ConfigureFormatters(x => x.Default = x.Formatters.JsonFormatter)
+			.Build();
 
-		clientBuilder = fluentHttpClientFactory.CreateBuilder("msgpacks")
-				.WithBaseUrl("https://sketch7.com")
-				.UseLogging(new LoggerHttpMiddlewareOptions
-				{
-					//ShouldLogDetailedRequest = true,
-					//ShouldLogDetailedResponse = true
-				})
-				.UseTimer()
-				.WithMessageHandler(mockHttp)
+		_messagePackHttpClient = clientBuilder.WithIdentifier("msgpacks")
 				.ConfigureFormatters(x => x.Default = new MessagePackMediaTypeFormatter(ContractlessStandardResolver.Options))
+				.Build()
 			;
-		_messagePackHttpClient = fluentHttpClientFactory.Add(clientBuilder);
+
+		_systemTextJsonHttpClient = clientBuilder.WithIdentifier("system.text.json")
+				.ConfigureFormatters(x => x.Default = x.Formatters.SystemTextJsonFormatter())
+				.Build()
+			;
+
+		Console.WriteLine($"Setup Complete");
+		Console.WriteLine($" - _jsonHttpClient: {_jsonHttpClient.DefaultFormatter.GetType().Name}");
+		Console.WriteLine($" - _messagePackHttpClient: {_messagePackHttpClient.DefaultFormatter.GetType().Name}");
+		Console.WriteLine($" - _systemTextJsonHttpClient: {_systemTextJsonHttpClient.DefaultFormatter.GetType().Name}");
 	}
 
 	[Benchmark]
@@ -76,12 +89,7 @@ public class Benchmarking
 	{
 		return _jsonHttpClient.CreateRequest("/api/json")
 			.AsPost()
-			.WithBody(new Hero
-			{
-				Key = "valeera",
-				Name = "Valeera",
-				Title = "Shadow of the Uncrowned"
-			})
+			.WithBody(_request)
 			.Return<Hero>();
 	}
 
@@ -90,14 +98,16 @@ public class Benchmarking
 	{
 		return _messagePackHttpClient.CreateRequest("/api/msgpack")
 			.AsPost()
-			.WithBody(new Hero
-			{
-				Key = "valeera",
-				Name = "Valeera",
-				Title = "Shadow of the Uncrowned"
-			})
+			.WithBody(_request)
 			.Return<Hero>();
 	}
 
-
+	[Benchmark]
+	public Task<Hero> PostAsSystemTextJson()
+	{
+		return _systemTextJsonHttpClient.CreateRequest("/api/json")
+			.AsPost()
+			.WithBody(_request)
+			.Return<Hero>();
+	}
 }

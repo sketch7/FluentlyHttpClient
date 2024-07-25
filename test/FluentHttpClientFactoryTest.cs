@@ -139,6 +139,26 @@ public class ClientFactory_ConfigureFormatters
 	}
 
 	[Fact]
+	public void SetDefaultFormatterMany_ShouldBeSetCorrectly()
+	{
+		var clientBuilder = GetNewClientFactory()
+				.CreateBuilder("abc")
+				.WithBaseUrl("http://abc.com")
+			;
+		var httpClient = clientBuilder
+				.ConfigureFormatters(opts => opts.Default = opts.Formatters.XmlFormatter)
+				.Build()
+			;
+		var httpClient2 = clientBuilder
+				.ConfigureFormatters(opts => opts.Default = opts.Formatters.FormUrlEncodedFormatter)
+				.Build()
+			;
+
+		Assert.Equal(httpClient.Formatters.XmlFormatter, httpClient.DefaultFormatter);
+		Assert.Equal(httpClient2.Formatters.FormUrlEncodedFormatter, httpClient2.DefaultFormatter);
+	}
+
+	[Fact]
 	public void ShouldAutoRegisterDefault()
 	{
 		var jsonFormatter = new JsonMediaTypeFormatter();

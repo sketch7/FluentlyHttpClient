@@ -18,7 +18,7 @@ public class MessagePackIntegrationTest
 			.UseTimer()
 			.ConfigureFormatters(opts =>
 			{
-				opts.Default = _messagePackMediaTypeFormatter;
+				//opts.Default = opts.Formatters.SystemTextJsonFormatter();
 			})
 			.Build();
 

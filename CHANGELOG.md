@@ -7,6 +7,7 @@
 ### Features
 - **http client builder:** configurable http version/policy via `WithVersion`, `WithVersionPolicy`
 - **http client builder:** defaults to http version http2.0
+- **media type formatter:** add `SystemTextJsonFormatter` `.ConfigureFormatters(x => x.Default = x.Formatters.SystemTextJsonFormatter())`
 
 ### Performance
 - **logging:** middleware loggings changed to compile-time logging
