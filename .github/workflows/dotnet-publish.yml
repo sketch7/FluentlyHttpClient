@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - "*.x"
-      - feature/*
+      # - feature/*
     paths-ignore:
       - "**.md"
 
@@ -23,6 +23,5 @@ jobs:
     with:
       dotnet-version: 8.0.x
       # publishable: ${{ contains(fromJSON('["develop", "master", "workflow", "feature/workflow"]'), github.ref_name) || endsWith(github.ref_name, '.x')  }}
-      publishable: true
     secrets:
       nuget-auth-token: ${{ secrets.NUGET_KEY }}
