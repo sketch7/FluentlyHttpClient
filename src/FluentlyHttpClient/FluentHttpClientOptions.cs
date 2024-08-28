@@ -57,6 +57,11 @@ public class FluentHttpClientOptions
 	/// Gets or sets the default formatter to be used for content negotiation body format. e.g. JSON, XML, etc...
 	/// </summary>
 	public MediaTypeFormatter? DefaultFormatter { get; set; }
+
+	/// <summary>
+	/// Determine whether to auto register in factory.
+	/// </summary>
+	public bool AutoRegisterFactory { get; set; }
 }
 
 /// <summary>

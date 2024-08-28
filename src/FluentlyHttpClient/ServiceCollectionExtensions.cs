@@ -1,4 +1,4 @@
-﻿using FluentlyHttpClient;
+using FluentlyHttpClient;
 using FluentlyHttpClient.Caching;
 using FluentlyHttpClient.Middleware;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -15,16 +15,21 @@ public static class FluentlyHttpClientServiceCollectionExtensions
 	/// Adds fluently HTTP client services to the specified <see cref="IServiceCollection"/>.
 	/// </summary>
 	/// <param name="services"></param>
+	/// <param name="configureDefaults">Configure defaults.</param>
 	/// <returns>Returns service collection for chaining.</returns>
-	public static IServiceCollection AddFluentlyHttpClient(this IServiceCollection services)
+	public static IServiceCollection AddFluentlyHttpClient(
+		this IServiceCollection services,
+		Action<FluentHttpClientBuilder>? configureDefaults = null
+	)
 	{
-		if (services == null) throw new ArgumentNullException(nameof(services));
+		ArgumentNullException.ThrowIfNull(services);
 
 		services.TryAddSingleton<IHttpResponseSerializer, HttpResponseSerializer>();
 		services.TryAddSingleton<IFluentHttpClientFactory, FluentHttpClientFactory>();
 		services.TryAddTransient<FluentHttpMiddlewareBuilder>();
 		services.AddMemoryCache();
 		services.TryAddSingleton<IResponseCacheService, MemoryResponseCacheService>();
+		services.TryAddSingleton(new FluentHttpClientFactoryOptions(configureDefaults));
 
 		services.AddHttpClient();
 

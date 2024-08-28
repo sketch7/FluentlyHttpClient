@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Formatting;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -18,6 +19,20 @@ public class ClientFactoryTest_Build
 
 public class ClientFactory_WithRequestBuilderDefaults
 {
+	[Fact]
+	public void AddFluentlyHttpClient_Defaults_ShouldBeSet()
+	{
+		var f = new ServiceCollection()
+			.AddFluentlyHttpClient(defaults => defaults
+				.WithTimeout(200)
+				.WithUserAgent("default-config")
+			).BuildServiceProvider()
+			.GetRequiredService<IFluentHttpClientFactory>();
+
+		var client = f.CreateBuilder("sketch7").Build();
+		Assert.Equal("default-config", client.Headers.UserAgent.ToString());
+	}
+
 	[Fact]
 	public void ShouldHaveWithCustomDefaultsSet()
 	{
@@ -142,6 +157,7 @@ public class ClientFactory_ConfigureFormatters
 	public void SetDefaultFormatterMany_ShouldBeSetCorrectly()
 	{
 		var clientBuilder = GetNewClientFactory()
+				.ConfigureDefaults(x => x.WithAutoRegisterFactory(false))
 				.CreateBuilder("abc")
 				.WithBaseUrl("http://abc.com")
 			;

@@ -1,5 +1,8 @@
 namespace FluentlyHttpClient;
 
+public record FluentHttpClientFactoryOptions(
+	Action<FluentHttpClientBuilder>? ConfigureDefaults
+);
 /// <summary>
 /// HTTP client factory which contains registered HTTP clients and able to get existing or creating new ones.
 /// </summary>
@@ -76,9 +79,15 @@ public class FluentHttpClientFactory : IFluentHttpClientFactory
 	/// Initializes a new instance of <see cref="FluentHttpClientFactory"/>.
 	/// </summary>
 	/// <param name="serviceProvider"></param>
-	public FluentHttpClientFactory(IServiceProvider serviceProvider)
+	/// <param name="options"></param>
+	public FluentHttpClientFactory(
+		IServiceProvider serviceProvider,
+		FluentHttpClientFactoryOptions options
+	)
 	{
 		_serviceProvider = serviceProvider;
+		if (options.ConfigureDefaults != null)
+			ConfigureDefaults(options.ConfigureDefaults);
 	}
 
 	/// <inheritdoc />
@@ -112,7 +121,7 @@ public class FluentHttpClientFactory : IFluentHttpClientFactory
 	/// <inheritdoc />
 	public IFluentHttpClient Add(IFluentHttpClient client)
 	{
-		if (client == null) throw new ArgumentNullException(nameof(client));
+		ArgumentNullException.ThrowIfNull(client);
 
 		if (Has(client.Identifier))
 			throw new ClientBuilderValidationException($"FluentHttpClient '{client.Identifier}' is already registered.");
@@ -123,19 +132,18 @@ public class FluentHttpClientFactory : IFluentHttpClientFactory
 	/// <inheritdoc />
 	public IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder)
 	{
-		if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
+		ArgumentNullException.ThrowIfNull(clientBuilder);
 
-		var client = clientBuilder.Build();
+		var client = clientBuilder.Build(skipAutoRegister: true);
 		return Add(client);
 	}
 
 	/// <inheritdoc />
 	public IFluentHttpClientFactory Remove(string identifier)
 	{
-		if (!_clientsMap.TryGetValue(identifier, out var client))
+		if (!_clientsMap.Remove(identifier, out var client))
 			return this;
 
-		_clientsMap.Remove(identifier);
 		client.Dispose();
 		return this;
 	}
