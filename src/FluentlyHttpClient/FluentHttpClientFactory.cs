@@ -1,5 +1,8 @@
 namespace FluentlyHttpClient;
 
+public record FluentHttpClientFactoryOptions(
+	Action<FluentHttpClientBuilder>? ConfigureDefaults
+);
 /// <summary>
 /// HTTP client factory which contains registered HTTP clients and able to get existing or creating new ones.
 /// </summary>
@@ -76,9 +79,15 @@ public class FluentHttpClientFactory : IFluentHttpClientFactory
 	/// Initializes a new instance of <see cref="FluentHttpClientFactory"/>.
 	/// </summary>
 	/// <param name="serviceProvider"></param>
-	public FluentHttpClientFactory(IServiceProvider serviceProvider)
+	/// <param name="options"></param>
+	public FluentHttpClientFactory(
+		IServiceProvider serviceProvider,
+		FluentHttpClientFactoryOptions options
+	)
 	{
 		_serviceProvider = serviceProvider;
+		if (options.ConfigureDefaults != null)
+			ConfigureDefaults(options.ConfigureDefaults);
 	}
 
 	/// <inheritdoc />

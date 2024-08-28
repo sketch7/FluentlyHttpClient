@@ -186,7 +186,7 @@ fluentHttpClientFactory.CreateBuilder("platform")
     .Register()
 
     // big-data - reuse all above and replace the below
-    .Withdentifier("big-data")
+    .WithIdentifier("big-data")
     .WithBaseUrl("https://api.big-data.com")
     .Register();
 ```
@@ -208,10 +208,15 @@ Its also possible to configure builder defaults for all http clients via `Config
 See example below.
 
 ```cs
-fluentHttpClientFactory.ConfigureDefaults(builder
-    => builder.WithUserAgent("sketch7")
-        .WithTimeout(5)
+fluentHttpClientFactory.ConfigureDefaults(builder => builder
+  .WithUserAgent("sketch7")
+  .WithTimeout(5)
 );
+
+// or
+services.AddFluentlyHttpClient(builder => builder
+  .WithUserAgent("sketch7")
+)
 ```
 
 #### Http Client Builder extra goodies

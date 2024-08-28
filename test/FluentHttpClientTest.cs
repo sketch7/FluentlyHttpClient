@@ -86,13 +86,11 @@ public class HttpClient
 		var httpClientRequest = httpClient.CreateRequest();
 		var subClientRequest = subClient.CreateRequest();
 
-
 		var httpClientLocale = httpClient.Headers.GetValues("locale").FirstOrDefault();
 		var subClientLocale = subClient.Headers.GetValues("locale").FirstOrDefault();
 
 		httpClient.Headers.TryGetValues("country", out var countryValues);
 		var subClientCountry = subClient.Headers.GetValues("country").FirstOrDefault();
-
 
 		Assert.Equal("sketch7", httpClient.Identifier);
 		Assert.Equal("sketch7.subclient", subClient.Identifier);
