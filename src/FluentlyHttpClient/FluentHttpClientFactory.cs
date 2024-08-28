@@ -1,4 +1,4 @@
-﻿namespace FluentlyHttpClient;
+namespace FluentlyHttpClient;
 
 /// <summary>
 /// HTTP client factory which contains registered HTTP clients and able to get existing or creating new ones.
@@ -54,6 +54,11 @@ public interface IFluentHttpClientFactory
 	/// <param name="identifier">Identifier to check.</param>
 	/// <returns>Returns true when already exists.</returns>
 	bool Has(string identifier);
+
+	/// <summary>
+	/// Get the amount of clients registered.
+	/// </summary>
+	int Count { get; }
 }
 
 /// <summary>
@@ -62,8 +67,10 @@ public interface IFluentHttpClientFactory
 public class FluentHttpClientFactory : IFluentHttpClientFactory
 {
 	private readonly IServiceProvider _serviceProvider;
-	private readonly Dictionary<string, IFluentHttpClient> _clientsMap = new();
+	private readonly Dictionary<string, IFluentHttpClient> _clientsMap = [];
 	private Action<FluentHttpClientBuilder>? _configure;
+
+	public int Count => _clientsMap.Count;
 
 	/// <summary>
 	/// Initializes a new instance of <see cref="FluentHttpClientFactory"/>.

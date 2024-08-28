@@ -1,6 +1,12 @@
 # Fluently Http Changelog
 
-[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/3.8.1...3.9.0) (2020-X-X)
+[_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/4.0.1...4.1.0) (2024-X-X)
+
+## [4.0.1](https://github.com/sketch7/FluentlyHttpClient/compare/4.0.0...4.0.1) (2024-08-28)
+
+### Features
+
+- **http client factory:** expose `Count` to know how many clients are registered
 
 ## [4.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.6...4.0.0) (2024-07-24)
 
