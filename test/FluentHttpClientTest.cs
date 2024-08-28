@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Sketch7.MessagePack.MediaTypeFormatter;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
@@ -57,7 +58,9 @@ public class HttpClient
 	[Fact]
 	public void CreateClient_ShouldInheritOptions()
 	{
-		var clientBuilder = GetNewClientFactory().CreateBuilder("sketch7")
+		var serviceProvider = CreateContainer().BuildServiceProvider();
+		var httpClientFactory = serviceProvider.GetRequiredService<IFluentHttpClientFactory>();
+		var clientBuilder = httpClientFactory.CreateBuilder("sketch7")
 				.WithBaseUrl("https://sketch7.com")
 				.WithHeader("locale", "en-GB")
 				.UseTimer()
@@ -104,6 +107,8 @@ public class HttpClient
 		Assert.Equal("reward", subClientRequest.Items["context"]);
 		Assert.Equal(httpClient.Formatters.Count, subClient.Formatters.Count);
 		// todo: check middleware count?
+
+		Assert.Equal(2, httpClientFactory.Count);
 	}
 
 	[Fact]

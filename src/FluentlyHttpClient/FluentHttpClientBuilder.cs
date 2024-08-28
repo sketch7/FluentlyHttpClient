@@ -23,6 +23,7 @@ public class FluentHttpClientBuilder : IFluentHttpHeaderBuilder<FluentHttpClient
 	private HttpMessageHandler? _httpMessageHandler;
 	private readonly FormatterOptions _formatterOptions = new();
 	private bool _useBaseUrlTrailingSlash = true;
+	private bool _autoRegisterFactory = true;
 
 	/// <summary>
 	/// Initializes a new instance.
@@ -36,6 +37,17 @@ public class FluentHttpClientBuilder : IFluentHttpHeaderBuilder<FluentHttpClient
 		_serviceProvider = serviceProvider;
 		_fluentHttpClientFactory = fluentHttpClientFactory;
 		_middlewareBuilder = middlewareBuilder;
+	}
+
+	/// <summary>
+	/// Determine whether to auto register client in factory. Must have unique identifier.
+	/// </summary>
+	/// <param name="autoRegister"></param>
+	/// <returns></returns>
+	public FluentHttpClientBuilder WithAutoRegisterFactory(bool autoRegister = true)
+	{
+		_autoRegisterFactory = autoRegister;
+		return this;
 	}
 
 	/// <summary>
@@ -216,6 +228,7 @@ public class FluentHttpClientBuilder : IFluentHttpHeaderBuilder<FluentHttpClient
 			Formatters = _formatterOptions.Formatters,
 			DefaultFormatter = _formatterOptions.Default,
 			UseBaseUrlTrailingSlash = _useBaseUrlTrailingSlash,
+			AutoRegisterFactory = _autoRegisterFactory
 		};
 	}
 
@@ -223,15 +236,17 @@ public class FluentHttpClientBuilder : IFluentHttpHeaderBuilder<FluentHttpClient
 	/// Builds a new HTTP client (with default <see cref="FluentHttpClient"/> implementation).
 	/// </summary>
 	/// <param name="options"></param>
-	public IFluentHttpClient Build(FluentHttpClientOptions? options = null)
-		=> Build<FluentHttpClient>(options);
+	/// <param name="skipAutoRegister">Determine whether to skip auto register, even if on the builder is configured to be true.</param>
+	public IFluentHttpClient Build(FluentHttpClientOptions? options = null, bool? skipAutoRegister = null)
+		=> Build<FluentHttpClient>(options, skipAutoRegister);
 
 	/// <summary>
 	/// Build a new HTTP client.
 	/// </summary>
 	/// <typeparam name="THttpClient">HttpClient type</typeparam>
 	/// <param name="options"></param>
-	public IFluentHttpClient Build<THttpClient>(FluentHttpClientOptions? options = null)
+	/// <param name="skipAutoRegister">Determine whether to skip auto register, even if on the builder is configured to be true.</param>
+	public IFluentHttpClient Build<THttpClient>(FluentHttpClientOptions? options = null, bool? skipAutoRegister = null)
 		where THttpClient : IFluentHttpClient
 	{
 		options ??= BuildOptions();
@@ -239,7 +254,10 @@ public class FluentHttpClientBuilder : IFluentHttpHeaderBuilder<FluentHttpClient
 		if (string.IsNullOrEmpty(options.Identifier))
 			throw ClientBuilderValidationException.FieldNotSpecified(nameof(options.Identifier));
 
-		return ActivatorUtilities.CreateInstance<THttpClient>(_serviceProvider, options, _fluentHttpClientFactory);
+		var client = ActivatorUtilities.CreateInstance<THttpClient>(_serviceProvider, options, _fluentHttpClientFactory);
+		if (_autoRegisterFactory && skipAutoRegister is not true)
+			_fluentHttpClientFactory.Add(client);
+		return client;
 	}
 
 	/// <summary>
@@ -272,6 +290,7 @@ public class FluentHttpClientBuilder : IFluentHttpHeaderBuilder<FluentHttpClient
 		_formatterOptions.Formatters.Clear();
 		_formatterOptions.Formatters.AddRange(formatters);
 		_formatterOptions.Default = options.DefaultFormatter;
+		_autoRegisterFactory = options.AutoRegisterFactory;
 
 		return this;
 	}

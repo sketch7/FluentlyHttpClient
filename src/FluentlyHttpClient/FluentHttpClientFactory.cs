@@ -112,7 +112,7 @@ public class FluentHttpClientFactory : IFluentHttpClientFactory
 	/// <inheritdoc />
 	public IFluentHttpClient Add(IFluentHttpClient client)
 	{
-		if (client == null) throw new ArgumentNullException(nameof(client));
+		ArgumentNullException.ThrowIfNull(client);
 
 		if (Has(client.Identifier))
 			throw new ClientBuilderValidationException($"FluentHttpClient '{client.Identifier}' is already registered.");
@@ -123,19 +123,18 @@ public class FluentHttpClientFactory : IFluentHttpClientFactory
 	/// <inheritdoc />
 	public IFluentHttpClient Add(FluentHttpClientBuilder clientBuilder)
 	{
-		if (clientBuilder == null) throw new ArgumentNullException(nameof(clientBuilder));
+		ArgumentNullException.ThrowIfNull(clientBuilder);
 
-		var client = clientBuilder.Build();
+		var client = clientBuilder.Build(skipAutoRegister: true);
 		return Add(client);
 	}
 
 	/// <inheritdoc />
 	public IFluentHttpClientFactory Remove(string identifier)
 	{
-		if (!_clientsMap.TryGetValue(identifier, out var client))
+		if (!_clientsMap.Remove(identifier, out var client))
 			return this;
 
-		_clientsMap.Remove(identifier);
 		client.Dispose();
 		return this;
 	}

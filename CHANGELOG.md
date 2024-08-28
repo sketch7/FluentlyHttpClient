@@ -7,6 +7,7 @@
 ### Features
 
 - **http client factory:** expose `Count` to know how many clients are registered
+- **http client builder:** auto register client into factory - can be omitted via `WithAutoRegisterFactory`
 
 ## [4.0.0](https://github.com/sketch7/FluentlyHttpClient/compare/3.9.6...4.0.0) (2024-07-24)
 

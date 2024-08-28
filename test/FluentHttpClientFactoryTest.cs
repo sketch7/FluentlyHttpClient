@@ -142,6 +142,7 @@ public class ClientFactory_ConfigureFormatters
 	public void SetDefaultFormatterMany_ShouldBeSetCorrectly()
 	{
 		var clientBuilder = GetNewClientFactory()
+				.ConfigureDefaults(x => x.WithAutoRegisterFactory(false))
 				.CreateBuilder("abc")
 				.WithBaseUrl("http://abc.com")
 			;
