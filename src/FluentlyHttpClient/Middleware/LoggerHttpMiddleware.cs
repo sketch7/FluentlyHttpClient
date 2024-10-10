@@ -169,7 +169,7 @@ namespace FluentlyHttpClient
 
 internal static partial class LogExtensions
 {
-	[LoggerMessage(LogLevel.Information, "HTTP request [{method}] '{requestUrl}' ({path}) responded {statusCode:D} in {elapsed:n0}ms (httpVersion)")]
+	[LoggerMessage(LogLevel.Information, "HTTP request [{method}] '{requestUrl}' ({path}) responded {statusCode:D} in {elapsed:n0}ms ({httpVersion})")]
 	internal static partial void LoggerHttp_CondensedRequest(
 		this ILogger logger,
 		HttpMethod method,
@@ -180,10 +180,10 @@ internal static partial class LogExtensions
 		Version httpVersion
 	);
 
-	[LoggerMessage(LogLevel.Information, "Pre - request... [{method}] '{requestUrl}' ({path}) (httpVersion)")]
+	[LoggerMessage(LogLevel.Information, "Pre - request... [{method}] '{requestUrl}' ({path}) ({httpVersion})")]
 	internal static partial void LoggerHttp_Request(this ILogger logger, HttpMethod method, Uri requestUrl, string path, Version httpVersion);
 
-	[LoggerMessage(LogLevel.Information, "Pre-request... [{method}] '{requestUrl}' ({path}) \nHeaders: {headers}\nContent: {requestContent} (httpVersion)")]
+	[LoggerMessage(LogLevel.Information, "Pre-request... [{method}] '{requestUrl}' ({path}) \nHeaders: {headers}\nContent: {requestContent} ({httpVersion})")]
 	internal static partial void LoggerHttp_RequestDetailed(
 		this ILogger logger,
 		HttpMethod method,
@@ -194,7 +194,7 @@ internal static partial class LogExtensions
 		Version httpVersion
 	);
 
-	[LoggerMessage(LogLevel.Information, "Post-request... [{method}] '{requestUrl}' ({path}) responded {statusCode:D} in {elapsed:n0}ms (httpVersion)")]
+	[LoggerMessage(LogLevel.Information, "Post-request... [{method}] '{requestUrl}' ({path}) responded {statusCode:D} in {elapsed:n0}ms ({httpVersion})")]
 	internal static partial void LoggerHttp_Response(
 		this ILogger logger,
 		HttpMethod method,
@@ -205,7 +205,7 @@ internal static partial class LogExtensions
 		Version httpVersion
 	);
 
-	[LoggerMessage(LogLevel.Information, "Post-request... [{method}] '{requestUrl}' ({path}) responded {statusCode:D} (httpVersion) " +
+	[LoggerMessage(LogLevel.Information, "Post-request... [{method}] '{requestUrl}' ({path}) responded {statusCode:D} ({httpVersion}) " +
 	                                     "\nHeaders: {headers}\nContent: {responseContent} in {elapsed:n0}ms")]
 	internal static partial void LoggerHttp_ResponseDetailed(
 		this ILogger logger,
