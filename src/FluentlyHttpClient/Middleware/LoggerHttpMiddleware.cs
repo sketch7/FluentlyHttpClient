@@ -73,25 +73,25 @@ namespace FluentlyHttpClient.Middleware
 			}
 
 			if (!(options.ShouldLogDetailedRequest ?? false))
-				_logger.LoggerHttp_Request(request);
+				_logger.LoggerHttp_Request(request.Method, request.Uri!);
 			else
 			{
 				string? requestContent = null;
 				if (request.Message.Content != null)
 					requestContent = await request.Message.Content.ReadAsStringAsync();
-				_logger.LoggerHttp_RequestDetailed(request, request.Headers.ToFormattedString(), requestContent);
+				_logger.LoggerHttp_RequestDetailed(request.Method, request.Uri!, request.Headers.ToFormattedString(), requestContent);
 			}
 
 			response = await _next(context);
 			var stopwatchElapsed = watch.GetElapsedTime();
 			if (response.Content == null || !(options.ShouldLogDetailedResponse ?? false))
 			{
-				_logger.LoggerHttp_Response(response, stopwatchElapsed.TotalMilliseconds);
+				_logger.LoggerHttp_Response(request.Method, request.Uri!, request.Uri!.AbsolutePath, response.StatusCode, stopwatchElapsed.TotalMilliseconds);
 				return response;
 			}
 
 			var responseContent = await response.Content.ReadAsStringAsync();
-			_logger.LoggerHttp_ResponseDetailed(response, response.Headers.ToFormattedString(), responseContent, stopwatchElapsed.TotalMilliseconds);
+			_logger.LoggerHttp_ResponseDetailed(request.Method, request.Uri!, request.Uri!.AbsolutePath, response.StatusCode, response.Headers.ToFormattedString(), responseContent, stopwatchElapsed.TotalMilliseconds);
 			return response;
 		}
 	}
@@ -166,18 +166,18 @@ namespace FluentlyHttpClient
 
 internal static partial class LogExtensions
 {
-	[LoggerMessage(LogLevel.Information, "HTTP request [{method}] {requestUrl} responded {statusCode:D} in {elapsed:n0}ms")]
+	[LoggerMessage(LogLevel.Information, "HTTP request [{method}] '{requestUrl}' responded {statusCode:D} in {elapsed:n0}ms")]
 	internal static partial void LoggerHttp_CondensedRequest(this ILogger logger, HttpMethod method, Uri requestUrl, HttpStatusCode statusCode, double elapsed);
 
-	[LoggerMessage(LogLevel.Information, "Pre - request... {request}")]
-	internal static partial void LoggerHttp_Request(this ILogger logger, FluentHttpRequest request);
+	[LoggerMessage(LogLevel.Information, "Pre - request... [{method}] '{requestUrl}'")]
+	internal static partial void LoggerHttp_Request(this ILogger logger, HttpMethod method, Uri requestUrl);
 
-	[LoggerMessage(LogLevel.Information, "Pre-request... {request}\nHeaders: {headers}\nContent: {requestContent}")]
-	internal static partial void LoggerHttp_RequestDetailed(this ILogger logger, FluentHttpRequest request, string headers, string? requestContent);
+	[LoggerMessage(LogLevel.Information, "Pre-request... [{method}] '{requestUrl}'\nHeaders: {headers}\nContent: {requestContent}")]
+	internal static partial void LoggerHttp_RequestDetailed(this ILogger logger, HttpMethod method, Uri requestUrl, string headers, string? requestContent);
 
-	[LoggerMessage(LogLevel.Information, "Post-request... {response} in {elapsed:n0}ms")]
-	internal static partial void LoggerHttp_Response(this ILogger logger, FluentHttpResponse response, double elapsed);
+	[LoggerMessage(LogLevel.Information, "Post-request... [{method}] '{requestUrl}' ({path}) responded {statusCode:D} in {elapsed:n0}ms")]
+	internal static partial void LoggerHttp_Response(this ILogger logger, HttpMethod method, Uri requestUrl, string path, HttpStatusCode statusCode, double elapsed);
 
-	[LoggerMessage(LogLevel.Information, "Post-request... {response}\nHeaders: {headers}\nContent: {responseContent} in {elapsed:n0}ms")]
-	internal static partial void LoggerHttp_ResponseDetailed(this ILogger logger, FluentHttpResponse response, string headers, string? responseContent, double elapsed);
+	[LoggerMessage(LogLevel.Information, "Post-request... [{method}] '{requestUrl}' ({path}) responded {statusCode:D} \nHeaders: {headers}\nContent: {responseContent} in {elapsed:n0}ms")]
+	internal static partial void LoggerHttp_ResponseDetailed(this ILogger logger, HttpMethod method, Uri requestUrl, string path, HttpStatusCode statusCode, string headers, string? responseContent, double elapsed);
 }
