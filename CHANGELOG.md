@@ -2,16 +2,14 @@
 
 [_vNext_](https://github.com/sketch7/FluentlyHttpClient/compare/4.0.1...4.1.0) (2024-X-X)
 
-## [4.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/4.1.0...4.2.0) (2024-10-11)
+<!-- ## [4.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/4.1.0...4.2.0) (2024-10-11) -->
+
+
+## [4.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/4.0.0...4.1.0) (2024-10-11)
 
 ### Features
 
 - **logger middleware:** log pops individually for request/response
-
-## [4.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/4.0.0...4.1.0) (2024-08-28)
-
-### Features
-
 - **http client factory:** expose `Count` to know how many clients are registered
 - **http client builder:** auto register client into factory - can be omitted via `WithAutoRegisterFactory` (or `.Build(skipAutoRegister: true)`)
 - **service collection:** configurable defaults on `services.AddFluentlyHttpClient`
