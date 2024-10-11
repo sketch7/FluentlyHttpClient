@@ -70,28 +70,28 @@ namespace FluentlyHttpClient.Middleware
 			{
 				response = await _next(context);
 				_logger.LoggerHttp_CondensedRequest(
+					request.Message.Version,
 					request.Method,
 					request.Uri!,
 					response.StatusCode,
-					watch.GetElapsedTime().TotalMilliseconds,
-					request.Message.Version
+					watch.GetElapsedTime().TotalMilliseconds
 				);
 				return response;
 			}
 
 			if (!(options.ShouldLogDetailedRequest ?? false))
-				_logger.LoggerHttp_Request(request.Method, request.Uri!, request.Message.Version);
+				_logger.LoggerHttp_Request(request.Message.Version, request.Method, request.Uri!);
 			else
 			{
 				string? requestContent = null;
 				if (request.Message.Content != null)
 					requestContent = await request.Message.Content.ReadAsStringAsync();
 				_logger.LoggerHttp_RequestDetailed(
+					request.Message.Version,
 					request.Method,
 					request.Uri!,
 					request.Headers.ToFormattedString(),
-					requestContent,
-					request.Message.Version
+					requestContent
 				);
 			}
 
@@ -100,24 +100,24 @@ namespace FluentlyHttpClient.Middleware
 			if (response.Content == null || !(options.ShouldLogDetailedResponse ?? false))
 			{
 				_logger.LoggerHttp_Response(
+					response.Message.Version,
 					request.Method,
 					request.Uri!,
 					response.StatusCode,
-					stopwatchElapsed.TotalMilliseconds,
-					response.Message.Version
+					stopwatchElapsed.TotalMilliseconds
 				);
 				return response;
 			}
 
 			var responseContent = await response.Content.ReadAsStringAsync();
 			_logger.LoggerHttp_ResponseDetailed(
+				response.Message.Version,
 				request.Method,
 				request.Uri!,
 				response.StatusCode,
 				response.Headers.ToFormattedString(),
 				responseContent,
-				stopwatchElapsed.TotalMilliseconds,
-				response.Message.Version
+				stopwatchElapsed.TotalMilliseconds
 			);
 			return response;
 		}
@@ -193,49 +193,49 @@ namespace FluentlyHttpClient
 
 internal static partial class LogExtensions
 {
-	[LoggerMessage(LogLevel.Information, "HTTP request [{method}] '{requestUrl}' responded {statusCode:D} in {elapsed:n0}ms ({httpVersion})")]
+	[LoggerMessage(LogLevel.Information, "HTTP request ({httpVersion}) [{method}] '{requestUrl}' responded {statusCode:D} in {elapsed:n0}ms")]
 	internal static partial void LoggerHttp_CondensedRequest(
 		this ILogger logger,
+		Version httpVersion,
 		HttpMethod method,
 		Uri requestUrl,
 		HttpStatusCode statusCode,
-		double elapsed,
-		Version httpVersion
+		double elapsed
 	);
 
-	[LoggerMessage(LogLevel.Information, "Pre - request... [{method}] '{requestUrl}' ({httpVersion})")]
-	internal static partial void LoggerHttp_Request(this ILogger logger, HttpMethod method, Uri requestUrl, Version httpVersion);
+	[LoggerMessage(LogLevel.Information, "Pre - request... ({httpVersion}) [{method}] '{requestUrl}'")]
+	internal static partial void LoggerHttp_Request(this ILogger logger, Version httpVersion, HttpMethod method, Uri requestUrl);
 
-	[LoggerMessage(LogLevel.Information, "Pre-request... [{method}] '{requestUrl}' \nHeaders: {headers}\nContent: {requestContent} ({httpVersion})")]
+	[LoggerMessage(LogLevel.Information, "Pre-request... ({httpVersion}) [{method}] '{requestUrl}' \nHeaders: {headers}\nContent: {requestContent}")]
 	internal static partial void LoggerHttp_RequestDetailed(
 		this ILogger logger,
+		Version httpVersion,
 		HttpMethod method,
 		Uri requestUrl,
 		string headers,
-		string? requestContent,
-		Version httpVersion
+		string? requestContent
 	);
 
-	[LoggerMessage(LogLevel.Information, "Post-request... [{method}] '{requestUrl}' responded {statusCode:D} in {elapsed:n0}ms ({httpVersion})")]
+	[LoggerMessage(LogLevel.Information, "Post-request... ({httpVersion}) [{method}] '{requestUrl}' responded {statusCode:D} in {elapsed:n0}ms")]
 	internal static partial void LoggerHttp_Response(
 		this ILogger logger,
+		Version httpVersion,
 		HttpMethod method,
 		Uri requestUrl,
 		HttpStatusCode statusCode,
-		double elapsed,
-		Version httpVersion
+		double elapsed
 	);
 
-	[LoggerMessage(LogLevel.Information, "Post-request... [{method}] '{requestUrl}' responded {statusCode:D} ({httpVersion}) " +
+	[LoggerMessage(LogLevel.Information, "Post-request... ({httpVersion}) [{method}] '{requestUrl}' responded {statusCode:D} " +
 	                                     "\nHeaders: {headers}\nContent: {responseContent} in {elapsed:n0}ms")]
 	internal static partial void LoggerHttp_ResponseDetailed(
 		this ILogger logger,
+		Version httpVersion,
 		HttpMethod method,
 		Uri requestUrl,
 		HttpStatusCode statusCode,
 		string headers,
 		string? responseContent,
-		double elapsed,
-		Version httpVersion
+		double elapsed
 	);
 }
