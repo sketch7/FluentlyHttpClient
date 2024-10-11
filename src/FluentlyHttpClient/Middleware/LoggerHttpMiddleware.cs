@@ -57,7 +57,6 @@ namespace FluentlyHttpClient.Middleware
 		public async Task<FluentHttpResponse> Invoke(FluentHttpMiddlewareContext context)
 		{
 			var request = context.Request;
-			var httpVersion = request.Message.Version;
 
 			if (!_logger.IsEnabled(LogLevel.Information))
 				return await _next(context);
@@ -70,30 +69,56 @@ namespace FluentlyHttpClient.Middleware
 				&& !options.ShouldLogDetailedResponse.GetValueOrDefault(false))
 			{
 				response = await _next(context);
-				_logger.LoggerHttp_CondensedRequest(request.Method, request.Uri!, response.StatusCode, watch.GetElapsedTime().TotalMilliseconds, httpVersion);
+				_logger.LoggerHttp_CondensedRequest(
+					request.Method,
+					request.Uri!,
+					response.StatusCode,
+					watch.GetElapsedTime().TotalMilliseconds,
+					request.Message.Version
+				);
 				return response;
 			}
 
 			if (!(options.ShouldLogDetailedRequest ?? false))
-				_logger.LoggerHttp_Request(request.Method, request.Uri!, httpVersion);
+				_logger.LoggerHttp_Request(request.Method, request.Uri!, request.Message.Version);
 			else
 			{
 				string? requestContent = null;
 				if (request.Message.Content != null)
 					requestContent = await request.Message.Content.ReadAsStringAsync();
-				_logger.LoggerHttp_RequestDetailed(request.Method, request.Uri!, request.Headers.ToFormattedString(), requestContent, httpVersion);
+				_logger.LoggerHttp_RequestDetailed(
+					request.Method,
+					request.Uri!,
+					request.Headers.ToFormattedString(),
+					requestContent,
+					request.Message.Version
+				);
 			}
 
 			response = await _next(context);
 			var stopwatchElapsed = watch.GetElapsedTime();
 			if (response.Content == null || !(options.ShouldLogDetailedResponse ?? false))
 			{
-				_logger.LoggerHttp_Response(request.Method, request.Uri!,  response.StatusCode, stopwatchElapsed.TotalMilliseconds, httpVersion);
+				_logger.LoggerHttp_Response(
+					request.Method,
+					request.Uri!,
+					response.StatusCode,
+					stopwatchElapsed.TotalMilliseconds,
+					response.Message.Version
+				);
 				return response;
 			}
 
 			var responseContent = await response.Content.ReadAsStringAsync();
-			_logger.LoggerHttp_ResponseDetailed(request.Method, request.Uri!, response.StatusCode, response.Headers.ToFormattedString(), responseContent, stopwatchElapsed.TotalMilliseconds, httpVersion);
+			_logger.LoggerHttp_ResponseDetailed(
+				request.Method,
+				request.Uri!,
+				response.StatusCode,
+				response.Headers.ToFormattedString(),
+				responseContent,
+				stopwatchElapsed.TotalMilliseconds,
+				response.Message.Version
+			);
 			return response;
 		}
 	}
