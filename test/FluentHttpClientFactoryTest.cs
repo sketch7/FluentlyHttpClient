@@ -33,6 +33,39 @@ public class ClientFactory_WithRequestBuilderDefaults
 		Assert.Equal("default-config", client.Headers.UserAgent.ToString());
 	}
 
+
+	[Fact]
+	public void Build_RegisterMulti_ShouldNotReplacePrevious()
+	{
+		var builder = GetNewClientFactory().CreateBuilder("A")
+			.WithBaseUrl("http://abc.com")
+			.WithHeader("X-S7", "a")
+			.WithHeader("X-Org", "s7")
+			.WithBasicAuthentication("user", "pa$$");
+
+		var httpClientA = builder.Build();
+
+		var httpClientB = builder
+			.WithHeader("X-S7", "b")
+			.WithIdentifier("B")
+			.WithBasicAuthentication("user-2", "pa$$")
+			.Build();
+
+		httpClientA.Headers.TryGetValues("X-Org", out var orgHeadersA);
+		httpClientA.Headers.TryGetValues("X-S7", out var s7HeadersA);
+
+		httpClientB.Headers.TryGetValues("X-S7", out var s7HeadersB);
+		httpClientA.Headers.TryGetValues("X-Org", out var orgHeadersB);
+
+		Assert.Single(orgHeadersA, "s7");
+		Assert.Single(s7HeadersA, "a");
+		Assert.Equal("dXNlcjpwYSQk", httpClientA.Headers.Authorization.Parameter);
+
+		Assert.Single(orgHeadersB, "s7");
+		Assert.Single(s7HeadersB, "b");
+		Assert.Equal("dXNlci0yOnBhJCQ=", httpClientB.Headers.Authorization.Parameter);
+	}
+
 	[Fact]
 	public void ShouldHaveWithCustomDefaultsSet()
 	{
