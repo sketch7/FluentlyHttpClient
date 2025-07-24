@@ -48,6 +48,7 @@ public record QueryStringOptions
 	/// Gets or sets the function to format a collection item. This will allow you to manipulate the value.
 	/// </summary>
 	public Func<object, string>? CollectionItemFormatter { get; set; }
+	public Dictionary<string, Func<object, string>>? CollectionKeyValueItemFormatter { get; set; }
 
 	/// <summary>
 	/// Gets or sets the function to format the key e.g. lowercase.
@@ -55,6 +56,7 @@ public record QueryStringOptions
 	internal Func<string, string> KeyFormatter { get; set; } = DefaultKeyFormatter;
 
 	internal Func<object, string>? ValueFormatter { get; set; }
+	internal Dictionary<string, Func<object, string>>? KeyValueFormatter { get; set; }
 
 	internal Func<string, string> ValueEncoder { get; set; } = DefaultValueEncoder;
 
@@ -95,6 +97,13 @@ public record QueryStringOptions
 	{
 		ValueFormatter = configure;
 		CollectionItemFormatter = configure;
+		return this;
+	}
+
+	public QueryStringOptions WithKeyValueFormatter(Dictionary<string, Func<object, string>> configure)
+	{
+		KeyValueFormatter = configure;
+		CollectionKeyValueItemFormatter = configure;
 		return this;
 	}
 
