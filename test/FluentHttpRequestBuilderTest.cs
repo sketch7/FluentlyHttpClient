@@ -286,13 +286,40 @@ public class RequestBuilder_WithQueryParams
 		var request = builder.WithUri("/org/sketch7/heroes")
 			.WithQueryParamsOptions(opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated)
 			.WithQueryParamsOptions(opts => opts.WithKeyFormatter(s => s.ToUpper()))
+			.WithQueryParamsOptions(opts => opts.WithValuePerKeyFormatter(new Dictionary<string, Func<object, string>>()
+			{
+				["POWERS"] = val => (val  is string valStr) ? valStr.ToUpper() : null!
+			}))
 			.WithQueryParams(new
 			{
 				Roles = new List<string> { "warrior", "assassin" },
+				Powers = new List<string> { "medium", "high" }
 			}
 			).Build();
 
-		Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin", request.Uri.ToString());
+		Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin&POWERS=MEDIUM,HIGH", request.Uri.ToString());
+	}
+
+	[Fact]
+	public void WithQueryParamsOptions_ValuePerKeyTransform()
+	{
+		var builder = GetNewRequestBuilder();
+		var request = builder.WithUri("/org/sketch7/heroes")
+			.WithQueryParamsOptions(opts => opts.WithValuePerKeyFormatter(new Dictionary<string, Func<object, string>>()
+			{
+				["power"] = val => (val is string valStr) ? valStr.ToUpper() : null!,
+				["dateTime"] = val => (val is DateTime valStr) ? valStr.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") : null!
+			}))
+			.WithQueryParamsOptions(opts => opts.WithValueEncoder(x => x))
+			.WithQueryParams(new
+			{
+				Role = "warrior",
+				Power = "medium",
+				DateTime = new DateTime(2025, 1, 1)
+			}
+			).Build();
+
+		Assert.Equal("/org/sketch7/heroes?role=warrior&power=MEDIUM&dateTime=2025-01-01T00:00:00Z", request.Uri.ToString());
 	}
 }
 

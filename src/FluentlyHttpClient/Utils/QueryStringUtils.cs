@@ -35,7 +35,7 @@ public static class QueryStringUtils
 
 			if (item.Value is string)
 			{
-				qs = AddQueryString(key, FormatValue(item.Value), qs, options.ValueEncoder);
+				qs = AddQueryString(key, FormatValue(key, item.Value), qs, options.ValueEncoder);
 				continue;
 			}
 
@@ -45,15 +45,23 @@ public static class QueryStringUtils
 					qs = BuildCollectionQueryString(key, values, qs, options);
 					break;
 				default:
-					qs = AddQueryString(key, FormatValue(item.Value), qs, options.ValueEncoder);
+					qs = AddQueryString(key, FormatValue(key, item.Value), qs, options.ValueEncoder);
 					break;
 			}
 		}
 
 		return qs;
 
-		string FormatValue(object value)
-			=> options.ValueFormatter == null ? value.ToString()! : options.ValueFormatter(value);
+		string FormatValue(object param, object value)
+		{
+			if (options.ValueFormatter != null)
+				return options.ValueFormatter(value);
+
+			if (options.ValuePerKeyFormatter != null && param is string && options.ValuePerKeyFormatter.TryGetValue((param as string)!, out var transform))
+				return transform(value);
+
+			return value.ToString()!;
+		}
 	}
 
 	/// <summary>
@@ -76,13 +84,18 @@ public static class QueryStringUtils
 			? key
 			: options.CollectionKeyFormatter(key);
 
+		var collectionFormatter = options.CollectionItemFormatter;
+
+		if (collectionFormatter == null && options.CollectionValuePerKeyItemFormatter?.TryGetValue(key, out var formatter) is true)
+			collectionFormatter = formatter;
+
 		switch (options.CollectionMode)
 		{
 			case QueryStringCollectionMode.KeyPerValue:
 				foreach (var value in values)
 				{
-					var valueStr = options.CollectionItemFormatter != null
-						? options.CollectionItemFormatter(value)
+					var valueStr = collectionFormatter != null
+						? collectionFormatter(value)
 						: value.ToString();
 					qs = AddQueryString(key, valueStr, qs, options.ValueEncoder);
 				}
@@ -91,8 +104,8 @@ public static class QueryStringUtils
 				var index = 0;
 				foreach (var value in values)
 				{
-					var valueStr = options.CollectionItemFormatter != null
-						? options.CollectionItemFormatter(value)
+					var valueStr = collectionFormatter != null
+						? collectionFormatter(value)
 						: value.ToString();
 					if (index == 0)
 						qs = AddQueryString(key, valueStr, qs, options.ValueEncoder);

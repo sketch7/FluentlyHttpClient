@@ -4,6 +4,11 @@
 
 <!-- ## [4.2.0](https://github.com/sketch7/FluentlyHttpClient/compare/4.1.0...4.2.0) (2024-10-11) -->
 
+## [4.1.1](https://github.com/sketch7/FluentlyHttpClient/compare/4.1.0...4.1.1) (2025-07-24)
+
+### Features
+
+- **transform value:** format value per key
 
 ## [4.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/4.0.0...4.1.0) (2024-10-11)
 
