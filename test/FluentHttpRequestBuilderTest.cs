@@ -288,7 +288,7 @@ public class RequestBuilder_WithQueryParams
 			.WithQueryParamsOptions(opts => opts.WithKeyFormatter(s => s.ToUpper()))
 			.WithQueryParamsOptions(opts => opts.WithKeyValueFormatter(new Dictionary<string, Func<object, string>>()
 			{
-				["POWERS"] = x => (x is string p) ? p.ToUpper() : null!
+				["POWERS"] = val => (val  is string valStr) ? valStr.ToUpper() : null!
 			}))
 			.WithQueryParams(new
 			{
