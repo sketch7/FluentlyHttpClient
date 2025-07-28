@@ -301,14 +301,14 @@ public class RequestBuilder_WithQueryParams
 	}
 
 	[Fact]
-	public void WithQueryParamsOptions_KeyValueTransform()
+	public void WithQueryParamsOptions_ValuePerKeyTransform()
 	{
 		var builder = GetNewRequestBuilder();
 		var request = builder.WithUri("/org/sketch7/heroes")
 			.WithQueryParamsOptions(opts => opts.WithValuePerKeyFormatter(new Dictionary<string, Func<object, string>>()
 			{
-				["power"] = x => (x is string p) ? p.ToUpper() : null!,
-				["dateTime"] = x => (x is DateTime p) ? p.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") : null!
+				["power"] = val => (val is string valStr) ? valStr.ToUpper() : null!,
+				["dateTime"] = val => (val is DateTime valStr) ? valStr.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") : null!
 			}))
 			.WithQueryParamsOptions(opts => opts.WithValueEncoder(x => x))
 			.WithQueryParams(new

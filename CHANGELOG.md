@@ -8,7 +8,7 @@
 
 ### Features
 
-- **transform value:** keyed by param custom value transform function
+- **transform value:** format value per key
 
 ## [4.1.0](https://github.com/sketch7/FluentlyHttpClient/compare/4.0.0...4.1.0) (2024-10-11)
 
