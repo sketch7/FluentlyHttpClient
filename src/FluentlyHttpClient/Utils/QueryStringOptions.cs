@@ -101,11 +101,11 @@ public record QueryStringOptions
 	}
 
 	/// <summary>
-	/// Gets or sets the function to format a value/key. This will allow you to manipulate the value by key
+	/// Gets or sets the function to format a value per key. This will allow you to manipulate the value by key
 	/// </summary>
 	/// <param name="configure"></param>
 	/// <returns></returns>
-	public QueryStringOptions WithKeyValueFormatter(Dictionary<string, Func<object, string>> configure)
+	public QueryStringOptions WithValuePerKeyFormatter(Dictionary<string, Func<object, string>> configure)
 	{
 		KeyValueFormatter = configure;
 		CollectionKeyValueItemFormatter = configure;
