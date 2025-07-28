@@ -286,7 +286,7 @@ public class RequestBuilder_WithQueryParams
 		var request = builder.WithUri("/org/sketch7/heroes")
 			.WithQueryParamsOptions(opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated)
 			.WithQueryParamsOptions(opts => opts.WithKeyFormatter(s => s.ToUpper()))
-			.WithQueryParamsOptions(opts => opts.WithKeyValueFormatter(new Dictionary<string, Func<object, string>>()
+			.WithQueryParamsOptions(opts => opts.WithValuePerKeyFormatter(new Dictionary<string, Func<object, string>>()
 			{
 				["POWERS"] = val => (val  is string valStr) ? valStr.ToUpper() : null!
 			}))
@@ -305,7 +305,7 @@ public class RequestBuilder_WithQueryParams
 	{
 		var builder = GetNewRequestBuilder();
 		var request = builder.WithUri("/org/sketch7/heroes")
-			.WithQueryParamsOptions(opts => opts.WithKeyValueFormatter(new Dictionary<string, Func<object, string>>()
+			.WithQueryParamsOptions(opts => opts.WithValuePerKeyFormatter(new Dictionary<string, Func<object, string>>()
 			{
 				["power"] = x => (x is string p) ? p.ToUpper() : null!,
 				["dateTime"] = x => (x is DateTime p) ? p.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") : null!
