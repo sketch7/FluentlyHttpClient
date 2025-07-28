@@ -57,7 +57,7 @@ public static class QueryStringUtils
 			if (options.ValueFormatter != null)
 				return options.ValueFormatter(value);
 
-			if (options.KeyValueFormatter != null && param is string && options.KeyValueFormatter.TryGetValue((param as string)!, out var transform))
+			if (options.ValuePerKeyFormatter != null && param is string && options.ValuePerKeyFormatter.TryGetValue((param as string)!, out var transform))
 				return transform(value);
 
 			return value.ToString()!;
@@ -86,7 +86,7 @@ public static class QueryStringUtils
 
 		var collectionFormatter = options.CollectionItemFormatter;
 
-		if (collectionFormatter == null && options.CollectionKeyValueItemFormatter?.TryGetValue(key, out var formatter) is true)
+		if (collectionFormatter == null && options.CollectionValuePerKeyItemFormatter?.TryGetValue(key, out var formatter) is true)
 			collectionFormatter = formatter;
 
 		switch (options.CollectionMode)
