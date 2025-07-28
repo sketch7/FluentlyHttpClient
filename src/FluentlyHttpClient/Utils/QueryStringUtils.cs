@@ -89,7 +89,6 @@ public static class QueryStringUtils
 		if (collectionFormatter == null && options.CollectionKeyValueItemFormatter?.TryGetValue(key, out var formatter) is true)
 			collectionFormatter = formatter;
 
-
 		switch (options.CollectionMode)
 		{
 			case QueryStringCollectionMode.KeyPerValue:
