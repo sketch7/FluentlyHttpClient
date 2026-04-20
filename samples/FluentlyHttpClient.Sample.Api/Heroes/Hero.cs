@@ -5,9 +5,9 @@ namespace FluentlyHttpClient.Sample.Api.Heroes;
 public record Hero
 {
 	[Required]
-	public string Key { get; set; }
+	public required string Key { get; init; }
 
 	[Required]
-	public string Name { get; set; }
-	public string Title { get; set; }
+	public required string Name { get; init; }
+	public string? Title { get; init; }
 }

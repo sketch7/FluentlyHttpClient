@@ -19,9 +19,9 @@ public class MessagePackIntegrationTest(SampleApiFactory factory) : IClassFixtur
 			.ReturnAsResponse<Hero>();
 
 		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-		Assert.Equal("azmodan", response.Data.Key);
-		Assert.Equal("Azmodan", response.Data.Name);
-		Assert.Equal("Lord of Sin", response.Data.Title);
+		Assert.Equal("azmodan", response.Data!.Key);
+		Assert.Equal("Azmodan", response.Data!.Name);
+		Assert.Equal("Lord of Sin", response.Data!.Title);
 	}
 
 	[Fact]
@@ -43,8 +43,8 @@ public class MessagePackIntegrationTest(SampleApiFactory factory) : IClassFixtur
 			.ReturnAsResponse<Hero>();
 
 		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-		Assert.Equal("valeera", response.Data.Key);
-		Assert.Equal("Valeera", response.Data.Name);
-		Assert.Equal("Shadow of the Uncrowned", response.Data.Title);
+		Assert.Equal("valeera", response.Data!.Key);
+		Assert.Equal("Valeera", response.Data!.Name);
+		Assert.Equal("Shadow of the Uncrowned", response.Data!.Title);
 	}
 }

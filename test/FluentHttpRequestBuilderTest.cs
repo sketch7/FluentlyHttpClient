@@ -33,7 +33,7 @@ public class RequestBuilder_Build
 			.CreateRequest()
 			.ReturnAsResponse();
 
-		Assert.Equal("https://sketch7.com/api/heroes/", response.Message.RequestMessage.RequestUri.ToString());
+		Assert.Equal("https://sketch7.com/api/heroes/", response.Message.RequestMessage?.RequestUri?.ToString());
 	}
 
 	[Fact]
@@ -42,7 +42,7 @@ public class RequestBuilder_Build
 		var request = GetNewRequestBuilder(configureClient: c => c.WithBaseUrl(string.Empty))
 			.Build();
 
-		Assert.Equal("/api", request.Uri.ToString());
+		Assert.Equal("/api", request.Uri?.ToString());
 	}
 
 	[Fact]
@@ -56,7 +56,7 @@ public class RequestBuilder_Build
 			.CreateRequest()
 			.ReturnAsResponse();
 
-		Assert.Equal("https://sketch7.com/oauth/token", response.Message.RequestMessage.RequestUri.ToString());
+		Assert.Equal("https://sketch7.com/oauth/token", response.Message.RequestMessage?.RequestUri?.ToString());
 	}
 
 	[Fact]
@@ -72,7 +72,7 @@ public class RequestBuilder_Build
 			.CreateRequest()
 			.ReturnAsResponse();
 
-		Assert.Equal("https://sketch7.com/oauth/token", response.Message.RequestMessage.RequestUri.ToString());
+		Assert.Equal("https://sketch7.com/oauth/token", response.Message.RequestMessage?.RequestUri?.ToString());
 	}
 
 	[Fact]
@@ -88,7 +88,7 @@ public class RequestBuilder_Build
 			.CreateRequest()
 			.ReturnAsResponse();
 
-		Assert.Equal("https://sketch7.com/api/heroes/v1/", response.Message.RequestMessage.RequestUri.ToString());
+		Assert.Equal("https://sketch7.com/api/heroes/v1/", response.Message.RequestMessage?.RequestUri?.ToString());
 	}
 
 	[Fact]
@@ -102,7 +102,7 @@ public class RequestBuilder_Build
 			.WithQueryParams(new { Language = "en" })
 			.ReturnAsResponse();
 
-		Assert.Equal("https://sketch7.com/api/heroes/?language=en", response.Message.RequestMessage.RequestUri.ToString());
+		Assert.Equal("https://sketch7.com/api/heroes/?language=en", response.Message.RequestMessage?.RequestUri?.ToString());
 	}
 }
 
@@ -118,7 +118,7 @@ public class RequestBuilder_WithUri
 				Hero = "azmodan"
 			}).Build();
 
-		Assert.Equal("en/heroes/azmodan", request.Uri.ToString());
+		Assert.Equal("en/heroes/azmodan", request.Uri?.ToString());
 	}
 
 	[Fact]
@@ -145,7 +145,7 @@ public class RequestBuilder_WithQueryParams
 				Filter = "all"
 			}).Build();
 
-		Assert.Equal("/org/sketch7?page=1&filter=all", request.Uri.ToString());
+		Assert.Equal("/org/sketch7?page=1&filter=all", request.Uri?.ToString());
 	}
 
 	[Fact]
@@ -157,17 +157,17 @@ public class RequestBuilder_WithQueryParams
 			{
 				Page = 1,
 				Filter = "all"
-			}, c => c.WithKeyFormatter(null)).Build();
+			}, c => c.WithKeyFormatter(null!)).Build();
 
-		Assert.Equal("/org/sketch7?Page=1&Filter=all", request.Uri.ToString());
+		Assert.Equal("/org/sketch7?Page=1&Filter=all", request.Uri?.ToString());
 	}
 
 	[Theory]
 	[InlineData(null)]
 	[InlineData("")]
-	public void NullOrEmptyValue_RemainAsIs(string data)
+	public void NullOrEmptyValue_RemainAsIs(string? data)
 	{
-		string filter = data;
+		string? filter = data;
 		var builder = GetNewRequestBuilder();
 		var request = builder.WithUri("/org/sketch7")
 			.WithQueryParams(new
@@ -175,7 +175,7 @@ public class RequestBuilder_WithQueryParams
 				filter,
 			}).Build();
 
-		Assert.Equal("/org/sketch7", request.Uri.ToString());
+		Assert.Equal("/org/sketch7", request.Uri?.ToString());
 	}
 
 	[Fact]
@@ -190,7 +190,7 @@ public class RequestBuilder_WithQueryParams
 				Page = 1
 			}).Build();
 
-		Assert.Equal("/org/sketch7?page=1", request.Uri.ToString());
+		Assert.Equal("/org/sketch7?page=1", request.Uri?.ToString());
 	}
 
 	[Fact]
@@ -204,7 +204,7 @@ public class RequestBuilder_WithQueryParams
 				Filter = "all"
 			}).Build();
 
-		Assert.Equal("/org/sketch7?hero=rex&page=1&filter=all", request.Uri.ToString());
+		Assert.Equal("/org/sketch7?hero=rex&page=1&filter=all", request.Uri?.ToString());
 	}
 
 	[Fact]
@@ -215,7 +215,7 @@ public class RequestBuilder_WithQueryParams
 			.WithQueryParams(new { })
 			.Build();
 
-		Assert.Equal("/org/sketch7", request.Uri.ToString());
+		Assert.Equal("/org/sketch7", request.Uri?.ToString());
 	}
 
 	[Fact]
@@ -233,7 +233,7 @@ public class RequestBuilder_WithQueryParams
 			.WithQueryParams(qsParams)
 			.Build();
 
-		Assert.Equal("/org/sketch7?role=assassin&class=rogue", request.Uri.ToString());
+		Assert.Equal("/org/sketch7?role=assassin&class=rogue", request.Uri?.ToString());
 	}
 
 	[Fact]
@@ -247,7 +247,7 @@ public class RequestBuilder_WithQueryParams
 				Powers = new List<int> { 1337, 2337 }
 			}).Build();
 
-		Assert.Equal("/org/sketch7/heroes?roles=warrior&roles=assassin&powers=1337&powers=2337", request.Uri.ToString());
+		Assert.Equal("/org/sketch7/heroes?roles=warrior&roles=assassin&powers=1337&powers=2337", request.Uri?.ToString());
 	}
 
 	[Fact]
@@ -261,7 +261,7 @@ public class RequestBuilder_WithQueryParams
 			}, opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated
 			).Build();
 
-		Assert.Equal("/org/sketch7/heroes?roles=warrior,assassin", request.Uri.ToString());
+		Assert.Equal("/org/sketch7/heroes?roles=warrior,assassin", request.Uri?.ToString());
 	}
 
 	[Fact]
@@ -276,7 +276,7 @@ public class RequestBuilder_WithQueryParams
 			}, opts => opts.WithKeyFormatter(s => s.ToUpper())
 			).Build();
 
-		Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin", request.Uri.ToString());
+		Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin", request.Uri?.ToString());
 	}
 
 	[Fact]
@@ -288,7 +288,7 @@ public class RequestBuilder_WithQueryParams
 			.WithQueryParamsOptions(opts => opts.WithKeyFormatter(s => s.ToUpper()))
 			.WithQueryParamsOptions(opts => opts.WithValuePerKeyFormatter(new Dictionary<string, Func<object, string>>()
 			{
-				["POWERS"] = val => (val  is string valStr) ? valStr.ToUpper() : null!
+				["POWERS"] = val => (val is string valStr) ? valStr.ToUpper() : null!
 			}))
 			.WithQueryParams(new
 			{
@@ -297,7 +297,7 @@ public class RequestBuilder_WithQueryParams
 			}
 			).Build();
 
-		Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin&POWERS=MEDIUM,HIGH", request.Uri.ToString());
+		Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin&POWERS=MEDIUM,HIGH", request.Uri?.ToString());
 	}
 
 	[Fact]
@@ -319,7 +319,7 @@ public class RequestBuilder_WithQueryParams
 			}
 			).Build();
 
-		Assert.Equal("/org/sketch7/heroes?role=warrior&power=MEDIUM&dateTime=2025-01-01T00:00:00Z", request.Uri.ToString());
+		Assert.Equal("/org/sketch7/heroes?role=warrior&power=MEDIUM&dateTime=2025-01-01T00:00:00Z", request.Uri?.ToString());
 	}
 }
 
@@ -329,7 +329,7 @@ public class RequestBuilder_BuildValidation
 	public void ThrowsErrorWhenMethodNotSpecified()
 	{
 		var builder = GetNewRequestBuilder();
-		Assert.Throws<RequestValidationException>(() => builder.WithMethod(null).WithUri("/org").Build());
+		Assert.Throws<RequestValidationException>(() => builder.WithMethod(null!).WithUri("/org").Build());
 	}
 
 	[Fact]
@@ -466,7 +466,7 @@ public class RequestBuilder_WithHeaders
 public class RequestBuilder_Return
 {
 	[Fact]
-	public async void ReturnAsString()
+	public async Task ReturnAsString()
 	{
 		var mockResponse = "{ 'name': 'Azmodan' }";
 		var mockHttp = new MockHttpMessageHandler();
@@ -490,7 +490,7 @@ public class RequestBuilder_Return
 public class RequestBuilder_PostWithBody
 {
 	[Fact]
-	public async void ReturnAsTypedObject()
+	public async Task ReturnAsTypedObject()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes/azmodan")
@@ -520,7 +520,7 @@ public class RequestBuilder_PostWithBody
 public class RequestBuilder_ReturnMulti
 {
 	[Fact]
-	public async void ShouldSendTwoRequests()
+	public async Task ShouldSendTwoRequests()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes/azmodan")

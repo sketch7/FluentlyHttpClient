@@ -17,6 +17,7 @@ public class FluentHttpHeaders_Tests
 		var dictionary = headers.ToDictionary();
 
 		var result = dictionary.GetValueOrDefault(HeaderTypes.Accept);
+		Assert.NotNull(result);
 		Assert.Equal(2, result.Length);
 		Assert.Equal("json", result[0]);
 		Assert.Equal("msgpack", result[1]);
@@ -35,6 +36,7 @@ public class FluentHttpHeaders_Tests
 		var headersJson = JsonConvert.SerializeObject(headers);
 		var headersCopied = JsonConvert.DeserializeObject<FluentHttpHeaders>(headersJson);
 
+		Assert.NotNull(headersCopied);
 		Assert.Collection(headersCopied, x =>
 			{
 				Assert.Equal(HeaderTypes.Authorization, x.Key);

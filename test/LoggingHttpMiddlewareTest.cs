@@ -7,7 +7,7 @@ namespace Test;
 public class LoggingHttpMiddlewareTest
 {
 	[Fact]
-	public async void RequestBodyWithoutContent_ShouldNotThrow()
+	public async Task RequestBodyWithoutContent_ShouldNotThrow()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")
@@ -31,7 +31,7 @@ public class LoggingHttpMiddlewareTest
 	}
 
 	[Fact]
-	public async void ResponseBodyWithoutContent_ShouldNotThrow()
+	public async Task ResponseBodyWithoutContent_ShouldNotThrow()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes")
@@ -62,7 +62,7 @@ public class LoggingHttpMiddlewareTest
 	}
 
 	[Fact]
-	public async void UsingActionBasedConfiguration()
+	public async Task UsingActionBasedConfiguration()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes")
@@ -111,6 +111,7 @@ public class LoggingHttpMiddlewareTest
 
 		var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
 
+		Assert.NotNull(options);
 		Assert.True(options.ShouldLogDetailedRequest);
 		Assert.True(options.ShouldLogDetailedResponse);
 	}
@@ -139,6 +140,7 @@ public class LoggingHttpMiddlewareTest
 
 		var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
 
+		Assert.NotNull(options);
 		Assert.True(options.ShouldLogDetailedRequest);
 		Assert.True(options.ShouldLogDetailedResponse);
 	}
@@ -167,6 +169,7 @@ public class LoggingHttpMiddlewareTest
 
 		var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
 
+		Assert.NotNull(options);
 		Assert.True(options.ShouldLogDetailedRequest);
 		Assert.True(options.ShouldLogDetailedResponse);
 	}

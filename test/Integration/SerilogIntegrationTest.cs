@@ -19,7 +19,7 @@ public class SerilogIntegrationTest
 	}
 
 	[Fact]
-	public async void ShouldLogAll()
+	public async Task ShouldLogAll()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes")

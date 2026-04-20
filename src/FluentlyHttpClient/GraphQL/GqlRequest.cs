@@ -13,7 +13,7 @@ public class GqlRequest
 	/// <summary>
 	/// Gets or sets GraphQL query.
 	/// </summary>
-	public string Query { get; set; }
+	public required string Query { get; set; }
 
 	/// <summary>
 	/// Gets or sets GraphQL query variables.
@@ -21,6 +21,7 @@ public class GqlRequest
 	public object? Variables { get; set; }
 }
 
+/// <summary>Obsolete GraphQL request object. Use <see cref="GqlRequest"/> instead.</summary>
 [Obsolete("Use 'GqlRequest' instead.")]
 public class GqlQuery : GqlRequest
 {

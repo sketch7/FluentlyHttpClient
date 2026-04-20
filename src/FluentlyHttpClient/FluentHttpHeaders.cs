@@ -45,6 +45,7 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 	private FluentHttpHeadersOptions _options = DefaultOptions;
 	private readonly Dictionary<string, string[]?> _data = new(StringComparer.OrdinalIgnoreCase);
 
+	/// <summary>Gets or sets the header values for the specified key.</summary>
 	public string[]? this[string key]
 	{
 		get => _data[key];
@@ -144,7 +145,7 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 	/// <param name="value">Header value to add.</param>
 	public FluentHttpHeaders Add(string header, StringValues value)
 	{
-		_data.Add(header, value);
+		_data.Add(header, [.. value.Select(v => v ?? string.Empty)]);
 		return this;
 	}
 
@@ -200,7 +201,7 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 	public FluentHttpHeaders AddRange(IDictionary<string, StringValues> headers)
 	{
 		foreach (var header in headers)
-			Add(header.Key, header.Value.ToArray());
+			Add(header.Key, header.Value);
 		return this;
 	}
 
@@ -231,7 +232,7 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 	/// </summary>
 	/// <param name="header">Header to try get.</param>
 	public string? GetValue(string header)
-		=> _data.TryGetValue(header, out var value) ? value[0] : null;
+		=> _data.TryGetValue(header, out var value) ? value?[0] : null;
 
 	/// <summary>
 	/// Set single header add/update if exists instead of throwing.
@@ -362,6 +363,7 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 		return headers.ToFormattedString();
 	}
 
+	/// <inheritdoc />
 	public IEnumerator<KeyValuePair<string, string[]>> GetEnumerator() => _data.GetEnumerator();
 
 	/// <summary>
@@ -411,7 +413,7 @@ public partial class FluentHttpHeaders
 	public string? Authorization
 	{
 		get => Get(HeaderTypes.Authorization);
-		set => this[HeaderTypes.Authorization] = [value];
+		set => this[HeaderTypes.Authorization] = value is null ? null : [value];
 	}
 
 	/// <summary>
@@ -420,7 +422,7 @@ public partial class FluentHttpHeaders
 	public string? CacheControl
 	{
 		get => Get(HeaderTypes.CacheControl);
-		set => this[HeaderTypes.CacheControl] = [value];
+		set => this[HeaderTypes.CacheControl] = value is null ? null : [value];
 	}
 
 	/// <summary>
@@ -429,7 +431,7 @@ public partial class FluentHttpHeaders
 	public string? ContentType
 	{
 		get => Get(HeaderTypes.ContentType);
-		set => this[HeaderTypes.ContentType] = [value];
+		set => this[HeaderTypes.ContentType] = value is null ? null : [value];
 	}
 
 	/// <summary>
@@ -438,7 +440,7 @@ public partial class FluentHttpHeaders
 	public string? UserAgent
 	{
 		get => Get(HeaderTypes.UserAgent);
-		set => this[HeaderTypes.UserAgent] = [value];
+		set => this[HeaderTypes.UserAgent] = value is null ? null : [value];
 	}
 
 	/// <summary>
@@ -456,6 +458,6 @@ public partial class FluentHttpHeaders
 	public string? XForwardedHost
 	{
 		get => Get(HeaderTypes.XForwardedHost);
-		set => this[HeaderTypes.XForwardedHost] = [value];
+		set => this[HeaderTypes.XForwardedHost] = value is null ? null : [value];
 	}
 }

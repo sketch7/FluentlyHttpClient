@@ -37,7 +37,7 @@ public class FluentHttpResponse : IFluentHttpMessageState
 	/// <summary>
 	/// Gets readable string for debugger.
 	/// </summary>
-	protected string DebuggerDisplay => $"[{(int)StatusCode}] '{ReasonPhrase}', Request: {{ [{Message.RequestMessage.Method}] '{Message.RequestMessage.RequestUri}' }}";
+	protected string DebuggerDisplay => $"[{(int)StatusCode}] '{ReasonPhrase}', Request: {{ [{Message.RequestMessage?.Method}] '{Message.RequestMessage?.RequestUri}' }}";
 
 	/// <summary>
 	/// Gets the underlying HTTP response message.
