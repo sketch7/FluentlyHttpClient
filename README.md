@@ -84,9 +84,6 @@ PM> Install-Package FluentlyHttpClient
     - [Simple Single file HttpClient](#simple-single-file-httpclient)
   - [Testing/Mocking](#testingmocking)
     - [Test example with RichardSzalay.MockHttp](#test-example-with-richardszalaymockhttp)
-- [Contributing](#contributing)
-  - [Setup Machine for Development](#setup-machine-for-development)
-  - [Commands](#commands)
 
 ## Usage
 
@@ -572,29 +569,4 @@ public async void ShouldReturnContent()
     Assert.Equal("Azmodan", response.Data.Name);
     Assert.NotEqual(TimeSpan.Zero, response.GetTimeTaken());
 }
-```
-
-## Contributing
-
-### Setup Machine for Development
-Install/setup the following:
-
-- NodeJS v8+
-- Visual Studio Code or similar code editor
-- Git + SourceTree, SmartGit or similar (optional)
-
- ### Commands
-
-```bash
-# run tests
-npm test
-
-# bump version
-npm version minor --no-git-tag # major | minor | patch | prerelease
-
-# nuget pack (only)
-npm run pack
-
-# nuget publish dev (pack + publish + clean)
-npm run publish:dev
 ```
