@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "skills": {
+    "csharp-async-patterns": {
+      "source": "thebushidocollective/han",
+      "sourceType": "github",
+      "computedHash": "7e7454ae5af7ee250e40e66cf22dba6bac8d778d4c3a007fc50bf10367e00044"
+    },
+    "csharp-nullable-types": {
+      "source": "thebushidocollective/han",
+      "sourceType": "github",
+      "computedHash": "d05519d24ea9166506a3302d2642a7ad4722506a87e13c0424a3bd61ac4f9f3c"
+    },
+    "dotnet-10-csharp-14": {
+      "source": "mhagrelius/dotfiles",
+      "sourceType": "github",
+      "computedHash": "9cf6f204c46377203415bced22b9d56c844aece170bb6aa5afab2fe50d7e78fb"
+    },
+    "microsoft-docs": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "computedHash": "e49127ff2162330ac79bfde9e7ed1297df15be9ade09164fdebfe697153fcc36"
+    },
+    "modern-csharp-coding-standards": {
+      "source": "aaronontheweb/dotnet-skills",
+      "sourceType": "github",
+      "computedHash": "38d6547db382a391ed740eef9d376f718639d27ecafe5bdedb981001b190acc9"
+    }
+  }
+}
