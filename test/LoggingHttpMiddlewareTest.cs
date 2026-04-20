@@ -112,8 +112,8 @@ public class LoggingHttpMiddlewareTest
 		var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
 
 		options.ShouldNotBeNull();
-		options.ShouldLogDetailedRequest.ShouldBeTrue();
-		options.ShouldLogDetailedResponse.ShouldBeTrue();
+		options.ShouldLogDetailedRequest.ShouldBe(true);
+		options.ShouldLogDetailedResponse.ShouldBe(true);
 	}
 
 	[Fact]
@@ -141,8 +141,8 @@ public class LoggingHttpMiddlewareTest
 		var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
 
 		options.ShouldNotBeNull();
-		options.ShouldLogDetailedRequest.ShouldBeTrue();
-		options.ShouldLogDetailedResponse.ShouldBeTrue();
+		options.ShouldLogDetailedRequest.ShouldBe(true);
+		options.ShouldLogDetailedResponse.ShouldBe(true);
 	}
 
 	[Fact]
@@ -170,7 +170,7 @@ public class LoggingHttpMiddlewareTest
 		var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
 
 		options.ShouldNotBeNull();
-		options.ShouldLogDetailedRequest.ShouldBeTrue();
-		options.ShouldLogDetailedResponse.ShouldBeTrue();
+		options.ShouldLogDetailedRequest.ShouldBe(true);
+		options.ShouldLogDetailedResponse.ShouldBe(true);
 	}
 }

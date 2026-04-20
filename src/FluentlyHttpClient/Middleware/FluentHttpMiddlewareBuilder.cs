@@ -93,7 +93,7 @@ public class FluentHttpMiddlewareBuilder
 				}
 			}
 			else
-				ctor = new object[] { };
+				ctor = [];
 			var instance = (IFluentHttpMiddleware)ActivatorUtilities.CreateInstance(_serviceProvider, pipe.Type, ctor);
 
 			if (isFirst)

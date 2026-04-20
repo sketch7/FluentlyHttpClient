@@ -117,7 +117,7 @@ public class HttpMiddlewareTest
 			.Register();
 
 		var httpClient = fluentHttpClientFactory.Get("sketch7");
-		var response = await httpClient.RawHttpClient.GetAsync("/api/heroes/azmodan");
+		var response = await httpClient.RawHttpClient.GetAsync("/api/heroes/azmodan", TestContext.Current.CancellationToken);
 		var brand = response.Headers.GetValues("X-Brand-Id");
 
 		brand.First().ShouldBe("snorlax");
@@ -140,7 +140,7 @@ public class HttpMiddlewareTest
 
 		var httpClient = fluentHttpClientFactory.Get("sketch7");
 
-		var response = await httpClient.RawHttpClient.GetAsync("/api/heroes/azmodan");
+		var response = await httpClient.RawHttpClient.GetAsync("/api/heroes/azmodan", TestContext.Current.CancellationToken);
 		var brand = response.Headers.GetValues("X-Brand-Id");
 		var monster = response.Headers.GetValues("monster");
 

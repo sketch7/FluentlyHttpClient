@@ -125,7 +125,7 @@ public class RequestBuilder_WithUri
 	public void NullValue_ShouldThrow()
 	{
 		var requestBuilder = GetNewRequestBuilder();
-		Should.Throw<ArgumentNullException>("args", () => requestBuilder.WithUri("{Language}/heroes", new
+		Should.Throw<ArgumentNullException>(() => requestBuilder.WithUri("{Language}/heroes", new
 		{
 			Language = (string?)null
 		}));
@@ -363,7 +363,7 @@ public class RequestBuilder_WithHeaders
 	{
 		var builder = GetNewRequestBuilder()
 				.WithUri("/org/sketch7")
-				.WithHeader("locale", new StringValues(new[] { "mt", "en" }))
+				.WithHeader("locale", new StringValues(["mt", "en"]))
 			;
 		var request = builder.Build();
 
@@ -640,7 +640,7 @@ public class FluentRequest_GetHash
 		{
 			var requestBuilder = GetNewRequestBuilder()
 					.WithRequestHashOptions(opts =>
-						opts.WithHeadersExcludeByKeys(new[] { HeaderTypes.Accept, HeaderTypes.UserAgent }))
+						opts.WithHeadersExcludeByKeys([HeaderTypes.Accept, HeaderTypes.UserAgent]))
 					.WithUri("/api/heroes/azmodan")
 					.WithHeader("local", "en-GB")
 				;

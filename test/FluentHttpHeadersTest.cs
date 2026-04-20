@@ -11,7 +11,7 @@ public class FluentHttpHeaders_Tests
 	{
 		var headers = new FluentHttpHeaders
 		{
-			{HeaderTypes.Accept, new[] {"json", "msgpack"}}
+			{HeaderTypes.Accept, ["json", "msgpack"] }
 		};
 
 		var dictionary = headers.ToDictionary();
@@ -28,9 +28,9 @@ public class FluentHttpHeaders_Tests
 	{
 		var headers = new FluentHttpHeaders
 		{
-			{HeaderTypes.Authorization, new[]{"the-xx"}},
-			{HeaderTypes.Accept, new[] {"json", "msgpack"}},
-			{HeaderTypes.XForwardedHost, new[] {"sketch7.com"}},
+			{HeaderTypes.Authorization, ["the-xx"] },
+			{HeaderTypes.Accept, ["json", "msgpack"] },
+			{HeaderTypes.XForwardedHost, ["sketch7.com"] },
 		};
 
 		var headersJson = JsonConvert.SerializeObject(headers);
@@ -62,9 +62,8 @@ public class FluentHttpHeaders_Add
 	[Fact]
 	public void ShouldAdd()
 	{
-		var headers = new FluentHttpHeaders();
+		var headers = new FluentHttpHeaders { { HeaderTypes.Authorization, "the-xx" } };
 
-		headers.Add(HeaderTypes.Authorization, "the-xx");
 		headers.Authorization.ShouldBe("the-xx");
 	}
 
@@ -83,9 +82,9 @@ public class FluentHttpHeaders_Add
 	{
 		var headers = new FluentHttpHeaders
 		{
-			{ HeaderTypes.Accept, new[] { "json", "msgpack" } }
+			{ HeaderTypes.Accept, ["json", "msgpack"] }
 		};
-		headers.Accept.ShouldBe("json,msgpack");
+		((string?)headers.Accept).ShouldBe("json,msgpack");
 	}
 
 	[Fact]
@@ -110,7 +109,7 @@ public class FluentHttpHeaders_Add
 		headers.SetRange(new Dictionary<string, StringValues>{
 			{HeaderTypes.Accept, "xml"}
 		});
-		headers.Accept.ShouldBe("xml");
+		((string?)headers.Accept).ShouldBe("xml");
 	}
 }
 
@@ -165,8 +164,8 @@ public class FluentHttpHeaders_Accessors
 	public void GetExists_ShouldReturn()
 	{
 		var headers = new FluentHttpHeaders()
-			.Add(HeaderTypes.Accept, new[] { "json", "msgpack" });
-		headers.Accept.ShouldBe("json,msgpack");
+			.Add(HeaderTypes.Accept, ["json", "msgpack"]);
+		((string?)headers.Accept).ShouldBe("json,msgpack");
 	}
 
 	[Fact]
@@ -176,7 +175,7 @@ public class FluentHttpHeaders_Accessors
 		{
 			Accept = new[] { "json", "msgpack" }
 		};
-		headers.Accept.ShouldBe("json,msgpack");
+		((string?)headers.Accept).ShouldBe("json,msgpack");
 	}
 
 	[Fact]
@@ -187,7 +186,7 @@ public class FluentHttpHeaders_Accessors
 			Accept = new[] { "json", "msgpack" }
 		};
 		headers.Accept = "json";
-		headers.Accept.ShouldBe("json");
+		((string?)headers.Accept).ShouldBe("json");
 	}
 }
 
@@ -228,13 +227,13 @@ public class FluentHttpHeaders_Initialize
 	{
 		var headersMap = new Dictionary<string, IEnumerable<string>>
 		{
-			{HeaderTypes.Accept, new[] {"json", "msgpack"} },
-			{HeaderTypes.XForwardedFor, new[] {"192.168.1.1", "127.0.0.1"} },
+			{HeaderTypes.Accept, ["json", "msgpack"] },
+			{HeaderTypes.XForwardedFor, ["192.168.1.1", "127.0.0.1"] },
 		};
 
 		var headers = new FluentHttpHeaders(headersMap);
-		headers.Accept.ShouldBe("json,msgpack");
-		headers.XForwardedFor.ShouldBe("192.168.1.1,127.0.0.1");
+		((string?)headers.Accept).ShouldBe("json,msgpack");
+		((string?)headers.XForwardedFor).ShouldBe("192.168.1.1,127.0.0.1");
 		headers.Count.ShouldBe(headersMap.Count);
 	}
 
@@ -243,11 +242,11 @@ public class FluentHttpHeaders_Initialize
 	{
 		var httpHeaders = new HttpRequestMessage().Headers;
 		httpHeaders.Add(HeaderTypes.Authorization, "the-xx");
-		httpHeaders.Add(HeaderTypes.XForwardedFor, new[] { "192.168.1.1", "127.0.0.1" });
+		httpHeaders.Add(HeaderTypes.XForwardedFor, ["192.168.1.1", "127.0.0.1"]);
 
 		var headers = new FluentHttpHeaders(httpHeaders);
 		headers.Authorization.ShouldBe("the-xx");
-		headers.XForwardedFor.ShouldBe("192.168.1.1,127.0.0.1");
+		((string?)headers.XForwardedFor).ShouldBe("192.168.1.1,127.0.0.1");
 		headers.Count.ShouldBe(2);
 	}
 }
@@ -273,7 +272,7 @@ public class FluentHttpHeaders_ToHashString
 		var headers = new FluentHttpHeaders
 		{
 			{HeaderTypes.Authorization, "the-xx"},
-			{HeaderTypes.Accept, new[] {"json", "msgpack"}}
+			{HeaderTypes.Accept, ["json", "msgpack"] }
 		};
 		var hash = headers.ToHashString();
 
@@ -286,7 +285,7 @@ public class FluentHttpHeaders_ToHashString
 		var headers = new FluentHttpHeaders
 			{
 				{HeaderTypes.Authorization, "the-xx"},
-				{HeaderTypes.Accept, new[] {"json", "msgpack"}},
+				{HeaderTypes.Accept, ["json", "msgpack"] },
 				{HeaderTypes.XForwardedHost, "sketch7.com"},
 			}
 			.WithOptions(opts => opts.WithHashingExclude(pair => pair.Key == HeaderTypes.Authorization));
