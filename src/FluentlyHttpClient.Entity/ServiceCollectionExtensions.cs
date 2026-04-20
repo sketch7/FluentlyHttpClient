@@ -2,7 +2,7 @@
 using FluentlyHttpClient.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection;

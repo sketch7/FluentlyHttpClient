@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <!-- Exclude e2e tests by default. To run them: dotnet test filter "Category=e2e" -->
+    <TestCaseFilter>Category!=e2e</TestCaseFilter>
+  </RunConfiguration>
+</RunSettings>
