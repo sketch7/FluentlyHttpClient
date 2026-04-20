@@ -3,7 +3,7 @@
 [changeLog]: ./CHANGELOG.md
 
 # Fluently Http Client <!-- omit in toc -->
-[![CI](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/dotnet-publish.yml/badge.svg)](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/dotnet-publish.yml)
+[![CI](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml/badge.svg)](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml)
 [![NuGet version](https://badge.fury.io/nu/fluentlyhttpclient.svg)](https://badge.fury.io/nu/fluentlyhttpclient)
 
 Http Client for .NET Standard with fluent APIs which are intuitive, easy to use and also highly extensible.
@@ -29,12 +29,12 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
 
 ## dotnet support
 
-| Version | .NET               | Status                                                                                                                                                                                               |
-| ------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.x     | .NET Standard 1.4+ |                                                                                                                                                                                                      |
-| 2.x     | .NET Standard 2    |                                                                                                                                                                                                      |
-| 3.x     | .NET Standard 2    | [![CI](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/dotnet-publish.yml/badge.svg?branch=3.x)](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/dotnet-publish.yml) |
-| 4.x     | net8               | [![CI](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/dotnet-publish.yml/badge.svg?branch=4.x)](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/dotnet-publish.yml) |
+| Version | .NET               | Status                                                                                                                                                                       |
+| ------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.x     | .NET Standard 1.4+ |                                                                                                                                                                              |
+| 2.x     | .NET Standard 2    |                                                                                                                                                                              |
+| 3.x     | .NET Standard 2    | [![CI](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml/badge.svg?branch=3.x)](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml) |
+| 4.x     | net8               | [![CI](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml/badge.svg?branch=v4)](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml)  |
 
 ### NuGet
 ```
