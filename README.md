@@ -6,7 +6,7 @@
 [![CI](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml/badge.svg)](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml)
 [![NuGet version](https://badge.fury.io/nu/fluentlyhttpclient.svg)](https://badge.fury.io/nu/fluentlyhttpclient)
 
-Http Client for .NET Standard with fluent APIs which are intuitive, easy to use and also highly extensible.
+Http Client for .NET with fluent APIs which are intuitive, easy to use and also highly extensible.
 
 **Quick links**
 
@@ -35,6 +35,7 @@ Http Client for .NET Standard with fluent APIs which are intuitive, easy to use 
 | 2.x     | .NET Standard 2    |                                                                                                                                                                              |
 | 3.x     | .NET Standard 2    | [![CI](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml/badge.svg?branch=3.x)](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml) |
 | 4.x     | net8               | [![CI](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml/badge.svg?branch=v4)](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml)  |
+| 5.x     | net10              | [![CI](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml/badge.svg?branch=v5)](https://github.com/sketch7/FluentlyHttpClient/actions/workflows/ci.yml)  |
 
 ### NuGet
 ```
