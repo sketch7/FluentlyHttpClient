@@ -25,6 +25,7 @@ namespace FluentlyHttpClient.Middleware
 		private readonly TimerHttpMiddlewareOptions _options;
 		private readonly ILogger _logger;
 
+		/// <summary>Initializes a new instance of <see cref="TimerHttpMiddleware"/>.</summary>
 		public TimerHttpMiddleware(
 			FluentHttpMiddlewareDelegate next,
 			FluentHttpMiddlewareClientContext context,

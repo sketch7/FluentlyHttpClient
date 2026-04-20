@@ -5,7 +5,7 @@ namespace Test;
 public class TimerHttpMiddlewareTest
 {
 	[Fact]
-	public async void ShouldHaveTimeTaken()
+	public async Task ShouldHaveTimeTaken()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")
@@ -26,7 +26,7 @@ public class TimerHttpMiddlewareTest
 	}
 
 	[Fact]
-	public async void ShouldWorkWithRequestThresholdOption()
+	public async Task ShouldWorkWithRequestThresholdOption()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")

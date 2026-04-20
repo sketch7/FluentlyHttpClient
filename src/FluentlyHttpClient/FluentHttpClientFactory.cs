@@ -1,5 +1,9 @@
 namespace FluentlyHttpClient;
 
+/// <summary>
+/// Options for <see cref="FluentHttpClientFactory"/> allowing global client defaults to be configured.
+/// </summary>
+/// <param name="ConfigureDefaults">Optional action to configure defaults for every <see cref="FluentHttpClientBuilder"/>.</param>
 public record FluentHttpClientFactoryOptions(
 	Action<FluentHttpClientBuilder>? ConfigureDefaults
 );
@@ -73,6 +77,7 @@ public class FluentHttpClientFactory : IFluentHttpClientFactory
 	private readonly Dictionary<string, IFluentHttpClient> _clientsMap = [];
 	private Action<FluentHttpClientBuilder>? _configure;
 
+	/// <summary>Gets the number of registered HTTP clients.</summary>
 	public int Count => _clientsMap.Count;
 
 	/// <summary>

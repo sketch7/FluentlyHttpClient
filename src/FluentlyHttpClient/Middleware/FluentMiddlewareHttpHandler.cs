@@ -38,9 +38,9 @@ internal class FluentMiddlewareHttpHandler : DelegatingHandler
 				return response.ToFluentHttpResponse(fluentlyRequest.Items);
 			});
 
-		if (context != null)
+		if (context != null && requestId != null)
 			_requestTracker.Push(requestId, fluentlyResponse);
 
-		return fluentlyResponse?.Message;
+		return fluentlyResponse.Message;
 	}
 }

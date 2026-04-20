@@ -15,7 +15,7 @@ public interface IFluentHttpClient : IDisposable
 	/// <summary>
 	/// Gets the base uri address for each request.
 	/// </summary>
-	string BaseUrl { get; }
+	string? BaseUrl { get; }
 
 	/// <summary>
 	/// Underlying HTTP client. This should be avoided from being used,
@@ -93,7 +93,7 @@ public class FluentHttpClient : IFluentHttpClient
 	public string Identifier { get; }
 
 	/// <inheritdoc />
-	public string BaseUrl { get; }
+	public string? BaseUrl { get; }
 
 	/// <inheritdoc />
 	public HttpClient RawHttpClient { get; }
@@ -191,6 +191,7 @@ public class FluentHttpClient : IFluentHttpClient
 		return executionContext.Response;
 	}
 
+	/// <inheritdoc />
 	public async Task<FluentHttpResponse> Send(HttpRequestMessage request)
 	{
 		ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -237,6 +238,8 @@ public class FluentHttpClient : IFluentHttpClient
 	public void Dispose()
 		=> RawHttpClient?.Dispose();
 
+	/// <summary>Implicitly converts a <see cref="FluentHttpClient"/> to the underlying <see cref="HttpClient"/>.</summary>
+	/// <param name="client">The fluent client to convert.</param>
 	public static implicit operator HttpClient(FluentHttpClient client)
 		=> client.RawHttpClient;
 

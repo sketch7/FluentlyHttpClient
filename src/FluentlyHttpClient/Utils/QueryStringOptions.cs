@@ -37,6 +37,7 @@ public record QueryStringOptions
 	/// </summary>
 	public static readonly Func<string, string> DefaultValueEncoder = HttpEncode;
 
+	/// <summary>Debugger display string.</summary>
 	protected string DebuggerDisplay => $"CollectionMode: '{CollectionMode}'";
 
 	/// <summary>
@@ -48,6 +49,7 @@ public record QueryStringOptions
 	/// Gets or sets the function to format a collection item. This will allow you to manipulate the value.
 	/// </summary>
 	public Func<object, string>? CollectionItemFormatter { get; set; }
+	/// <summary>Gets or sets per-key collection item formatters, keyed by query parameter name.</summary>
 	public Dictionary<string, Func<object, string>>? CollectionValuePerKeyItemFormatter { get; set; }
 
 	/// <summary>

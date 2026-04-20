@@ -41,9 +41,9 @@ public class FileUploadIntegrationTest(SampleApiFactory factory) : IClassFixture
 			.ReturnAsResponse<UploadResult>();
 
 		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-		Assert.Equal("animal-mustache.jpg", response.Data.FileName);
-		Assert.Equal("image/jpeg", response.Data.ContentType);
-		Assert.Equal(3.96875, response.Data.Size);
+		Assert.Equal("animal-mustache.jpg", response.Data!.FileName);
+		Assert.Equal("image/jpeg", response.Data!.ContentType);
+		Assert.Equal(3.96875, response.Data!.Size);
 	}
 
 	[Fact]
@@ -65,9 +65,9 @@ public class FileUploadIntegrationTest(SampleApiFactory factory) : IClassFixture
 			.ReturnAsResponse<UploadResult>();
 
 		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-		Assert.Equal("animal-mustache.jpg", response.Data.FileName);
-		Assert.Equal("image/jpeg", response.Data.ContentType);
-		Assert.Equal(3.96875, response.Data.Size);
+		Assert.Equal("animal-mustache.jpg", response.Data!.FileName);
+		Assert.Equal("image/jpeg", response.Data!.ContentType);
+		Assert.Equal(3.96875, response.Data!.Size);
 	}
 
 	[Fact]
@@ -90,8 +90,8 @@ public class FileUploadIntegrationTest(SampleApiFactory factory) : IClassFixture
 			.ReturnAsResponse<UploadResult>();
 
 		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-		Assert.Equal("animal-mustache.jpg", response.Data.FileName);
-		Assert.Equal("image/jpeg", response.Data.ContentType);
-		Assert.Equal(3.96875, response.Data.Size);
+		Assert.Equal("animal-mustache.jpg", response.Data!.FileName);
+		Assert.Equal("image/jpeg", response.Data!.ContentType);
+		Assert.Equal(3.96875, response.Data!.Size);
 	}
 }

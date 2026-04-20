@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 
 namespace FluentlyHttpClient;
 
+/// <summary>Extension methods for computing and managing request hashes used by the response cache.</summary>
 public static class RequestHashingExtensions
 {
 	private const string HashKey = "REQUEST_HASH";
@@ -62,9 +63,11 @@ public static class RequestHashingExtensions
 
 		var headersHash = headers.ToHashString();
 
-		var uri = request.Uri.IsAbsoluteUri
-			? request.Uri
-			: new($"{request.Builder.BaseUrl.TrimEnd('/')}/{request.Uri.ToString().TrimStart('/')}");
+		Uri uri;
+		if (request.Uri is { IsAbsoluteUri: true } absUri)
+			uri = absUri;
+		else
+			uri = new Uri($"{request.Builder.BaseUrl?.TrimEnd('/')}/{request.Uri?.ToString().TrimStart('/')}");
 
 		var uriHash = options?.UriManipulation == null
 			? uri.ToString()
@@ -102,10 +105,11 @@ public static class RequestHashingExtensions
 	public static RequestHashOptions? GetRequestHashOptions(this FluentHttpRequest request)
 	{
 		request.Items.TryGetValue(HashOptionsKey, out var result);
-		return (RequestHashOptions)result;
+		return result as RequestHashOptions;
 	}
 }
 
+/// <summary>Options that control how a request hash is computed by the response cache middleware.</summary>
 public class RequestHashOptions
 {
 	/// <summary>

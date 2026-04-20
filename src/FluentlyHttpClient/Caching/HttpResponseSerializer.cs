@@ -4,12 +4,20 @@ using System.Text;
 
 namespace FluentlyHttpClient.Caching;
 
+/// <summary>Contract for serializing and deserializing <see cref="FluentHttpResponse"/> objects to and from a store.</summary>
 public interface IHttpResponseSerializer
 {
+	/// <summary>Serialize a <see cref="FluentHttpResponse"/> to a store object.</summary>
+	/// <typeparam name="THttpResponseStore">Type of store to serialize into.</typeparam>
+	/// <param name="response">The HTTP response to serialize.</param>
 	Task<THttpResponseStore> Serialize<THttpResponseStore>(FluentHttpResponse response) where THttpResponseStore : IHttpResponseStore, new();
+
+	/// <summary>Deserialize a store object back to a <see cref="FluentHttpResponse"/>.</summary>
+	/// <param name="item">The store object to deserialize.</param>
 	Task<FluentHttpResponse> Deserialize(IHttpResponseStore item);
 }
 
+/// <summary>Default implementation of <see cref="IHttpResponseSerializer"/>.</summary>
 public class HttpResponseSerializer : IHttpResponseSerializer
 {
 	/// <summary>

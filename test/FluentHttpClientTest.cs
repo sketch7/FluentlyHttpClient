@@ -10,7 +10,7 @@ public class HttpClient
 	private readonly MessagePackMediaTypeFormatter _messagePackMediaTypeFormatter = new();
 
 	[Fact]
-	public async void Get_ShouldReturnContent()
+	public async Task Get_ShouldReturnContent()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")
@@ -28,7 +28,7 @@ public class HttpClient
 	}
 
 	[Fact]
-	public async void Post_ShouldReturnContent()
+	public async Task Post_ShouldReturnContent()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes/azmodan")
@@ -110,7 +110,7 @@ public class HttpClient
 	}
 
 	[Fact]
-	public async void GraphQL_ShouldReturnContent()
+	public async Task GraphQL_ShouldReturnContent()
 	{
 		const string query = "{hero {name,title}}";
 		const string operationName = "heroGet";

@@ -7,8 +7,14 @@ using Microsoft.Data.SqlClient;
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection;
 
+/// <summary>DI registration extensions for <c>FluentlyHttpClient.Entity</c>.</summary>
 public static class ServiceCollectionExtensions
 {
+	/// <summary>
+	/// Register FluentlyHttpClient Entity services (SQL Server-backed response cache) using the given connection string.
+	/// </summary>
+	/// <param name="services">The service collection.</param>
+	/// <param name="connectionString">SQL Server connection string.</param>
 	public static IServiceCollection AddFluentlyHttpClientEntity(this IServiceCollection services, string connectionString)
 	{
 		if (string.IsNullOrWhiteSpace(connectionString))
@@ -24,6 +30,12 @@ public static class ServiceCollectionExtensions
 		return services.AddFluentlyHttpClientEntity(conn, builder => builder.EnableRetryOnFailure());
 	}
 
+	/// <summary>
+	/// Register FluentlyHttpClient Entity services using a pre-built <see cref="SqlConnectionStringBuilder"/>.
+	/// </summary>
+	/// <param name="services">The service collection.</param>
+	/// <param name="connectionStringBuilder">Pre-configured connection string builder.</param>
+	/// <param name="builder">Optional SQL Server options builder (e.g. retry policy).</param>
 	public static IServiceCollection AddFluentlyHttpClientEntity(
 		this IServiceCollection services,
 		SqlConnectionStringBuilder connectionStringBuilder,

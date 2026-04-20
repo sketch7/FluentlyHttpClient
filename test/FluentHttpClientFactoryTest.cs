@@ -57,13 +57,17 @@ public class ClientFactory_WithRequestBuilderDefaults
 		httpClientB.Headers.TryGetValues("X-S7", out var s7HeadersB);
 		httpClientA.Headers.TryGetValues("X-Org", out var orgHeadersB);
 
+		Assert.NotNull(orgHeadersA);
 		Assert.Single(orgHeadersA, "s7");
+		Assert.NotNull(s7HeadersA);
 		Assert.Single(s7HeadersA, "a");
-		Assert.Equal("dXNlcjpwYSQk", httpClientA.Headers.Authorization.Parameter);
+		Assert.Equal("dXNlcjpwYSQk", httpClientA.Headers.Authorization!.Parameter);
 
+		Assert.NotNull(orgHeadersB);
 		Assert.Single(orgHeadersB, "s7");
+		Assert.NotNull(s7HeadersB);
 		Assert.Single(s7HeadersB, "b");
-		Assert.Equal("dXNlci0yOnBhJCQ=", httpClientB.Headers.Authorization.Parameter);
+		Assert.Equal("dXNlci0yOnBhJCQ=", httpClientB.Headers.Authorization!.Parameter);
 	}
 
 	[Fact]
@@ -136,7 +140,7 @@ public class ClientFactory_WithRequestBuilderDefaults
 			})
 			.Build();
 
-		Assert.Equal("/api/heroes?ROLES=warrior,assassin", request.Uri.ToString());
+		Assert.Equal("/api/heroes?ROLES=warrior,assassin", request.Uri?.ToString());
 	}
 
 	[Fact]
@@ -288,7 +292,7 @@ public class ClientFactory_Register
 public class ClientFactory_Remove
 {
 	[Fact]
-	public async void ShouldDisposeClient()
+	public async Task ShouldDisposeClient()
 	{
 		var fluentHttpClientFactory = GetNewClientFactory();
 		var clientBuilder = fluentHttpClientFactory.CreateBuilder("abc")

@@ -38,7 +38,7 @@ public class TestRawHttpMiddleware : IFluentHttpMiddleware
 		{
 			foreach (var (key, value) in response.Items)
 			{
-				response.Headers.Add(key.ToString(), value.ToString());
+				response.Headers.Add(key?.ToString() ?? string.Empty, value?.ToString());
 			}
 		}
 
@@ -49,7 +49,7 @@ public class TestRawHttpMiddleware : IFluentHttpMiddleware
 public class HttpMiddlewareTest
 {
 	[Fact]
-	public async void ShouldHaveRequestItem()
+	public async Task ShouldHaveRequestItem()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")
@@ -75,7 +75,7 @@ public class HttpMiddlewareTest
 	}
 
 	[Fact]
-	public async void ShouldHaveRequestItem_WhenRawRequestProps()
+	public async Task ShouldHaveRequestItem_WhenRawRequestProps()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")
@@ -90,7 +90,7 @@ public class HttpMiddlewareTest
 
 		var httpClient = fluentHttpClientFactory.Get("sketch7");
 		var request = httpClient.CreateRequest("/api/heroes/azmodan").Build().Message;
-		request.Properties["monster"] = "orsachiottolo";
+		request.Options.Set(new HttpRequestOptionsKey<string>("monster"), "orsachiottolo");
 
 		var response = await httpClient.Send(request);
 
@@ -102,7 +102,7 @@ public class HttpMiddlewareTest
 	}
 
 	[Fact]
-	public async void RawClient_ShouldGoThroughMiddleware()
+	public async Task RawClient_ShouldGoThroughMiddleware()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")
@@ -124,7 +124,7 @@ public class HttpMiddlewareTest
 	}
 
 	[Fact]
-	public async void RawClient_ShouldGoThroughMiddlewarePreservingItems()
+	public async Task RawClient_ShouldGoThroughMiddlewarePreservingItems()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")

@@ -2,6 +2,7 @@
 
 namespace FluentlyHttpClient;
 
+/// <summary>Extension methods for <see cref="MultipartFormDataContent"/> to add files easily.</summary>
 public static class MultipartFormDataContentExtensions
 {
 	/// <summary>

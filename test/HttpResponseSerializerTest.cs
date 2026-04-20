@@ -32,6 +32,6 @@ public class HttpResponseSerializerTest
 		Assert.Equal("Lord of Sin", hero.Title);
 		Assert.Equal(HttpStatusCode.OK, response2.StatusCode);
 		Assert.Equal(response.Headers.Count(), response2.Headers.Count());
-		Assert.Equal(response.Message.RequestMessage.RequestUri.ToString(), response2.Message.RequestMessage.RequestUri.ToString());
+		Assert.Equal(response.Message.RequestMessage?.RequestUri?.ToString(), response2.Message.RequestMessage?.RequestUri?.ToString());
 	}
 }
