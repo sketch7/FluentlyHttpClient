@@ -55,7 +55,7 @@ public class SerilogIntegrationTest
 			})
 			.Return<Hero>();
 
-		Assert.NotNull(hero);
-		Assert.Equal("Azmodan", hero.Name);
+		hero.ShouldNotBeNull();
+		hero.Name.ShouldBe("Azmodan");
 	}
 }

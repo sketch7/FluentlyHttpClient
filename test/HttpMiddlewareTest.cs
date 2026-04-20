@@ -70,8 +70,8 @@ public class HttpMiddlewareTest
 		response.Items.TryGetValue("request", out var requestItem);
 		response.Items.TryGetValue("monster", out var monsterItem);
 
-		Assert.Equal("item", requestItem);
-		Assert.Equal("orsachiottolo", monsterItem);
+		requestItem.ShouldBe("item");
+		monsterItem.ShouldBe("orsachiottolo");
 	}
 
 	[Fact]
@@ -97,8 +97,8 @@ public class HttpMiddlewareTest
 		response.Items.TryGetValue("request", out var requestItem);
 		response.Items.TryGetValue("monster", out var monsterItem);
 
-		Assert.Equal("item", requestItem);
-		Assert.Equal("orsachiottolo", monsterItem);
+		requestItem.ShouldBe("item");
+		monsterItem.ShouldBe("orsachiottolo");
 	}
 
 	[Fact]
@@ -120,7 +120,7 @@ public class HttpMiddlewareTest
 		var response = await httpClient.RawHttpClient.GetAsync("/api/heroes/azmodan");
 		var brand = response.Headers.GetValues("X-Brand-Id");
 
-		Assert.Equal("snorlax", brand.First());
+		brand.First().ShouldBe("snorlax");
 	}
 
 	[Fact]
@@ -144,7 +144,7 @@ public class HttpMiddlewareTest
 		var brand = response.Headers.GetValues("X-Brand-Id");
 		var monster = response.Headers.GetValues("monster");
 
-		Assert.Equal("snorlax", brand.First());
-		Assert.Equal("orsachiottolo", monster.First());
+		brand.First().ShouldBe("snorlax");
+		monster.First().ShouldBe("orsachiottolo");
 	}
 }

@@ -26,8 +26,8 @@ public class LoggingHttpMiddlewareTest
 
 		var hero = await httpClient.Get<Hero>("/api/heroes/azmodan");
 
-		Assert.NotNull(hero);
-		Assert.Equal("Azmodan", hero.Name);
+		hero.ShouldNotBeNull();
+		hero.Name.ShouldBe("Azmodan");
 	}
 
 	[Fact]
@@ -57,8 +57,8 @@ public class LoggingHttpMiddlewareTest
 			})
 			.ReturnAsResponse();
 
-		Assert.NotNull(response);
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+		response.ShouldNotBeNull();
+		response.StatusCode.ShouldBe(HttpStatusCode.OK);
 	}
 
 	[Fact]
@@ -88,8 +88,8 @@ public class LoggingHttpMiddlewareTest
 			})
 			.ReturnAsResponse();
 
-		Assert.NotNull(response);
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+		response.ShouldNotBeNull();
+		response.StatusCode.ShouldBe(HttpStatusCode.OK);
 	}
 
 	[Fact]
@@ -111,9 +111,9 @@ public class LoggingHttpMiddlewareTest
 
 		var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
 
-		Assert.NotNull(options);
-		Assert.True(options.ShouldLogDetailedRequest);
-		Assert.True(options.ShouldLogDetailedResponse);
+		options.ShouldNotBeNull();
+		options.ShouldLogDetailedRequest.ShouldBeTrue();
+		options.ShouldLogDetailedResponse.ShouldBeTrue();
 	}
 
 	[Fact]
@@ -140,9 +140,9 @@ public class LoggingHttpMiddlewareTest
 
 		var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
 
-		Assert.NotNull(options);
-		Assert.True(options.ShouldLogDetailedRequest);
-		Assert.True(options.ShouldLogDetailedResponse);
+		options.ShouldNotBeNull();
+		options.ShouldLogDetailedRequest.ShouldBeTrue();
+		options.ShouldLogDetailedResponse.ShouldBeTrue();
 	}
 
 	[Fact]
@@ -169,8 +169,8 @@ public class LoggingHttpMiddlewareTest
 
 		var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
 
-		Assert.NotNull(options);
-		Assert.True(options.ShouldLogDetailedRequest);
-		Assert.True(options.ShouldLogDetailedResponse);
+		options.ShouldNotBeNull();
+		options.ShouldLogDetailedRequest.ShouldBeTrue();
+		options.ShouldLogDetailedResponse.ShouldBeTrue();
 	}
 }
