@@ -1,13 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Humanizer.Core" />
-    <PackageReference Include="MessagePack.AspNetCoreMvcFormatter" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,7 +4,7 @@ using System.Net;
 
 namespace FluentlyHttpClient.Test.Integration;
 
-public class ResponseCacheIntegrationTest
+public class ResponseCacheIntegrationTest(SampleApiFactory factory) : IClassFixture<SampleApiFactory>
 {
 	private static void ConfigureContainer(IServiceCollection container)
 	{
@@ -13,18 +13,16 @@ public class ResponseCacheIntegrationTest
 			.WriteTo.Debug()
 			.CreateLogger();
 
-		container.AddLogging(x => x.AddSerilog())
-			;
+		container.AddLogging(x => x.AddSerilog());
 	}
 
 	[Fact]
-	[Trait("Category", "e2e")]
 	public async Task ShouldMakeRequest_Memory_Get()
 	{
 		var fluentHttpClientFactory = ServiceTestUtil.GetNewClientFactory(ConfigureContainer);
 		var clientBuilder = fluentHttpClientFactory.CreateBuilder("sketch7")
-				//.WithBaseUrl("https://localhost:5001")
-				.WithBaseUrl("http://local.sketch7.io:5000")
+				.WithBaseUrl("http://localhost")
+				.WithMessageHandler(factory.Server.CreateHandler())
 				.WithHeader("locale", "en-GB")
 				.WithHeader("X-SSV-VERSION", "2019.02-2")
 				.UseResponseCaching()
@@ -53,10 +51,7 @@ public class ResponseCacheIntegrationTest
 		Assert.Equal("azmodan", response.Data.Key);
 		Assert.Equal("Azmodan", response.Data.Name);
 		Assert.Equal("Lord of Sin", response.Data.Title);
-		Assert.Equal("Kestrel", response.Headers.Server.ToString());
 		Assert.Equal(responseReason, response.ReasonPhrase);
-
-		//Assert.Equal(HttpStatusCode.OK, response.Headers.);
 	}
 
 	[Fact]

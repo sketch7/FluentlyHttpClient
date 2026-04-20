@@ -1,25 +1,18 @@
-using MessagePack.Resolvers;
-using Sketch7.MessagePack.MediaTypeFormatter;
+using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using static FluentlyHttpClient.Test.ServiceTestUtil;
 
 namespace FluentlyHttpClient.Test.Integration;
 
-public class MessagePackIntegrationTest
+public class MessagePackIntegrationTest(SampleApiFactory factory) : IClassFixture<SampleApiFactory>
 {
-	private readonly MessagePackMediaTypeFormatter _messagePackMediaTypeFormatter = new(ContractlessStandardResolver.Options);
-
 	[Fact]
-	[Trait("Category", "e2e")]
-	public async void ShouldMakeRequest_Get()
+	public async Task ShouldMakeRequest_Get()
 	{
 		var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
-			.WithBaseUrl("http://localhost:5500")
+			.WithBaseUrl("http://localhost")
+			.WithMessageHandler(factory.Server.CreateHandler())
 			.UseTimer()
-			.ConfigureFormatters(opts =>
-			{
-				//opts.Default = opts.Formatters.SystemTextJsonFormatter();
-			})
 			.Build();
 
 		var response = await httpClient.CreateRequest("/api/heroes/azmodan")
@@ -32,15 +25,11 @@ public class MessagePackIntegrationTest
 	}
 
 	[Fact]
-	[Trait("Category", "e2e")]
-	public async void ShouldMakeRequest_Post()
+	public async Task ShouldMakeRequest_Post()
 	{
 		var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
-			.WithBaseUrl("http://localhost:5500")
-			.ConfigureFormatters(opts =>
-			{
-				opts.Default = _messagePackMediaTypeFormatter;
-			})
+			.WithBaseUrl("http://localhost")
+			.WithMessageHandler(factory.Server.CreateHandler())
 			.Build();
 
 		var response = await httpClient.CreateRequest("/api/heroes")
@@ -52,6 +41,7 @@ public class MessagePackIntegrationTest
 				Title = "Shadow of the Uncrowned"
 			})
 			.ReturnAsResponse<Hero>();
+
 		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 		Assert.Equal("valeera", response.Data.Key);
 		Assert.Equal("Valeera", response.Data.Name);

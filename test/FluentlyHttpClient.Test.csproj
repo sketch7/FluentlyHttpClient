@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -26,6 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\samples\FluentlyHttpClient.Sample.Api\FluentlyHttpClient.Sample.Api.csproj" />
     <ProjectReference Include="..\src\FluentlyHttpClient.Entity\FluentlyHttpClient.Entity.csproj" />
     <ProjectReference Include="..\src\FluentlyHttpClient\FluentlyHttpClient.csproj" />
   </ItemGroup>
