@@ -35,23 +35,23 @@ public class ResponseCacheIntegrationTest(SampleApiFactory factory) : IClassFixt
 
 		var responseReason = response.ReasonPhrase;
 
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-		Assert.Equal("azmodan", response.Data!.Key);
+		response.StatusCode.ShouldBe(HttpStatusCode.OK);
+		response.Data!.Key.ShouldBe("azmodan");
 
 		response = await httpClient.CreateRequest("/api/heroes/azmodan")
 			.ReturnAsResponse<Hero>();
 
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-		Assert.Equal("azmodan", response.Data!.Key);
+		response.StatusCode.ShouldBe(HttpStatusCode.OK);
+		response.Data!.Key.ShouldBe("azmodan");
 
 		response = await httpClient.CreateRequest("/api/heroes/azmodan")
 			.ReturnAsResponse<Hero>();
 
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-		Assert.Equal("azmodan", response.Data!.Key);
-		Assert.Equal("Azmodan", response.Data!.Name);
-		Assert.Equal("Lord of Sin", response.Data!.Title);
-		Assert.Equal(responseReason, response.ReasonPhrase);
+		response.StatusCode.ShouldBe(HttpStatusCode.OK);
+		response.Data!.Key.ShouldBe("azmodan");
+		response.Data!.Name.ShouldBe("Azmodan");
+		response.Data!.Title.ShouldBe("Lord of Sin");
+		response.ReasonPhrase.ShouldBe(responseReason);
 	}
 
 	[Fact]
@@ -80,24 +80,24 @@ public class ResponseCacheIntegrationTest(SampleApiFactory factory) : IClassFixt
 
 		var responseReason = response.ReasonPhrase;
 
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-		Assert.Equal("azmodan", response.Data!.Key);
+		response.StatusCode.ShouldBe(HttpStatusCode.OK);
+		response.Data!.Key.ShouldBe("azmodan");
 
 		response = await httpClient.CreateRequest("/api/heroes/azmodan")
 			.ReturnAsResponse<Hero>();
 
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-		Assert.Equal("azmodan", response.Data!.Key);
+		response.StatusCode.ShouldBe(HttpStatusCode.OK);
+		response.Data!.Key.ShouldBe("azmodan");
 
 		response = await httpClient.CreateRequest("/api/heroes/azmodan")
 			.ReturnAsResponse<Hero>();
 
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-		Assert.Equal("azmodan", response.Data!.Key);
-		Assert.Equal("Azmodan", response.Data!.Name);
-		Assert.Equal("Lord of Sin", response.Data!.Title);
-		Assert.Equal("Kestrel", response.Headers.Server.ToString());
-		Assert.Equal(responseReason, response.ReasonPhrase);
+		response.StatusCode.ShouldBe(HttpStatusCode.OK);
+		response.Data!.Key.ShouldBe("azmodan");
+		response.Data!.Name.ShouldBe("Azmodan");
+		response.Data!.Title.ShouldBe("Lord of Sin");
+		response.Headers.Server.ToString().ShouldBe("Kestrel");
+		response.ReasonPhrase.ShouldBe(responseReason);
 
 		//Assert.Equal(HttpStatusCode.OK, response.Headers.);
 	}

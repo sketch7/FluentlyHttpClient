@@ -18,10 +18,10 @@ public class MessagePackIntegrationTest(SampleApiFactory factory) : IClassFixtur
 		var response = await httpClient.CreateRequest("/api/heroes/azmodan")
 			.ReturnAsResponse<Hero>();
 
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-		Assert.Equal("azmodan", response.Data!.Key);
-		Assert.Equal("Azmodan", response.Data!.Name);
-		Assert.Equal("Lord of Sin", response.Data!.Title);
+		response.StatusCode.ShouldBe(HttpStatusCode.OK);
+		response.Data!.Key.ShouldBe("azmodan");
+		response.Data!.Name.ShouldBe("Azmodan");
+		response.Data!.Title.ShouldBe("Lord of Sin");
 	}
 
 	[Fact]
@@ -42,9 +42,9 @@ public class MessagePackIntegrationTest(SampleApiFactory factory) : IClassFixtur
 			})
 			.ReturnAsResponse<Hero>();
 
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-		Assert.Equal("valeera", response.Data!.Key);
-		Assert.Equal("Valeera", response.Data!.Name);
-		Assert.Equal("Shadow of the Uncrowned", response.Data!.Title);
+		response.StatusCode.ShouldBe(HttpStatusCode.OK);
+		response.Data!.Key.ShouldBe("valeera");
+		response.Data!.Name.ShouldBe("Valeera");
+		response.Data!.Title.ShouldBe("Shadow of the Uncrowned");
 	}
 }

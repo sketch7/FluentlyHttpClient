@@ -11,16 +11,16 @@ public class FluentHttpHeaders_Tests
 	{
 		var headers = new FluentHttpHeaders
 		{
-			{HeaderTypes.Accept, new[] {"json", "msgpack"}}
+			{HeaderTypes.Accept, ["json", "msgpack"] }
 		};
 
 		var dictionary = headers.ToDictionary();
 
 		var result = dictionary.GetValueOrDefault(HeaderTypes.Accept);
-		Assert.NotNull(result);
-		Assert.Equal(2, result.Length);
-		Assert.Equal("json", result[0]);
-		Assert.Equal("msgpack", result[1]);
+		result.ShouldNotBeNull();
+		result.Length.ShouldBe(2);
+		result[0].ShouldBe("json");
+		result[1].ShouldBe("msgpack");
 	}
 
 	[Fact]
@@ -28,31 +28,24 @@ public class FluentHttpHeaders_Tests
 	{
 		var headers = new FluentHttpHeaders
 		{
-			{HeaderTypes.Authorization, new[]{"the-xx"}},
-			{HeaderTypes.Accept, new[] {"json", "msgpack"}},
-			{HeaderTypes.XForwardedHost, new[] {"sketch7.com"}},
+			{HeaderTypes.Authorization, ["the-xx"] },
+			{HeaderTypes.Accept, ["json", "msgpack"] },
+			{HeaderTypes.XForwardedHost, ["sketch7.com"] },
 		};
 
 		var headersJson = JsonConvert.SerializeObject(headers);
 		var headersCopied = JsonConvert.DeserializeObject<FluentHttpHeaders>(headersJson);
 
-		Assert.NotNull(headersCopied);
-		Assert.Collection(headersCopied, x =>
-			{
-				Assert.Equal(HeaderTypes.Authorization, x.Key);
-				Assert.Equal("the-xx", x.Value![0]);
-			},
-			x =>
-			{
-				Assert.Equal(HeaderTypes.Accept, x.Key);
-				Assert.Equal("json,msgpack", string.Join(",", x.Value!));
-			},
-			x =>
-			{
-				Assert.Equal(HeaderTypes.XForwardedHost, x.Key);
-				Assert.Equal("sketch7.com", x.Value![0]);
-			});
-		Assert.Equal("the-xx", headersCopied.Authorization);
+		headersCopied.ShouldNotBeNull();
+		headersCopied.Count.ShouldBe(3);
+		var items = headersCopied.ToList();
+		items[0].Key.ShouldBe(HeaderTypes.Authorization);
+		items[0].Value![0].ShouldBe("the-xx");
+		items[1].Key.ShouldBe(HeaderTypes.Accept);
+		string.Join(",", items[1].Value!).ShouldBe("json,msgpack");
+		items[2].Key.ShouldBe(HeaderTypes.XForwardedHost);
+		items[2].Value![0].ShouldBe("sketch7.com");
+		headersCopied.Authorization.ShouldBe("the-xx");
 	}
 
 	[Fact]
@@ -60,7 +53,7 @@ public class FluentHttpHeaders_Tests
 	{
 		var headers = new FluentHttpHeaders()
 			.WithUserAgent("leoric");
-		Assert.Equal("leoric", headers.UserAgent);
+		headers.UserAgent.ShouldBe("leoric");
 	}
 }
 
@@ -69,10 +62,9 @@ public class FluentHttpHeaders_Add
 	[Fact]
 	public void ShouldAdd()
 	{
-		var headers = new FluentHttpHeaders();
+		var headers = new FluentHttpHeaders { { HeaderTypes.Authorization, "the-xx" } };
 
-		headers.Add(HeaderTypes.Authorization, "the-xx");
-		Assert.Equal("the-xx", headers.Authorization);
+		headers.Authorization.ShouldBe("the-xx");
 	}
 
 	[Fact]
@@ -82,7 +74,7 @@ public class FluentHttpHeaders_Add
 
 		StringValues str = new[] { "the-xx", "supersecret" };
 		headers.Add(HeaderTypes.Authorization, str);
-		Assert.Equal("the-xx,supersecret", headers.Authorization);
+		headers.Authorization.ShouldBe("the-xx,supersecret");
 	}
 
 	[Fact]
@@ -90,9 +82,9 @@ public class FluentHttpHeaders_Add
 	{
 		var headers = new FluentHttpHeaders
 		{
-			{ HeaderTypes.Accept, new[] { "json", "msgpack" } }
+			{ HeaderTypes.Accept, ["json", "msgpack"] }
 		};
-		Assert.Equal("json,msgpack", headers.Accept);
+		((string?)headers.Accept).ShouldBe("json,msgpack");
 	}
 
 	[Fact]
@@ -102,7 +94,7 @@ public class FluentHttpHeaders_Add
 		headers.AddRange(new Dictionary<string, StringValues>{
 			{HeaderTypes.Accept, new[] {"json", "msgpack"}}
 		});
-		Assert.Throws<ArgumentException>(() => headers.AddRange(new Dictionary<string, StringValues>{
+		Should.Throw<ArgumentException>(() => headers.AddRange(new Dictionary<string, StringValues>{
 			{HeaderTypes.Accept, "xml"}
 		}));
 	}
@@ -117,7 +109,7 @@ public class FluentHttpHeaders_Add
 		headers.SetRange(new Dictionary<string, StringValues>{
 			{HeaderTypes.Accept, "xml"}
 		});
-		Assert.Equal("xml", headers.Accept);
+		((string?)headers.Accept).ShouldBe("xml");
 	}
 }
 
@@ -131,7 +123,7 @@ public class FluentHttpHeaders_Remove
 			{ HeaderTypes.Authorization, "the-xx" }
 		};
 		headers.Remove(HeaderTypes.Authorization);
-		Assert.Null(headers.Authorization);
+		headers.Authorization.ShouldBeNull();
 	}
 
 	[Fact]
@@ -139,7 +131,7 @@ public class FluentHttpHeaders_Remove
 	{
 		var headers = new FluentHttpHeaders();
 		headers.Remove(HeaderTypes.Authorization);
-		Assert.Null(headers.Authorization);
+		headers.Authorization.ShouldBeNull();
 	}
 }
 
@@ -154,8 +146,8 @@ public class FluentHttpHeaders_GetValue
 		};
 		var value = headers.GetValue("X-Custom");
 		var value2 = headers.GetValue("x-custom");
-		Assert.Equal("the-xx", value);
-		Assert.Equal("the-xx", value2);
+		value.ShouldBe("the-xx");
+		value2.ShouldBe("the-xx");
 	}
 }
 
@@ -165,15 +157,15 @@ public class FluentHttpHeaders_Accessors
 	public void GetNotExists_ShouldReturnNull()
 	{
 		var headers = new FluentHttpHeaders();
-		Assert.Null(headers.UserAgent);
+		headers.UserAgent.ShouldBeNull();
 	}
 
 	[Fact]
 	public void GetExists_ShouldReturn()
 	{
 		var headers = new FluentHttpHeaders()
-			.Add(HeaderTypes.Accept, new[] { "json", "msgpack" });
-		Assert.Equal("json,msgpack", headers.Accept);
+			.Add(HeaderTypes.Accept, ["json", "msgpack"]);
+		((string?)headers.Accept).ShouldBe("json,msgpack");
 	}
 
 	[Fact]
@@ -183,7 +175,7 @@ public class FluentHttpHeaders_Accessors
 		{
 			Accept = new[] { "json", "msgpack" }
 		};
-		Assert.Equal("json,msgpack", headers.Accept);
+		((string?)headers.Accept).ShouldBe("json,msgpack");
 	}
 
 	[Fact]
@@ -194,7 +186,7 @@ public class FluentHttpHeaders_Accessors
 			Accept = new[] { "json", "msgpack" }
 		};
 		headers.Accept = "json";
-		Assert.Equal("json", headers.Accept);
+		((string?)headers.Accept).ShouldBe("json");
 	}
 }
 
@@ -210,9 +202,9 @@ public class FluentHttpHeaders_Initialize
 		};
 
 		var headers = new FluentHttpHeaders(headersMap);
-		Assert.Equal("the-xx", headers.Authorization);
-		Assert.Equal("json", headers.ContentType);
-		Assert.Equal(headersMap.Count, headers.Count);
+		headers.Authorization.ShouldBe("the-xx");
+		headers.ContentType.ShouldBe("json");
+		headers.Count.ShouldBe(headersMap.Count);
 	}
 
 	[Fact]
@@ -225,9 +217,9 @@ public class FluentHttpHeaders_Initialize
 		};
 
 		var headers = new FluentHttpHeaders(headersMap);
-		Assert.Equal("the-xx", headers.Authorization);
-		Assert.Equal("json", headers.ContentType);
-		Assert.Equal(headersMap.Count, headers.Count);
+		headers.Authorization.ShouldBe("the-xx");
+		headers.ContentType.ShouldBe("json");
+		headers.Count.ShouldBe(headersMap.Count);
 	}
 
 	[Fact]
@@ -235,14 +227,14 @@ public class FluentHttpHeaders_Initialize
 	{
 		var headersMap = new Dictionary<string, IEnumerable<string>>
 		{
-			{HeaderTypes.Accept, new[] {"json", "msgpack"} },
-			{HeaderTypes.XForwardedFor, new[] {"192.168.1.1", "127.0.0.1"} },
+			{HeaderTypes.Accept, ["json", "msgpack"] },
+			{HeaderTypes.XForwardedFor, ["192.168.1.1", "127.0.0.1"] },
 		};
 
 		var headers = new FluentHttpHeaders(headersMap);
-		Assert.Equal("json,msgpack", headers.Accept);
-		Assert.Equal("192.168.1.1,127.0.0.1", headers.XForwardedFor);
-		Assert.Equal(headersMap.Count, headers.Count);
+		((string?)headers.Accept).ShouldBe("json,msgpack");
+		((string?)headers.XForwardedFor).ShouldBe("192.168.1.1,127.0.0.1");
+		headers.Count.ShouldBe(headersMap.Count);
 	}
 
 	[Fact]
@@ -250,12 +242,12 @@ public class FluentHttpHeaders_Initialize
 	{
 		var httpHeaders = new HttpRequestMessage().Headers;
 		httpHeaders.Add(HeaderTypes.Authorization, "the-xx");
-		httpHeaders.Add(HeaderTypes.XForwardedFor, new[] { "192.168.1.1", "127.0.0.1" });
+		httpHeaders.Add(HeaderTypes.XForwardedFor, ["192.168.1.1", "127.0.0.1"]);
 
 		var headers = new FluentHttpHeaders(httpHeaders);
-		Assert.Equal("the-xx", headers.Authorization);
-		Assert.Equal("192.168.1.1,127.0.0.1", headers.XForwardedFor);
-		Assert.Equal(2, headers.Count);
+		headers.Authorization.ShouldBe("the-xx");
+		((string?)headers.XForwardedFor).ShouldBe("192.168.1.1,127.0.0.1");
+		headers.Count.ShouldBe(2);
 	}
 }
 
@@ -271,7 +263,7 @@ public class FluentHttpHeaders_ToHashString
 		};
 		var hash = headers.ToHashString();
 
-		Assert.Equal("Authorization=the-xx&Content-Type=json", hash);
+		hash.ShouldBe("Authorization=the-xx&Content-Type=json");
 	}
 
 	[Fact]
@@ -280,11 +272,11 @@ public class FluentHttpHeaders_ToHashString
 		var headers = new FluentHttpHeaders
 		{
 			{HeaderTypes.Authorization, "the-xx"},
-			{HeaderTypes.Accept, new[] {"json", "msgpack"}}
+			{HeaderTypes.Accept, ["json", "msgpack"] }
 		};
 		var hash = headers.ToHashString();
 
-		Assert.Equal("Authorization=the-xx&Accept=json,msgpack", hash);
+		hash.ShouldBe("Authorization=the-xx&Accept=json,msgpack");
 	}
 
 	[Fact]
@@ -293,12 +285,12 @@ public class FluentHttpHeaders_ToHashString
 		var headers = new FluentHttpHeaders
 			{
 				{HeaderTypes.Authorization, "the-xx"},
-				{HeaderTypes.Accept, new[] {"json", "msgpack"}},
+				{HeaderTypes.Accept, ["json", "msgpack"] },
 				{HeaderTypes.XForwardedHost, "sketch7.com"},
 			}
 			.WithOptions(opts => opts.WithHashingExclude(pair => pair.Key == HeaderTypes.Authorization));
 		var hash = headers.ToHashString();
 
-		Assert.Equal("Accept=json,msgpack&X-Forwarded-Host=sketch7.com", hash);
+		hash.ShouldBe("Accept=json,msgpack&X-Forwarded-Host=sketch7.com");
 	}
 }

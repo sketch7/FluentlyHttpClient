@@ -13,7 +13,7 @@ public class ClientFactoryTest_Build
 		var httpClient = GetNewClientFactory().CreateBuilder("abc")
 			.Build();
 
-		Assert.Null(httpClient.BaseUrl);
+		httpClient.BaseUrl.ShouldBeNull();
 	}
 }
 
@@ -30,7 +30,7 @@ public class ClientFactory_WithRequestBuilderDefaults
 			.GetRequiredService<IFluentHttpClientFactory>();
 
 		var client = f.CreateBuilder("sketch7").Build();
-		Assert.Equal("default-config", client.Headers.UserAgent.ToString());
+		client.Headers.UserAgent.ToString().ShouldBe("default-config");
 	}
 
 
@@ -57,17 +57,13 @@ public class ClientFactory_WithRequestBuilderDefaults
 		httpClientB.Headers.TryGetValues("X-S7", out var s7HeadersB);
 		httpClientA.Headers.TryGetValues("X-Org", out var orgHeadersB);
 
-		Assert.NotNull(orgHeadersA);
-		Assert.Single(orgHeadersA, "s7");
-		Assert.NotNull(s7HeadersA);
-		Assert.Single(s7HeadersA, "a");
-		Assert.Equal("dXNlcjpwYSQk", httpClientA.Headers.Authorization!.Parameter);
+		orgHeadersA.ShouldNotBeNull().ShouldHaveSingleItem().ShouldBe("s7");
+		s7HeadersA.ShouldNotBeNull().ShouldHaveSingleItem().ShouldBe("a");
+		httpClientA.Headers.Authorization!.Parameter.ShouldBe("dXNlcjpwYSQk");
 
-		Assert.NotNull(orgHeadersB);
-		Assert.Single(orgHeadersB, "s7");
-		Assert.NotNull(s7HeadersB);
-		Assert.Single(s7HeadersB, "b");
-		Assert.Equal("dXNlci0yOnBhJCQ=", httpClientB.Headers.Authorization!.Parameter);
+		orgHeadersB.ShouldNotBeNull().ShouldHaveSingleItem().ShouldBe("s7");
+		s7HeadersB.ShouldNotBeNull().ShouldHaveSingleItem().ShouldBe("b");
+		httpClientB.Headers.Authorization!.Parameter.ShouldBe("dXNlci0yOnBhJCQ=");
 	}
 
 	[Fact]
@@ -81,8 +77,8 @@ public class ClientFactory_WithRequestBuilderDefaults
 		var request = httpClient.CreateRequest("/api")
 			.Build();
 
-		Assert.NotNull(request);
-		Assert.Equal(HttpMethod.Put, request.Method);
+		request.ShouldNotBeNull();
+		request.Method.ShouldBe(HttpMethod.Put);
 	}
 
 	[Fact]
@@ -97,9 +93,9 @@ public class ClientFactory_WithRequestBuilderDefaults
 		var request = httpClient.CreateRequest("/api")
 			.Build();
 
-		Assert.NotNull(request);
-		Assert.Equal(HttpMethod.Put, request.Method);
-		Assert.Equal("user", request.Items["context"]);
+		request.ShouldNotBeNull();
+		request.Method.ShouldBe(HttpMethod.Put);
+		request.Items["context"].ShouldBe("user");
 	}
 
 	[Fact]
@@ -114,9 +110,9 @@ public class ClientFactory_WithRequestBuilderDefaults
 		var request = httpClient.CreateRequest("/api")
 			.Build();
 
-		Assert.NotNull(request);
-		Assert.Equal(HttpMethod.Get, request.Method);
-		Assert.Equal("user", request.Items["context"]);
+		request.ShouldNotBeNull();
+		request.Method.ShouldBe(HttpMethod.Get);
+		request.Items["context"].ShouldBe("user");
 	}
 
 	[Fact]
@@ -140,7 +136,7 @@ public class ClientFactory_WithRequestBuilderDefaults
 			})
 			.Build();
 
-		Assert.Equal("/api/heroes?ROLES=warrior,assassin", request.Uri?.ToString());
+		request.Uri?.ToString().ShouldBe("/api/heroes?ROLES=warrior,assassin");
 	}
 
 	[Fact]
@@ -158,8 +154,8 @@ public class ClientFactory_WithRequestBuilderDefaults
 				.Build()
 			;
 
-		Assert.Equal("http://abc.com/v1/", subHttpClient.BaseUrl);
-		Assert.Equal("http://abc.com/", httpClient.BaseUrl);
+		subHttpClient.BaseUrl.ShouldBe("http://abc.com/v1/");
+		httpClient.BaseUrl.ShouldBe("http://abc.com/");
 	}
 }
 
@@ -173,7 +169,7 @@ public class ClientFactory_ConfigureFormatters
 			.ConfigureFormatters(opts => { opts.Formatters.Clear(); })
 			.Build();
 
-		Assert.Empty(httpClient.Formatters);
+		httpClient.Formatters.ShouldBeEmpty();
 	}
 
 	[Fact]
@@ -187,7 +183,7 @@ public class ClientFactory_ConfigureFormatters
 			})
 			.Build();
 
-		Assert.Equal(httpClient.Formatters.XmlFormatter, httpClient.DefaultFormatter);
+		httpClient.DefaultFormatter.ShouldBe(httpClient.Formatters.XmlFormatter);
 	}
 
 	[Fact]
@@ -207,8 +203,8 @@ public class ClientFactory_ConfigureFormatters
 				.Build()
 			;
 
-		Assert.Equal(httpClient.Formatters.XmlFormatter, httpClient.DefaultFormatter);
-		Assert.Equal(httpClient2.Formatters.FormUrlEncodedFormatter, httpClient2.DefaultFormatter);
+		httpClient.DefaultFormatter.ShouldBe(httpClient.Formatters.XmlFormatter);
+		httpClient2.DefaultFormatter.ShouldBe(httpClient2.Formatters.FormUrlEncodedFormatter);
 	}
 
 	[Fact]
@@ -224,7 +220,7 @@ public class ClientFactory_ConfigureFormatters
 			})
 			.Build();
 
-		Assert.Equal(jsonFormatter, httpClient.DefaultFormatter);
+		httpClient.DefaultFormatter.ShouldBe(jsonFormatter);
 	}
 
 	[Fact]
@@ -238,7 +234,7 @@ public class ClientFactory_ConfigureFormatters
 			})
 			.Build();
 
-		Assert.Equal(httpClient.Formatters.First(), httpClient.DefaultFormatter);
+		httpClient.DefaultFormatter.ShouldBe(httpClient.Formatters.First());
 	}
 }
 
@@ -253,8 +249,7 @@ public class ClientFactory_WithConfigureDefaults
 			.WithBaseUrl("http://abc.com")
 			.Build();
 
-		var userAgentHeader = httpClient.Headers.GetValues("User-Agent").FirstOrDefault();
-		Assert.Equal("hots", userAgentHeader);
+		httpClient.Headers.GetValues("User-Agent").FirstOrDefault().ShouldBe("hots");
 	}
 }
 
@@ -267,15 +262,15 @@ public class ClientFactory_Register
 			.WithBaseUrl("http://abc.com")
 			.Build();
 
-		Assert.NotNull(httpClient);
-		Assert.Equal("abc", httpClient.Identifier);
+		httpClient.ShouldNotBeNull();
+		httpClient.Identifier.ShouldBe("abc");
 	}
 
 	[Fact]
 	public void ThrowsErrorWhenIdentifierNotSpecified()
 	{
 		var clientBuilder = GetNewClientFactory().CreateBuilder(null!);
-		Assert.Throws<ClientBuilderValidationException>(() => clientBuilder.Register());
+		Should.Throw<ClientBuilderValidationException>(() => clientBuilder.Register());
 	}
 
 	[Fact]
@@ -285,7 +280,7 @@ public class ClientFactory_Register
 			.WithBaseUrl("http://abc.com")
 			.Register();
 
-		Assert.Throws<ClientBuilderValidationException>(() => clientBuilder.Register());
+		Should.Throw<ClientBuilderValidationException>(() => clientBuilder.Register());
 	}
 }
 
@@ -302,7 +297,7 @@ public class ClientFactory_Remove
 		var isRegistered = fluentHttpClientFactory.Remove("abc")
 			.Has("abc");
 
-		await Assert.ThrowsAsync<ObjectDisposedException>(() => httpClient.Get<Hero>("/api/heroes/azmodan"));
-		Assert.False(isRegistered);
+		await Should.ThrowAsync<ObjectDisposedException>(() => httpClient.Get<Hero>("/api/heroes/azmodan"));
+		isRegistered.ShouldBeFalse();
 	}
 }

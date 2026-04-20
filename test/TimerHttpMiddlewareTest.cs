@@ -20,9 +20,9 @@ public class TimerHttpMiddlewareTest
 		var response = await httpClient.CreateRequest("/api/heroes/azmodan")
 			.ReturnAsResponse<Hero>();
 
-		Assert.NotNull(response.Data);
-		Assert.Equal("Azmodan", response.Data.Name);
-		Assert.NotEqual(TimeSpan.Zero, response.GetTimeTaken());
+		response.Data.ShouldNotBeNull();
+		response.Data.Name.ShouldBe("Azmodan");
+		response.GetTimeTaken().ShouldNotBe(TimeSpan.Zero);
 	}
 
 	[Fact]
@@ -42,8 +42,8 @@ public class TimerHttpMiddlewareTest
 			.WithTimerWarnThreshold(TimeSpan.FromSeconds(1))
 			.ReturnAsResponse<Hero>();
 
-		Assert.NotNull(response.Data);
-		Assert.NotEqual(TimeSpan.Zero, response.GetTimeTaken());
+		response.Data.ShouldNotBeNull();
+		response.GetTimeTaken().ShouldNotBe(TimeSpan.Zero);
 	}
 
 	[Fact]
@@ -56,6 +56,6 @@ public class TimerHttpMiddlewareTest
 				x.WarnThreshold = TimeSpan.Zero;
 			});
 
-		Assert.Throws<ArgumentException>(() => httpClientBuilder.Build());
+		Should.Throw<ArgumentException>(() => httpClientBuilder.Build());
 	}
 }

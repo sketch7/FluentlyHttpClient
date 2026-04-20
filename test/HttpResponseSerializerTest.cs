@@ -6,7 +6,7 @@ namespace FluentlyHttpClient.Test;
 public class HttpResponseSerializerTest
 {
 	//[Fact]
-	public async void ShouldBeSerialized()
+	public async Task ShouldBeSerialized()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When(HttpMethod.Post, "http://local.sketch7.io:5000/api/heroes/azmodan")
