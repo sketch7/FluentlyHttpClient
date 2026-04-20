@@ -40,17 +40,17 @@ public class FluentHttpHeaders_Tests
 		Assert.Collection(headersCopied, x =>
 			{
 				Assert.Equal(HeaderTypes.Authorization, x.Key);
-				Assert.Equal("the-xx", x.Value[0]);
+				Assert.Equal("the-xx", x.Value![0]);
 			},
 			x =>
 			{
 				Assert.Equal(HeaderTypes.Accept, x.Key);
-				Assert.Equal("json,msgpack", string.Join(",", x.Value));
+				Assert.Equal("json,msgpack", string.Join(",", x.Value!));
 			},
 			x =>
 			{
 				Assert.Equal(HeaderTypes.XForwardedHost, x.Key);
-				Assert.Equal("sketch7.com", x.Value[0]);
+				Assert.Equal("sketch7.com", x.Value![0]);
 			});
 		Assert.Equal("the-xx", headersCopied.Authorization);
 	}

@@ -363,6 +363,8 @@ public partial class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentH
 		{
 			foreach (var header in _headers)
 			{
+				if (header.Value is null)
+					continue;
 				if (header.Key == HeaderTypes.UserAgent)
 					httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
 				else

@@ -39,14 +39,14 @@ public record FluentHttpHeadersOptions
 /// <summary>
 /// Collection of headers and their values.
 /// </summary>
-public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHeaders>, IEnumerable<KeyValuePair<string, string[]>>
+public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHeaders>, IEnumerable<KeyValuePair<string, string?[]?>>
 {
 	private static readonly FluentHttpHeadersOptions DefaultOptions = new();
 	private FluentHttpHeadersOptions _options = DefaultOptions;
-	private readonly Dictionary<string, string[]?> _data = new(StringComparer.OrdinalIgnoreCase);
+	private readonly Dictionary<string, string?[]?> _data = new(StringComparer.OrdinalIgnoreCase);
 
 	/// <summary>Gets or sets the header values for the specified key.</summary>
-	public string[]? this[string key]
+	public string?[]? this[string key]
 	{
 		get => _data[key];
 		set => _data[key] = value;
@@ -145,7 +145,7 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 	/// <param name="value">Header value to add.</param>
 	public FluentHttpHeaders Add(string header, StringValues value)
 	{
-		_data.Add(header, [.. value.Select(v => v ?? string.Empty)]);
+		_data.Add(header, value);
 		return this;
 	}
 
@@ -364,7 +364,7 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 	}
 
 	/// <inheritdoc />
-	public IEnumerator<KeyValuePair<string, string[]>> GetEnumerator() => _data.GetEnumerator();
+	public IEnumerator<KeyValuePair<string, string?[]?>> GetEnumerator() => _data.GetEnumerator();
 
 	/// <summary>
 	/// Converts to string.
@@ -376,7 +376,7 @@ public partial class FluentHttpHeaders : IFluentHttpHeaderBuilder<FluentHttpHead
 	/// <summary>
 	/// Converts to dictionary.
 	/// </summary>
-	public Dictionary<string, string[]?> ToDictionary() => _data;
+	public Dictionary<string, string?[]?> ToDictionary() => _data;
 
 	FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeader(string key, string value) => Add(key, value);
 	FluentHttpHeaders IFluentHttpHeaderBuilder<FluentHttpHeaders>.WithHeader(string key, StringValues values) => Add(key, values);
