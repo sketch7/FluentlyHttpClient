@@ -20,9 +20,3 @@ public class GqlRequest
 	/// </summary>
 	public object? Variables { get; set; }
 }
-
-/// <summary>Obsolete GraphQL request object. Use <see cref="GqlRequest"/> instead.</summary>
-[Obsolete("Use 'GqlRequest' instead.")]
-public class GqlQuery : GqlRequest
-{
-}
