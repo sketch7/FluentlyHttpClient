@@ -33,7 +33,7 @@ public class RequestBuilder_Build
 			.CreateRequest()
 			.ReturnAsResponse();
 
-		Assert.Equal("https://sketch7.com/api/heroes/", response.Message.RequestMessage.RequestUri.ToString());
+		response.Message.RequestMessage?.RequestUri?.ToString().ShouldBe("https://sketch7.com/api/heroes/");
 	}
 
 	[Fact]
@@ -42,7 +42,7 @@ public class RequestBuilder_Build
 		var request = GetNewRequestBuilder(configureClient: c => c.WithBaseUrl(string.Empty))
 			.Build();
 
-		Assert.Equal("/api", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("/api");
 	}
 
 	[Fact]
@@ -56,7 +56,7 @@ public class RequestBuilder_Build
 			.CreateRequest()
 			.ReturnAsResponse();
 
-		Assert.Equal("https://sketch7.com/oauth/token", response.Message.RequestMessage.RequestUri.ToString());
+		response.Message.RequestMessage?.RequestUri?.ToString().ShouldBe("https://sketch7.com/oauth/token");
 	}
 
 	[Fact]
@@ -72,7 +72,7 @@ public class RequestBuilder_Build
 			.CreateRequest()
 			.ReturnAsResponse();
 
-		Assert.Equal("https://sketch7.com/oauth/token", response.Message.RequestMessage.RequestUri.ToString());
+		response.Message.RequestMessage?.RequestUri?.ToString().ShouldBe("https://sketch7.com/oauth/token");
 	}
 
 	[Fact]
@@ -88,7 +88,7 @@ public class RequestBuilder_Build
 			.CreateRequest()
 			.ReturnAsResponse();
 
-		Assert.Equal("https://sketch7.com/api/heroes/v1/", response.Message.RequestMessage.RequestUri.ToString());
+		response.Message.RequestMessage?.RequestUri?.ToString().ShouldBe("https://sketch7.com/api/heroes/v1/");
 	}
 
 	[Fact]
@@ -102,7 +102,7 @@ public class RequestBuilder_Build
 			.WithQueryParams(new { Language = "en" })
 			.ReturnAsResponse();
 
-		Assert.Equal("https://sketch7.com/api/heroes/?language=en", response.Message.RequestMessage.RequestUri.ToString());
+		response.Message.RequestMessage?.RequestUri?.ToString().ShouldBe("https://sketch7.com/api/heroes/?language=en");
 	}
 }
 
@@ -118,14 +118,14 @@ public class RequestBuilder_WithUri
 				Hero = "azmodan"
 			}).Build();
 
-		Assert.Equal("en/heroes/azmodan", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("en/heroes/azmodan");
 	}
 
 	[Fact]
 	public void NullValue_ShouldThrow()
 	{
 		var requestBuilder = GetNewRequestBuilder();
-		Assert.Throws<ArgumentNullException>("args", () => requestBuilder.WithUri("{Language}/heroes", new
+		Should.Throw<ArgumentNullException>(() => requestBuilder.WithUri("{Language}/heroes", new
 		{
 			Language = (string?)null
 		}));
@@ -145,7 +145,7 @@ public class RequestBuilder_WithQueryParams
 				Filter = "all"
 			}).Build();
 
-		Assert.Equal("/org/sketch7?page=1&filter=all", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("/org/sketch7?page=1&filter=all");
 	}
 
 	[Fact]
@@ -157,17 +157,17 @@ public class RequestBuilder_WithQueryParams
 			{
 				Page = 1,
 				Filter = "all"
-			}, c => c.WithKeyFormatter(null)).Build();
+			}, c => c.WithKeyFormatter(null!)).Build();
 
-		Assert.Equal("/org/sketch7?Page=1&Filter=all", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("/org/sketch7?Page=1&Filter=all");
 	}
 
 	[Theory]
 	[InlineData(null)]
 	[InlineData("")]
-	public void NullOrEmptyValue_RemainAsIs(string data)
+	public void NullOrEmptyValue_RemainAsIs(string? data)
 	{
-		string filter = data;
+		string? filter = data;
 		var builder = GetNewRequestBuilder();
 		var request = builder.WithUri("/org/sketch7")
 			.WithQueryParams(new
@@ -175,7 +175,7 @@ public class RequestBuilder_WithQueryParams
 				filter,
 			}).Build();
 
-		Assert.Equal("/org/sketch7", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("/org/sketch7");
 	}
 
 	[Fact]
@@ -190,7 +190,7 @@ public class RequestBuilder_WithQueryParams
 				Page = 1
 			}).Build();
 
-		Assert.Equal("/org/sketch7?page=1", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("/org/sketch7?page=1");
 	}
 
 	[Fact]
@@ -204,7 +204,7 @@ public class RequestBuilder_WithQueryParams
 				Filter = "all"
 			}).Build();
 
-		Assert.Equal("/org/sketch7?hero=rex&page=1&filter=all", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("/org/sketch7?hero=rex&page=1&filter=all");
 	}
 
 	[Fact]
@@ -215,7 +215,7 @@ public class RequestBuilder_WithQueryParams
 			.WithQueryParams(new { })
 			.Build();
 
-		Assert.Equal("/org/sketch7", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("/org/sketch7");
 	}
 
 	[Fact]
@@ -233,7 +233,7 @@ public class RequestBuilder_WithQueryParams
 			.WithQueryParams(qsParams)
 			.Build();
 
-		Assert.Equal("/org/sketch7?role=assassin&class=rogue", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("/org/sketch7?role=assassin&class=rogue");
 	}
 
 	[Fact]
@@ -247,7 +247,7 @@ public class RequestBuilder_WithQueryParams
 				Powers = new List<int> { 1337, 2337 }
 			}).Build();
 
-		Assert.Equal("/org/sketch7/heroes?roles=warrior&roles=assassin&powers=1337&powers=2337", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("/org/sketch7/heroes?roles=warrior&roles=assassin&powers=1337&powers=2337");
 	}
 
 	[Fact]
@@ -261,7 +261,7 @@ public class RequestBuilder_WithQueryParams
 			}, opts => opts.CollectionMode = QueryStringCollectionMode.CommaSeparated
 			).Build();
 
-		Assert.Equal("/org/sketch7/heroes?roles=warrior,assassin", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("/org/sketch7/heroes?roles=warrior,assassin");
 	}
 
 	[Fact]
@@ -276,7 +276,7 @@ public class RequestBuilder_WithQueryParams
 			}, opts => opts.WithKeyFormatter(s => s.ToUpper())
 			).Build();
 
-		Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("/org/sketch7/heroes?ROLES=warrior,assassin");
 	}
 
 	[Fact]
@@ -288,7 +288,7 @@ public class RequestBuilder_WithQueryParams
 			.WithQueryParamsOptions(opts => opts.WithKeyFormatter(s => s.ToUpper()))
 			.WithQueryParamsOptions(opts => opts.WithValuePerKeyFormatter(new Dictionary<string, Func<object, string>>()
 			{
-				["POWERS"] = val => (val  is string valStr) ? valStr.ToUpper() : null!
+				["POWERS"] = val => (val is string valStr) ? valStr.ToUpper() : null!
 			}))
 			.WithQueryParams(new
 			{
@@ -297,7 +297,7 @@ public class RequestBuilder_WithQueryParams
 			}
 			).Build();
 
-		Assert.Equal("/org/sketch7/heroes?ROLES=warrior,assassin&POWERS=MEDIUM,HIGH", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("/org/sketch7/heroes?ROLES=warrior,assassin&POWERS=MEDIUM,HIGH");
 	}
 
 	[Fact]
@@ -319,7 +319,7 @@ public class RequestBuilder_WithQueryParams
 			}
 			).Build();
 
-		Assert.Equal("/org/sketch7/heroes?role=warrior&power=MEDIUM&dateTime=2025-01-01T00:00:00Z", request.Uri.ToString());
+		request.Uri?.ToString().ShouldBe("/org/sketch7/heroes?role=warrior&power=MEDIUM&dateTime=2025-01-01T00:00:00Z");
 	}
 }
 
@@ -329,7 +329,7 @@ public class RequestBuilder_BuildValidation
 	public void ThrowsErrorWhenMethodNotSpecified()
 	{
 		var builder = GetNewRequestBuilder();
-		Assert.Throws<RequestValidationException>(() => builder.WithMethod(null).WithUri("/org").Build());
+		Should.Throw<RequestValidationException>(() => builder.WithMethod(null!).WithUri("/org").Build());
 	}
 
 	[Fact]
@@ -338,7 +338,7 @@ public class RequestBuilder_BuildValidation
 		var requestBuilder = GetNewRequestBuilder()
 			.AsGet()
 			.WithBody(new { Name = "Kaboom!" });
-		Assert.Throws<RequestValidationException>(() => requestBuilder.Build());
+		Should.Throw<RequestValidationException>(() => requestBuilder.Build());
 	}
 }
 
@@ -354,8 +354,8 @@ public class RequestBuilder_WithHeaders
 		var request = builder.Build();
 
 		var header = request.Headers.GetValues("chiko").FirstOrDefault();
-		Assert.NotNull(header);
-		Assert.Equal("hex", header);
+		header.ShouldNotBeNull();
+		header.ShouldBe("hex");
 	}
 
 	[Fact]
@@ -363,17 +363,13 @@ public class RequestBuilder_WithHeaders
 	{
 		var builder = GetNewRequestBuilder()
 				.WithUri("/org/sketch7")
-				.WithHeader("locale", new StringValues(new[] { "mt", "en" }))
+				.WithHeader("locale", new StringValues(["mt", "en"]))
 			;
 		var request = builder.Build();
 
 		var headers = request.Headers.GetValues("locale");
-		Assert.NotNull(headers);
-		Assert.Collection(
-			headers,
-			x => Assert.Equal("mt", x),
-			x => Assert.Equal("en", x)
-		);
+		headers.ShouldNotBeNull();
+		headers.ShouldBe(["mt", "en"]);
 	}
 
 	[Fact]
@@ -387,8 +383,8 @@ public class RequestBuilder_WithHeaders
 		var request = builder.Build();
 
 		var header = request.Headers.GetValues("chiko").FirstOrDefault();
-		Assert.NotNull(header);
-		Assert.Equal("hexII", header);
+		header.ShouldNotBeNull();
+		header.ShouldBe("hexII");
 	}
 
 	[Fact]
@@ -406,10 +402,10 @@ public class RequestBuilder_WithHeaders
 
 		var chikoHeader = request.Headers.GetValues("chiko").FirstOrDefault();
 		var localeHeader = request.Headers.GetValues("locale").FirstOrDefault();
-		Assert.NotNull(chikoHeader);
-		Assert.Equal("hexII", chikoHeader);
-		Assert.NotNull(localeHeader);
-		Assert.Equal("mt-MT", localeHeader);
+		chikoHeader.ShouldNotBeNull();
+		chikoHeader.ShouldBe("hexII");
+		localeHeader.ShouldNotBeNull();
+		localeHeader.ShouldBe("mt-MT");
 	}
 
 	[Fact]
@@ -427,10 +423,10 @@ public class RequestBuilder_WithHeaders
 
 		var chikoHeader = request.Headers.GetValues("chiko").FirstOrDefault();
 		var localeHeader = request.Headers.GetValues("locale").FirstOrDefault();
-		Assert.NotNull(chikoHeader);
-		Assert.Equal("hexII", chikoHeader);
-		Assert.NotNull(localeHeader);
-		Assert.Equal("mt-MT", localeHeader);
+		chikoHeader.ShouldNotBeNull();
+		chikoHeader.ShouldBe("hexII");
+		localeHeader.ShouldNotBeNull();
+		localeHeader.ShouldBe("mt-MT");
 	}
 
 	[Fact]
@@ -443,8 +439,8 @@ public class RequestBuilder_WithHeaders
 		var request = builder.Build();
 
 		var userAgentHeader = request.Headers.GetValues(HeaderTypes.UserAgent).FirstOrDefault();
-		Assert.NotNull(userAgentHeader);
-		Assert.Equal("fluently", userAgentHeader);
+		userAgentHeader.ShouldNotBeNull();
+		userAgentHeader.ShouldBe("fluently");
 	}
 
 	[Fact]
@@ -458,15 +454,15 @@ public class RequestBuilder_WithHeaders
 		var request = builder.Build();
 
 		var userAgentHeader = request.Headers.GetValues(HeaderTypes.UserAgent).FirstOrDefault();
-		Assert.NotNull(userAgentHeader);
-		Assert.Equal(userAgent, userAgentHeader);
+		userAgentHeader.ShouldNotBeNull();
+		userAgentHeader.ShouldBe(userAgent);
 	}
 }
 
 public class RequestBuilder_Return
 {
 	[Fact]
-	public async void ReturnAsString()
+	public async Task ReturnAsString()
 	{
 		var mockResponse = "{ 'name': 'Azmodan' }";
 		var mockHttp = new MockHttpMessageHandler();
@@ -482,15 +478,15 @@ public class RequestBuilder_Return
 		var response = await httpClient.CreateRequest("/api/heroes/azmodan")
 			.ReturnAsString();
 
-		Assert.NotNull(response);
-		Assert.Equal(mockResponse, response);
+		response.ShouldNotBeNull();
+		response.ShouldBe(mockResponse);
 	}
 }
 
 public class RequestBuilder_PostWithBody
 {
 	[Fact]
-	public async void ReturnAsTypedObject()
+	public async Task ReturnAsTypedObject()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes/azmodan")
@@ -512,15 +508,15 @@ public class RequestBuilder_PostWithBody
 			.ReturnAsResponse<Hero>();
 
 		response.EnsureSuccessStatusCode();
-		Assert.NotNull(response);
-		Assert.Equal("Lord of Sin", response.Data!.Title);
+		response.ShouldNotBeNull();
+		response.Data!.Title.ShouldBe("Lord of Sin");
 	}
 }
 
 public class RequestBuilder_ReturnMulti
 {
 	[Fact]
-	public async void ShouldSendTwoRequests()
+	public async Task ShouldSendTwoRequests()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes/azmodan")
@@ -545,12 +541,12 @@ public class RequestBuilder_ReturnMulti
 		var response2 = await requestBuilder.ReturnAsResponse<Hero>();
 
 		response1.EnsureSuccessStatusCode();
-		Assert.NotNull(response1);
-		Assert.Equal("Lord of Sin", response1.Data!.Title);
+		response1.ShouldNotBeNull();
+		response1.Data!.Title.ShouldBe("Lord of Sin");
 
 		response2.EnsureSuccessStatusCode();
-		Assert.NotNull(response2);
-		Assert.Equal("Lord of Sin", response2.Data!.Title);
+		response2.ShouldNotBeNull();
+		response2.Data!.Title.ShouldBe("Lord of Sin");
 	}
 }
 
@@ -577,7 +573,7 @@ public class FluentRequest_GetHash
 		var request1Hash = request1.Build().GetHash();
 		var request2Hash = request2.Build().GetHash();
 
-		Assert.Equal(request1Hash, request2Hash);
+		request1Hash.ShouldBe(request2Hash);
 	}
 
 	[Fact]
@@ -594,14 +590,14 @@ public class FluentRequest_GetHash
 		var requestHashWithHeaders = requestWithHeaders.Build().GetHash();
 		var noTokenRequestHash = requestNoHeaders.Build().GetHash();
 
-		Assert.NotEqual(requestHashWithHeaders, noTokenRequestHash);
+		requestHashWithHeaders.ShouldNotBe(noTokenRequestHash);
 
 		const string requestHashWithHeadersAssert =
 			"method=GET;url=http://local.sketch7.io:5000/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&locale=en-GB&X-SSV-VERSION=2019.02-2&Authorization=Bearer XXX&local=en-GB;content=";
 		const string noHeadersRequestHashAssert =
 			"method=GET;url=http://local.sketch7.io:5000/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&locale=en-GB&X-SSV-VERSION=2019.02-2;content=";
-		Assert.Equal(requestHashWithHeadersAssert, requestHashWithHeaders);
-		Assert.Equal(noHeadersRequestHashAssert, noTokenRequestHash);
+		requestHashWithHeaders.ShouldBe(requestHashWithHeadersAssert);
+		noTokenRequestHash.ShouldBe(noHeadersRequestHashAssert);
 	}
 
 	public class WithHashingOptions
@@ -620,7 +616,7 @@ public class FluentRequest_GetHash
 			var hash = requestBuilder.Build().GetHash();
 
 			const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently&local=en-GB;content=";
-			Assert.Equal(assertHash, hash);
+			hash.ShouldBe(assertHash);
 		}
 
 		[Fact]
@@ -636,7 +632,7 @@ public class FluentRequest_GetHash
 
 			const string assertHash =
 				"method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=User-Agent=fluently&local=en-GB;content=";
-			Assert.Equal(assertHash, hash);
+			hash.ShouldBe(assertHash);
 		}
 
 		[Fact]
@@ -644,7 +640,7 @@ public class FluentRequest_GetHash
 		{
 			var requestBuilder = GetNewRequestBuilder()
 					.WithRequestHashOptions(opts =>
-						opts.WithHeadersExcludeByKeys(new[] { HeaderTypes.Accept, HeaderTypes.UserAgent }))
+						opts.WithHeadersExcludeByKeys([HeaderTypes.Accept, HeaderTypes.UserAgent]))
 					.WithUri("/api/heroes/azmodan")
 					.WithHeader("local", "en-GB")
 				;
@@ -652,7 +648,7 @@ public class FluentRequest_GetHash
 			var hash = requestBuilder.Build().GetHash();
 
 			const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=local=en-GB;content=";
-			Assert.Equal(assertHash, hash);
+			hash.ShouldBe(assertHash);
 		}
 
 		[Fact]
@@ -677,7 +673,7 @@ public class FluentRequest_GetHash
 
 			var hash = requestBuilder.Build().GetHash();
 
-			Assert.Equal("method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=local=en-GB;content=", hash);
+			hash.ShouldBe("method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=local=en-GB;content=");
 		}
 
 		[Fact]
@@ -697,7 +693,7 @@ public class FluentRequest_GetHash
 			var hash = requestBuilder.Build().GetHash();
 
 			const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content=";
-			Assert.Equal(assertHash, hash);
+			hash.ShouldBe(assertHash);
 		}
 
 		[Fact]
@@ -712,7 +708,7 @@ public class FluentRequest_GetHash
 			var hash = requestBuilder.Build().GetHash();
 
 			const string assertHash = "method=GET;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content=";
-			Assert.Equal(assertHash, hash);
+			hash.ShouldBe(assertHash);
 		}
 
 		[Fact]
@@ -730,7 +726,7 @@ public class FluentRequest_GetHash
 			var requestHash = requestBuilder.Build().GetHash();
 
 			const string assertHash = "method=POST;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content={\"email\":\"chiko@sketch7.com\"}";
-			Assert.Equal(assertHash, requestHash);
+			requestHash.ShouldBe(assertHash);
 		}
 
 		[Fact]
@@ -749,7 +745,7 @@ public class FluentRequest_GetHash
 			var hash = requestBuilder.Build().GetHash();
 
 			const string assertHash = "method=POST;url=https://sketch7.com/api/heroes/azmodan;headers=Accept=application/json,text/json,application/xml,text/xml,application/x-www-form-urlencoded&User-Agent=fluently;content=";
-			Assert.Equal(assertHash, hash);
+			hash.ShouldBe(assertHash);
 		}
 	}
 }

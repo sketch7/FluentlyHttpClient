@@ -38,7 +38,7 @@ public class TestRawHttpMiddleware : IFluentHttpMiddleware
 		{
 			foreach (var (key, value) in response.Items)
 			{
-				response.Headers.Add(key.ToString(), value.ToString());
+				response.Headers.Add(key?.ToString() ?? string.Empty, value?.ToString());
 			}
 		}
 
@@ -49,7 +49,7 @@ public class TestRawHttpMiddleware : IFluentHttpMiddleware
 public class HttpMiddlewareTest
 {
 	[Fact]
-	public async void ShouldHaveRequestItem()
+	public async Task ShouldHaveRequestItem()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")
@@ -70,12 +70,12 @@ public class HttpMiddlewareTest
 		response.Items.TryGetValue("request", out var requestItem);
 		response.Items.TryGetValue("monster", out var monsterItem);
 
-		Assert.Equal("item", requestItem);
-		Assert.Equal("orsachiottolo", monsterItem);
+		requestItem.ShouldBe("item");
+		monsterItem.ShouldBe("orsachiottolo");
 	}
 
 	[Fact]
-	public async void ShouldHaveRequestItem_WhenRawRequestProps()
+	public async Task ShouldHaveRequestItem_WhenRawRequestProps()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")
@@ -90,19 +90,19 @@ public class HttpMiddlewareTest
 
 		var httpClient = fluentHttpClientFactory.Get("sketch7");
 		var request = httpClient.CreateRequest("/api/heroes/azmodan").Build().Message;
-		request.Properties["monster"] = "orsachiottolo";
+		request.Options.Set(new HttpRequestOptionsKey<string>("monster"), "orsachiottolo");
 
 		var response = await httpClient.Send(request);
 
 		response.Items.TryGetValue("request", out var requestItem);
 		response.Items.TryGetValue("monster", out var monsterItem);
 
-		Assert.Equal("item", requestItem);
-		Assert.Equal("orsachiottolo", monsterItem);
+		requestItem.ShouldBe("item");
+		monsterItem.ShouldBe("orsachiottolo");
 	}
 
 	[Fact]
-	public async void RawClient_ShouldGoThroughMiddleware()
+	public async Task RawClient_ShouldGoThroughMiddleware()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")
@@ -117,14 +117,14 @@ public class HttpMiddlewareTest
 			.Register();
 
 		var httpClient = fluentHttpClientFactory.Get("sketch7");
-		var response = await httpClient.RawHttpClient.GetAsync("/api/heroes/azmodan");
+		var response = await httpClient.RawHttpClient.GetAsync("/api/heroes/azmodan", TestContext.Current.CancellationToken);
 		var brand = response.Headers.GetValues("X-Brand-Id");
 
-		Assert.Equal("snorlax", brand.First());
+		brand.First().ShouldBe("snorlax");
 	}
 
 	[Fact]
-	public async void RawClient_ShouldGoThroughMiddlewarePreservingItems()
+	public async Task RawClient_ShouldGoThroughMiddlewarePreservingItems()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")
@@ -140,11 +140,11 @@ public class HttpMiddlewareTest
 
 		var httpClient = fluentHttpClientFactory.Get("sketch7");
 
-		var response = await httpClient.RawHttpClient.GetAsync("/api/heroes/azmodan");
+		var response = await httpClient.RawHttpClient.GetAsync("/api/heroes/azmodan", TestContext.Current.CancellationToken);
 		var brand = response.Headers.GetValues("X-Brand-Id");
 		var monster = response.Headers.GetValues("monster");
 
-		Assert.Equal("snorlax", brand.First());
-		Assert.Equal("orsachiottolo", monster.First());
+		brand.First().ShouldBe("snorlax");
+		monster.First().ShouldBe("orsachiottolo");
 	}
 }

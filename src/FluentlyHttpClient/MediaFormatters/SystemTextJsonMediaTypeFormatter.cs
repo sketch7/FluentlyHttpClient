@@ -4,6 +4,7 @@ using System.Text.Json;
 namespace FluentlyHttpClient.MediaFormatters;
 
 // todo: move to separate lib?
+/// <summary>Media type formatter that uses <c>System.Text.Json</c> for JSON serialization.</summary>
 public class SystemTextJsonMediaTypeFormatter : MediaTypeFormatter
 {
 	private const string MediaType = "application/json";
@@ -30,12 +31,14 @@ public class SystemTextJsonMediaTypeFormatter : MediaTypeFormatter
 		};
 	}
 
+	/// <inheritdoc />
 	public override bool CanReadType(Type type)
 	{
 		ArgumentNullException.ThrowIfNull(type, nameof(type));
 		return IsAllowedType(type);
 	}
 
+	/// <inheritdoc />
 	public override bool CanWriteType(Type type)
 	{
 		ArgumentNullException.ThrowIfNull(type, nameof(type));
@@ -53,14 +56,17 @@ public class SystemTextJsonMediaTypeFormatter : MediaTypeFormatter
 		return false;
 	}
 
+	/// <inheritdoc />
 	public override async Task<object?> ReadFromStreamAsync(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
 		=> await JsonSerializer.DeserializeAsync(readStream, type, _options);
 
+	/// <inheritdoc />
 	public override async Task WriteToStreamAsync(Type type, object value, Stream writeStream, HttpContent content,
 		TransportContext transportContext)
 		=> await JsonSerializer.SerializeAsync(writeStream, value, type, _options);
 }
 
+/// <summary>Extension methods for <see cref="MediaTypeFormatterCollection"/> to register additional formatters.</summary>
 public static partial class MediaTypeFormattingExtensions
 {
 	/// <summary>

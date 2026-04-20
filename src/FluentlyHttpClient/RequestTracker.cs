@@ -27,9 +27,9 @@ internal class RequestTracker
 	public FluentlyExecutionContext Pop(string key)
 	{
 		_contexts.TryRemove(key, out var context);
-		return context;
+		return context ?? throw new InvalidOperationException($"No execution context found for request ID '{key}'.");
 	}
 
-	public bool TryPeek(string key, out FluentlyExecutionContext context)
+	public bool TryPeek(string key, out FluentlyExecutionContext? context)
 		=> _contexts.TryGetValue(key, out context);
 }
