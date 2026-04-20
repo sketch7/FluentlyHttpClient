@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - "v*"
+      - "workflow"
+    paths-ignore:
+      - "**.md"
+
+  pull_request:
+    branches:
+      - main
+      - "v*"
+    paths-ignore:
+      - "**.md"
+
+permissions:
+  contents: read
+  packages: read
+  checks: write
+  actions: read
+
+jobs:
+  ci:
+    name: dotnet ci
+    uses: sketch7/.github/.github/workflows/dotnet-ci.yml@dotnet-libs-v2
