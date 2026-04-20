@@ -1,0 +1,27 @@
+<Solution>
+	<Folder Name="/benchmark/">
+		<Project Path="benchmark/FluentlyHttpClient.Benchmarks.csproj" />
+	</Folder>
+	<Folder Name="/samples/">
+		<Project Path="samples/FluentlyHttpClient.Sample.Api/FluentlyHttpClient.Sample.Api.csproj" />
+	</Folder>
+	<Folder Name="/src/">
+		<Project Path="src/FluentlyHttpClient.Entity/FluentlyHttpClient.Entity.csproj" />
+		<Project Path="src/FluentlyHttpClient/FluentlyHttpClient.csproj" />
+	</Folder>
+	<Folder Name="/test/">
+		<Project Path="test/FluentlyHttpClient.Test.csproj" />
+	</Folder>
+	<Folder Name="/docs/">
+		<File Path="CHANGELOG.md" />
+		<File Path="README.md" />
+	</Folder>
+	<Folder Name="/tools/">
+		<File Path=".editorconfig" />
+		<File Path=".gitignore" />
+		<File Path="Directory.Build.props" />
+		<File Path="NuGet.Config" />
+		<File Path="package.json" />
+		<File Path="tools/pack.sh" />
+	</Folder>
+</Solution>

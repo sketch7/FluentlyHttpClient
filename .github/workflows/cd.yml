@@ -1,0 +1,79 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+      - "v*"
+      - "workflow"
+    paths-ignore:
+      - "**.md"
+
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish 🚀"
+        required: false
+        type: boolean
+        default: false
+      force-prerelease:
+        description: "Force Pre-release"
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  id-token: write # required for OIDC
+  contents: write # required for tag push
+  packages: write # required for package publish
+  pull-requests: write # required for release PR creation
+
+jobs:
+  publish:
+    name: Publish
+    if: |
+      contains(fromJSON('["main", "workflow"]'), github.ref_name) ||
+      startsWith(github.ref_name, 'v') ||
+      github.event.inputs.publish == 'true'
+    uses: sketch7/.github/.github/workflows/dotnet-publish.yml@dotnet-libs-v2
+    with:
+      force-preid: ${{ github.event.inputs.force-prerelease == 'true' }}
+    secrets:
+      nuget-auth-token: ${{ secrets.NUGET_KEY }}
+
+  prepare-release:
+    name: Prepare Release
+    needs: publish
+    # Only on push to main (not workflow branch, not manual dispatch, not stable branches)
+    if: |
+      needs.publish.result == 'success' &&
+      github.event_name == 'push' &&
+      github.ref_name == 'main'
+    uses: sketch7/.github/.github/workflows/prepare-release.yml@release-v1
+    with:
+      base-version: ${{ needs.publish.outputs.baseVersion }}
+    secrets:
+      token: ${{ secrets.GH_PAT }} # PAT with 'workflow' scope — required to create v* branches containing workflow files
+
+  release:
+    name: Release
+    needs: publish
+    # Only when a stable (non-prerelease) version was published — i.e. on push to v* branches
+    if: |
+      needs.publish.result == 'success' &&
+      !fromJSON(needs.publish.outputs.isPrerelease)
+    uses: sketch7/.github/.github/workflows/create-release.yml@release-v1
+    with:
+      version: ${{ needs.publish.outputs.version }}
+
+  bump-main:
+    name: Bump main
+    needs: [publish, release]
+    # After a stable release on the latest major — opens a PR bumping main's minor version
+    if: |
+      needs.release.result == 'success' &&
+      needs.release.outputs.is-latest == 'true' &&
+      github.event_name == 'push'
+    uses: sketch7/.github/.github/workflows/node-bump-main.yml@release-v1
+    with:
+      released-version: ${{ needs.publish.outputs.version }}

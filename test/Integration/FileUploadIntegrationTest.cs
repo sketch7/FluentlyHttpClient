@@ -9,22 +9,24 @@ public class UploadResult
 {
 	private string DebuggerDisplay => $"FileName: '{FileName}', ContentType: '{ContentType}', Size: {Size}";
 
-	public string FileName { get; set; }
-	public string ContentType { get; set; }
+	public string FileName { get; set; } = null!;
+	public string ContentType { get; set; } = null!;
 	public double Size { get; set; }
 }
 
-public class FileUploadIntegrationTest
+public class FileUploadIntegrationTest(SampleApiFactory factory) : IClassFixture<SampleApiFactory>
 {
-	[Fact]
-	[Trait("Category", "e2e")]
-	public async void MultipartForm_AddFile_Path()
-	{
-		var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
-			.WithBaseUrl("http://localhost:5500")
+	private IFluentHttpClient BuildClient()
+		=> GetNewClientFactory().CreateBuilder("sketch7")
+			.WithBaseUrl("http://localhost")
+			.WithMessageHandler(factory.Server.CreateHandler())
 			.UseLogging(x => x.IsCondensed = true)
 			.Build();
 
+	[Fact]
+	public async Task MultipartForm_AddFile_Path()
+	{
+		var httpClient = BuildClient();
 		var filePath = "./animal-mustache.jpg";
 
 		var multiForm = new MultipartFormDataContent
@@ -45,22 +47,16 @@ public class FileUploadIntegrationTest
 	}
 
 	[Fact]
-	[Trait("Category", "e2e")]
-	public async void MultipartForm_AddFile_FileStream()
+	public async Task MultipartForm_AddFile_FileStream()
 	{
-		var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
-			.WithBaseUrl("http://localhost:5500")
-			.UseLogging(x => x.IsCondensed = true)
-			.Build();
-
+		var httpClient = BuildClient();
 		var filePath = "./animal-mustache.jpg";
-		var stream = File.OpenRead(filePath);
 
+		using var stream = File.OpenRead(filePath);
 		var multiForm = new MultipartFormDataContent
 		{
 			{ "hero", "Jaina" }
 		};
-
 		multiForm.AddFile("file", stream);
 
 		var response = await httpClient.CreateRequest("/api/sample/upload")
@@ -75,14 +71,9 @@ public class FileUploadIntegrationTest
 	}
 
 	[Fact]
-	[Trait("Category", "e2e")]
-	public async void MultipartForm_AddFile_Bytes()
+	public async Task MultipartForm_AddFile_Bytes()
 	{
-		var httpClient = GetNewClientFactory().CreateBuilder("sketch7")
-			.WithBaseUrl("http://localhost:5500")
-			.UseLogging(x => x.IsCondensed = true)
-			.Build();
-
+		var httpClient = BuildClient();
 		var filePath = "./animal-mustache.jpg";
 		var fileBytes = File.ReadAllBytes(filePath);
 		var fileName = Path.GetFileName(filePath);
@@ -91,7 +82,6 @@ public class FileUploadIntegrationTest
 		{
 			{ "hero", "Jaina" }
 		};
-
 		multiForm.AddFile("file", fileBytes, fileName);
 
 		var response = await httpClient.CreateRequest("/api/sample/upload")

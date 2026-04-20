@@ -11,7 +11,7 @@ using Sketch7.MessagePack.MediaTypeFormatter;
 
 namespace FluentlyHttpClient.Benchmarks;
 
-[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob(RuntimeMoniker.Net90)]
 [RPlotExporter, RankColumn]
 [MemoryDiagnoser]
 public class Benchmarking

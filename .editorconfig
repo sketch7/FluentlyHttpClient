@@ -1,5 +1,5 @@
-# Remove the line below if you want to inherit .editorconfig settings from higher directories
 root = true
+# Remove the line below if you want to inherit .editorconfig settings from higher directories
 
 [*]
 # Standard properties
@@ -10,7 +10,10 @@ max_line_length = 140
 # end_of_line = crlf
 
 # ReSharper properties
+resharper_blank_lines_before_control_transfer_statements = 1
+resharper_csharp_alignment_tab_fill_style = use_tabs_only
 resharper_csharp_case_block_braces = next_line_shifted_2
+resharper_csharp_insert_final_newline = true
 resharper_csharp_keep_blank_lines_in_code = 1
 resharper_csharp_keep_blank_lines_in_declarations = 1
 resharper_csharp_wrap_after_declaration_lpar = true
@@ -21,22 +24,43 @@ resharper_csharp_wrap_before_first_type_parameter_constraint = true
 resharper_csharp_wrap_before_invocation_rpar = true
 resharper_csharp_wrap_extends_list_style = chop_if_long
 resharper_csharp_wrap_parameters_style = chop_if_long
+resharper_empty_block_style = together_same_line
 resharper_enforce_line_ending_style = true
+resharper_indent_primary_constructor_decl_pars = inside
+resharper_indent_raw_literal_string = indent
 resharper_keep_existing_declaration_block_arrangement = false
-resharper_keep_existing_embedded_block_arrangement = true
+resharper_keep_existing_embedded_block_arrangement = false
 resharper_keep_existing_enum_arrangement = false
+resharper_keep_existing_invocation_parens_arrangement = false
+resharper_keep_existing_list_patterns_arrangement = false
+resharper_keep_existing_switch_expression_arrangement = false
 resharper_object_creation_when_type_not_evident = target_typed
 resharper_place_accessorholder_attribute_on_same_line = false
-resharper_place_expr_method_on_single_line = false
+resharper_place_expr_method_on_single_line = if_owner_is_single_line
 resharper_place_field_attribute_on_same_line = false
+resharper_place_simple_embedded_statement_on_same_line = false
 resharper_use_indent_from_vs = false
+resharper_wrap_array_initializer_style = chop_if_long
 resharper_wrap_before_arrow_with_expressions = true
+resharper_wrap_before_eq = true
 resharper_wrap_chained_method_calls = chop_if_long
 resharper_wrap_lines = true
+resharper_csharp_wrap_before_binary_opsign = true
+resharper_csharp_wrap_multiple_type_parameter_constraints_style = chop_always
+resharper_keep_existing_expr_member_arrangement = true
+resharper_keep_existing_primary_constructor_declaration_parens_arrangement = true
+resharper_place_simple_initializer_on_single_line = true
+resharper_wrap_before_primary_constructor_declaration_lpar = false
+resharper_wrap_before_primary_constructor_declaration_rpar = true
+resharper_wrap_chained_binary_expressions = chop_if_long
+resharper_wrap_chained_binary_patterns = chop_if_long
+resharper_wrap_list_pattern = chop_if_long
+resharper_wrap_primary_constructor_parameters_style = chop_always
+resharper_convert_to_extension_block_highlighting=warning
 
 
 # Microsoft .NET properties
-csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_members_in_object_initializers = true
 csharp_preferred_modifier_order = public, private, protected, internal, static, extern, new, virtual, abstract, sealed, override, readonly, unsafe, volatile, async, file, required:suggestion
 csharp_prefer_braces = false:suggestion
 csharp_preserve_single_line_blocks = true
@@ -160,6 +184,24 @@ spaces_around_operators = inside
 
 # C# files
 [*.cs]
+
+# performance
+dotnet_diagnostic.CA1852.severity = suggestion # CA1852: Seal internal types
+dotnet_diagnostic.CA1813.severity = suggestion # CA1813: Avoid unsealed attributes
+dotnet_diagnostic.CA1822.severity = suggestion # CA1822: Mark members as static
+dotnet_diagnostic.CA1825.severity = suggestion # CA1825: Avoid zero-length array allocations
+dotnet_diagnostic.CA1826.severity = suggestion # CA1826: Use property instead of Linq Enumerable method
+dotnet_diagnostic.CA1827.severity = suggestion # CA1827: Do not use Count() when Any() can be used
+dotnet_diagnostic.CA1829.severity = suggestion # CA1829: Use Length/Count property instead of Count() when available
+dotnet_diagnostic.CA1831.severity = suggestion # CA1831: Use AsSpan instead of Range-based indexers for string when appropriate
+dotnet_diagnostic.CA1832.severity = suggestion # CA1832: Use AsSpan or AsMemory instead of Range-based indexers for getting ReadOnlySpan or ReadOnlyMemory portion of an array
+dotnet_diagnostic.CA1833.severity = suggestion # CA1833: Use AsSpan or AsMemory instead of Range-based indexers for getting Span or Memory portion of an array
+dotnet_diagnostic.CA1835.severity = suggestion # CA1835: Prefer the 'Memory'-based overloads for 'ReadAsync' and 'WriteAsync'
+dotnet_diagnostic.CA1836.severity = suggestion # CA1836: Prefer IsEmpty over Count when available
+dotnet_diagnostic.CA1845.severity = suggestion # CA1845: Use span-based 'string.Concat'
+dotnet_diagnostic.CA1846.severity = suggestion # CA1846: Prefer AsSpan over Substring
+dotnet_diagnostic.CA1868.severity = suggestion # CA1868: Unnecessary call to 'Contains' for sets
+dotnet_diagnostic.CA1848.severity = suggestion # CA1848: Use the LoggerMessage delegates
 
 #### Core EditorConfig Options ####
 
@@ -385,3 +427,6 @@ dotnet_naming_style.starts_with__.required_prefix = _
 dotnet_naming_style.starts_with__.required_suffix = 
 dotnet_naming_style.starts_with__.word_separator = 
 dotnet_naming_style.starts_with__.capitalization = camel_case
+
+# Source gen severity
+dotnet_diagnostic.RS1042.severity = none
