@@ -70,7 +70,7 @@ PM> Install-Package FluentlyHttpClient
     - [Usage](#usage-1)
     - [Query params](#query-params)
     - [Interpolate Url](#interpolate-url)
-    - [ReturnAsReponse, ReturnAsResponse`<T>` and Return`<T>`](#returnasreponse-returnasresponset-and-returnt)
+    - [ReturnAsResponse, ReturnAsResponse`<T>` and Return`<T>`](#returnasresponse-returnasresponset-and-returnt)
   - [GraphQL](#graphql)
   - [Middleware](#middleware)
     - [Middleware options](#middleware-options)
@@ -92,25 +92,21 @@ PM> Install-Package FluentlyHttpClient
 Add services via `.AddFluentlyHttpClient()`.
 
 ```cs
-// using Startup.cs (can be elsewhere)
-public void ConfigureServices(IServiceCollection services)
-{
-    services.AddFluentlyHttpClient();
-}
+// Program.cs
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddFluentlyHttpClient();
+var app = builder.Build();
 ```
 
-Configure an Http client using the Http Factory (you need at least one).
+Configure an HTTP client using the HTTP client factory (you need at least one).
 ```cs
-// using Startup.cs (can be elsewhere)
-public void Configure(IApplicationBuilder app, IFluentHttpClientFactory fluentHttpClientFactory)
-{
-  fluentHttpClientFactory.CreateBuilder(identifier: "platform") // keep a note of the identifier, its needed later
-    .WithBaseUrl("http://sketch7.com") // required
-    .WithHeader("user-agent", "slabs-testify")
-    .WithTimeout(5)
-    .UseMiddleware<LoggerHttpMiddleware>()
-    .Register(); // register client builder to factory
-}
+var fluentHttpClientFactory = app.Services.GetRequiredService<IFluentHttpClientFactory>();
+fluentHttpClientFactory.CreateBuilder(identifier: "platform") // keep a note of the identifier, it's needed later
+  .WithBaseUrl("https://sketch7.com") // required
+  .WithHeader("user-agent", "my-app")
+  .WithTimeout(5)
+  .UseMiddleware<LoggerHttpMiddleware>()
+  .Register(); // register client builder to factory
 ```
 
 ### Basic usage
@@ -122,11 +118,11 @@ Simple API (non-fluent) is good for simple requests as it has a clean, minimal A
 // inject factory and get client
 var httpClient = fluentHttpClientFactory.Get(identifier: "platform");
 
-// HTTP GET + deserialize result (non-fleunt API)
-Hero hero = await httpClient.Get<Hero>("/api/heroes/azmodan");
+// HTTP GET + deserialize result (non-fluent API)
+Hero? hero = await httpClient.Get<Hero>("/api/heroes/azmodan");
 
-// HTTP POST + deserialize result (non-fleunt API)
-Hero hero = await httpClient.Post<Hero>("/api/heroes/azmodan", new
+// HTTP POST + deserialize result (non-fluent API)
+Hero? hero = await httpClient.Post<Hero>("/api/heroes/azmodan", new
     {
         Title = "Lord of Sin"
     });
@@ -145,7 +141,7 @@ FluentHttpResponse<Hero> response =
     .ReturnAsResponse<Hero>(); // return with response
 
 // HTTP POST + return response and deserialize result (fluent API)
-Hero hero = await httpClient.CreateRequest("/api/heroes/azmodan")
+Hero? hero = await httpClient.CreateRequest("/api/heroes/azmodan")
     .AsPost()
     .WithBody(new
     {
@@ -161,11 +157,11 @@ Http client builder is used to configure http clients in a fluent way.
 
 ```cs
 var clientBuilder = fluentHttpClientFactory.CreateBuilder(identifier: "platform")
-    .WithBaseUrl("http://sketch7.com");
+    .WithBaseUrl("https://sketch7.com");
 fluentHttpClientFactory.Add(clientBuilder);
 
 // or similarly via the builder itself.
-clientBuilder.Register().
+clientBuilder.Register();
 ```
 
 #### Register multiple + share
@@ -235,7 +231,8 @@ httpClientBuilder.ConfigureFormatters(opts =>
       opts.Formatters.Add(new CustomFormatter());
     });
 
-httpClientBuilder.WithVersion(HttpVersion.Version30) // specify to use http3 (defaults: http2)
+// http version - configure per-request via request builder defaults
+httpClientBuilder.WithRequestBuilderDefaults(builder => builder.WithVersion(HttpVersion.Version30)); // specify http3 per-request (default: http2)
 ```
 
 #### Re-using Http Client from Factory
@@ -257,7 +254,7 @@ Request builder is used to build http requests in a fluent way.
 #### Usage
 
 ```cs
-LoginResponse loginResponse =
+LoginResponse? loginResponse =
   await fluentHttpClient.CreateRequest("/api/auth/login")
     .AsPost() // set as HTTP Post
     .WithBody(new
@@ -290,7 +287,7 @@ requestBuilder.WithUri("{Language}/heroes/{Hero}", new
     }); // => /en/heroes/azmodan
 ```
 
-#### ReturnAsReponse, ReturnAsResponse`<T>` and Return`<T>`
+#### ReturnAsResponse, ReturnAsResponse`<T>` and Return`<T>`
 
 ```cs
 // send and returns HTTP response
@@ -299,8 +296,8 @@ FluentHttpResponse response = requestBuilder.ReturnAsResponse();
 // send and returns HTTP response + deserialize and return result via `.Data`
 FluentHttpResponse<Hero> response = requestBuilder.ReturnAsResponse<Hero>();
 
-// send and returns derserialized result directly
-Hero hero = requestBuilder.Return<Hero>();
+// send and returns deserialized result directly
+Hero? hero = requestBuilder.Return<Hero>();
 ```
 
 
@@ -315,7 +312,7 @@ httpClientBuilder.WithRequestBuilderDefaults(requestBuilder => requestBuilder.Wi
 FluentHttpResponse<Hero> response =
   await fluentHttpClient.CreateGqlRequest("{ hero {name, title } }")
     .ReturnAsGqlResponse<Hero>();
-    // => response.Data.Title
+    // => response.Data?.Title
 ```
 
 
@@ -332,9 +329,9 @@ These are provided out of the box:
 | Timer      | Determine how long (timespan) requests takes. |
 | Logger     | Log request/response.                         |
 
-Two important points to keep in mind:
+Three important points to keep in mind:
  - The first argument within constructor has to be `FluentHttpMiddlewareDelegate` which is generally called `next`.
- - The second argument within constructor has to be `FluentHttpMiddlewareClientContext` which is generally called `context`,
+ - The second argument within constructor has to be `FluentHttpMiddlewareClientContext` which is generally called `context`.
  - During `Invoke` the `await _next(context);` must be invoked and return the response, in order to continue the flow.
 
  The following is the timer middleware implementation *(bit simplified)*.
@@ -386,7 +383,7 @@ namespace FluentlyHttpClient
     // FluentHttpClientBuilder extension methods - add
     public static class FluentlyHttpMiddlwareExtensions
     {
-        public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, TimerHttpMiddlewareOptions options = null)
+        public static FluentHttpClientBuilder UseTimer(this FluentHttpClientBuilder builder, TimerHttpMiddlewareOptions? options = null)
             => builder.UseMiddleware<TimerHttpMiddleware>(options ?? new TimerHttpMiddlewareOptions());
     }
 }
@@ -396,7 +393,7 @@ TimeSpan timeTaken = response.GetTimeTaken();
 ```
 
 #### Middleware options
-Options to middleware can be passed via an argument. Note it has to be the second argument within the constructor.
+Options to middleware can be passed via an argument. Note it has to be the third argument within the constructor (after `next` and `context`).
 
 ```cs
 public TimerHttpMiddleware(
@@ -480,13 +477,14 @@ public static class FluentHttpHeaderBuilderExtensions
     builder.WithHeader(HeaderTypes.Authorization, $"{AuthSchemeTypes.Bearer} {token}");
     return (T)builder;
   }
+}
 ```
 #### Extending Request/Response items
 In order to extend `Items` for both `FluentHttpRequest` and `FluentHttpResponse`, its best to extend `IFluentHttpMessageState`.
 This way it will be available for both. See example below.
 
 ```cs
-public static IDictionary<string, string> GetErrorCodeMappings(this IFluentHttpMessageState message)
+public static IDictionary<string, string>? GetErrorCodeMappings(this IFluentHttpMessageState message)
 {
   if (message.Items.TryGetValue(ErrorCodeMappingKey, out var value))
     return (IDictionary<string, string>)value;
@@ -524,7 +522,7 @@ public class SelfInfoHttpClient
   )
   {
     _httpClient = httpClientFactory.CreateBuilder("localhost")
-      .WithBaseUrl($"http://localhost:5500}")
+      .WithBaseUrl("http://localhost:5500")
       .Build();
   }
 
@@ -543,14 +541,14 @@ However, we've been using [RichardSzalay.MockHttp](https://github.com/richardsza
 
 ```cs
 [Fact]
-public async void ShouldReturnContent()
+public async Task ShouldReturnContent()
 {
     // build services
     var servicesProvider = new ServiceCollection()
       .AddFluentlyHttpClient()
       .AddLogging()
       .BuildServiceProvider();
-    var fluentHttpClientFactory = servicesProvider.GetService<IFluentHttpClientFactory>();
+    var fluentHttpClientFactory = servicesProvider.GetRequiredService<IFluentHttpClientFactory>();
 
     // define mocks
     var mockHttp = new MockHttpMessageHandler();
@@ -559,7 +557,7 @@ public async void ShouldReturnContent()
 
     var httpClient = fluentHttpClientFactory.CreateBuilder("platform")
       .WithBaseUrl("https://sketch7.com")
-      .AddMiddleware<TimerHttpMiddleware>()
+      .UseMiddleware<TimerHttpMiddleware>()
       .WithMessageHandler(mockHttp) // set message handler to mock
       .Build();
 
