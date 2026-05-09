@@ -44,11 +44,11 @@ public class Benchmarking
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/json")
-			.Respond("application/json", request => request.Content.ReadAsStreamAsync().Result);
+			.Respond("application/json", request => request.Content!.ReadAsStreamAsync().Result);
 
 		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/msgpack")
-			//.Respond("application/x-msgpack", "��Key�valeera�Name�Valeera�Title�Shadow of the Uncrowned")
-			.Respond("application/x-msgpack", request => request.Content.ReadAsStreamAsync().Result);
+			//.Respond("application/x-msgpack", "\x99\xa3Key\xa6valeera...")
+			.Respond("application/x-msgpack", request => request.Content!.ReadAsStreamAsync().Result);
 
 		var fluentHttpClientFactory = BuildContainer()
 			.GetRequiredService<IFluentHttpClientFactory>();
@@ -79,33 +79,33 @@ public class Benchmarking
 			;
 
 		Console.WriteLine($"Setup Complete");
-		Console.WriteLine($" - _jsonHttpClient: {_jsonHttpClient.DefaultFormatter.GetType().Name}");
-		Console.WriteLine($" - _messagePackHttpClient: {_messagePackHttpClient.DefaultFormatter.GetType().Name}");
-		Console.WriteLine($" - _systemTextJsonHttpClient: {_systemTextJsonHttpClient.DefaultFormatter.GetType().Name}");
+		Console.WriteLine($" - _jsonHttpClient: {_jsonHttpClient!.DefaultFormatter?.GetType().Name}");
+		Console.WriteLine($" - _messagePackHttpClient: {_messagePackHttpClient!.DefaultFormatter?.GetType().Name}");
+		Console.WriteLine($" - _systemTextJsonHttpClient: {_systemTextJsonHttpClient!.DefaultFormatter?.GetType().Name}");
 	}
 
 	[Benchmark]
-	public Task<Hero> PostAsJson()
+	public Task<Hero?> PostAsJson()
 	{
-		return _jsonHttpClient.CreateRequest("/api/json")
+		return _jsonHttpClient!.CreateRequest("/api/json")
 			.AsPost()
 			.WithBody(_request)
 			.Return<Hero>();
 	}
 
 	[Benchmark]
-	public Task<Hero> PostAsMessagePack()
+	public Task<Hero?> PostAsMessagePack()
 	{
-		return _messagePackHttpClient.CreateRequest("/api/msgpack")
+		return _messagePackHttpClient!.CreateRequest("/api/msgpack")
 			.AsPost()
 			.WithBody(_request)
 			.Return<Hero>();
 	}
 
 	[Benchmark]
-	public Task<Hero> PostAsSystemTextJson()
+	public Task<Hero?> PostAsSystemTextJson()
 	{
-		return _systemTextJsonHttpClient.CreateRequest("/api/json")
+		return _systemTextJsonHttpClient!.CreateRequest("/api/json")
 			.AsPost()
 			.WithBody(_request)
 			.Return<Hero>();

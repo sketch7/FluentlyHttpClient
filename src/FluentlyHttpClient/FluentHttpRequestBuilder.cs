@@ -57,7 +57,7 @@ public partial class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentH
 	/// <summary>
 	/// Gets the base url from the HTTP client.
 	/// </summary>
-	public string BaseUrl => _fluentHttpClient.BaseUrl;
+	public string? BaseUrl => _fluentHttpClient.BaseUrl;
 
 	/// <inheritdoc />
 	/// <summary>
@@ -112,36 +112,50 @@ public partial class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentH
 		return this;
 	}
 
+	/// <summary>Set a single HTTP header for this request.</summary>
+	/// <param name="key">Header name.</param>
+	/// <param name="value">Header value.</param>
 	public FluentHttpRequestBuilder WithHeader(string key, string value)
 	{
 		Headers.Set(key, value);
 		return this;
 	}
 
+	/// <summary>Set a single HTTP header with multiple values for this request.</summary>
+	/// <param name="key">Header name.</param>
+	/// <param name="values">Header values.</param>
 	public FluentHttpRequestBuilder WithHeader(string key, StringValues values)
 	{
 		Headers.Set(key, values);
 		return this;
 	}
 
+	/// <summary>Set multiple HTTP headers from a string dictionary for this request.</summary>
+	/// <param name="headers">Headers to set.</param>
 	public FluentHttpRequestBuilder WithHeaders(IDictionary<string, string> headers)
 	{
 		Headers.SetRange(headers);
 		return this;
 	}
 
+	/// <summary>Set multiple HTTP headers from a string-array dictionary for this request.</summary>
+	/// <param name="headers">Headers to set.</param>
 	public FluentHttpRequestBuilder WithHeaders(IDictionary<string, string[]> headers)
 	{
 		Headers.SetRange(headers);
 		return this;
 	}
 
+	/// <summary>Set multiple HTTP headers from a <see cref="StringValues"/> dictionary for this request.</summary>
+	/// <param name="headers">Headers to set.</param>
 	public FluentHttpRequestBuilder WithHeaders(IDictionary<string, StringValues> headers)
 	{
 		Headers.SetRange(headers);
 		return this;
 	}
 
+	/// <summary>Set multiple HTTP headers from a <see cref="FluentHttpHeaders"/> instance for this request.</summary>
+	/// <param name="headers">Headers to set.</param>
 	public FluentHttpRequestBuilder WithHeaders(FluentHttpHeaders headers)
 	{
 		Headers.SetRange(headers);
@@ -349,6 +363,8 @@ public partial class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentH
 		{
 			foreach (var header in _headers)
 			{
+				if (header.Value is null)
+					continue;
 				if (header.Key == HeaderTypes.UserAgent)
 					httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
 				else
@@ -385,7 +401,7 @@ public partial class FluentHttpRequestBuilder : IFluentHttpHeaderBuilder<FluentH
 		if (dict.Count == 0)
 			return string.Empty;
 
-		var queryCollection = new Dictionary<string, object>();
+		var queryCollection = new Dictionary<string, object?>();
 		foreach (var item in dict)
 			queryCollection[item.Key] = item.Value;
 

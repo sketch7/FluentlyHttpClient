@@ -96,13 +96,11 @@ public class QueryStringUtils_ToQueryString
 		var result = queryCollection.ToQueryString(opts =>
 		{
 			opts.CollectionMode = QueryStringCollectionMode.CommaSeparated;
-#pragma warning disable 618
 			opts.WithCollectionItemFormatter(valueObj =>
-#pragma warning restore 618
 			{
 				if (valueObj is Enum @enum)
 					return @enum.GetEnumDescription();
-				return valueObj.ToString();
+				return valueObj.ToString() ?? string.Empty;
 			});
 		});
 
@@ -126,7 +124,7 @@ public class QueryStringUtils_ToQueryString
 			{
 				if (valueObj is Enum @enum)
 					return @enum.GetEnumDescription();
-				return valueObj.ToString();
+				return valueObj.ToString() ?? string.Empty;
 			});
 		});
 

@@ -27,7 +27,8 @@ public static class HttpExtensions
 	public static void AddRange(this HttpHeaders headers, FluentHttpHeaders values)
 	{
 		foreach (var headerEntry in values)
-			headers.Add(headerEntry.Key, (IEnumerable<string>)headerEntry.Value);
+			if (headerEntry.Value != null)
+				headers.Add(headerEntry.Key, headerEntry.Value);
 	}
 
 	/// <summary>

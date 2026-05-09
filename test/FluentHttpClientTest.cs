@@ -10,7 +10,7 @@ public class HttpClient
 	private readonly MessagePackMediaTypeFormatter _messagePackMediaTypeFormatter = new();
 
 	[Fact]
-	public async void Get_ShouldReturnContent()
+	public async Task Get_ShouldReturnContent()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")
@@ -23,12 +23,12 @@ public class HttpClient
 
 		var hero = await httpClient.Get<Hero>("/api/heroes/azmodan");
 
-		Assert.NotNull(hero);
-		Assert.Equal("Azmodan", hero.Name);
+		hero.ShouldNotBeNull();
+		hero.Name.ShouldBe("Azmodan");
 	}
 
 	[Fact]
-	public async void Post_ShouldReturnContent()
+	public async Task Post_ShouldReturnContent()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes/azmodan")
@@ -51,8 +51,8 @@ public class HttpClient
 			Title = "Lord of Sin"
 		});
 
-		Assert.NotNull(hero);
-		Assert.Equal("Lord of Sin", hero.Title);
+		hero.ShouldNotBeNull();
+		hero.Title.ShouldBe("Lord of Sin");
 	}
 
 	[Fact]
@@ -92,25 +92,25 @@ public class HttpClient
 		httpClient.Headers.TryGetValues("country", out var countryValues);
 		var subClientCountry = subClient.Headers.GetValues("country").FirstOrDefault();
 
-		Assert.Equal("sketch7", httpClient.Identifier);
-		Assert.Equal("sketch7.subclient", subClient.Identifier);
-		Assert.Equal("en-GB", httpClientLocale);
-		Assert.Equal("de", subClientLocale);
-		Assert.Null(countryValues?.FirstOrDefault());
-		Assert.Equal("de", subClientCountry);
+		httpClient.Identifier.ShouldBe("sketch7");
+		subClient.Identifier.ShouldBe("sketch7.subclient");
+		httpClientLocale.ShouldBe("en-GB");
+		subClientLocale.ShouldBe("de");
+		countryValues?.FirstOrDefault().ShouldBeNull();
+		subClientCountry.ShouldBe("de");
 
-		Assert.Equal(httpClientRequest.HttpMethod, subClientRequest.HttpMethod);
-		Assert.Equal(httpClientRequest.Items["error-mapping"], subClientRequest.Items["error-mapping"]);
-		Assert.Equal("user", httpClientRequest.Items["context"]);
-		Assert.Equal("reward", subClientRequest.Items["context"]);
-		Assert.Equal(httpClient.Formatters.Count, subClient.Formatters.Count);
+		subClientRequest.HttpMethod.ShouldBe(httpClientRequest.HttpMethod);
+		subClientRequest.Items["error-mapping"].ShouldBe(httpClientRequest.Items["error-mapping"]);
+		httpClientRequest.Items["context"].ShouldBe("user");
+		subClientRequest.Items["context"].ShouldBe("reward");
+		subClient.Formatters.Count.ShouldBe(httpClient.Formatters.Count);
 		// todo: check middleware count?
 
-		Assert.Equal(2, httpClientFactory.Count);
+		httpClientFactory.Count.ShouldBe(2);
 	}
 
 	[Fact]
-	public async void GraphQL_ShouldReturnContent()
+	public async Task GraphQL_ShouldReturnContent()
 	{
 		const string query = "{hero {name,title}}";
 		const string operationName = "heroGet";
@@ -136,8 +136,8 @@ public class HttpClient
 		var response = await httpClient.CreateGqlRequest(query, operationName)
 			.ReturnAsGqlResponse<Hero>();
 
-		Assert.True(response.IsSuccessStatusCode);
-		Assert.NotNull(response.Data);
-		Assert.Equal("Lord of Sin", response.Data.Title);
+		response.IsSuccessStatusCode.ShouldBeTrue();
+		response.Data.ShouldNotBeNull();
+		response.Data.Title.ShouldBe("Lord of Sin");
 	}
 }

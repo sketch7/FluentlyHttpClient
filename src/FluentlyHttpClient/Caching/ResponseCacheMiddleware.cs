@@ -14,6 +14,7 @@ namespace FluentlyHttpClient.Middleware
 		/// Ignore the request from being cached.
 		/// </summary>
 		public bool ShouldIgnore { get; set; }
+		/// <summary>Predicate to match which requests should be cached. When <see langword="null"/> all requests are cached.</summary>
 		public Predicate<FluentHttpRequest>? Matcher { get; set; }
 
 		/// <summary>
@@ -54,7 +55,7 @@ namespace FluentlyHttpClient.Middleware
 		{
 			var request = context.Request;
 
-			var options = request.GetResponseCachingOptions(_options);
+			var options = request.GetResponseCachingOptions(_options) ?? _options;
 
 			if (options.ShouldIgnore || options.Matcher != null && !options.Matcher(request))
 				return await _next(context);

@@ -5,15 +5,13 @@ namespace FluentlyHttpClient;
 /// </summary>
 public class RequestValidationException : Exception
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+	/// <summary>Initializes a new instance with the specified message.</summary>
 	public RequestValidationException(string message) : base(message)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 	{
 	}
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+	/// <summary>Initializes a new instance with the specified message and inner exception.</summary>
 	public RequestValidationException(string message, Exception inner) : base(message, inner)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 	{
 	}
 
@@ -38,15 +36,13 @@ public class RequestValidationException : Exception
 /// </summary>
 public class ClientBuilderValidationException : Exception
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+	/// <summary>Initializes a new instance with the specified message.</summary>
 	public ClientBuilderValidationException(string message) : base(message)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 	{
 	}
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+	/// <summary>Initializes a new instance with the specified message and inner exception.</summary>
 	public ClientBuilderValidationException(string message, Exception inner) : base(message, inner)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 	{
 	}
 

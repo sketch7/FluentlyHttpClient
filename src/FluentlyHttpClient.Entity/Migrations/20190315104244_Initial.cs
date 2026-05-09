@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿#pragma warning disable CS1591
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FluentlyHttpClient.Entity.Migrations
 {

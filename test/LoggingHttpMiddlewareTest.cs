@@ -7,7 +7,7 @@ namespace Test;
 public class LoggingHttpMiddlewareTest
 {
 	[Fact]
-	public async void RequestBodyWithoutContent_ShouldNotThrow()
+	public async Task RequestBodyWithoutContent_ShouldNotThrow()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When("https://sketch7.com/api/heroes/azmodan")
@@ -26,12 +26,12 @@ public class LoggingHttpMiddlewareTest
 
 		var hero = await httpClient.Get<Hero>("/api/heroes/azmodan");
 
-		Assert.NotNull(hero);
-		Assert.Equal("Azmodan", hero.Name);
+		hero.ShouldNotBeNull();
+		hero.Name.ShouldBe("Azmodan");
 	}
 
 	[Fact]
-	public async void ResponseBodyWithoutContent_ShouldNotThrow()
+	public async Task ResponseBodyWithoutContent_ShouldNotThrow()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes")
@@ -57,12 +57,12 @@ public class LoggingHttpMiddlewareTest
 			})
 			.ReturnAsResponse();
 
-		Assert.NotNull(response);
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+		response.ShouldNotBeNull();
+		response.StatusCode.ShouldBe(HttpStatusCode.OK);
 	}
 
 	[Fact]
-	public async void UsingActionBasedConfiguration()
+	public async Task UsingActionBasedConfiguration()
 	{
 		var mockHttp = new MockHttpMessageHandler();
 		mockHttp.When(HttpMethod.Post, "https://sketch7.com/api/heroes")
@@ -88,8 +88,8 @@ public class LoggingHttpMiddlewareTest
 			})
 			.ReturnAsResponse();
 
-		Assert.NotNull(response);
-		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+		response.ShouldNotBeNull();
+		response.StatusCode.ShouldBe(HttpStatusCode.OK);
 	}
 
 	[Fact]
@@ -111,8 +111,9 @@ public class LoggingHttpMiddlewareTest
 
 		var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
 
-		Assert.True(options.ShouldLogDetailedRequest);
-		Assert.True(options.ShouldLogDetailedResponse);
+		options.ShouldNotBeNull();
+		options.ShouldLogDetailedRequest.ShouldBe(true);
+		options.ShouldLogDetailedResponse.ShouldBe(true);
 	}
 
 	[Fact]
@@ -139,8 +140,9 @@ public class LoggingHttpMiddlewareTest
 
 		var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
 
-		Assert.True(options.ShouldLogDetailedRequest);
-		Assert.True(options.ShouldLogDetailedResponse);
+		options.ShouldNotBeNull();
+		options.ShouldLogDetailedRequest.ShouldBe(true);
+		options.ShouldLogDetailedResponse.ShouldBe(true);
 	}
 
 	[Fact]
@@ -167,7 +169,8 @@ public class LoggingHttpMiddlewareTest
 
 		var options = request.GetLoggingOptions(loggerHttpMiddlewareOptions);
 
-		Assert.True(options.ShouldLogDetailedRequest);
-		Assert.True(options.ShouldLogDetailedResponse);
+		options.ShouldNotBeNull();
+		options.ShouldLogDetailedRequest.ShouldBe(true);
+		options.ShouldLogDetailedResponse.ShouldBe(true);
 	}
 }

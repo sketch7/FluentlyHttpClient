@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FluentlyHttpClient.Entity;
 
+/// <summary>EF Core mapping configuration for <see cref="HttpResponseEntity"/>.</summary>
 public class HttpResponseMapping : IEntityTypeConfiguration<HttpResponseEntity>
 {
+	/// <inheritdoc />
 	public void Configure(EntityTypeBuilder<HttpResponseEntity> builder)
 	{
 		builder.ToTable(Constants.HttpResponseTable, Constants.SchemaName);

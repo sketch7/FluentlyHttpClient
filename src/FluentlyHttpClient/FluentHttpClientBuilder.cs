@@ -85,36 +85,50 @@ public class FluentHttpClientBuilder : IFluentHttpHeaderBuilder<FluentHttpClient
 		return this;
 	}
 
+	/// <summary>Set a single HTTP header for all requests built by this client.</summary>
+	/// <param name="key">Header name.</param>
+	/// <param name="value">Header value.</param>
 	public FluentHttpClientBuilder WithHeader(string key, string value)
 	{
 		_headers.Set(key, value);
 		return this;
 	}
 
+	/// <summary>Set a single HTTP header with multiple values for all requests built by this client.</summary>
+	/// <param name="key">Header name.</param>
+	/// <param name="values">Header values.</param>
 	public FluentHttpClientBuilder WithHeader(string key, StringValues values)
 	{
 		_headers.Set(key, values);
 		return this;
 	}
 
+	/// <summary>Set multiple HTTP headers from a string dictionary for all requests built by this client.</summary>
+	/// <param name="headers">Headers to set.</param>
 	public FluentHttpClientBuilder WithHeaders(IDictionary<string, string> headers)
 	{
 		_headers.SetRange(headers);
 		return this;
 	}
 
+	/// <summary>Set multiple HTTP headers from a string-array dictionary for all requests built by this client.</summary>
+	/// <param name="headers">Headers to set.</param>
 	public FluentHttpClientBuilder WithHeaders(IDictionary<string, string[]> headers)
 	{
 		_headers.SetRange(headers);
 		return this;
 	}
 
+	/// <summary>Set multiple HTTP headers from a <see cref="StringValues"/> dictionary for all requests built by this client.</summary>
+	/// <param name="headers">Headers to set.</param>
 	public FluentHttpClientBuilder WithHeaders(IDictionary<string, StringValues> headers)
 	{
 		_headers.SetRange(headers);
 		return this;
 	}
 
+	/// <summary>Set multiple HTTP headers from a <see cref="FluentHttpHeaders"/> instance for all requests built by this client.</summary>
+	/// <param name="headers">Headers to set.</param>
 	public FluentHttpClientBuilder WithHeaders(FluentHttpHeaders headers)
 	{
 		_headers.SetRange(headers);

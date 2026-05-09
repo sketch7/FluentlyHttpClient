@@ -6,14 +6,14 @@ namespace FluentlyHttpClient.Test.Integration;
 
 public record MimirGqlSchema
 {
-	public List<UniverseModel> UniversesIndex { get; set; }
+	public required List<UniverseModel> UniversesIndex { get; init; }
 }
 
 public record UniverseModel
 {
-	public string Id { get; set; }
-	public string Key { get; set; }
-	public string Name { get; set; }
+	public required string Id { get; init; }
+	public required string Key { get; init; }
+	public required string Name { get; init; }
 }
 
 public class LoadTest
@@ -32,7 +32,7 @@ public class LoadTest
 
 	[Fact]
 	[Trait("Category", "e2e")]
-	public async void GqlHttp2Test()
+	public async Task GqlHttp2Test()
 	{
 		var socketsHandler = new SocketsHttpHandler
 		{
