@@ -28,14 +28,20 @@ permissions:
   packages: write # required for package publish
   pull-requests: write # required for release PR creation
 
+concurrency:
+  group: package-release-${{ github.repository }}
+  cancel-in-progress: false
+  queue: max
+
 jobs:
   publish:
     name: Publish
     if: |
-      contains(fromJSON('["main", "workflow"]'), github.ref_name) ||
-      startsWith(github.ref_name, 'v') ||
-      github.event.inputs.publish == 'true'
-    uses: sketch7/.github/.github/workflows/dotnet-publish.yml@dotnet-libs-v2
+      (github.event_name != 'push' || github.event.created == false) &&
+      (contains(fromJSON('["main", "workflow"]'), github.ref_name) ||
+       startsWith(github.ref_name, 'v') ||
+       github.event.inputs.publish == 'true')
+    uses: sketch7/.github/.github/workflows/dotnet-publish.yml@feature/promotable-app-release-cycle
     with:
       force-preid: ${{ github.event.inputs.force-prerelease == 'true' }}
     secrets:
@@ -49,7 +55,7 @@ jobs:
       needs.publish.result == 'success' &&
       github.event_name == 'push' &&
       github.ref_name == 'main'
-    uses: sketch7/.github/.github/workflows/prepare-release.yml@release-v1
+    uses: sketch7/.github/.github/workflows/prepare-release.yml@feature/promotable-app-release-cycle
     with:
       base-version: ${{ needs.publish.outputs.baseVersion }}
     secrets:
@@ -58,11 +64,8 @@ jobs:
   release:
     name: Release
     needs: publish
-    # Only when a stable (non-prerelease) version was published — i.e. on push to v* branches
-    if: |
-      needs.publish.result == 'success' &&
-      !fromJSON(needs.publish.outputs.isPrerelease)
-    uses: sketch7/.github/.github/workflows/create-release.yml@release-v1
+    if: needs.publish.result == 'success'
+    uses: sketch7/.github/.github/workflows/create-release.yml@feature/promotable-app-release-cycle
     with:
       version: ${{ needs.publish.outputs.version }}
 
@@ -74,6 +77,6 @@ jobs:
       needs.release.result == 'success' &&
       needs.release.outputs.is-latest == 'true' &&
       github.event_name == 'push'
-    uses: sketch7/.github/.github/workflows/node-bump-main.yml@release-v1
+    uses: sketch7/.github/.github/workflows/node-bump-main.yml@feature/promotable-app-release-cycle
     with:
       released-version: ${{ needs.publish.outputs.version }}

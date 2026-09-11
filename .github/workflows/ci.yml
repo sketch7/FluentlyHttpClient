@@ -3,8 +3,6 @@ name: CI
 on:
   push:
     branches:
-      - main
-      - "v*"
       - "workflow"
     paths-ignore:
       - "**.md"
@@ -25,4 +23,4 @@ permissions:
 jobs:
   ci:
     name: dotnet ci
-    uses: sketch7/.github/.github/workflows/dotnet-ci.yml@dotnet-libs-v2
+    uses: sketch7/.github/.github/workflows/dotnet-ci.yml@feature/promotable-app-release-cycle
