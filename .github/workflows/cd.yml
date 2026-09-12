@@ -80,3 +80,5 @@ jobs:
     uses: sketch7/.github/.github/workflows/node-bump-main.yml@feature/promotable-app-release-cycle
     with:
       released-version: ${{ needs.publish.outputs.version }}
+    secrets:
+      token: ${{ secrets.GH_PAT }}
