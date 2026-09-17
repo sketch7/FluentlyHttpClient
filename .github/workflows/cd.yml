@@ -41,7 +41,7 @@ jobs:
       (contains(fromJSON('["main", "workflow"]'), github.ref_name) ||
        startsWith(github.ref_name, 'v') ||
        github.event.inputs.publish == 'true')
-    uses: sketch7/.github/.github/workflows/dotnet-publish.yml@feature/promotable-app-release-cycle
+    uses: sketch7/.github/.github/workflows/dotnet-publish.yml@dotnet-libs-v3
     with:
       force-preid: ${{ github.event.inputs.force-prerelease == 'true' }}
     secrets:
@@ -55,7 +55,7 @@ jobs:
       needs.publish.result == 'success' &&
       github.event_name == 'push' &&
       github.ref_name == 'main'
-    uses: sketch7/.github/.github/workflows/prepare-release.yml@feature/promotable-app-release-cycle
+    uses: sketch7/.github/.github/workflows/prepare-release.yml@release-v2
     with:
       base-version: ${{ needs.publish.outputs.baseVersion }}
     secrets:
@@ -65,7 +65,7 @@ jobs:
     name: Release
     needs: publish
     if: needs.publish.result == 'success'
-    uses: sketch7/.github/.github/workflows/create-release.yml@feature/promotable-app-release-cycle
+    uses: sketch7/.github/.github/workflows/create-release.yml@release-v2
     with:
       version: ${{ needs.publish.outputs.version }}
 
@@ -77,7 +77,7 @@ jobs:
       needs.release.result == 'success' &&
       needs.release.outputs.is-latest == 'true' &&
       github.event_name == 'push'
-    uses: sketch7/.github/.github/workflows/node-bump-main.yml@feature/promotable-app-release-cycle
+    uses: sketch7/.github/.github/workflows/node-bump-main.yml@release-v2
     with:
       released-version: ${{ needs.publish.outputs.version }}
     secrets:
