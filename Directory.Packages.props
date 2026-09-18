@@ -19,7 +19,7 @@
     <PackageVersion Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
     <!-- 3rd party -->
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
-    <PackageVersion Include="MessagePack" Version="3.1.4" />
+    <PackageVersion Include="MessagePack" Version="3.1.9" />
     <PackageVersion Include="MimeTypesMap" Version="1.0.9" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="Humanizer.Core" Version="3.0.10" />
