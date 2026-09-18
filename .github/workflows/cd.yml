@@ -8,6 +8,10 @@ on:
       - "workflow"
     paths-ignore:
       - "**.md"
+      - ".agents/**"
+      - ".claude/**"
+      - ".codex/**"
+      - "skills-lock.json"
 
   workflow_dispatch:
     inputs:
