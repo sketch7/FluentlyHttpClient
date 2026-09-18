@@ -1,6 +1,7 @@
 {
   "name": "@sketch7/fluently-http-client",
   "version": "5.1.0",
+  "dotnetBuildSln": "./FluentlyHttpClient.slnx",
   "scripts": {
     "pack": "bash ./tools/pack.sh",
     "prepublish:dev": "npm run pack",
