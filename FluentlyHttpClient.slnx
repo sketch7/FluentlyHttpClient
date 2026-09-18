@@ -17,8 +17,6 @@
 		<File Path="README.md" />
 	</Folder>
 	<Folder Name="/tools/">
-		<File Path=".editorconfig" />
-		<File Path=".gitignore" />
 		<File Path="Directory.Build.props" />
 		<File Path="NuGet.Config" />
 		<File Path="package.json" />

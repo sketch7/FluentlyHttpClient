@@ -3,18 +3,25 @@ name: CI
 on:
   push:
     branches:
-      - main
-      - "v*"
       - "workflow"
     paths-ignore:
       - "**.md"
+      - ".agents/**"
+      - ".claude/**"
+      - ".codex/**"
+      - "skills-lock.json"
 
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches:
       - main
       - "v*"
     paths-ignore:
       - "**.md"
+      - ".agents/**"
+      - ".claude/**"
+      - ".codex/**"
+      - "skills-lock.json"
 
 permissions:
   contents: read
@@ -25,4 +32,4 @@ permissions:
 jobs:
   ci:
     name: dotnet ci
-    uses: sketch7/.github/.github/workflows/dotnet-ci.yml@dotnet-libs-v2
+    uses: sketch7/.github/.github/workflows/dotnet-ci.yml@dotnet-libs-v3
